@@ -18,7 +18,7 @@ $rs = mysql_query($strSQL);
 // Each row will be made into an array ($row) using mysql_fetch_array
 while($row = mysql_fetch_array($rs)) {
 // Write the value of the column FirstName (which is now in the array $row)
-echo $row['id'] . $row['value'] "</br>";
+echo $row['id'] . ":" . $row['value'] . "</br>";
 }
 // Close the database connection
 mysql_close();
