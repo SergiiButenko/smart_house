@@ -6,7 +6,7 @@
  *
  */
 // script errors will be send to this email:
-$error_mail = "admin@example.com";
+$error_mail = "butenko2003@ukr.net";
 function run() {
     global $rawInput;
     // read config.json
