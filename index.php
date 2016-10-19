@@ -4,7 +4,7 @@
 </head>
 <body>
 <?php
-// Connect to database server
+// Connect to database server 
 mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
 // Select database
 mysql_select_db("test") or die(mysql_error());
