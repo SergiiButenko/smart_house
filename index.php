@@ -5,12 +5,17 @@
 <body>
 <?php
 // Connect to database server 
-mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
+$servername = $_ENV["DB_HOST"].":".$_ENV["DB_PORT"];
+$username = $_ENV["DB_USERNAME"];
+$password = $_ENV["DB_PASS"];
+mysql_connect($servername, $username, $password) or die (mysql_error());
+
 // Select database
-mysql_select_db("test") or die(mysql_error());
+mysql_select_db($_ENV["DB_NAME"]) or die(mysql_error());
+
 // SQL query
 $strSQL = "SELECT * FROM new_table";
-echo "Sql string: $strSQL";
+echo "Sql string: $strSQL"."</br>";
 
 // Execute the query (the recordset $rs contains the result)
 $rs = mysql_query($strSQL);
