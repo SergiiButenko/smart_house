@@ -9,7 +9,7 @@ mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error(
 // Select database
 mysql_select_db("test") or die(mysql_error());
 // SQL query
-$strSQL = "SELECT * FROM new_table";
+$strSQL = "SELECT * FROM conditioners";
 echo "Sql string: $strSQL"."</br>";
 
 // Execute the query (the recordset $rs contains the result)
@@ -18,7 +18,7 @@ $rs = mysql_query($strSQL);
 // Each row will be made into an array ($row) using mysql_fetch_array
 while($row = mysql_fetch_array($rs)) {
 // Write the value of the column FirstName (which is now in the array $row)
-echo $row['id'] . ":" . $row['value'] . "</br>";
+echo $row['name'] . ":" . $row['status'] . "; settings: " . $row['settings'] . "</br>";
 }
 // Close the database connection
 mysql_close();
