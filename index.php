@@ -10,8 +10,6 @@ mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error(
 mysql_select_db("test") or die(mysql_error());
 // SQL query
 $strSQL = "SELECT * FROM conditioners";
-echo "Sql string: $strSQL"."</br>";
-
 // Execute the query (the recordset $rs contains the result)
 $rs = mysql_query($strSQL);
 // Loop the recordset $rs
