@@ -6,7 +6,7 @@
 <?php 
 require 'php/db.php';
 foreach (statuses() as $key => $value) {
- echo $value . ": " . $key . '</br>';
+ echo $key . ": " . print_r($value) . '</br>';
 }
 ?>
 </body>
