@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Retrieve data from database</title>
+<title>Contidioners statuses</title>
 </head>
 <body>
 <?php 
