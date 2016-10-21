@@ -13,7 +13,7 @@ function statuses() {
 
     while($row = mysql_fetch_array($rs)) {
     $value = array(
-        $row['name'] => $row['status'];
+        $row['name'] => $row['status']
     )
     array_push($values, $value);
     
