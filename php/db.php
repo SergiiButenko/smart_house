@@ -21,8 +21,4 @@ function statuses() {
     mysql_close();
     return $values;
 }
-
-$varr = statuses();
-print_r($varr);
-
 ?>
