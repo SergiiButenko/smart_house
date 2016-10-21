@@ -5,8 +5,9 @@
 <body>
 <?php 
 require 'php/db.php';
-$varr = statuses();
-print_r($varr);
+foreach (statuses() as $key => $value) {
+ echo $value . ": " . $key . '</br>';
+}
 ?>
 </body>
 </html>
