@@ -15,7 +15,7 @@ function statuses() {
     $values[$row['name']] = array( 
         'status' => $row['status'],
         'settings' => $row['settings']
-        )
+        );
     } 
     // Close the database connection
     mysql_close();
