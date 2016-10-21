@@ -12,11 +12,7 @@ function statuses() {
     $values = array();
 
     while($row = mysql_fetch_array($rs)) {
-    $values[] = $row['name']->$row['status'];
-            //
-        //'status': $row['status'],
-        //'settings': $row['settings']
-        //
+    $values[$row['name']] = $row['status'];
     } 
     // Close the database connection
     mysql_close();
