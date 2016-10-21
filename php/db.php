@@ -19,9 +19,10 @@ function statuses() {
     } 
     // Close the database connection
     mysql_close();
-    print_r($values);
+    return $values;
 }
 
-statuses();
+$varr = statuses();
+print_r($varr);
 
 ?>
