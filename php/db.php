@@ -9,11 +9,14 @@ function statuses() {
     // Execute the query (the recordset $rs contains the result)
     $rs = mysql_query($strSQL);
 
-    class values {};
-    $values = new values();
+    $values = array();
 
     while($row = mysql_fetch_array($rs)) {
-    $values->$row['name'];
+    $value = array(
+        $row['name'] => $row['status'];
+    )
+    array_push($values, $value);
+    
         //
         //'status': $row['status'],
         //'settings': $row['settings']
