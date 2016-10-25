@@ -66,9 +66,9 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1>A Bootstrap Starter Template</h1>
-				<div style="position: relative; left: 0; top: 0; display: inline-block;" class=pics>
-					<img src="../images/airmoving.gif"  width="150" height="100" style="position: relative; top: 0; left: 0;"/>
-					<img src="../images/airmoving.gif"  width="150" height="100" style="position: relative; top: 0; left: 0;"/>
+				<li> <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
+				<li> <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
+				<li> <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 				</div>
             </div>
         </div>
@@ -82,6 +82,15 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+   function diffImage(img) {
+	if (img.src.match(/airmoving.gif/))
+    	img.src = "../images/airmoving_static.gif";
+	else if (img.src.match(/airmoving_static.gif/))
+    	img.src = "../images/airmoving.gif";
+   }
+  </script>
+	
 
 </body>
 
