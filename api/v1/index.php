@@ -27,7 +27,7 @@ try{
   }
 
 function statuses($name = "all") {
-	echo $name
+	echo $name;
     // Connect to database server 
     mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
     // Select database
