@@ -3,7 +3,11 @@ try{
     // Use in the "Post-Receive URLs" section of your GitHub repo.
 	switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET': json_encode(statuses($_GET['name'])); break;
+	case 'GET': 
+	echo $_GET['name'];
+	print_r(statuses($_GET['name']);
+		
+	json_encode(statuses($_GET['name'])); break;
 	case 'POST': $the_request = &$_POST; break;
 	default:
        echo "Works fine.";
@@ -21,7 +25,7 @@ function statuses($name="all") {
     // SQL query
     if ($name == "all") {
     $strSQL = "SELECT * FROM conditioners";
-    } else {
+    } else {	
         $strSQL = "SELECT * FROM conditioners WHERE name='".$name."'";
     }
     // Execute the query (the recordset $rs contains the result)
