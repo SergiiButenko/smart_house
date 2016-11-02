@@ -3,10 +3,7 @@ try{
     // Use in the "Post-Receive URLs" section of your GitHub repo.
 	switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET':
-	json_encode(statuses($_GET['name']);
-	break;
-
+	case 'GET': json_encode(statuses($_GET['name'])); break;
 	case 'POST': $the_request = &$_POST; break;
 	default:
        echo "Works fine.";
