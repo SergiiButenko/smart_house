@@ -8,7 +8,7 @@ try{
 	default:
        echo "Works fine.";
 	}
-	echo $the_request;
+	print_r($the_request);
 
 } catch ( Exception $e ) {
     echo $e->getMessage();
