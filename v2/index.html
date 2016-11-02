@@ -2,6 +2,18 @@
 <html lang="en">
 
 <head>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/private.js"></script>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/custom.css" rel="stylesheet">
+
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,10 +23,7 @@
 
     <title>Bare - Start Bootstrap Template</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <style>
     body {
         padding-top: 70px;
@@ -62,35 +71,41 @@
 
     <!-- Page Content -->
     <div class="container">
-
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1>Turn On/Off conditioner by clicking on it</h1>
-				<li> Hall <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
-				<li> Bedroom <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
-				<li> Kids <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
-				</div>
+
+                <table align="center" style="width:50%">
+                <tr>
+                <th width="100px"></th>
+                <th width="150px"></th>
+                <th class="text-center">Temperature</th>
+                </tr>
+
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Hall</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>  
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Bedroom</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Kid's room</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>
+                </table>
+                </div>
             </div>
         </div>
         <!-- /.row -->
 
     </div>
     <!-- /.container -->
-
-    <!-- jQuery Version 1.11.1 -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-   function diffImage(img) {
-	if (img.src.match(/airmoving.gif/))
-    	img.src = "../images/airmoving_static.gif";
-	else if (img.src.match(/airmoving_static.gif/))
-    	img.src = "../images/airmoving.gif";
-   }
-  </script>
-	
+    
 
 </body>
 

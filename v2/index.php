@@ -71,29 +71,41 @@
 
     <!-- Page Content -->
     <div class="container">
-                <div class=frame>
-                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=250 />
-                </div>
-                <div class=frame>
-                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=25 />
-                </div>
-
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1>Turn On/Off conditioner by clicking on it</h1>
-				<li> Hall <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
-				<li> Bedroom <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
-				<li> Kids <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 
+                <table align="center" style="width:50%">
+                <tr>
+                <th width="100px"></th>
+                <th width="150px"></th>
+                <th class="text-center">Temperature</th>
+                </tr>
 
-				</div>
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Hall</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>  
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Bedroom</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left" style="font-weight:bold">Kid's room</td>
+                    <td><img src="../images/airmoving.gif"  width="150" height="100" onclick="changeImagePath(this)" /></td>
+                    <td> 25 C* </td>
+                  </tr>
+                </table>
+                </div>
             </div>
         </div>
         <!-- /.row -->
 
     </div>
     <!-- /.container -->
-	
+    
 
 </body>
 
