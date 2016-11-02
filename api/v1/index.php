@@ -7,7 +7,7 @@ try{
 	case 'GET': 
 	$the_request = &$_GET; 
 	print_r($the_request);
-	$test = statuses($the_request['name'];
+	$test = statuses($the_request['name']);
 		echo "test ";
 		print_r($test);
 	foreach (statuses($the_request['name']) as $key => $value) {
