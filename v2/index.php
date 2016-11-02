@@ -71,6 +71,12 @@
 
     <!-- Page Content -->
     <div class="container">
+                <div class=frame>
+                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=250 />
+                </div>
+                <div class=frame>
+                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=25 />
+                </div>
 
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -79,12 +85,7 @@
 				<li> Bedroom <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 				<li> Kids <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 
-                <div class=frame>
-                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=250 />
-                </div>
-                <div class=frame>
-                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=25 />
-                </div>
+
 				</div>
             </div>
         </div>
