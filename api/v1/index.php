@@ -5,8 +5,8 @@ try{
 	{
 	case 'GET': 
 	echo $_GET['name'];
-	print_r(statuses($_GET['name']);
-		
+	print_r(statuses($_GET['name']));
+
 	json_encode(statuses($_GET['name'])); break;
 	case 'POST': $the_request = &$_POST; break;
 	default:
