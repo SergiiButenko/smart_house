@@ -4,15 +4,7 @@ try{
 	switch($_SERVER['REQUEST_METHOD'])
 	{
 	case 'GET': 
-	
 	$the_request = &$_GET; 
-	echo "request:";
-	print_r($the_request);
-	echo $the_request['name'];
-
-	$test = statuses($the_request['name']);
-		echo "test ";
-		print_r($test);
 	foreach (statuses($the_request['name']) as $key => $value) {
   		echo $key . ": status: " . $value['status'] . "; settings: " . $value['settings'];
   		echo "<br>";
@@ -26,8 +18,11 @@ try{
     echo $e->getMessage();
   }
 
+
+
+
+
 function statuses($name = "all") {
-	echo $name;
     // Connect to database server 
     mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
     // Select database
@@ -42,7 +37,6 @@ function statuses($name = "all") {
     $rs = mysql_query($strSQL);
 
     $values = array();
-print_r($values);
     while($row = mysql_fetch_array($rs)) {
     $values[$row['name']] = array( 
         'status' => $row['status'],
