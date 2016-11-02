@@ -3,13 +3,10 @@ try{
     // Use in the "Post-Receive URLs" section of your GitHub repo.
 	switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET': 
-	$the_request = &$_GET; 
-	foreach (statuses($the_request['name']) as $key => $value) {
-  		echo $key . ": status: " . $value['status'] . "; settings: " . $value['settings'];
-  		echo "<br>";
- 		}
+	case 'GET':
+	json_encode(statuses($_GET['name'])
 	break;
+
 	case 'POST': $the_request = &$_POST; break;
 	default:
        echo "Works fine.";
@@ -19,10 +16,7 @@ try{
   }
 
 
-
-
-
-function statuses($name = "all") {
+function statuses($name="all") {
     // Connect to database server 
     mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
     // Select database
