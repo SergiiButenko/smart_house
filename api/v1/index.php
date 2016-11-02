@@ -4,7 +4,7 @@ try{
 	switch($_SERVER['REQUEST_METHOD'])
 	{
 	case 'GET':
-	json_encode(statuses($_GET['name'])
+	json_encode(statuses($_GET['name']);
 	break;
 
 	case 'POST': $the_request = &$_POST; break;
