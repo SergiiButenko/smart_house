@@ -2,6 +2,18 @@
 <html lang="en">
 
 <head>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/private.js"></script>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/custom.css" rel="stylesheet">
+
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,10 +23,7 @@
 
     <title>Bare - Start Bootstrap Template</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <style>
     body {
         padding-top: 70px;
@@ -69,6 +78,13 @@
 				<li> Hall <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 				<li> Bedroom <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
 				<li> Kids <img src="../images/airmoving.gif"  width="150" height="100" onclick="diffImage(this)" /> </li>
+
+                <div class=frame>
+                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=250 />
+                </div>
+                <div class=frame>
+                    <span class="helper"></span><img src="http://jsfiddle.net/img/logo.png" height=25 />
+                </div>
 				</div>
             </div>
         </div>
@@ -76,20 +92,6 @@
 
     </div>
     <!-- /.container -->
-
-    <!-- jQuery Version 1.11.1 -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-   function diffImage(img) {
-	if (img.src.match(/airmoving.gif/))
-    	img.src = "../images/airmoving_static.gif";
-	else if (img.src.match(/airmoving_static.gif/))
-    	img.src = "../images/airmoving.gif";
-   }
-  </script>
 	
 
 </body>
