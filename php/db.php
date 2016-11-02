@@ -1,11 +1,15 @@
 <?php
-function statuses() {
+function statuses($name = "all") {
     // Connect to database server 
     mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
     // Select database
     mysql_select_db("test") or die(mysql_error());
     // SQL query
+    if ($name == "all") {
     $strSQL = "SELECT * FROM conditioners";
+    } else {
+        $strSQL = "SELECT * FROM conditioners WHERE name='".$name."'";
+    }
     // Execute the query (the recordset $rs contains the result)
     $rs = mysql_query($strSQL);
 
@@ -21,4 +25,10 @@ function statuses() {
     mysql_close();
     return $values;
 }
+
+
+
+
+
+
 ?>
