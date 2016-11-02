@@ -1,12 +1,15 @@
 <?php
-require '../../php/db.php';
 try{
     // Use in the "Post-Receive URLs" section of your GitHub repo.
 	switch($_SERVER['REQUEST_METHOD'])
 	{
 	case 'GET': 
+	
 	$the_request = &$_GET; 
+	echo "request:";
 	print_r($the_request);
+	echo $the_request['name'];
+
 	$test = statuses($the_request['name']);
 		echo "test ";
 		print_r($test);
@@ -22,4 +25,33 @@ try{
 } catch ( Exception $e ) {
     echo $e->getMessage();
   }
+
+function statuses($name = "all") {
+	echo $name
+    // Connect to database server 
+    mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
+    // Select database
+    mysql_select_db("test") or die(mysql_error());
+    // SQL query
+    if ($name == "all") {
+    $strSQL = "SELECT * FROM conditioners";
+    } else {
+        $strSQL = "SELECT * FROM conditioners WHERE name='".$name."'";
+    }
+    // Execute the query (the recordset $rs contains the result)
+    $rs = mysql_query($strSQL);
+
+    $values = array();
+print_r($values);
+    while($row = mysql_fetch_array($rs)) {
+    $values[$row['name']] = array( 
+        'status' => $row['status'],
+        'settings' => $row['settings']
+        );
+    } 
+    // Close the database connection
+    mysql_close();
+    return $values;
+}
+
 ?>
