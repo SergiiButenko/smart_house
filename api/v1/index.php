@@ -4,8 +4,13 @@ try{
     // Use in the "Post-Receive URLs" section of your GitHub repo.
 	switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET': $the_request = &$_GET; 
-	foreach (statuses($_GET['name']) as $key => $value) {
+	case 'GET': 
+	$the_request = &$_GET; 
+	print_r($the_request);
+	$test = statuses($the_request['name'];
+		echo "test ";
+		print_r($test);
+	foreach (statuses($the_request['name']) as $key => $value) {
   		echo $key . ": status: " . $value['status'] . "; settings: " . $value['settings'];
   		echo "<br>";
  		}
@@ -14,7 +19,6 @@ try{
 	default:
        echo "Works fine.";
 	}
-	print_r($the_request);
 } catch ( Exception $e ) {
     echo $e->getMessage();
   }
