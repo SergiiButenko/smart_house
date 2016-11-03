@@ -50,24 +50,11 @@ function set_status($name, $status, $settings) {
     // SQL query
     $strSQL = "UPDATE conditioners SET ";
 	$status != null ? $strSQL .= "status=".$status : '';
-	$settings != null ? $strSQL .= ", settings=".$settings : '';
+	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
-
-echo $strSQL;
-
-    $rs = mysql_query($strSQL);
-
-    $values = array();
-    while($row = mysql_fetch_array($rs)) {
-    $values[$row['name']] = array( 
-        'status' => $row['status'],
-        'settings' => $row['settings']
-        );
-    } 
     // Close the database connection
     mysql_close();
-    return $values;
 }
 
 ?>
