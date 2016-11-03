@@ -38,7 +38,6 @@ function set_conditioner_status(id, status, settings){
 		 headers: {'X_ACTION':'write'},
          success: function(data) { 
          	cond = JSON.parse(data)[id];
-	        alert(cond.status); 
 	    }
       });
 }
