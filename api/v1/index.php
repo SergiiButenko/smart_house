@@ -1,9 +1,11 @@
 <?php
 try{
-    // Use in the "Post-Receive URLs" section of your GitHub repo.
+    $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+    echo $request;
+
 	switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET': echo json_encode(get_status($_GET['name'])); break;
+	#case 'GET': echo json_encode(get_status($_GET['name'])); break;
 	case 'POST': 
     echo "Post";
     var_dump($_POST); 
