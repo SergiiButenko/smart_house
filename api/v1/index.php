@@ -1,7 +1,7 @@
 <?php
 try{
     $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
-    echo $request;
+    print_r($request);
 
 	switch($_SERVER['REQUEST_METHOD'])
 	{
@@ -11,6 +11,7 @@ try{
     var_dump($_POST); 
     break;
 	default:
+    echo $_SERVER['REQUEST_METHOD'];
        echo "Works fine.";
 	}
 } catch ( Exception $e ) {
