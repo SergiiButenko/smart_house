@@ -9,12 +9,7 @@ function turn_on_off(img) {
 $.get("http://butenko.asuscomm.com/api/v1", {name: img.id})
 		.done(function(data) {
 		  cond = JSON.parse(data)[img.id];
-		 	if (cond == 1 )
-		 		revers = 0
-		 	else
-				revers = 1
-
-		  set_conditioner_status(img.id, revers);
+		  set_conditioner_status(img.id, +!cond.status);
 		  set_image_path(img);
 		});
 }
