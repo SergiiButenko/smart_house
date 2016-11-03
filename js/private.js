@@ -18,6 +18,7 @@ $.get("http://butenko.asuscomm.com/api/v1", {name: img.id})
 function set_image_path(img) {
 	  $.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
+         async: false,
          data: {name: img.id},
          type: "GET",
          success: function(data) { 
@@ -33,6 +34,7 @@ function set_image_path(img) {
 function set_conditioner_status(id, status, settings){
 	$.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
+         async: false,
          data: { name: id, status: status, settings: settings},
          type: "GET",
 		 headers: {'X_ACTION':'write'},
