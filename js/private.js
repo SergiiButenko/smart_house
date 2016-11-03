@@ -12,11 +12,11 @@ function changeImagePath(img) {
     	img.src = "../images/airmoving.gif";
    }
 
-function get_image_path(img){
+function get_image_path(img) {
 	$.get("http://butenko.asuscomm.com/api/v1", {name: img.id})
 		.done(function(data) {
 		  cond = JSON.parse(data)[img.id];
-		  if (cond.status == 1)
+		  if (cond.status == 0)
     			img.src = "images/airmoving_static.gif";
 		  else 
     			img.src = "images/airmoving.gif";
