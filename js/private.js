@@ -17,8 +17,8 @@ function get_image_path(img){
 		.done(function(data) {
 		  cond = JSON.parse(data)[img.id];
 		  if (cond.status == 1)
-    			img.src = "../images/airmoving_static.gif";
+    			img.src = "images/airmoving_static.gif";
 		  else 
-    			img.src = "../images/airmoving.gif";
+    			img.src = "images/airmoving.gif";
 		});
 }
