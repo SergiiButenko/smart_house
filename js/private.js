@@ -10,54 +10,43 @@ function set_image_path(img) {
          data: {name: img.id},
          type: "GET",
          success: function(data) { 
-         	set_src(JSON.parse(data)[img.id].status);		
+         	set_src(img, JSON.parse(data)[img.id].status);		
 	    }
       });	  
 }
 
 
 function turn_on_off(img) {
+// make it look like a waiting button
+$(img.id).unbind('click');
+
 $.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
-         data: { name: id },
+         data: { name: img.id },
          type: "GET",
 		 headers: {'X_ACTION':'turn_on_off'},
          success: function(data) { 
-         	set_src(JSON.parse(data)[id].status);
-	    }
+         	set_src(img, JSON.parse(data)[img.id].status);
+	     },
+	     complete: function() {
+            $(img.id).bind('click'); // will fire either on success or error
+         }
       });
-
-
-$.get("http://butenko.asuscomm.com/api/v1", {name: img.id})
-		.done(function(data) {
-		  cond = JSON.parse(data)[img.id];
-		  cond.status == 1 ? revers = 0 : revers = 1;
-		  set_conditioner_status(img.id, revers);
-		});
 }
 
-function set_conditioner_status(id, status, settings){
+function set_conditioner_status(img, status, settings){
 	$.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
-         data: { name: id, status: status, settings: settings},
+         data: { name: img.id, status: status, settings: settings},
          type: "GET",
 		 headers: {'X_ACTION':'write'},
          success: function(data) { 
-         	set_src(JSON.parse(data)[id].status);
+         	set_src(JSON.parse(data)[img.id].status);
 	    }
       });
 }
 
-
-function chng_src_to_oposite(img){
-if (img.src == "images/airmoving_static.gif")
-	img.src = "images/airmoving.gif";
-
-if (img.src == "images/airmoving.gif")
-	img.src = "images/airmoving_static.gif";
-}
-
-function set_src(status){
+function set_src(img, status){
 if (status == 0)
 	img.src = "images/airmoving_static.gif";
 else 

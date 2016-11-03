@@ -11,9 +11,9 @@ try{
                 echo json_encode(get_status($_GET['name']));
                 break;
             case 'turn_on_off':
-                $status = get_status($_GET['name']);
                 $name = $_GET['name'];
-                $settings = $status[$name]['settings'];
+                $status = get_status($name);
+                
                 $current = $status[$name]['status'];
                 $revers = ($current == 1 ? 0 : 1);
 
@@ -68,27 +68,9 @@ function set_status($name, $status, $settings=null) {
     $strSQL = "UPDATE conditioners SET status=".$status;
 	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
-    echo $strSQL;
     // Execute the query (the recordset $rs contains the result)
     // Close the database connection
     mysql_query($strSQL);
     mysql_close();
 }
-
-function set_settings($name, $status, $settings) {
-    // Connect to database server 
-    mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
-    // Select database
-    mysql_select_db("test") or die(mysql_error());
-    // SQL query
-    $strSQL = "UPDATE conditioners SET ";
-    $status != null ? $strSQL .= "status=".$status : '';
-    $settings != null ? $strSQL .= ", settings='".$settings."'" : '';
-    $strSQL .= " WHERE name='".$name."'";
-    // Execute the query (the recordset $rs contains the result)
-    // Close the database connection
-    mysql_query($strSQL);
-    mysql_close();
-}
-
 ?>
