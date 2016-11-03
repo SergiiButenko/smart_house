@@ -16,6 +16,7 @@ try{
                 $settings = $status[$name]['settings'];
                 $current = $status[$name]['status'];
                 $revers = ($current == 1 ? 0 : 1);
+
                 echo json_encode(get_status($name));
                 set_status($name, $revers);
                 echo json_encode(get_status($name));
@@ -68,6 +69,7 @@ function set_status($name, $status, $settings=null) {
 	$status != null ? $strSQL .= "status=".$status : '';
 	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
+    echo $strSQL;
     // Execute the query (the recordset $rs contains the result)
     // Close the database connection
     mysql_query($strSQL);
