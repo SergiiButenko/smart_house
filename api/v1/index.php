@@ -10,7 +10,7 @@ try{
         set_status($_GET['name'], $_GET['status'], $_GET['settings']);
         echo json_encode(get_status($_GET['name']));
     } else {
-        echo json_encode(['message' => 'incorrect X-ACTION header value']);
+        echo 'incorrect X-ACTION header value';
     }
         break;
     }
