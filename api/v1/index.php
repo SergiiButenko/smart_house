@@ -3,17 +3,17 @@ try{
     switch($_SERVER['REQUEST_METHOD'])
 	{
 	case 'GET': 
-    $headerStringValue = $_SERVER['HTTP_X-ACTION'];
-    print_r($_SERVER);
-    echo 'sdf'.$headerStringValue;
-    
-    echo json_encode(get_status($_GET['name'])); break;
-    case 'POST': echo $_SERVER['REQUEST_METHOD']; break;
-	case 'PUT': 
-    parse_str(file_get_contents("php://input"),$post_vars);
-    set_status($post_vars['name'], $post_vars['status'], $post_vars['settings']);
-    echo json_encode(get_status($post_vars['name']));
-    break;
+    $headerStringValue = $_SERVER['HTTP_X_ACTION'];
+    if ($headerStringValue == '' or $headerStringValue == 'read')
+        echo json_encode(get_status($_GET['name'])); 
+    else if ($headerStringValue == 'write') {
+        set_status($_GET['name'], $_GET['status'], $_GET['settings']);
+        echo json_encode(get_status($_GET['name']));
+    } else {
+        echo json_encode(['message' => 'incorrect X-ACTION header value']);
+    }
+        break;
+    }
 	default:
        echo "Works fine.";
 	}
