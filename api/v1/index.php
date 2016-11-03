@@ -16,7 +16,7 @@ try{
                 $settings = $status[$name]['settings'];
                 $current = $status[$name]['status'];
                 $revers = ($current == 1 ? 0 : 1);
-                echo 'c'.$current.'o'.$revers.'s'.$settings.'n'.$name;
+                echo json_encode(get_status($name));
                 set_status($name, $revers, $settings);
                 echo json_encode(get_status($name));
                 break;
