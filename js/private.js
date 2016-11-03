@@ -34,10 +34,7 @@ function set_conditioner_status(id, status, settings){
          url: "http://butenko.asuscomm.com/api/v1",
          data: { name: id, status: status, settings: settings},
          type: "GET",
-		 headers: {'X_ACTION':'write',
-		 'Content-Type':'application/x-www-form-urlencoded',
-		'Access-Control-Allow-Origin': '*'},
-
+		 headers: {'X_ACTION':'write'},
          success: function(data) { 
          	cond = JSON.parse(data)[id];
 	        alert(cond.status); 

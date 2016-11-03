@@ -11,9 +11,9 @@ try{
         } else {
             echo "incorrect X-ACTION header value";
         }
-        break;
+    break;
 	default:
-       echo "Works fine.";
+       echo "Works fine. REQUEST_METHOD:".$_SERVER['REQUEST_METHOD'];
 	}
 } catch ( Exception $e ) {
     echo $e->getMessage();
