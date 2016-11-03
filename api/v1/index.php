@@ -51,7 +51,7 @@ function set_status($name, $status, $settings) {
     $strSQL = "UPDATE conditioners SET";
 	$status != null ? $strSQL .= "status=".$status : '';
 	$settings != null ? $strSQL .= "settings=".$settings : '';
-	$strSQL = "WHERE name='".$name."'";
+	$strSQL .= "WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
 
 echo $strSQL;
