@@ -14,11 +14,10 @@ try{
                 $name = $_GET['name'];
                 $arr = get_status($name);
                 print_r($arr);
-                
                 $current = $arr[$name]['status'];
-                $current == 1 ? $revers = 0 : $revers = 1;
+                $revers = ($current == 1 ? 0 : 1);
                 set_status($name, $revers);
-                echo json_encode(get_status($name);
+                echo json_encode(get_status($name));
                 break;
             default:
                 echo "incorrect X-ACTION header value";
