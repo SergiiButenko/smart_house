@@ -4,9 +4,9 @@ try{
 	{
 	case 'GET': echo json_encode(get_status($_GET['name'])); break;
 	case 'PUT': 
-    echo "this is a put request\n";
     parse_str(file_get_contents("php://input"),$post_vars);
-    echo $post_vars['s'];
+    set_status($post_vars['name'], $post_vars['status'], $post_vars['settings']);
+    echo json_encode(get_status($post_vars['name']));
     break;
 	default:
        echo "Works fine.";
@@ -48,17 +48,14 @@ function set_status($name, $status, $settings) {
     // Select database
     mysql_select_db("test") or die(mysql_error());
     // SQL query
-    if ($name == "all") {
-	    $strSQL = "UPDATE conditioners SET";
-	    $status != null ? $strSQL .= "status=".$status : '';
-	    $settings != null ? $strSQL .= "settings=".$settings : '';
-    } else {	
-        $strSQL = "UPDATE conditioners SET";
-	    $status != null ? $strSQL .= "status=".$status : '';
-	    $settings != null ? $strSQL .= "settings=".$settings : '';
-	    $strSQL = "WHERE name='".$name."'";
-    }
+    $strSQL = "UPDATE conditioners SET";
+	$status != null ? $strSQL .= "status=".$status : '';
+	$settings != null ? $strSQL .= "settings=".$settings : '';
+	$strSQL = "WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
+
+echo $strSQL;
+
     $rs = mysql_query($strSQL);
 
     $values = array();
