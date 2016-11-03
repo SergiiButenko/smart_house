@@ -19,7 +19,7 @@ function set_image_path(img) {
 function turn_on_off(img) {
 $.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
-         data: { name: id, status: status},
+         data: { name: id },
          type: "GET",
 		 headers: {'X_ACTION':'turn_on_off'},
          success: function(data) { 

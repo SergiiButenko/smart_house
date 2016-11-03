@@ -2,15 +2,15 @@
 try{
     switch($_SERVER['REQUEST_METHOD']) {
 	case 'GET': 
-        case $_SERVER['HTTP_X_ACTION']:
-            '':
-            'read':
+        switch($_SERVER['HTTP_X_ACTION']):
+            case '':
+            case 'read':
                 echo json_encode(get_status($_GET['name'])); break;
-            'write':
+            case 'write':
                 set_status($_GET['name'], $_GET['status'], $_GET['settings']);
                 echo json_encode(get_status($_GET['name']));
                 break;
-            'turn_on_off':
+            case 'turn_on_off':
                 $name = $_GET['name'];
                 $current = get_status($name)[$name]['status'];
                 $current == 1 ? $revers = 0 : $revers = 1;
