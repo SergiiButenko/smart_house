@@ -54,6 +54,7 @@ function set_status($name, $status, $settings) {
 	$strSQL .= " WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
     // Close the database connection
+    echo $strSQL;
     mysql_close();
 }
 
