@@ -2,14 +2,23 @@
 try{
     switch($_SERVER['REQUEST_METHOD']) {
 	case 'GET': 
-        $headerStringValue = $_SERVER['HTTP_X_ACTION'];
-        if ($headerStringValue == '' or $headerStringValue == 'read'){
-            echo json_encode(get_status($_GET['name'])); 
-        } elseif ($headerStringValue == 'write') {
-            set_status($_GET['name'], $_GET['status'], $_GET['settings']);
-            echo json_encode(get_status($_GET['name']));
-        } else {
-            echo "incorrect X-ACTION header value";
+        case $_SERVER['HTTP_X_ACTION']:
+            '':
+            'read':
+                echo json_encode(get_status($_GET['name'])); break;
+            'write':
+                set_status($_GET['name'], $_GET['status'], $_GET['settings']);
+                echo json_encode(get_status($_GET['name']));
+                break;
+            'turn_on_off':
+                $name = $_GET['name'];
+                $current = get_status($name)[$name]['status'];
+                $current == 1 ? $revers = 0 : $revers = 1;
+                set_status($name, $revers);
+                echo json_encode(get_status($name);
+                break;
+            default:
+                echo "incorrect X-ACTION header value";
         }
     break;
 	default:
