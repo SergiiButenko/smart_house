@@ -17,7 +17,7 @@ try{
                 $current = $status[$name]['status'];
                 $revers = ($current == 1 ? 0 : 1);
                 echo json_encode(get_status($name));
-                set_status($name, $revers, {});
+                set_status($name, $revers);
                 echo json_encode(get_status($name));
                 break;
             default:
@@ -58,7 +58,7 @@ function get_status($name="all") {
     return $values;
 }
 
-function set_status($name, $status, $settings) {
+function set_status($name, $status, $settings=null) {
     // Connect to database server 
     mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
     // Select database
@@ -68,6 +68,22 @@ function set_status($name, $status, $settings) {
 	$status != null ? $strSQL .= "status=".$status : '';
 	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
+    // Execute the query (the recordset $rs contains the result)
+    // Close the database connection
+    mysql_query($strSQL);
+    mysql_close();
+}
+
+function set_settings($name, $status, $settings) {
+    // Connect to database server 
+    mysql_connect("192.168.1.104:3306", "php_user", "password") or die (mysql_error());
+    // Select database
+    mysql_select_db("test") or die(mysql_error());
+    // SQL query
+    $strSQL = "UPDATE conditioners SET ";
+    $status != null ? $strSQL .= "status=".$status : '';
+    $settings != null ? $strSQL .= ", settings='".$settings."'" : '';
+    $strSQL .= " WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
     // Close the database connection
     mysql_query($strSQL);
