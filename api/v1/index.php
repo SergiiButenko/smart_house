@@ -65,8 +65,7 @@ function set_status($name, $status, $settings=null) {
     // Select database
     mysql_select_db("test") or die(mysql_error());
     // SQL query
-    $strSQL = "UPDATE conditioners SET ";
-	$status != null ? $strSQL .= "status=".$status : '';
+    $strSQL = "UPDATE conditioners SET status=".$status;
 	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
     echo $strSQL;
