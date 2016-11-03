@@ -4,7 +4,10 @@ try{
 	switch($_SERVER['REQUEST_METHOD'])
 	{
 	case 'GET': echo json_encode(get_status($_GET['name'])); break;
-	case 'POST': var_dump($_POST); break;
+	case 'POST': 
+    echo "Post";
+    var_dump($_POST); 
+    break;
 	default:
        echo "Works fine.";
 	}
