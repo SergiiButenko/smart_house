@@ -11,12 +11,12 @@ try{
                 echo json_encode(get_status($_GET['name']));
                 break;
             case 'turn_on_off':
+                $status = get_status($_GET['name']);
                 $name = $_GET['name'];
-                $arr = get_status($name);
-                print_r($arr);
-                $current = $arr[$name]['status'];
+                $settings = $status[$name]['settings'];
+                $current = $status[$name]['status'];
                 $revers = ($current == 1 ? 0 : 1);
-                set_status($name, $revers);
+                set_status($name, $revers, $settings);
                 echo json_encode(get_status($name));
                 break;
             default:
