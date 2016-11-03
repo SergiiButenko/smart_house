@@ -2,7 +2,11 @@
 try{
     switch($_SERVER['REQUEST_METHOD'])
 	{
-	case 'GET': echo json_encode(get_status($_GET['name'])); break;
+	case 'GET': 
+    $headerStringValue = $_SERVER['HTTP_X-ACTION'];
+    echo $headerStringValue;
+    echo json_encode(get_status($_GET['name'])); break;
+    case 'POST': echo $_SERVER['REQUEST_METHOD']; break;
 	case 'PUT': 
     parse_str(file_get_contents("php://input"),$post_vars);
     set_status($post_vars['name'], $post_vars['status'], $post_vars['settings']);
