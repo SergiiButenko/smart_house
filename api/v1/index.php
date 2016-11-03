@@ -2,7 +2,7 @@
 try{
     switch($_SERVER['REQUEST_METHOD']) {
 	case 'GET': 
-        switch($_SERVER['HTTP_X_ACTION']):
+        switch($_SERVER['HTTP_X_ACTION']): {
             case '':
             case 'read':
                 echo json_encode(get_status($_GET['name'])); break;
@@ -22,10 +22,10 @@ try{
             default:
                 echo "incorrect X-ACTION header value";
         }
-    break;
-	default:
+        break;
+    default:
        echo "Works fine. REQUEST_METHOD:".$_SERVER['REQUEST_METHOD'];
-	}
+    }
 } catch ( Exception $e ) {
     echo $e->getMessage();
   }
