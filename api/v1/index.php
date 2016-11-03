@@ -1,14 +1,11 @@
 <?php
 try{
-    $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
-    print_r($request);
-
-	switch($_SERVER['REQUEST_METHOD'])
+    switch($_SERVER['REQUEST_METHOD'])
 	{
-	#case 'GET': echo json_encode(get_status($_GET['name'])); break;
-	case 'POST': 
-    echo "Post";
-    var_dump($_POST); 
+	case 'GET': echo json_encode(get_status($_GET['name'])); break;
+	case 'PUT': 
+    echo "PUT";
+    var_dump($_PUT); 
     break;
 	default:
     echo $_SERVER['REQUEST_METHOD'];

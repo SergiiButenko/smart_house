@@ -2,6 +2,12 @@ $( document ).ready(function() {
   	document.getElementById("hall").src = get_image_path(document.getElementById("hall"));
 	document.getElementById("kids").src = get_image_path(document.getElementById("kids"));
 	document.getElementById("bedroom").src = get_image_path(document.getElementById("bedroom"));
+
+$.post("http://butenko.asuscomm.com/api/v1",{ name: "John", time: "2pm" } )
+		.done(function(data) {
+		  alert(data);
+		});
+
     });
 
 
@@ -17,8 +23,8 @@ function get_image_path(img) {
 		.done(function(data) {
 		  cond = JSON.parse(data)[img.id];
 		  if (cond.status == 0)
-    			img.src = "images/airmoving_static.gif";
+    			img.src = "../images/airmoving_static.gif";
 		  else 
-    			img.src = "images/airmoving.gif";
+    			img.src = "../images/airmoving.gif";
 		});
 }
