@@ -6,7 +6,7 @@ try{
 	case 'PUT': 
     echo "this is a put request\n";
     parse_str(file_get_contents("php://input"),$post_vars);
-    print_r($post_vars);
+    echo $post_vars['s'];
     break;
 	default:
        echo "Works fine.";
