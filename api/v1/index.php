@@ -4,7 +4,9 @@ try{
 	{
 	case 'GET': 
     $headerStringValue = $_SERVER['HTTP_X-ACTION'];
-    echo $headerStringValue;
+    print_r($_SERVER);
+    echo 'sdf'.$headerStringValue;
+    
     echo json_encode(get_status($_GET['name'])); break;
     case 'POST': echo $_SERVER['REQUEST_METHOD']; break;
 	case 'PUT': 
