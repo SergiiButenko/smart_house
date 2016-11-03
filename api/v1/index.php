@@ -4,11 +4,11 @@ try{
 	{
 	case 'GET': echo json_encode(get_status($_GET['name'])); break;
 	case 'PUT': 
-    echo "PUT";
-    var_dump($_PUT); 
+    echo "this is a put request\n";
+    parse_str(file_get_contents("php://input"),$post_vars);
+    print_r($post_vars);
     break;
 	default:
-    echo $_SERVER['REQUEST_METHOD'];
        echo "Works fine.";
 	}
 } catch ( Exception $e ) {
