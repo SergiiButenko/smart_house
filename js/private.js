@@ -10,7 +10,7 @@ function set_image_path(img) {
          data: {name: img.id},
          type: "GET",
          success: function(data) { 
-         	set_src(img, JSON.parse(data)[img.id].status);		
+         	set_src(img, JSON.parse(data)[img.id].desired_status);		
 	    }
       });	  
 }
@@ -26,7 +26,7 @@ $.ajax({
          type: "GET",
 		 headers: {'X_ACTION':'turn_on_off'},
          success: function(data) { 
-         	set_src(img, JSON.parse(data)[img.id].status);
+         	set_src(img, JSON.parse(data)[img.id].desired_status);
 	     },
 	     complete: function() {
             $(img.id).bind('click'); // will fire either on success or error
@@ -34,14 +34,14 @@ $.ajax({
       });
 }
 
-function set_conditioner_status(img, status, settings){
+function set_desired_conditioner_status(img, desired_status, settings){
 	$.ajax({
          url: "http://butenko.asuscomm.com/api/v1",
-         data: { name: img.id, status: status, settings: settings},
+         data: { name: img.id, desired_status: desired_status, settings: settings},
          type: "GET",
 		 headers: {'X_ACTION':'write'},
          success: function(data) { 
-         	set_src(JSON.parse(data)[img.id].status);
+         	set_src(JSON.parse(data)[img.id].desired_status);
 	    }
       });
 }

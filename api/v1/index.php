@@ -13,7 +13,7 @@ try{
             case 'turn_on_off':
                 $name = $_GET['name'];
                 $status = get_status($name);
-                $current = $status[$name]['status'];
+                $current = $status[$name]['actual_status'];
                 $revers = ($current == 1 ? 0 : 1);
                 set_status($name, $revers);
                 echo json_encode(get_status($name));
@@ -47,7 +47,8 @@ function get_status($name="all") {
     $values = array();
     while($row = mysql_fetch_array($rs)) {
     $values[$row['name']] = array( 
-        'status' => $row['status'],
+        'actual_status' => $row['actual_status'],
+        'desired_status' => $row['desired_status'],
         'settings' => $row['settings']
         );
     } 
@@ -62,7 +63,7 @@ function set_status($name, $status, $settings=null) {
     // Select database
     mysql_select_db("test") or die(mysql_error());
     // SQL query
-    $strSQL = "UPDATE conditioners SET status=".$status;
+    $strSQL = "UPDATE conditioners SET desired_status=".$status;
 	$settings != null ? $strSQL .= ", settings='".$settings."'" : '';
 	$strSQL .= " WHERE name='".$name."'";
     // Execute the query (the recordset $rs contains the result)
