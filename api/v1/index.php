@@ -13,7 +13,7 @@ try{
             case 'turn_on_off':
                 $name = $_GET['name'];
                 $status = get_status($name);
-                $current = $status[$name]['actual_status'];
+                $current = $status[$name]['desired_status'];
                 $revers = ($current == 1 ? 0 : 1);
                 set_status($name, $revers);
                 echo json_encode(get_status($name));
