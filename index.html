@@ -7,7 +7,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Custom JavaScript -->
-    <!-- script src="js/private.js"></script -->
+    <script src="js/private.js"></script>
     <script src="bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
     
 
@@ -25,7 +25,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bare - Start Bootstrap Template</title>
+    <title>Irregation system</title>
 
 
     <style>
@@ -68,30 +68,21 @@
         <label for="checkbox1">
             <span>Сад. Левая ветка</span>
         </label>
-        <input type="checkbox" id="garden-1" data-toggle="toggle" data-on="Идет Полив" data-off="Начать полив" data-onstyle="success" data-offstyle="danger" data-target="#myModal">
-        <div id="console-event"></div>
-        <script>
-          $(function() {
-            $('#garden-1').change(function(e) {
-            if (e.target.checked)
-              $('#myModal').modal();
-            })
-          })
-          </script>
+        <input type="checkbox" class="switchers" id="1" data-toggle="toggle" data-on="Идет Полив" data-off="Начать полив" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-id="1">
     </div>
     <!-- /.container -->
 
     <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
+    <div id="time_modal" class="modal fade" role="dialog">
       <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Длительность полива</h4>
+            <h4 class="modal-title" id="modal_title">Длительность полива</h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" text-align="center">
             <div class="btn-group" data-toggle="buttons" align="center">
               <label class="btn btn-primary active">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked> 5 минут
@@ -104,6 +95,7 @@
               </label>
             </div>
           </div>
+
           <div class="modal-footer">
             <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Начать полив</button>
