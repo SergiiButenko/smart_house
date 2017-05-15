@@ -7,12 +7,16 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Custom JavaScript -->
-    <script src="js/private.js"></script>
+    <!-- script src="js/private.js"></script -->
+    <script src="bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+    
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/custom.css" rel="stylesheet">
+    <link href="bower_components/bootstrap-toggle/css/bootstrap2-toggle.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
 
 
     <meta charset="utf-8">
@@ -28,21 +32,11 @@
     body {
         padding-top: 70px;
         /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-
     }
     </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 
 <body>
-
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -60,7 +54,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Schedule</a>
+                        <a href="#schedule">Schedule</a>
                     </li>
                 </ul>
             </div>
@@ -71,41 +65,55 @@
 
     <!-- Page Content -->
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1>Turn On/Off conditioner by clicking on it</h1>
-
-                <table align="center" style="width:50%">
-                <tr>
-                <th width="100px"></th>
-                <th width="150px"></th>
-                <th class="text-center">Temperature</th>
-                </tr>
-
-                  <tr>
-                    <td class="text-left" style="font-weight:bold">Hall</td>
-                    <td><img id="hall" src="images/airmoving.gif"  width="150" height="100" onclick="turn_on_off(this)" /></td>
-                    <td> 25 C* </td>
-                  </tr>  
-                  <tr>
-                    <td class="text-left" style="font-weight:bold">Bedroom</td>
-                    <td><img id="bedroom" src="images/airmoving.gif"  width="150" height="100" onclick="turn_on_off(this)" /></td>
-                    <td> 25 C* </td>
-                  </tr>
-                  <tr>
-                    <td class="text-left" style="font-weight:bold">Kid's room</td>
-                    <td><img id="kids" src="images/airmoving.gif"  width="150" height="100" onclick="turn_on_off(this)" /></td>
-                    <td> 25 C* </td>
-                  </tr>
-                </table>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
-
+        <label for="checkbox1">
+            <span>Сад. Левая ветка</span>
+        </label>
+        <input type="checkbox" id="garden-1" data-toggle="toggle" data-on="Идет Полив" data-off="Начать полив" data-onstyle="success" data-offstyle="danger" data-target="#myModal">
+        <div id="console-event"></div>
+        <script>
+          $(function() {
+            $('#garden-1').change(function(e) {
+            if (e.target.checked)
+              $('#myModal').modal();
+            })
+          })
+          </script>
     </div>
     <!-- /.container -->
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Длительность полива</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                <label class="radio-inline">
+                  <input type="radio" name="optradio">5 минут
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="optradio">7 минут
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="optradio">10 минут
+                </label>
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Начать полив</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
 </body>
 
 </html>
+
