@@ -48,13 +48,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">On/Off</a>
+                <a class="navbar-brand" href="#">Состояние веток</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#schedule">Schedule</a>
+                        <a href="#schedule">Расписание полива</a>
                     </li>
                 </ul>
             </div>
@@ -65,25 +65,34 @@
 
     <!-- Page Content -->
     <div class="container">
-        <label for="checkbox1">
-            <span>Сад. Левая ветка</span>
-        </label>
-        <input type="checkbox" class="switchers" id="1" data-toggle="toggle" data-on="Идет Полив" data-off="Начать полив" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-id="1">
+    	<div id="branch_holer">
+	        <label for="1">
+	        	<input type="checkbox" class="switchers" id="1" data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-id="1" data-width="150">
+	        	<span > Сад. Левая ветка</span>
+	        </label>
+
+	        <label for="2">
+	        	<input type="checkbox" class="switchers" id="2" data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-id="2" data-width="150">
+	        	<span> Сад. Правая ветка</span>
+	        </label>
+
+    	</div>
     </div>
     <!-- /.container -->
 
     <!-- Modal -->
-    <div id="time_modal" class="modal fade" role="dialog">
+    <div id="time_modal" class="modal fade" role="dialog" data-id='0'>
       <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title" id="modal_title">Длительность полива</h4>
+            <button type="button" class="modal_close close">&times;</button>
+            <h4 class="modal-title">Длительность полива</h4>
           </div>
+
           <div class="modal-body" text-align="center">
-            <div class="btn-group" data-toggle="buttons" align="center">
+            <div class="btn-group" data-toggle="buttons" align="text-center">
               <label class="btn btn-primary active">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked> 5 минут
               </label>
@@ -97,15 +106,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            <button type="button" id="modal-close" class="btn btn-default modal_close">Закрыть</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Начать полив</button>
-                <script>
-                  $(function() {
-                    $('#modal-close').on('click', function(e) {
-                    
-                    })
-                  })
-                 </script>
           </div>
         </div>
 
