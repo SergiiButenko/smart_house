@@ -92,21 +92,28 @@
             <h4 class="modal-title">Длительность полива</h4>
           </div>
           <div class="modal-body">
-            <form>
-                <label class="radio-inline">
-                  <input type="radio" name="optradio">5 минут
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="optradio">7 минут
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="optradio">10 минут
-                </label>
-          </form>
+            <div class="btn-group" data-toggle="buttons" align="center">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> 5 минут
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> 10 минут
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> 15 минут
+              </label>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Начать полив</button>
+                <script>
+                  $(function() {
+                    $('#modal-close').on('click', function(e) {
+                    
+                    })
+                  })
+                 </script>
           </div>
         </div>
 
