@@ -8,12 +8,12 @@ def hello():
 
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
-	command = "cd /var/www; git reset --hard HEAD; git pull; /etc/init.d/apache2 reload"
 	res = ''
 	try: 
-		res = subprocess.check_output( [command], shell=True) 
+		command = "sh /var/www/bash_scripts/repo_update.sh"
+		res = subprocess.check_output( [cmd], shell=True) 
 	except subprocess.CalledProcessError as e:
-		return "An error occurred while trying to update git repo"
+		return "An error occurred while trying to update git repo. {0}".format(res)
 	return "Result: {0}".format(res)
 
 @app.route('/gitwebhook', methods=['GET'])
