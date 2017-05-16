@@ -9,7 +9,7 @@ def hello():
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
 	try: 
-		subprocess.call(['./tmp/repo_update.sh'])
+		subprocess.call(['./home/sprinkler/repo_update.sh'])
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo."
 	return "Done!"
