@@ -15,7 +15,7 @@ def git_post():
 
 @app.route('/gitwebhook', methods=['GET'])
 def git_get():
-    return "Webhooks work! Now"
+    return "Webhooks work! Now2"
 
 if __name__ == "__main__":
     app.run()
