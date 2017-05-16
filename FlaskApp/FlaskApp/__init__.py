@@ -11,11 +11,11 @@ def git_post():
 		result_success = subprocess.check_output( [command_success], shell=True) 
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo"
-    return "POST"
+    return "Done!"
 
 @app.route('/gitwebhook', methods=['GET'])
 def git_get():
-    return "Webhooks work!"
+    return "Webhooks work! Now"
 
 if __name__ == "__main__":
     app.run()
