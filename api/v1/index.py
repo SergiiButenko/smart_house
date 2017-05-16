@@ -1,7 +1,10 @@
- #!/usr/bin/python
- # -*- coding: UTF-8 -*-# enable debugging
- import cgitb
- cgitb.enable()    
- print("Content-Type: text/html;charset=utf-8")
- print()    
- print("Hello World!")
+#!/usr/bin/python3
+
+print("Content-Type: text/html")
+print()
+print ("""
+    <TITLE>CGI script ! Python</TITLE>
+    <H1>This is my first CGI script</H1>
+    Hello, world!
+"""
+)
