@@ -8,7 +8,7 @@ def hello():
 def git_post():
 	command = "cd /var/www; git reset --hard HEAD; git pull"
 	try: 
-		result_success = subprocess.check_output( [command_success], shell=True) 
+		subprocess.check_output( [command], shell=True) 
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo"
     return "Done!"
