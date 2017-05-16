@@ -4,9 +4,13 @@ app = Flask(__name__)
 def hello():
     return "Hello, I love Digital Ocean!"
 
-@app.route("/test")
-def hi():
-    return "Second endpoint!"
+@app.route('/gitwebhook', methods=['POST'])
+def git_post():
+    return "POST"
+
+@app.route('/gitwebhook', methods=['GET'])
+def git_get():
+    return "GET"
 
 if __name__ == "__main__":
     app.run()
