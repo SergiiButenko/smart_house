@@ -16,7 +16,7 @@ def git_post():
 
 @app.route('/gitwebhook', methods=['GET'])
 def git_get():
-	return "Webhooks work! Now2"
+	return "Webhooks work! Now3"
 
 @app.route('/active_branch', methods=['GET'])
 def get_active_branch():
