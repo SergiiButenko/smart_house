@@ -9,7 +9,7 @@ def hello():
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
 	try: 
-		subprocess.call(['sh', '/var/repo_update.sh > /var/cron_logs/crontask2.log 2>&1'])
+		subprocess.call(['sudo', 'sh', '/var/repo_update.sh'])
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo."
 	return "Done!"
@@ -17,6 +17,17 @@ def git_post():
 @app.route('/gitwebhook', methods=['GET'])
 def git_get():
 	return "Webhooks work! Now2"
+
+@app.route('/active_branch', methods=['GET'])
+def get_active_branch():
+	return [0,1,0,0,0,0,1]
+
+
+@app.route('/activate_branch', methods=['POST'])
+def get_active_branch():
+	return [0,1,0,0,0,0,1]
+
+
 
 if __name__ == "__main__":
 	app.run()
