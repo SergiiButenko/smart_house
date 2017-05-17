@@ -31,14 +31,15 @@ void setup(void)
 {
   // Start Serial
   Serial.begin(115200);
+    
+//  pinMode(2, OUTPUT);
+//  pinMode(3, OUTPUT);
+//  
+//  pinMode(5, OUTPUT);
+//  pinMode(6, OUTPUT);
+//  pinMode(7, OUTPUT);
+//  pinMode(8, OUTPUT);
   
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
-
   // Init variables and expose them to REST API
   status_arduino = 1;
   rest.variable("status",&status_arduino);
@@ -58,7 +59,7 @@ void setup(void)
   rest.function("branch6_off",branch6_off);
   rest.function("pump_off",pump_off);
 
-  rest.function("branch_status",branch_status);
+  //  rest.function("branch_status",branch_status);
 
   // Give name & ID to the device (ID should be 6 characters long)
   rest.set_id("001");
@@ -108,7 +109,7 @@ void loop() {
   }
 
   int branch4_on(){
-    return on(4);
+    return on(8);
   }
 
   int branch5_on(){
@@ -145,7 +146,7 @@ void loop() {
   }
 
   int branch4_off(){
-    return off(4);
+    return off(8);
   }
 
   int branch5_off(){
