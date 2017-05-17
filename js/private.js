@@ -16,10 +16,10 @@ $(document).ready(function(){
    $(".modal_close").click(function(){ 
    	id=$('#time_modal').data('id');
    	$('#'+id).bootstrapToggle('off')
-    $('#time_modal').modal('toggle');
+    $('#time_modal').modal('hide');
    });
 
-
+   // Add labels for swticher values
 	$('.switchers').bootstrapToggle({
 		 on: 'Остановить Полив',
 		 off: 'Начать полив'
