@@ -6,10 +6,6 @@ label {
   display: block;
 }
 
-.modal-content {
- width: 65%;
-}
-
 #wrap {
 		display: none;
 		opacity: 0.8;
