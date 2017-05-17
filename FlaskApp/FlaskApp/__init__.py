@@ -24,8 +24,8 @@ def get_active_branch():
 
 
 @app.route('/activate_branch', methods=['POST'])
-def get_active_branch():
-	return [0,1,0,0,0,0,1]
+def activate_branch():
+	return "OK"
 
 
 
