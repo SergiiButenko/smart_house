@@ -1,4 +1,16 @@
+var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
+	'Первая ветка',
+	'Вторая ветка',
+	'Третья ветка',
+	'Четвертая ветка',
+	'Пятая ветка'
+	];
+
 $(document).ready(function(){
+
+	for (var i = 1; i < branch_names.length; i++) {
+	   $('#title-'+i+" span").text(branch_names[i]);
+	}
 
    //Assign onClick for close buttons on Modal window
    $(".modal_close").click(function(){ 
@@ -17,7 +29,7 @@ $(document).ready(function(){
    $(".switchers").change(function(){ 
    	if ($(this).prop('checked')){
 	   	index = $(this).data('id')
-	   	name = get_branch_name(index);
+	   	name = branch_names[index];
 	   	
 	   	$('#time_modal').data('id',index);
 	   	$('.modal-title').html(name);
@@ -27,14 +39,3 @@ $(document).ready(function(){
    });
 
 });
-
-
-//Vocabulary for all branches
-function get_branch_name(index){
-	var names=[ '', // Arduino stars numeration from 1. So skiping 0 index
-	'Сад, левая ветка',
-	'Сад, правая ветка'
-	];
-
-	return names[index];
-}
