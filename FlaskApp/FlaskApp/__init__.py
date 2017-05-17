@@ -9,7 +9,7 @@ def hello():
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
 	try: 
-		subprocess.call(['sh', '/var/repo_update.sh'])
+		subprocess.call(['sh', '/var/repo_update.sh > /var/cron_logs/crontask2.log 2>&1'])
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo."
 	return "Done!"
