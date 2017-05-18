@@ -1,15 +1,27 @@
+from threading import Timer
 from flask import Flask
 import subprocess
+import datetime
 
 app = Flask(__name__)
+DATA = "datetime:"
+
+def update_data(interval):
+    Timer(interval, update_data, [interval]).start()
+    global DATA
+    DATA = DATA + datetime.datetime.now()
+
+# update data every 5 seconds
+update_data(5)
+
 @app.route("/")
 def hello():
-	return "Hello, I love Digital Ocean!"
+	return DATA
 
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
 	try: 
-		subprocess.call(['sudo', 'sh', '/var/repo_update.sh'])
+		#subprocess.call(['sudo', 'sh', '/var/repo_update.sh'])
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo."
 	return "Done!"

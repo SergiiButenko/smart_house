@@ -25,36 +25,50 @@ EthernetServer server(80);
 aREST rest = aREST();
 
 // Variables to be exposed to the API
-int temperature;
-int humidity;
+int arduino_status;
+
+int brach_1 = 2;
+int brach_2 = 3;
+int brach_3 = 5;
+int brach_4 = 6;
+int brach_5 = 8;
+int pump = 7;
 
 void setup(void)
 {
   // Start Serial
   Serial.begin(115200);
 
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
-  pinMode(8, OUTPUT);
+  // Init all outputs
+  pinMode(brach_1, OUTPUT);
+  pinMode(brach_2, OUTPUT);
+  pinMode(brach_3, OUTPUT);
+  pinMode(brach_4, OUTPUT);
+  pinMode(brach_5, OUTPUT);
+  pinMode(pump, OUTPUT);
 
 
   // Init variables and expose them to REST API
-  temperature = 24;
-  humidity = 40;
-  rest.variable("temperature",&temperature);
-  rest.variable("humidity",&humidity);
+  rest.variable("status",&arduino_status);
 
   // Function to be exposed
-  rest.function("ledOn",ledOn);
-  rest.function("ledOff",ledOff);
+  rest.function("branch_1_on",branch_1_on);
+  rest.function("branch_2_on",branch_2_on);
+  rest.function("branch_3_on",branch_3_on);
+  rest.function("branch_4_on",branch_4_on);
+  rest.function("branch_5_on",branch_5_on);
+
+  rest.function("branch_1_off",branch_1_off);
+  rest.function("branch_2_off",branch_2_off);
+  rest.function("branch_3_off",branch_3_off);
+  rest.function("branch_4_off",branch_4_off);
+  rest.function("branch_5_off",branch_5_off);
+
+  rest.function("branches_status",branches_status);
 
   // Give name & ID to the device (ID should be 6 characters long)
-  rest.set_id("008");
-  rest.set_name("dapper_drake");
+  rest.set_id("001");
+  rest.set_name("irrifation_peregonivka");
 
   // Start the Ethernet connection and the server
   if (Ethernet.begin(mac) == 0) {
@@ -72,33 +86,93 @@ void setup(void)
 }
 
 void loop() {
-
   // listen for incoming clients
   EthernetClient client = server.available();
   rest.handle(client);
   wdt_reset();
-
 }
+
+
 
 // Custom function accessible by the API
-int ledOn() {
-  digitalWrite(2,HIGH);
-  digitalWrite(3,HIGH);
+int branch_1_on(){
+  digitalWrite(branch_1, HIGH);
+  digitalWrite(pump, HIGH);
 
-  digitalWrite(5,HIGH);
-  digitalWrite(6,HIGH);
-  digitalWrite(7,HIGH);
-  digitalWrite(8,HIGH);
-  return 1;
+  return digitalRead(branch_1);
 }
 
-int ledOff() {
-  digitalWrite(2,LOW);
-  digitalWrite(3,LOW);
+int branch_1_off(){
+  digitalWrite(branch_1, LOW);
+  digitalWrite(pump, LOW);
 
-  digitalWrite(5,LOW);
-  digitalWrite(6,LOW);
-  digitalWrite(7,LOW);
-  digitalWrite(8,LOW);
-  return 1;
+  return digitalRead(branch_1);
+}
+
+int branch_2_on(){
+  digitalWrite(branch_2, HIGH);
+  digitalWrite(pump, HIGH);
+
+  return digitalRead(branch_2);
+}
+
+int branch_2_off(){
+  digitalWrite(branch_2, LOW);
+  digitalWrite(pump, LOW);
+
+  return digitalRead(branch_2);
+}
+
+int branch_3_on(){
+  digitalWrite(branch_3, HIGH);
+  digitalWrite(pump, HIGH);
+
+  return digitalRead(branch_3);
+}
+
+int branch_3_off(){
+  digitalWrite(branch_3, LOW);
+  digitalWrite(pump, LOW);
+
+  return digitalRead(branch_3);
+}
+
+int branch_4_on(){
+  digitalWrite(branch_4, HIGH);
+  digitalWrite(pump, HIGH);
+
+  return digitalRead(branch_4);
+}
+
+int branch_4_off(){
+  digitalWrite(branch_4, LOW);
+  digitalWrite(pump, LOW);
+
+  return digitalRead(branch_4);
+}
+
+int branch_5_on(){
+  digitalWrite(branch_5, HIGH);
+  digitalWrite(pump, HIGH);
+
+  return digitalRead(branch_5);
+}
+
+int branch_5_off(){
+  digitalWrite(branch_5, LOW);
+  digitalWrite(pump, LOW);
+
+  return digitalRead(branch_5);
+}
+
+char[] branches_status(){
+  char res[6];
+  res[0]=digitalRead(branch_1);
+  res[1]=digitalRead(branch_2);
+  res[2]=digitalRead(branch_3);
+  res[3]=digitalRead(branch_4);
+  res[4]=digitalRead(branch_5);
+  res[5]=digitalRead(pump);
+
+  return res;
 }

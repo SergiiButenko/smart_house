@@ -7,7 +7,6 @@ var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
 	];
 
 $(document).ready(function(){
-
 	for (var i = 1; i < branch_names.length; i++) {
 	   $('#title-'+i+" span").text(branch_names[i]);
 	}
@@ -37,5 +36,10 @@ $(document).ready(function(){
 	    $('#time_modal').modal('show');
 	}
    });
+
+ //   var timerID = setInterval(function() {
+ //    alert("it's time")
+	// }, 10 * 1000); 
+
 
 });
