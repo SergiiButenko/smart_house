@@ -103,10 +103,9 @@ void branches_status(){
 }
 
 bool if_no_branch_active(){
-  if ( branch_1_status==LOW and branch_2_status==LOW and branch_3_status==LOW and branch_4_status==LOW and branch_5_status==LOW){
+  if (branch_1_status==LOW and branch_2_status==LOW and branch_3_status==LOW and branch_4_status==LOW and branch_5_status==LOW){
     return true;
   }
-
   return false;
 }
 
