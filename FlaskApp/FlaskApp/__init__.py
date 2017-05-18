@@ -10,8 +10,7 @@ def update_data(interval):
     Timer(interval, update_data, [interval]).start()
     global DATA
     DATA = str(datetime.datetime.now())
-    print(DATA)
-
+ 
 # update data every 5 seconds
 update_data(3)
 
