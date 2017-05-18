@@ -37,9 +37,21 @@ $(document).ready(function(){
 	}
    });
 
- //   var timerID = setInterval(function() {
- //    alert("it's time")
-	// }, 10 * 1000); 
+	(function worker() {
+	  $.ajax({
+	    url: 'http://93.126.68.60:6542', 
+	    success: function(data) {
+	      $("#for_test").html(data);
+	      alert(data);
+	    },
+	    complete: function() {
+	      alert("data2");
+	      $("#for_test").html("data");
+	      // Schedule the next request when the current one's complete
+	      setTimeout(worker, 3*1000);
+	    }
+	  });
+	})();
 
 
 });
