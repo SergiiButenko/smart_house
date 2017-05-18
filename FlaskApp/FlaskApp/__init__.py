@@ -4,15 +4,16 @@ import subprocess
 import datetime
 
 app = Flask(__name__)
-DATA = "datetime:"
+DATA = ""
 
 def update_data(interval):
     Timer(interval, update_data, [interval]).start()
     global DATA
-    DATA = DATA + datetime.datetime.now()
+    DATA = str(datetime.datetime.now())
+    print(DATA)
 
 # update data every 5 seconds
-update_data(5)
+update_data(3)
 
 @app.route("/")
 def hello():
@@ -21,7 +22,7 @@ def hello():
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
 	try: 
-		#subprocess.call(['sudo', 'sh', '/var/repo_update.sh'])
+		subprocess.call(['sh', '/var/repo_update.sh'])
 	except subprocess.CalledProcessError as e:
 		return "An error occurred while trying to update git repo."
 	return "Done!"
