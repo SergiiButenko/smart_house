@@ -64,6 +64,9 @@ void setup(void)
   rest.function("branch_4_off",branch_4_off);
   rest.function("branch_5_off",branch_5_off);
 
+  rest.function("pump_on",pump_on);
+  rest.function("pump_off",pump_off);
+
   rest.function("branches_status",branches_status);
 
   // Give name & ID to the device (ID should be 6 characters long)
@@ -130,6 +133,7 @@ int branch_3_on(){
   return digitalRead(branch_3);
 }
 
+
 int branch_3_off(){
   digitalWrite(branch_3, LOW);
   digitalWrite(pump, LOW);
@@ -164,6 +168,20 @@ int branch_5_off(){
 
   return digitalRead(branch_5);
 }
+
+int pump_on(){
+  digitalWrite(pump, HIGH);
+
+  return digitalRead(pump);
+}
+
+
+int pump_off(){
+  digitalWrite(pump, LOW);
+
+  return digitalRead(pump);
+}
+
 
 char[] branches_status(){
   char res[6];
