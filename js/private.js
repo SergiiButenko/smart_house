@@ -1,3 +1,6 @@
+var aruino_ip='http://93.126.68.60:6542';
+var arduino_timeout_sec=3;
+
 var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
 	'Первая ветка',
 	'Вторая ветка',
@@ -39,16 +42,13 @@ $(document).ready(function(){
 
 	(function worker() {
 	  $.ajax({
-	    url: 'http://93.126.68.60:6542', 
+	    url: aruino_ip, 
 	    success: function(data) {
-	      $("#for_test").html(data);
-	      alert(data);
+	      $("#for_test").html("DEMON updates each 3sec: "+data);
 	    },
 	    complete: function() {
-	      alert("data2");
-	      $("#for_test").html("data");
 	      // Schedule the next request when the current one's complete
-	      setTimeout(worker, 3*1000);
+	      setTimeout(worker, arduino_timeout_sec*1000);
 	    }
 	  });
 	})();
