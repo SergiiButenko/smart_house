@@ -25,13 +25,13 @@ EthernetServer server(80);
 aREST rest = aREST();
 
 // Variables to be exposed to the API
-int arduino_status;
+int arduino_status = 1;
 
-int brach_1 = 2;
-int brach_2 = 3;
-int brach_3 = 5;
-int brach_4 = 6;
-int brach_5 = 8;
+int branch_1 = 2;
+int branch_2 = 3;
+int branch_3 = 5;
+int branch_4 = 6;
+int branch_5 = 8;
 int pump = 7;
 
 void setup(void)
@@ -40,11 +40,11 @@ void setup(void)
   Serial.begin(115200);
 
   // Init all outputs
-  pinMode(brach_1, OUTPUT);
-  pinMode(brach_2, OUTPUT);
-  pinMode(brach_3, OUTPUT);
-  pinMode(brach_4, OUTPUT);
-  pinMode(brach_5, OUTPUT);
+  pinMode(branch_1, OUTPUT);
+  pinMode(branch_2, OUTPUT);
+  pinMode(branch_3, OUTPUT);
+  pinMode(branch_4, OUTPUT);
+  pinMode(branch_5, OUTPUT);
   pinMode(pump, OUTPUT);
 
 
@@ -52,26 +52,26 @@ void setup(void)
   rest.variable("status",&arduino_status);
 
   // Function to be exposed
-  rest.function("branch_1_on",branch_1_on);
-  rest.function("branch_2_on",branch_2_on);
-  rest.function("branch_3_on",branch_3_on);
-  rest.function("branch_4_on",branch_4_on);
-  rest.function("branch_5_on",branch_5_on);
+//  rest.function("branch1On",branch1On);
+//  rest.function("branch2On",branch2On);
+//  rest.function("branch3On",branch3On);
+//  rest.function("branch4On",branch4On);
+//  rest.function("branch5On",branch5On);
+  
+  rest.function("branch1Off",branch1Off);
+  rest.function("branch2Off",branch2Off);
+  rest.function("branch3Off",branch3Off);
+  rest.function("branch4Off",branch4Off);
+  rest.function("branch5Off",branch5Off);
+//
+//  rest.function("pumpOn",pumpOn);
+//  rest.function("pumpOff",pumpOff);
 
-  rest.function("branch_1_off",branch_1_off);
-  rest.function("branch_2_off",branch_2_off);
-  rest.function("branch_3_off",branch_3_off);
-  rest.function("branch_4_off",branch_4_off);
-  rest.function("branch_5_off",branch_5_off);
-
-  rest.function("pump_on",pump_on);
-  rest.function("pump_off",pump_off);
-
-  rest.function("branches_status",branches_status);
-
+  //rest.function("branches_status",branches_status);
+  
   // Give name & ID to the device (ID should be 6 characters long)
-  rest.set_id("001");
-  rest.set_name("irrifation_peregonivka");
+  rest.set_id("008");
+  rest.set_name("irrigation_peregonivka");
 
   // Start the Ethernet connection and the server
   if (Ethernet.begin(mac) == 0) {
@@ -96,101 +96,103 @@ void loop() {
 }
 
 
+int test(){
+  return 0;
+}
 
 // Custom function accessible by the API
-int branch_1_on(){
+int branch1On(){
   digitalWrite(branch_1, HIGH);
   digitalWrite(pump, HIGH);
 
   return digitalRead(branch_1);
 }
 
-int branch_1_off(){
+int branch1Off(){
   digitalWrite(branch_1, LOW);
   digitalWrite(pump, LOW);
 
   return digitalRead(branch_1);
 }
 
-int branch_2_on(){
+int branch2On(){
   digitalWrite(branch_2, HIGH);
   digitalWrite(pump, HIGH);
 
   return digitalRead(branch_2);
 }
 
-int branch_2_off(){
+int branch2Off(){
   digitalWrite(branch_2, LOW);
   digitalWrite(pump, LOW);
 
   return digitalRead(branch_2);
 }
 
-int branch_3_on(){
+int branch3On(){
   digitalWrite(branch_3, HIGH);
   digitalWrite(pump, HIGH);
 
   return digitalRead(branch_3);
 }
 
-
-int branch_3_off(){
+int branch3Off(){
   digitalWrite(branch_3, LOW);
   digitalWrite(pump, LOW);
 
   return digitalRead(branch_3);
 }
 
-int branch_4_on(){
+int branch4On(){
   digitalWrite(branch_4, HIGH);
   digitalWrite(pump, HIGH);
 
   return digitalRead(branch_4);
 }
 
-int branch_4_off(){
+int branch4Off(){
   digitalWrite(branch_4, LOW);
   digitalWrite(pump, LOW);
 
   return digitalRead(branch_4);
 }
 
-int branch_5_on(){
+int branch5On(){
   digitalWrite(branch_5, HIGH);
   digitalWrite(pump, HIGH);
 
   return digitalRead(branch_5);
 }
 
-int branch_5_off(){
+int branch5Off(){
   digitalWrite(branch_5, LOW);
   digitalWrite(pump, LOW);
 
   return digitalRead(branch_5);
 }
 
-int pump_on(){
+int pumpOn(){
   digitalWrite(pump, HIGH);
 
   return digitalRead(pump);
 }
 
 
-int pump_off(){
+int pumpOff(){
   digitalWrite(pump, LOW);
 
   return digitalRead(pump);
 }
 
 
-char[] branches_status(){
-  char res[6];
-  res[0]=digitalRead(branch_1);
-  res[1]=digitalRead(branch_2);
-  res[2]=digitalRead(branch_3);
-  res[3]=digitalRead(branch_4);
-  res[4]=digitalRead(branch_5);
-  res[5]=digitalRead(pump);
-
-  return res;
-}
+//char branches_status(){
+//  char res[6];
+//  res[0]=digitalRead(branch_1);
+//  res[1]=digitalRead(branch_2);
+//  res[2]=digitalRead(branch_3);
+//  res[3]=digitalRead(branch_4);
+//  res[4]=digitalRead(branch_5);
+//  res[5]=digitalRead(pump);
+//
+//  return res;
+//}
