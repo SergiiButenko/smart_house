@@ -1,4 +1,4 @@
-var aruino_ip='http://93.126.68.60:6542';
+var aruino_ip='http://93.126.68.60:7542';
 var arduino_timeout_sec=3;
 
 var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
