@@ -53,7 +53,8 @@ $(document).ready(function(){
    	index = $('#time_modal').data('id');
    	branch_on(index);
    });
-
+	
+	update_branches_request();
 	// (function worker() {
 	//   $.ajax({
 	//     url: aruino_ip, 
@@ -104,7 +105,7 @@ function branch_off(index){
 	  });
 }
 
-function update_branches_request(json){
+function update_branches_request(){
 	$.ajax({
 	    url: aruino_ip, 
 	    success: function(data) {
