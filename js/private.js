@@ -1,4 +1,4 @@
-var aruino_ip='http://93.126.68.60:7542';
+var aruino_ip='http://butenko.asuscomm.com:5555';
 var arduino_timeout_sec=3;
 
 var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	  $.ajax({
 	    url: aruino_ip, 
 	    success: function(data) {
-	      $("#for_test").html("DEMON updates each 3sec: "+data);
+	      $("#for_test").html("DEMON updates each 3sec: "+JSON.stringify(data));
 	    },
 	    complete: function() {
 	      // Schedule the next request when the current one's complete
