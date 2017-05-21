@@ -9,7 +9,7 @@
     <!-- Custom JavaScript -->
     <script src="js/private.js"></script>
     <script src="bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-    
+    <!-- <script src="https://use.fontawesome.com/41f36ecde2.js"></script> -->
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -68,7 +68,11 @@
     </nav>
 
     <!-- Page Content -->
-    <div class="container">
+    
+    <div class="container">    
+    <div class="modal_spinner" id="loader"></div>
+
+
     	<div id="branch_holer">
 	        <label for="1" id="title-1">
 	        	<input type="checkbox" class="switchers" id="1" data-id="1" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150">
@@ -90,16 +94,15 @@
                 <span>Задайте имя для ветки</span>
             </label>
 
-            <label for="5" id="title-5">
-                <input type="checkbox" class="switchers" id="5" data-id="5" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150">
-                <span>Задайте имя для ветки</span>
-            </label>
             <span class="indent"></span>
 
             <label for="7" id="title-7">
                 <input type="checkbox" class="switchers" id="7" data-id="7" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="quick">
                 <span>Задайте имя для ветки</span>
             </label>
+
+            <span class="indent"></span>
+            <span id="arduino_status"></span>
 
         </div>
     </div>
@@ -138,7 +141,7 @@
           <div class="modal-footer">
             <label> test
             </label>
-            <button type="button" id="modal-close" class="btn btn-default modal_close">Закрыть</button>
+            <button type="button" id="modal-close" class="btn btn-default modal_close" data-dismiss="modal">Закрыть</button>
             <button type="button" class="btn btn-default start-irrigation" data-dismiss="modal">Начать полив</button>
           </div>
         </div>
