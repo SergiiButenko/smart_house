@@ -1,4 +1,5 @@
-var aruino_ip='http://185.20.216.94:5555/';
+//var aruino_ip='http://185.20.216.94:5555/';
+var aruino_ip='http://192.168.1.10/';
 var arduino_check_connect_sec=6;
 var arduino_check_broken_connect_sec=2;
 
@@ -13,10 +14,24 @@ var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
 	];
 
 $(document).ready(function(){
+	//Rename branches
 	for (var i = 1; i < branch_names.length; i++) {
 	   $('#title-'+i+" span").text(branch_names[i]);
 	}
 
+	// Add labels for swticher values
+	$('.switchers-main').bootstrapToggle({
+		 on: 'Остановить Полив',
+		 off: 'Начать полив'
+	});
+
+	// Add labels for swticher values
+	$('.switchers-pump').bootstrapToggle({
+		 on: 'Выключить насос',
+		 off: 'Включить насос'
+	});
+
+	//Add arduino touch script to determine if connection is alive
 	(function worker() {
 	  $.ajax({
 	    url: aruino_ip, 
@@ -44,24 +59,16 @@ $(document).ready(function(){
 
    //Assign onClick for close buttons on Modal window
    $(".modal_close").click(function(){ 
-	   	id=$('#time_modal').data('id');
-	   	$('#'+id).bootstrapToggle('off');
-	    //$('#time_modal').modal('hide');
+   	    update_branches_request();
    });
 
-	// Add labels for swticher values
-	$('.switchers').bootstrapToggle({
-		 on: 'Остановить Полив',
-		 off: 'Начать полив'
-	});
-
    //Assign onChange for all switchers, so they open modal window
-   $(".switchers").change(function(){ 
+   $(".switchers-main, .switchers-pump").change(function(){ 
    	if ($(this).prop('checked') && $(this).data('user-action') == 1){
 	   	index = $(this).data('id');
 	   	name = branch_names[index];
 	   	
-	   	$('#time_modal').data('id',index);
+	   	$('#time_modal').data('id', index);
 	   	$('.modal-title').html(name);
 	    $('#time_modal').modal('show');
 	} 
@@ -142,6 +149,7 @@ function branch_off(index){
 function update_branches_request(){
 	$.ajax({
 	    url: aruino_ip, 
+	    beforeSend: function(req){ $('#loader').show()},
 	    success: function(data) {
 			branches = data['variables'];
 
@@ -176,6 +184,9 @@ function update_branches_request(){
 	    	console.error("Branches statuses are out-of-date");
 	    	$("#arduino_status").text("Branches statuses are out-of-date");
 	    },
+	    complete: function() {
+	      $('#loader').hide();
+	    }
 	  });
 }
 
