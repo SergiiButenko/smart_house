@@ -23,8 +23,8 @@ $(document).ready(function(){
 	  $.ajax({
 	    url: "http://185.20.216.94:7542/weather", 
 	    success: function(data) {
-	    	alert(data("temperature"));
-	    	$("#temp_header").text("Температура воздуха - "+data("temperature")+" C");
+	    	alert(data['temperature']);
+	    	$("#temp_header").text("Температура воздуха - "+data['temperature']+" C*");
 	    }
 	  });
 	})();
