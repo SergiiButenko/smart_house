@@ -100,10 +100,6 @@
                 <input type="checkbox" class="switchers-pump" id="7" data-id="7" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="quick">
                 <span>Задайте имя для ветки</span>
             </label>
-
-            <span class="indent"></span>
-            <span id="arduino_status">arduino connection status</span>
-
         </div>
     </div>
 
@@ -115,25 +111,25 @@
       <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content" style="width 100px">
+        <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="modal_close close">&times;</button>
             <h4 class="modal-title">Длительность полива</h4>
           </div>
 
           <div class="modal-body text-center">
-            <div class="btn-group " data-toggle="buttons">
+            <div class="btn-group " data-toggle="buttons" id="time_buttons">
               <label class="btn btn-primary active">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> 2 минуты
+                <input type="radio" name="options" data-value=2 id="option1" autocomplete="off" checked> 2 минуты
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option2" autocomplete="off"> 3 минуты
+                <input type="radio" name="options" data-value=3 id="option2" autocomplete="off"> 3 минуты
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option3" autocomplete="off"> 5 минут
+                <input type="radio" name="options" data-value=4 id="option3" autocomplete="off"> 5 минут
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option3" autocomplete="off"> 7 минут
+                <input type="radio" name="options" data-value=5 id="option3" autocomplete="off"> 7 минут
               </label>
             </div>
           </div>
