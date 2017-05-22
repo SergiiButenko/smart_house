@@ -8,8 +8,8 @@ import json, requests
 app = Flask(__name__)
 DATA = ""
 
-#ARDUINO_IP='http://192.168.1.10'
-ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://192.168.1.10'
+#ARDUINO_IP='http://185.20.216.94:5555'
 
 
 def update_data(interval):
@@ -46,6 +46,10 @@ def git_get():
 def get_active_branch():
 	return [0,1,0,0,0,0,1]
 
+@app.route('/arduino_status', methods=['GET'])
+def arduino_status():
+	response = requests.get(url=ARDUINO_IP)
+	return response.text
 
 @app.route('/activate_branch', methods=['PUT'])
 def activate_branch():
