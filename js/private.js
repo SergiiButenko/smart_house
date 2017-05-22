@@ -1,6 +1,6 @@
 var aruino_ip='http://185.20.216.94:5555/';
 //var aruino_ip='http://192.168.1.10/';
-var arduino_check_connect_sec=6;
+var arduino_check_connect_sec=30;
 var arduino_check_broken_connect_sec=2;
 
 var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index

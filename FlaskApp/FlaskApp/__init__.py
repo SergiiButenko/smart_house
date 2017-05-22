@@ -31,6 +31,13 @@ def update_data(interval):
 # update data every 5 seconds
 update_data(10)
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
 @app.route("/")
 def hello():
     return str(RULES_FOR_BRANCHES)
@@ -77,14 +84,6 @@ def weather():
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
     return "Done!"
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
-
 
 if __name__ == "__main__":
     app.run(debug=True)
