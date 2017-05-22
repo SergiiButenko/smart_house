@@ -19,6 +19,16 @@ $(document).ready(function(){
 	   $('#title-'+i+" span").text(branch_names[i]);
 	}
 
+	(function update_temperature() {
+	  $.ajax({
+	    url: "http://185.20.216.94:7542/weather", 
+	    success: function(data) {
+	    	alert(data("temperature"));
+	    	$("#temp_header").text("Температура воздуха - "+data("temperature")+" C");
+	    }
+	  });
+	})();
+
 	// Add labels for swticher values
 	$('.switchers-main').bootstrapToggle({
 		 on: 'Остановить Полив',

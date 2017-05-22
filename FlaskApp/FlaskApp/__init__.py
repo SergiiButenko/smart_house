@@ -1,7 +1,9 @@
 from threading import Timer
 from flask import Flask
+from flask import jsonify
 import subprocess
 import datetime
+import json, requests
 
 app = Flask(__name__)
 DATA = ""
@@ -17,6 +19,16 @@ update_data(3)
 @app.route("/")
 def hello():
 	return DATA
+
+
+@app.route("/weather")
+def weather():
+	url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+	response = requests.get(url=url)
+	json_data = json.loads(response.text)
+	return jsonify(
+        temperature=str(json_data[0]['Temperature']['Metric']['Value'])
+    )
 
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
