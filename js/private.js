@@ -1,48 +1,79 @@
-var aruino_ip='http://butenko.asuscomm.com:5555';
-var arduino_timeout_sec=3;
+var aruino_ip='http://185.20.216.94:5555/';
+//var aruino_ip='http://192.168.1.10/';
+var arduino_check_connect_sec=6;
+var arduino_check_broken_connect_sec=2;
 
 var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
 	'Первая ветка',
 	'Вторая ветка',
 	'Третья ветка',
 	'Четвертая ветка',
-	'Пятая ветка',
+	'',
 	'',
 	'Насос'
 	];
 
 $(document).ready(function(){
+	//Rename branches
 	for (var i = 1; i < branch_names.length; i++) {
 	   $('#title-'+i+" span").text(branch_names[i]);
 	}
 
-   //Assign onClick for close buttons on Modal window
-   $(".modal_close").click(function(){ 
-   	id=$('#time_modal').data('id');
-   	$('#'+id).bootstrapToggle('off');
-    $('#time_modal').modal('hide');
-   });
-
-   // Add labels for swticher values
-	$('.switchers').bootstrapToggle({
+	// Add labels for swticher values
+	$('.switchers-main').bootstrapToggle({
 		 on: 'Остановить Полив',
 		 off: 'Начать полив'
 	});
 
+	// Add labels for swticher values
+	$('.switchers-pump').bootstrapToggle({
+		 on: 'Выключить насос',
+		 off: 'Включить насос'
+	});
+
+	//Add arduino touch script to determine if connection is alive
+	(function worker() {
+	  $.ajax({
+	    url: aruino_ip, 
+	    beforeSend: function(xhr, opts){
+	    	if ($('#time_modal').hasClass('in')){
+	    		xhr.abort();
+	    	}
+	    }, 
+	    success: function(data) {
+	    	$('#loader').hide();
+	    	console.log("connected to arduino");
+	    	$("#arduino_status").text("connected to arduino");
+	    	update_branches(data);
+	    	setTimeout(worker, arduino_check_connect_sec*1000);     
+	    },
+	    error: function(){	    	
+	    	console.error("Can't connect to arduino");
+	    	$("#arduino_status").text("error connection to arduino");
+	    	$('#loader').show()
+	    	setTimeout(worker, arduino_check_broken_connect_sec*1000);     
+	    }
+	  });
+	})();
+
+
+   //Assign onClick for close buttons on Modal window
+   $(".modal_close").click(function(){ 
+   	    update_branches_request();
+   });
+
    //Assign onChange for all switchers, so they open modal window
-   $(".switchers").change(function(){ 
+   $(".switchers-main, .switchers-pump").change(function(){ 
    	if ($(this).prop('checked') && $(this).data('user-action') == 1){
 	   	index = $(this).data('id');
 	   	name = branch_names[index];
 	   	
-	   	$('#time_modal').data('id',index);
+	   	$('#time_modal').data('id', index);
 	   	$('.modal-title').html(name);
-
 	    $('#time_modal').modal('show');
 	} 
 
 	if (!$(this).prop('checked') && $(this).data('user-action') == 1){
-
 	   	index = $(this).data('id');
 	   	branch_off(index);
 	}
@@ -53,23 +84,8 @@ $(document).ready(function(){
    	index = $('#time_modal').data('id');
    	branch_on(index);
    });
-	
-	update_branches_request();
-	// (function worker() {
-	//   $.ajax({
-	//     url: aruino_ip, 
-	//     success: function(data) {
-	//       update_branches(JSON.stringify(data));
-	//       $("#for_test").html("DEMON updates each 3sec: "+JSON.stringify(data));
-	//     },
-	//     complete: function() {
-	//       // Schedule the next request when the current one's complete
-	//       setTimeout(worker, arduino_timeout_sec*1000);
-	//     }
-	//   });
-	// })();
-});
 
+});
 
 function branch_on(index){
 	$.ajax({
@@ -78,12 +94,24 @@ function branch_on(index){
 	    data: {
 	    	'params' : index
 	    },
+	    beforeSend: function(req){ $('#loader').show()},
 	    success: function(data) {
-	      console.log('Line '+index+' activated');
+	      if (data['return_value']==0){
+	      	   alert("Не могу включить "+branch_names[index]);
+	   		   console.error('Line '+index+' cannot be activated');
+	   		}
+
+	    	if (data['return_value']==1){
+	   		   console.log('Line '+index+' activated');
+	   		}
+	    },
+	    error: function(){
+	    	alert("Не могу включить "+branch_names[index]);
+	    	console.error("Can't update "+branch_names[index]);
 	    },
 	    complete: function() {
 	      update_branches_request();
-	      console.log('done');
+	      $('#loader').hide();
 	    }
 	  });
 }
@@ -95,12 +123,25 @@ function branch_off(index){
 	    data: {
 	    	'params' : index
 	    },
+	    beforeSend: function(req){ $('#loader').show()},
 	    success: function(data) {
-	      console.log('Line '+index+' deactivated');
+			if (data['return_value']==1){
+			   alert("Не могу включить "+branch_names[index]);
+	   		   console.error('Line '+index+' cannot be deactivated');
+	   		}
+
+	    	if (data['return_value']==0){
+	   		   console.log('Line '+index+' deactivated');
+	   		}
+	  	
+	    },
+	    error: function(){
+	    	alert("Не могу включить "+branch_names[index]);
+	    	console.error("Can't update "+branch_names[index]);
 	    },
 	    complete: function() {
 	      update_branches_request();
-	      console.log('done');
+	      $('#loader').hide();
 	    }
 	  });
 }
@@ -108,6 +149,7 @@ function branch_off(index){
 function update_branches_request(){
 	$.ajax({
 	    url: aruino_ip, 
+	    beforeSend: function(req){ $('#loader').show()},
 	    success: function(data) {
 			branches = data['variables'];
 
@@ -127,10 +169,6 @@ function update_branches_request(){
 			$('#4').bootstrapToggle(get_state(branches['4']));	
 			$('#4').data('user-action', 1);
 
-			$('#5').data('user-action', 0);
-			$('#5').bootstrapToggle(get_state(branches['5']));	
-			$('#5').data('user-action', 1);
-
 			$('#7').data('user-action', 0);
 			$('#7').bootstrapToggle(get_state(branches['pump']));	
 			$('#7').data('user-action', 1);
@@ -141,14 +179,19 @@ function update_branches_request(){
 				else
 				  return 'on';
 			}
+	    },
+	    error: function(){
+	    	console.error("Branches statuses are out-of-date");
+	    	$("#arduino_status").text("Branches statuses are out-of-date");
+	    },
+	    complete: function() {
+	      $('#loader').hide();
 	    }
 	  });
 }
 
 function update_branches(json){
-	json = JSON.parse(json);
 	branches = json['variables'];
-	console.log();
 
 	$('#1').data('user-action', 0);
 	$('#1').bootstrapToggle(get_state(branches['1']));	
@@ -165,10 +208,6 @@ function update_branches(json){
 	$('#4').data('user-action', 0);
 	$('#4').bootstrapToggle(get_state(branches['4']));	
 	$('#4').data('user-action', 1);
-
-	$('#5').data('user-action', 0);
-	$('#5').bootstrapToggle(get_state(branches['5']));	
-	$('#5').data('user-action', 1);
 
 	$('#7').data('user-action', 0);
 	$('#7').bootstrapToggle(get_state(branches['pump']));	
