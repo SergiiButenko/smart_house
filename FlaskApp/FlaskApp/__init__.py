@@ -20,13 +20,13 @@ def update_data(interval):
         if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
             response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
             json_data = json.loads(response.text)
-             if (json_data['returned_value'] == 0 ):
+            if (json_data['returned_value'] == 0 ):
                 print("Turned off {0} branch".format(rule['id']))
                 RULES_FOR_BRANCHES[rule['id']]=None
                 print(str(RULES_FOR_BRANCHES))
 
-             if (json_data['returned_value'] == 1 ):
-                 print("Can't turn off {0} branch".format(rule['id']))
+            if (json_data['returned_value'] == 1 ):
+                print("Can't turn off {0} branch".format(rule['id']))
         
 # update data every 5 seconds
 update_data(10)
