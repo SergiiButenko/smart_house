@@ -38,7 +38,7 @@ def hello():
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
     response = requests.get(url=ARDUINO_IP)
-    return response.text
+    return jsonify(response.text)
 
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
@@ -53,7 +53,7 @@ def activate_branch():
     global RULES_FOR_BRANCHES
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
     
-    return response.text
+    return jsonify(response.text)
 
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
@@ -63,7 +63,7 @@ def deactivate_branch():
     RULES_FOR_BRANCHES[id]=None
 
     response = requests.get(url=ARDUINO_IP+'/off', params={"params":id})    
-    return response.text
+    return jsonify(response.text)
 
 @app.route("/weather")
 def weather():

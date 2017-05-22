@@ -170,7 +170,7 @@ function update_branches_request() {
         url: server+'/arduino_status',
         success: function(data) {
             branches = data['variables'];
-
+            console.log(data['variables']);
             $('#1').data('user-action', 0);
             $('#1').bootstrapToggle(get_state(branches['1']));
             $('#1').data('user-action', 1);
@@ -206,8 +206,9 @@ function update_branches_request() {
 }
 
 function update_branches(json) {
+		console.log(json)
     branches = json['variables'];
-
+	  console.log(typeof(json))
     $('#1').data('user-action', 0);
     $('#1').bootstrapToggle(get_state(branches['1']));
     $('#1').data('user-action', 1);
