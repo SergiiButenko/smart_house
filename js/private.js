@@ -46,6 +46,7 @@ $(document).ready(function(){
 	  $.ajax({
 	    url: aruino_ip, 
 	    beforeSend: function(xhr, opts){
+	    	$("#arduino_status").text("connecting to arduino...");
 	    	if ($('#time_modal').hasClass('in')){
 	    		xhr.abort();
 	    	}
