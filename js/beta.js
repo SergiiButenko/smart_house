@@ -103,7 +103,7 @@ $(document).ready(function() {
     $(".start-irrigation").click(function() {
         index = $('#time_modal').data('id');
         time = $("#time_buttons input:radio:checked").data("value");
-        console.log(index+";"+time);
+        console.log(branch_names[index]+" will be activated on "+time+"minutes");
         //branch_on(index, time);
     });
 
@@ -118,6 +118,8 @@ function branch_on(index, time_min) {
             'time' : time_min
         },
         success: function(data) {
+        		data = JSON.parse(data);
+
             if (data['return_value'] == 0) {
                 alert("Не могу включить " + branch_names[index]);
                 console.error('Line ' + index + ' cannot be activated');
@@ -145,6 +147,8 @@ function branch_off(index) {
             'id': index
         },
         success: function(data) {
+        	  data = JSON.parse(data);
+
             if (data['return_value'] == 1) {
                 alert("Не могу включить " + branch_names[index]);
                 console.error('Line ' + index + ' cannot be deactivated');
@@ -169,6 +173,8 @@ function update_branches_request() {
     $.ajax({
         url: server+'/arduino_status',
         success: function(data) {
+        	  data = JSON.parse(data);
+
             branches = data['variables'];
             console.log(data['variables']);
             $('#1').data('user-action', 0);
@@ -206,9 +212,8 @@ function update_branches_request() {
 }
 
 function update_branches(json) {
-		console.log(json)
-    branches = json['variables'];
-	  console.log(typeof(json))
+		json = JSON.parse(json);
+    branches = json['variables'];	  
     $('#1').data('user-action', 0);
     $('#1').bootstrapToggle(get_state(branches['1']));
     $('#1').data('user-action', 1);
