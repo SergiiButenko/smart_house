@@ -1,12 +1,16 @@
 from threading import Timer
 from flask import Flask
-from flask import jsonify
-import subprocess
+from flask import jsonify, request
+
 import datetime
 import json, requests
 
 app = Flask(__name__)
 DATA = ""
+
+#ARDUINO_IP='http://192.168.1.10'
+ARDUINO_IP='http://185.20.216.94:5555'
+
 
 def update_data(interval):
     Timer(interval, update_data, [interval]).start()
@@ -32,10 +36,6 @@ def weather():
 
 @app.route('/gitwebhook', methods=['POST'])
 def git_post():
-	try: 
-		subprocess.call(['sh', '/var/repo_update.sh'])
-	except subprocess.CalledProcessError as e:
-		return "An error occurred while trying to update git repo."
 	return "Done!"
 
 @app.route('/gitwebhook', methods=['GET'])
@@ -47,9 +47,10 @@ def get_active_branch():
 	return [0,1,0,0,0,0,1]
 
 
-@app.route('/activate_branch', methods=['POST'])
+@app.route('/activate_branch', methods=['PUT'])
 def activate_branch():
-	return "OK"
+	response = requests.get(url=ARDUINO_IP+'/off', params={"params":request.form['id']})	
+	return response.text
 
 @app.after_request
 def after_request(response):
