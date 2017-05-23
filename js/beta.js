@@ -42,7 +42,9 @@ $(document).ready(function() {
         $.ajax({
             url: server+'/arduino_status',
             beforeSend: function(xhr, opts) {
-                $("#arduino_status").text("connecting to arduino...");
+                $("#arduino_status").text(" Проверка статуса системы");
+                $("#button_gif").addClass("fa-spin");
+
                 if ($('#time_modal').hasClass('in')) {
                     xhr.abort();
                 }
@@ -50,16 +52,17 @@ $(document).ready(function() {
             success: function(data) {
                 $('#loader').hide();
                 console.log("connected to arduino");
-                $("#arduino_status").text("connected to arduino");
+                $("#arduino_status").text(" Система активна");
                 update_branches(data);
                 setTimeout(worker, arduino_check_connect_sec * 1000);
             },
             error: function() {
                 console.error("Can't connect to arduino");
-                $("#arduino_status").text("error connection to arduino");
+                $("#arduino_status").text(" Ошбика в системе");
                 $('#loader').show()
                 setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-            }
+            },
+            complete: function(){$("#button_gif").removeClass("fa-spin");}
         });
     })();
 
@@ -241,4 +244,21 @@ function update_branches(json) {
         else
             return 'on';
     }
+}
+
+function touch_arduino(){
+    $.ajax({
+            url: server+'/arduino_status',
+            success: function(data) {
+                $('#loader').hide();
+                console.log("connected to arduino");
+                $("#arduino_status").text(" Система активна");
+                update_branches(data);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
+                $("#arduino_status").text(" Ошибка в системе");
+                $('#loader').show()
+            }
+        });
 }
