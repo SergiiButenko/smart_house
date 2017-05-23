@@ -249,8 +249,11 @@ function update_branches(json) {
 function touch_arduino(){
     $.ajax({
             url: server+'/arduino_status',
+             beforeSend: function(xhr, opts) {
+                $("#arduino_status").text(" Проверка статуса системы");
+                $("#button_gif").addClass("fa-spin");
+            },
             success: function(data) {
-                $('#loader').hide();
                 console.log("connected to arduino");
                 $("#arduino_status").text(" Система активна");
                 update_branches(data);
@@ -258,7 +261,7 @@ function touch_arduino(){
             error: function() {
                 console.error("Can't connect to arduino");
                 $("#arduino_status").text(" Ошибка в системе");
-                $('#loader').show()
-            }
+            },
+            complete: function(){$("#button_gif").removeClass("fa-spin");}
         });
 }
