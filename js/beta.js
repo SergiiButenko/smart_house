@@ -125,7 +125,7 @@ $(document).ready(function() {
 function branch_on(index, time_min) {
     $.ajax({
         url: server + '/activate_branch',
-        type: "put",
+        type: "get",
         data: {
             'id': index,
             'time' : time_min
@@ -154,7 +154,7 @@ function branch_on(index, time_min) {
 
 function branch_off(index) {
     $.ajax({
-        url: server + '/off',
+        url: server + '/deactivate_branch',
         type: "get",
         data: {
             'id': index
@@ -163,7 +163,7 @@ function branch_off(index) {
         	  data = JSON.parse(data);
 
             if (data['return_value'] == 1) {
-                alert("Не могу включить " + branch_names[index]);
+                alert("Не могу выключить " + branch_names[index]);
                 console.error('Line ' + index + ' cannot be deactivated');
             }
 
@@ -173,7 +173,7 @@ function branch_off(index) {
 
         },
         error: function() {
-            alert("Не могу включить " + branch_names[index]);
+            alert("Не могу выключить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
         },
         complete: function() {

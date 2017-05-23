@@ -64,7 +64,7 @@ def activate_branch():
 
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
-    id=request.args.get('id')
+    id=int(request.args.get('id'))
     
     global RULES_FOR_BRANCHES
     RULES_FOR_BRANCHES[id]=None
