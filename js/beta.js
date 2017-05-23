@@ -1,7 +1,7 @@
 var server = 'http://185.20.216.94:7542';
 
-var arduino_check_connect_sec = 60;
-var arduino_check_broken_connect_sec = 5;
+var arduino_check_connect_sec = 60*5;
+var arduino_check_broken_connect_sec = 60;
 
 var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     'Первая ветка',
@@ -106,7 +106,7 @@ $(document).ready(function() {
     $(".start-irrigation").click(function() {
         index = $('#time_modal').data('id');
         time = $("#time_buttons input:radio:checked").data("value");
-        console.log(branch_names[index]+" will be activated on "+time+"minutes");
+        console.log(branch_names[index]+" will be activated on "+time+" minutes");
         //branch_on(index, time);
     });
 
@@ -249,7 +249,7 @@ function update_branches(json) {
 function touch_arduino(){
     $.ajax({
             url: server+'/arduino_status',
-             beforeSend: function(xhr, opts) {
+            beforeSend: function(xhr, opts) {
                 $("#arduino_status").text(" Проверка статуса системы");
                 $("#button_gif").addClass("fa-spin");
             },
