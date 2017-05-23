@@ -9,8 +9,8 @@ import time
 
 app = Flask(__name__)
 
-#ARDUINO_IP='http://192.168.1.10'
-ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://192.168.1.10'
+#ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
 BRANCH_STATUSES=[0,0,0,0,0,0,0,0]
