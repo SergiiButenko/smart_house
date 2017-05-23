@@ -71,7 +71,8 @@ $(document).ready(function() {
             success: function(data) {
                 $("#rules_list").text("Список правил: "+data);
                 setTimeout(update_rules, 5 * 1000);
-                }
+            },
+            global: false
         });
     })();
 
