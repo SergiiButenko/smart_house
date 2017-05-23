@@ -9,11 +9,13 @@ import time
 
 app = Flask(__name__)
 
-ARDUINO_IP='http://192.168.1.10'
-#ARDUINO_IP='http://185.20.216.94:5555'
+clients = []
+
+#ARDUINO_IP='http://192.168.1.10'
+ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
-BRANCH_STATUSES=[0,0,0,0,0,0,0,0]
+#BRANCH_STATUSES=[0,0,0,0,0,0,0,0]
 
 def update_data():
     while True:
@@ -43,6 +45,13 @@ def update_data():
 thread = threading.Thread(name='update_data', target=update_data)
 thread.setDaemon(True)
 thread.start()
+
+@socketio.on('message')
+def handle_message(message):
+    print('received message: ' + message)
+
+
+    
 
 @app.after_request
 def after_request(response):
@@ -125,4 +134,4 @@ def git_post():
     return "Done!"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+      app.run(debug=True)

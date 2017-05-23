@@ -66,6 +66,17 @@ $(document).ready(function() {
         });
     })();
 
+
+    var socket = io.connect('http://127.0.0.1:5000/');
+    socket.on('connect', function() {
+        socket.emit('message', 'ss');
+    });
+
+    // socket.on('message', function(data) {
+    //            alert(data);
+    //         });
+
+
     //Add arduino touch script to determine if connection is alive
     // (function worker2() {
     //     $.ajax({
