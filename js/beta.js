@@ -194,10 +194,9 @@ function update_branches_request() {
     $.ajax({
         url: server+'/arduino_status',
         success: function(data) {
-        	  data = JSON.parse(data);
+        	data = JSON.parse(data);
 
             branches = data['variables'];
-            console.log(data['variables']);
             $('#1').data('user-action', 0);
             $('#1').bootstrapToggle(get_state(branches['1']));
             $('#1').data('user-action', 1);

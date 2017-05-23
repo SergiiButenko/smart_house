@@ -18,7 +18,6 @@ BRANCH_STATUSES=[0,0,0,0,0,0,0,0]
 def update_data():
     while True:
         time.sleep(10)
-        global RULES_FOR_BRANCHES
         for rule in RULES_FOR_BRANCHES: 
             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
                 response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
@@ -34,7 +33,6 @@ def update_data():
                 json_data = json.loads(response_status.text)
                 branches=json_data['variables']
                 
-                global BRANCH_STATUSES
                 BRANCH_STATUSES[1]=branches['1']
                 BRANCH_STATUSES[2]=branches['2']
                 BRANCH_STATUSES[3]=branches['3']
@@ -72,14 +70,12 @@ def activate_branch():
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
     
-    global RULES_FOR_BRANCHES
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
 
     response_status = requests.get(url=ARDUINO_IP) 
     json_data = json.loads(response_status.text)
     branches=json_data['variables']
     
-    global BRANCH_STATUSES
     BRANCH_STATUSES[1]=branches['1']
     BRANCH_STATUSES[2]=branches['2']
     BRANCH_STATUSES[3]=branches['3']
@@ -94,15 +90,13 @@ def deactivate_branch():
     id=int(request.args.get('id'))
     
     response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
-    
-    global RULES_FOR_BRANCHES
+
     RULES_FOR_BRANCHES[id]=None
 
     response_status = requests.get(url=ARDUINO_IP) 
     json_data = json.loads(response_status.text)
     branches=json_data['variables']
     
-    global BRANCH_STATUSES
     BRANCH_STATUSES[1]=branches['1']
     BRANCH_STATUSES[2]=branches['2']
     BRANCH_STATUSES[3]=branches['3']
