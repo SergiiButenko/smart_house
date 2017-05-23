@@ -87,7 +87,8 @@ $(document).ready(function() {
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
         if ($(this).data('user-action') == 1) {
-        	  index = $(this).data('id');
+        	
+            index = $(this).data('id');
             if ($(this).prop('checked')) {
                 name = branch_names[index];
 
@@ -97,7 +98,7 @@ $(document).ready(function() {
             }
 
             if (!$(this).prop('checked')) {
-                //branch_off(index);
+                branch_off(index);
             }
         }
     });
@@ -107,7 +108,7 @@ $(document).ready(function() {
         index = $('#time_modal').data('id');
         time = $("#time_buttons input:radio:checked").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
-        //branch_on(index, time);
+        branch_on(index, time);
     });
 
 });

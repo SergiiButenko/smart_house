@@ -28,7 +28,7 @@ def update_data(interval):
             if (json_data['returned_value'] == 1 ):
                 print("Can't turn off {0} branch".format(rule['id']))
         
-# update data every 5 seconds
+# update data every 10 seconds
 update_data(10)
 
 @app.after_request
