@@ -13,25 +13,23 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     'Насос'
 ];
 
-var $loading = $('#loader').hide();
-$(document)
-    .ajaxStart(function() {
-        $loading.show();
-    })
-    .ajaxStop(function() {
-        $loading.hide();
-    });
-
-
 $(document).ready(function() {
     //Rename branches
     for (var i = 1; i < branch_names.length; i++) {
         $('#title-' + i + " span").text(branch_names[i]);
     }
 
+    var $loading = $('#loader').hide();
+    $(document)
+        .ajaxStart(function() {
+            $loading.show();
+        })
+        .ajaxStop(function() {
+            $loading.hide();
+    });
 
     $.ajax({
-        url: "http://185.20.216.94:7542/weather",
+        url: server + "/weather",
         success: function(data) {
             $("#temp_header").text("Температура воздуха - " + data['temperature'] + " C*");
         }
