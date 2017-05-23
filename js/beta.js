@@ -67,21 +67,21 @@ $(document).ready(function() {
     })();
 
     //Add arduino touch script to determine if connection is alive
-    (function worker2() {
-        $.ajax({
-            url: server+'/active_branches',
-            beforeSend: function(xhr, opts) {
-                if ($('#time_modal').hasClass('in')) {
-                    xhr.abort();
-                }
-            },
-            success: function(data) {
-                update_branches(data);
-                setTimeout(worker2, 5 * 1000);
-            },
-            global:false
-        });
-    })();
+    // (function worker2() {
+    //     $.ajax({
+    //         url: server+'/active_branches',
+    //         beforeSend: function(xhr, opts) {
+    //             if ($('#time_modal').hasClass('in')) {
+    //                 xhr.abort();
+    //             }
+    //         },
+    //         success: function(data) {
+    //             update_branches(data);
+    //             setTimeout(worker2, 5 * 1000);
+    //         },
+    //         global:false
+    //     });
+    // })();
 
     // Add labels for swticher values
     $('.switchers-main').bootstrapToggle({
