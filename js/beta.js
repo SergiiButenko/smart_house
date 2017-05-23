@@ -64,6 +64,17 @@ $(document).ready(function() {
         });
     })();
 
+    //Print list of rules
+    (function worker2() {
+        $.ajax({
+            url: server,
+            success: function(data) {
+                $("#rules_list").text("Список правил: "+data);
+                setTimeout(worker2, 5 * 1000);
+                }
+        });
+    })();
+
     // Add labels for swticher values
     $('.switchers-main').bootstrapToggle({
         on: 'Остановить Полив',
@@ -214,7 +225,7 @@ function update_branches_request() {
 }
 
 function update_branches(json) {
-		json = JSON.parse(json);
+	json = JSON.parse(json);
     branches = json['variables'];	  
     $('#1').data('user-action', 0);
     $('#1').bootstrapToggle(get_state(branches['1']));
