@@ -65,12 +65,12 @@ $(document).ready(function() {
     })();
 
     //Print list of rules
-    (function worker2() {
+    (function update_rules() {
         $.ajax({
             url: server,
             success: function(data) {
                 $("#rules_list").text("Список правил: "+data);
-                setTimeout(worker2, 5 * 1000);
+                setTimeout(update_rules, 5 * 1000);
                 }
         });
     })();
