@@ -1,4 +1,6 @@
-var server = 'http://185.20.216.94:7542';
+//var server = 'http://185.20.216.94:7542';
+var server = 'http://127.0.0.1:5000';
+
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -64,15 +66,20 @@ $(document).ready(function() {
         });
     })();
 
-    //Print list of rules
-    (function update_rules() {
+    //Add arduino touch script to determine if connection is alive
+    (function worker2() {
         $.ajax({
-            url: server,
-            success: function(data) {
-                $("#rules_list").text("Список правил: "+data);
-                setTimeout(update_rules, 5 * 1000);
+            url: server+'/active_branches',
+            beforeSend: function(xhr, opts) {
+                if ($('#time_modal').hasClass('in')) {
+                    xhr.abort();
+                }
             },
-            global: false
+            success: function(data) {
+                update_branches(data);
+                setTimeout(worker2, 5 * 1000);
+            },
+            global:false
         });
     })();
 
