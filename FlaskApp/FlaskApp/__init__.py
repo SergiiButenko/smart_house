@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from threading import Timer
 from flask import Flask
 from flask import jsonify, request
