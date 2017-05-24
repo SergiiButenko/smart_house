@@ -1,5 +1,5 @@
-//var server = 'http://185.20.216.94:7542';
-var server = 'http://127.0.0.1:5000';
+var server = 'http://185.20.216.94:7542';
+//var server = 'http://127.0.0.1:5000';
 
 
 var arduino_check_connect_sec = 60*5;
@@ -68,7 +68,7 @@ $(document).ready(function() {
             },
             error: function() {
                 console.error("Can't connect to arduino");
-                $("#arduino_status").text(" Ошбика в системе");
+                $("#arduino_status").text(" Ошибка в системе");
                 $('#loader').show()
                 setTimeout(worker, arduino_check_broken_connect_sec * 1000);
             },
