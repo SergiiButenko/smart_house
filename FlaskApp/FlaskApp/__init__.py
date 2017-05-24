@@ -18,6 +18,14 @@ ARDUINO_IP='http://192.168.1.10'
 
 RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
+
 def update_data():
     while True:
         time.sleep(10)
@@ -39,13 +47,6 @@ def update_data():
 thread = threading.Thread(name='update_data', target=update_data)
 thread.setDaemon(True)
 thread.start()
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
 
 @app.route("/")
 def hello():
