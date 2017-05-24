@@ -32,7 +32,6 @@ def update_data():
     while True:
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
-            print(rule)
             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
                 response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
                 json_data = json.loads(response.text)
