@@ -1,5 +1,5 @@
-var server = 'http://185.20.216.94:7542';
-//var server = 'http://127.0.0.1:5000';
+//var server = 'http://185.20.216.94:7542';
+var server = 'http://127.0.0.1:5000';
 
 
 var arduino_check_connect_sec = 60*5;
@@ -29,6 +29,16 @@ $(document).ready(function() {
         .ajaxStop(function() {
             $loading.hide();
     });
+    
+    var socket = io.connect('http://127.0.0.1:5000');
+    socket.on('connect', function() {
+        console.log("connected to websocket")
+    });
+
+    socket.on('branch_status', function(msg) {
+               console.log('Message received. New brach status: '  + msg.data);
+               update_branches(msg.data);
+            });
 
     $.ajax({
         url: server + "/weather",
@@ -65,23 +75,6 @@ $(document).ready(function() {
             complete: function(){$("#button_gif").removeClass("fa-spin");}
         });
     })();
-
-    //Add arduino touch script to determine if connection is alive
-    // (function worker2() {
-    //     $.ajax({
-    //         url: server+'/active_branches',
-    //         beforeSend: function(xhr, opts) {
-    //             if ($('#time_modal').hasClass('in')) {
-    //                 xhr.abort();
-    //             }
-    //         },
-    //         success: function(data) {
-    //             update_branches(data);
-    //             setTimeout(worker2, 5 * 1000);
-    //         },
-    //         global:false
-    //     });
-    // })();
 
     // Add labels for swticher values
     $('.switchers-main').bootstrapToggle({

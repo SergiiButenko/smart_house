@@ -2,23 +2,27 @@ from threading import Timer
 from flask import Flask
 from flask import jsonify, request
 
+from flask_socketio import SocketIO
+from flask_socketio import send, emit
+
 import datetime
 import json, requests
 import threading
 import time
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
-BRANCH_STATUSES=[0,0,0,0,0,0,0,0]
 
 def update_data():
     while True:
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
+            print(rule)
             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
                 response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
                 json_data = json.loads(response.text)
@@ -29,16 +33,8 @@ def update_data():
                 if (json_data['return_value'] == 1 ):
                     print("Can't turn off {0} branch".format(rule['id']))
         
-                # response_status = requests.get(url=ARDUINO_IP) 
-                # json_data = json.loads(response_status.text)
-                # branches=json_data['variables']
-                
-                # BRANCH_STATUSES[1]=branches['1']
-                # BRANCH_STATUSES[2]=branches['2']
-                # BRANCH_STATUSES[3]=branches['3']
-                # BRANCH_STATUSES[4]=branches['4']
-                # BRANCH_STATUSES[5]=branches['5']
-                # BRANCH_STATUSES[6]=branches['pump']
+                response_status = requests.get(url=ARDUINO_IP) 
+                socketio.emit('branch_status', {'data':response_status.text})
 
 thread = threading.Thread(name='update_data', target=update_data)
 thread.setDaemon(True)
@@ -71,17 +67,9 @@ def activate_branch():
     now_plus = now + datetime.timedelta(minutes = time_min)
     
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
-
-    # response_status = requests.get(url=ARDUINO_IP) 
-    # json_data = json.loads(response_status.text)
-    # branches=json_data['variables']
     
-    # BRANCH_STATUSES[1]=branches['1']
-    # BRANCH_STATUSES[2]=branches['2']
-    # BRANCH_STATUSES[3]=branches['3']
-    # BRANCH_STATUSES[4]=branches['4']
-    # BRANCH_STATUSES[5]=branches['5']
-    # BRANCH_STATUSES[6]=branches['pump']
+    response_status = requests.get(url=ARDUINO_IP)
+    socketio.emit('branch_status', {'data':response_status.text})
 
     return (response_on.text, response_on.status_code)
 
@@ -93,23 +81,10 @@ def deactivate_branch():
 
     RULES_FOR_BRANCHES[id]=None
 
-    # response_status = requests.get(url=ARDUINO_IP) 
-    # json_data = json.loads(response_status.text)
-    # branches=json_data['variables']
-    
-    # BRANCH_STATUSES[1]=branches['1']
-    # BRANCH_STATUSES[2]=branches['2']
-    # BRANCH_STATUSES[3]=branches['3']
-    # BRANCH_STATUSES[4]=branches['4']
-    # BRANCH_STATUSES[5]=branches['5']
-    # BRANCH_STATUSES[6]=branches['pump']
+    response_status = requests.get(url=ARDUINO_IP)         
+    socketio.emit('branch_status', {'data':response_status.text})
 
     return (response_off.text, response_off.status_code)
-
-# @app.route('/active_branches', methods=['GET'])
-# def acive_branches():
-#     return json.dumps({'variables':{'1':BRANCH_STATUSES[1], '2':BRANCH_STATUSES[2], '3':BRANCH_STATUSES[3], 
-#         '4':BRANCH_STATUSES[4], '5':BRANCH_STATUSES[5], 'pump':BRANCH_STATUSES[6]}})
 
 @app.route("/weather")
 def weather():
@@ -125,4 +100,4 @@ def git_post():
     return "Done!"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app)
