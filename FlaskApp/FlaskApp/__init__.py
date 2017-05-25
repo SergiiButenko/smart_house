@@ -6,7 +6,6 @@ from flask import jsonify, request
 
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
-from flask.ext.cors import CORS
 
 import datetime
 import json, requests
@@ -14,7 +13,6 @@ import threading
 import time
 
 app = Flask(__name__)
-cors = CORS(app,resources={r"/*":{"origins":"*"}})
 socketio = SocketIO(app)
 
 ARDUINO_IP='http://192.168.1.10'
@@ -101,3 +99,4 @@ def weather():
 
 if __name__ == "__main__":
     socketio.run(app)
+    
