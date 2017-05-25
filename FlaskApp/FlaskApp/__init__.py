@@ -73,7 +73,7 @@ def activate_branch():
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
     
     response_status = requests.get(url=ARDUINO_IP)
-    #socketio.emit('branch_status', {'data':response_status.text})
+    socketio.emit('branch_status', {'data':response_status.text})
 
     return (response_status.text, response_status.status_code)
 
@@ -86,7 +86,7 @@ def deactivate_branch():
     RULES_FOR_BRANCHES[id]=None
 
     response_status = requests.get(url=ARDUINO_IP)         
-    #socketio.emit('branch_status', {'data':response_status.text})
+    socketio.emit('branch_status', {'data':response_status.text})
 
     return (response_status.text, response_status.status_code)
 
