@@ -13,7 +13,7 @@ import threading
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app, ping_timeout=60, ping_interval=10)
+socketio = SocketIO(app, ping_timeout=60, ping_interval=60)
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
