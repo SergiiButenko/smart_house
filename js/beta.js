@@ -15,6 +15,12 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     'Насос'
 ];
 
+
+// this is for status button
+var class_ok = {msg:' Система активна', class: 'fa fa-refresh'}
+var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
+var class_err = {msg:' Ошибка! Нажмите, чтобы обновить', class: 'fa fa-exclamation-circle'}
+
 $(document).ready(function() {
     //Rename branches
     for (var i = 1; i < branch_names.length; i++) {
@@ -52,8 +58,7 @@ $(document).ready(function() {
         $.ajax({
             url: server+'/arduino_status',
             beforeSend: function(xhr, opts) {
-                $("#arduino_status").text(" Проверка статуса системы");
-                $("#button_gif").addClass("fa-spin");
+                set_status_spinner();
 
                 if ($('#time_modal').hasClass('in')) {
                     xhr.abort();
@@ -62,13 +67,17 @@ $(document).ready(function() {
             success: function(data) {
                 $('#loader').hide();
                 console.log("connected to arduino");
-                $("#arduino_status").text(" Система активна");
+                
+                set_status_ok();
+
                 update_branches(data);
                 setTimeout(worker, arduino_check_connect_sec * 1000);
             },
             error: function() {
                 console.error("Can't connect to arduino");
-                $("#arduino_status").text(" Ошибка в системе");
+
+                set_status_error();
+
                 $('#loader').show()
                 setTimeout(worker, arduino_check_broken_connect_sec * 1000);
             },
@@ -139,7 +148,8 @@ function branch_on(index, time_min) {
             alert("Не могу включить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
             toogle_checkbox(index, 0); 
-            display_alert_status();
+            
+            set_status_error();
         }
     });
 }
@@ -159,15 +169,10 @@ function branch_off(index) {
             alert("Не могу выключить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
             toogle_checkbox(index, 1); 
-            display_alert_status();
+            set_status_error();
         }
     });
 }
-
-function display_alert_status(){
-
-}
-
 
 function update_branches_request() {
     $.ajax({
@@ -184,7 +189,8 @@ function update_branches_request() {
         },
         error: function() {
             console.error("Branches statuses are out-of-date");
-            $("#arduino_status").text("Branches statuses are out-of-date");
+            
+            set_status_error();
         }
     });
 }
@@ -216,18 +222,38 @@ function touch_arduino(){
     $.ajax({
             url: server+'/arduino_status',
             beforeSend: function(xhr, opts) {
-                $("#arduino_status").text(" Проверка статуса системы");
-                $("#button_gif").addClass("fa-spin");
+                $("#arduino_status").text(class_spin.msg);
+                $("#button_gif").removeClass().addClass(class_spin.class);
             },
             success: function(data) {
                 console.log("connected to arduino");
-                $("#arduino_status").text(" Система активна");
+                set_status_ok();
                 update_branches(data);
             },
             error: function() {
+                //$('button').setClass('btn btn-primary');
                 console.error("Can't connect to arduino");
-                $("#arduino_status").text(" Ошибка в системе");
-            },
-            complete: function(){$("#button_gif").removeClass("fa-spin");}
+                set_status_error();
+            }
         });
+}
+
+function set_status_error(){
+    $("#arduino_status").text(class_err.msg);
+    $("#button_gif").removeClass().addClass(class_err.class);
+    $("#status_button").removeClass().addClass('btn btn-danger btn-md');
+}
+
+function set_status_ok(){
+    $("#arduino_status").text(class_ok.msg);
+    $("#button_gif").removeClass().addClass(class_ok.class);
+    $("#status_button").removeClass().addClass('btn btn-default btn-md');
+
+}
+
+function set_status_spinner(){
+    $("#arduino_status").text(class_spin.msg);
+    $("#button_gif").removeClass().addClass(class_spin.class);
+    $("#status_button").removeClass().addClass('btn btn-default btn-md');
+
 }
