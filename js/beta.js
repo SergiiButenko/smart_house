@@ -132,23 +132,12 @@ function branch_on(index, time_min) {
             'time' : time_min
         },
         success: function(data) {
-        		data = JSON.parse(data);
-
-            if (data['return_value'] == 0) {
-                alert("Не могу включить " + branch_names[index]);
-                console.error('Line ' + index + ' cannot be activated');
-            }
-
-            if (data['return_value'] == 1) {
-                console.log('Line ' + index + ' activated');
-            }
+            console.log('Line ' + branch_names[index] + ' should be activated now');
+            update_branches(data);
         },
         error: function() {
             alert("Не могу включить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
-        },
-        complete: function() {
-            update_branches_request();
         }
     });
 }
@@ -161,24 +150,12 @@ function branch_off(index) {
             'id': index
         },
         success: function(data) {
-        	  data = JSON.parse(data);
-
-            if (data['return_value'] == 1) {
-                alert("Не могу выключить " + branch_names[index]);
-                console.error('Line ' + index + ' cannot be deactivated');
-            }
-
-            if (data['return_value'] == 0) {
-                console.log('Line ' + index + ' deactivated');
-            }
-
+            console.log('Line ' + branch_names[index] + ' should be deactivated now');
+            update_branches(data);
         },
         error: function() {
             alert("Не могу выключить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
-        },
-        complete: function() {
-            update_branches_request();
         }
     });
 }
