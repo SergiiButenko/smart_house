@@ -7,11 +7,13 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Custom JavaScript -->
-    <script src="js/private.js"></script>
+    <script src="js/beta.js"></script>
     <script src="bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-    <!-- <script src="https://use.fontawesome.com/41f36ecde2.js"></script> -->
+    <script src="https://use.fontawesome.com/41f36ecde2.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8"></script>
 
-    <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap Core CSS -->r
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/custom.css" rel="stylesheet">
@@ -55,7 +57,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="#schedule">Расписание полива</a></li>
-                    <li><a href="#weather">Погода</a></li>
+                    <!--  <li><a href="#weather">Погода</a></li> -->
                                        
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -73,37 +75,42 @@
     <div class="modal_spinner" id="loader"></div>
 
 
-    	<div id="branch_holer">
-	        <label for="1" id="title-1">
-	        	<input type="checkbox" class="switchers-main" id="1" data-id="1" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="fast">
-	        	<span>Задайте имя для ветки</span>
-	        </label>
-
-	        <label for="2" id="title-2">
-	        	<input type="checkbox" class="switchers-main" id="2" data-id="2" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="fast">
+        <div id="branch_holer">
+            <label for="1" id="title-1">
+                <input type="checkbox" class="switchers-main" id="1" data-id="1" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-target="#time_modal" data-width="150" data-style="fast">
                 <span>Задайте имя для ветки</span>
-	        </label>
+            </label>
+
+
+            <label for="2" id="title-2">
+                <input type="checkbox" class="switchers-main" id="2" data-id="2" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-target="#time_modal" data-width="150" data-style="fast">
+                <span>Задайте имя для ветки</span>
+            </label>
 
             <label for="3" id="title-3">
-                <input type="checkbox" class="switchers-main" id="3" data-id="3" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="fast">
+                <input type="checkbox" class="switchers-main" id="3" data-id="3" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-target="#time_modal" data-width="150" data-style="fast">
                 <span>Задайте имя для ветки</span>
             </label>
 
             <label for="4" id="title-4">
-                <input type="checkbox" class="switchers-main" id="4" data-id="4" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="fast">
+                <input type="checkbox" class="switchers-main" id="4" data-id="4" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-target="#time_modal" data-width="150" data-style="fast">
                 <span>Задайте имя для ветки</span>
             </label>
 
-            <span class="indent"></span>
+            <span class="indent_pump"></span>
 
             <label for="7" id="title-7">
-                <input type="checkbox" class="switchers-pump" id="7" data-id="7" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-target="#time_modal" data-width="150" data-style="quick">
+                <input type="checkbox" class="switchers-pump" id="7" data-id="7" data-user-action='1' data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-target="#time_modal" data-width="150" data-style="quick">
                 <span>Задайте имя для ветки</span>
             </label>
+            
 
             <span class="indent"></span>
-            <span id="arduino_status">arduino connection status</span>
-
+            <button type="button" id="status_button" class="btn btn-default btn-md" aria-hidden="true" onclick="touch_arduino()">
+               <span id="button_gif" class="fa fa-refresh"></span><span id="arduino_status"> Статус системы</span>
+            </button>
+            <span class="indent"></span>
+            <span>test</span>
         </div>
     </div>
 
@@ -115,32 +122,30 @@
       <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content" style="width 100px">
+        <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="modal_close close">&times;</button>
             <h4 class="modal-title">Длительность полива</h4>
           </div>
 
           <div class="modal-body text-center">
-            <div class="btn-group " data-toggle="buttons">
+            <div class="btn-group " data-toggle="buttons" id="time_buttons">
               <label class="btn btn-primary active">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> 2 минуты
+                <input type="radio" name="options" data-value=2 id="option1" autocomplete="off" checked> 2 минуты
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option2" autocomplete="off"> 3 минуты
+                <input type="radio" name="options" data-value=3 id="option2" autocomplete="off"> 3 минуты
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option3" autocomplete="off"> 5 минут
+                <input type="radio" name="options" data-value=4 id="option3" autocomplete="off"> 4 минуты
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="options" id="option3" autocomplete="off"> 7 минут
+                <input type="radio" name="options" data-value=5 id="option3" autocomplete="off"> 5 минут
               </label>
             </div>
           </div>
 
           <div class="modal-footer">
-            <label> test
-            </label>
             <button type="button" id="modal-close" class="btn btn-default modal_close" data-dismiss="modal">Закрыть</button>
             <button type="button" class="btn btn-default start-irrigation" data-dismiss="modal">Начать полив</button>
           </div>

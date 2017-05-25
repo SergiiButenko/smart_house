@@ -1,233 +1,258 @@
-var aruino_ip='http://185.20.216.94:5555/';
-//var aruino_ip='http://192.168.1.10/';
-var arduino_check_connect_sec=30;
-var arduino_check_broken_connect_sec=2;
+var server = 'http://mozart.hopto.org:7542';
+//var server = 'http://127.0.0.1:5000';
 
-var branch_names=[ '', // Arduino stars numeration from 1. So skiping 0 index
-	'Первая ветка',
-	'Вторая ветка',
-	'Третья ветка',
-	'Четвертая ветка',
-	'',
-	'',
-	'Насос'
-	];
+var arduino_check_connect_sec = 60*5;
+var arduino_check_broken_connect_sec = 60;
 
-$(document).ready(function(){
-	//Rename branches
-	for (var i = 1; i < branch_names.length; i++) {
-	   $('#title-'+i+" span").text(branch_names[i]);
-	}
-
-	(function update_temperature() {
-	  $.ajax({
-	    url: "http://185.20.216.94:7542/weather", 
-	    success: function(data) {
-	    	$("#temp_header").text("Температура воздуха - "+data['temperature']+" C*");
-	    }
-	  });
-	})();
-
-	// Add labels for swticher values
-	$('.switchers-main').bootstrapToggle({
-		 on: 'Остановить Полив',
-		 off: 'Начать полив'
-	});
-
-	// Add labels for swticher values
-	$('.switchers-pump').bootstrapToggle({
-		 on: 'Выключить насос',
-		 off: 'Включить насос'
-	});
-
-	//Add arduino touch script to determine if connection is alive
-	(function worker() {
-	  $.ajax({
-	    url: aruino_ip, 
-	    beforeSend: function(xhr, opts){
-	    	$("#arduino_status").text("connecting to arduino...");
-	    	if ($('#time_modal').hasClass('in')){
-	    		xhr.abort();
-	    	}
-	    }, 
-	    success: function(data) {
-	    	$('#loader').hide();
-	    	console.log("connected to arduino");
-	    	$("#arduino_status").text("connected to arduino");
-	    	update_branches(data);
-	    	setTimeout(worker, arduino_check_connect_sec*1000);     
-	    },
-	    error: function(){	    	
-	    	console.error("Can't connect to arduino");
-	    	$("#arduino_status").text("error connection to arduino");
-	    	$('#loader').show()
-	    	setTimeout(worker, arduino_check_broken_connect_sec*1000);     
-	    }
-	  });
-	})();
+var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
+    'Первая ветка',
+    'Вторая ветка',
+    'Третья ветка',
+    'Четвертая ветка',
+    '',
+    '',
+    'Насос'
+];
 
 
-   //Assign onClick for close buttons on Modal window
-   $(".modal_close").click(function(){ 
-   	    update_branches_request();
-   });
+// this is for status button
+var class_ok = {msg:' Система активна. Нажмите, чтобы обновить', class: 'fa fa-refresh'}
+var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
+var class_err = {msg:' Ошибка! Нажмите, чтобы обновить', class: 'fa fa-exclamation-circle'}
 
-   //Assign onChange for all switchers, so they open modal window
-   $(".switchers-main, .switchers-pump").change(function(){ 
-   	if ($(this).prop('checked') && $(this).data('user-action') == 1){
-	   	index = $(this).data('id');
-	   	name = branch_names[index];
-	   	
-	   	$('#time_modal').data('id', index);
-	   	$('.modal-title').html(name);
-	    $('#time_modal').modal('show');
-	} 
+$(document).ready(function() {
+    //Rename branches
+    for (var i = 1; i < branch_names.length; i++) {
+        $('#title-' + i + " span").text(branch_names[i]);
+    }
 
-	if (!$(this).prop('checked') && $(this).data('user-action') == 1){
-	   	index = $(this).data('id');
-	   	branch_off(index);
-	}
-   });
+    var $loading = $('#loader').hide();
+    $(document)
+        .ajaxStart(function() {
+            $loading.show();
+        })
+        .ajaxStop(function() {
+            $loading.hide();
+    });
+    
+    var socket = io.connect(server);
+    socket.on('connect', function() {
+        console.log("connected to websocket")
+    });
 
-   //Function to start irrigation
-   $(".start-irrigation").click(function(){ 
-   	index = $('#time_modal').data('id');
-   	branch_on(index);
-   });
+    socket.on('branch_status', function(msg) {
+               console.log('Message received. New brach status: '  + msg.data);
+               update_branches(msg.data);
+            });
+
+    $.ajax({
+        url: server + "/weather",
+        success: function(data) {
+            $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
+        }
+    });
+
+    //Add arduino touch script to determine if connection is alive
+    (function worker() {
+        $.ajax({
+            url: server+'/arduino_status',
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
+
+                if ($('#time_modal').hasClass('in')) {
+                    xhr.abort();
+                }
+            },
+            success: function(data) {
+                $('#loader').hide();
+                console.log("connected to arduino");
+                
+                set_status_ok();
+
+                update_branches(data);
+                setTimeout(worker, arduino_check_connect_sec * 1000);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
+
+                set_status_error();
+
+                $('#loader').show()
+                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+            },
+            complete: function(){$("#button_gif").removeClass("fa-spin");}
+        });
+    })();
+
+    // Add labels for swticher values
+    $('.switchers-main').bootstrapToggle({
+        on: 'Остановить Полив',
+        off: 'Начать полив'
+    });
+
+    // Add labels for swticher values
+    $('.switchers-pump').bootstrapToggle({
+        on: 'Выключить насос',
+        off: 'Включить насос'
+    });
+
+
+    //Assign onClick for close buttons on Modal window
+    $(".modal_close").click(function() {
+        update_branches_request();
+    });
+
+    //Assign onChange for all switchers, so they open modal window
+    $(".switchers-main, .switchers-pump").change(function() {
+        if ($(this).data('user-action') == 1) {
+        	
+            index = $(this).data('id');
+            if ($(this).prop('checked')) {
+                name = branch_names[index];
+
+                $('#time_modal').data('id', index);
+                $('.modal-title').html(name);
+                $('#time_modal').modal('show');
+            }
+
+            if (!$(this).prop('checked')) {
+                branch_off(index);
+            }
+        }
+    });
+
+    //Function to start irrigation
+    $(".start-irrigation").click(function() {
+        index = $('#time_modal').data('id');
+        time = $("#time_buttons input:radio:checked").data("value");
+        console.log(branch_names[index]+" will be activated on "+time+" minutes");
+        branch_on(index, time);
+    });
 
 });
 
-function branch_on(index){
-	$.ajax({
-	    url: aruino_ip+'/on', 
-	    type: "get",
-	    data: {
-	    	'params' : index
-	    },
-	    beforeSend: function(req){ $('#loader').show()},
-	    success: function(data) {
-	      if (data['return_value']==0){
-	      	   alert("Не могу включить "+branch_names[index]);
-	   		   console.error('Line '+index+' cannot be activated');
-	   		}
-
-	    	if (data['return_value']==1){
-	   		   console.log('Line '+index+' activated');
-	   		}
-	    },
-	    error: function(){
-	    	alert("Не могу включить "+branch_names[index]);
-	    	console.error("Can't update "+branch_names[index]);
-	    },
-	    complete: function() {
-	      update_branches_request();
-	      $('#loader').hide();
-	    }
-	  });
+function branch_on(index, time_min) {
+    $.ajax({
+        url: server + '/activate_branch',
+        type: "get",
+        data: {
+            'id': index,
+            'time' : time_min
+        },
+        success: function(data) {
+            console.log('Line ' + branch_names[index] + ' should be activated now');
+            update_branches(data);
+        },
+        error: function() {
+            alert("Не могу включить " + branch_names[index]);
+            console.error("Can't update " + branch_names[index]);
+            toogle_checkbox(index, 0); 
+            
+            set_status_error();
+        }
+    });
 }
 
-function branch_off(index){
-	$.ajax({
-	    url: aruino_ip+'/off', 
-	    type: "get",
-	    data: {
-	    	'params' : index
-	    },
-	    beforeSend: function(req){ $('#loader').show()},
-	    success: function(data) {
-			if (data['return_value']==1){
-			   alert("Не могу включить "+branch_names[index]);
-	   		   console.error('Line '+index+' cannot be deactivated');
-	   		}
-
-	    	if (data['return_value']==0){
-	   		   console.log('Line '+index+' deactivated');
-	   		}
-	  	
-	    },
-	    error: function(){
-	    	alert("Не могу включить "+branch_names[index]);
-	    	console.error("Can't update "+branch_names[index]);
-	    },
-	    complete: function() {
-	      update_branches_request();
-	      $('#loader').hide();
-	    }
-	  });
+function branch_off(index) {
+    $.ajax({
+        url: server + '/deactivate_branch',
+        type: "get",
+        data: {
+            'id': index
+        },
+        success: function(data) {
+            console.log('Line ' + branch_names[index] + ' should be deactivated now');
+            update_branches(data);
+        },
+        error: function() {
+            alert("Не могу выключить " + branch_names[index]);
+            console.error("Can't update " + branch_names[index]);
+            toogle_checkbox(index, 1); 
+            set_status_error();
+        }
+    });
 }
 
-function update_branches_request(){
-	$.ajax({
-	    url: aruino_ip, 
-	    beforeSend: function(req){ $('#loader').show()},
-	    success: function(data) {
-			branches = data['variables'];
+function update_branches_request() {
+    $.ajax({
+        url: server+'/arduino_status',
+        success: function(data) {
+        	data = JSON.parse(data);
+            branches = data['variables'];
 
-			$('#1').data('user-action', 0);
-			$('#1').bootstrapToggle(get_state(branches['1']));	
-			$('#1').data('user-action', 1);
-
-			$('#2').data('user-action', 0);
-			$('#2').bootstrapToggle(get_state(branches['2']));	
-			$('#2').data('user-action', 1);
-
-			$('#3').data('user-action', 0);
-			$('#3').bootstrapToggle(get_state(branches['3']));	
-			$('#3').data('user-action', 1);
-
-			$('#4').data('user-action', 0);
-			$('#4').bootstrapToggle(get_state(branches['4']));	
-			$('#4').data('user-action', 1);
-
-			$('#7').data('user-action', 0);
-			$('#7').bootstrapToggle(get_state(branches['pump']));	
-			$('#7').data('user-action', 1);
-
-			function get_state(i){
-				if (i==0)
-				 return 'off';
-				else
-				  return 'on';
-			}
-	    },
-	    error: function(){
-	    	console.error("Branches statuses are out-of-date");
-	    	$("#arduino_status").text("Branches statuses are out-of-date");
-	    },
-	    complete: function() {
-	      $('#loader').hide();
-	    }
-	  });
+            toogle_checkbox(1, branches['1']);    
+            toogle_checkbox(2, branches['2']);     
+            toogle_checkbox(3, branches['3']);     
+            toogle_checkbox(4, branches['4']);     
+            toogle_checkbox(7, branches['pump']);   
+        },
+        error: function() {
+            console.error("Branches statuses are out-of-date");
+            
+            set_status_error();
+        }
+    });
 }
 
-function update_branches(json){
-	branches = json['variables'];
+function update_branches(json) {
+	json = JSON.parse(json);
+    branches = json['variables'];
+    toogle_checkbox(1, branches['1']);	  
+    toogle_checkbox(2, branches['2']);     
+    toogle_checkbox(3, branches['3']);     
+    toogle_checkbox(4, branches['4']);     
+    toogle_checkbox(7, branches['pump']);     
+}
 
-	$('#1').data('user-action', 0);
-	$('#1').bootstrapToggle(get_state(branches['1']));	
-	$('#1').data('user-action', 1);
+function toogle_checkbox(element_id, branch_state){
+    $('#'+element_id).data('user-action', 0);
+    $('#'+element_id).bootstrapToggle(get_state(branch_state));
+    $('#'+element_id).data('user-action', 1);
 
-	$('#2').data('user-action', 0);
-	$('#2').bootstrapToggle(get_state(branches['2']));	
-	$('#2').data('user-action', 1);
+    function get_state(i) {
+        if (i == 0)
+            return 'off';
+        else
+            return 'on';
+    }   
+}
 
-	$('#3').data('user-action', 0);
-	$('#3').bootstrapToggle(get_state(branches['3']));	
-	$('#3').data('user-action', 1);
+function touch_arduino(){
+    $.ajax({
+            url: server+'/arduino_status',
+            beforeSend: function(xhr, opts) {
+                $("#arduino_status").text(class_spin.msg);
+                $("#button_gif").removeClass().addClass(class_spin.class);
+            },
+            success: function(data) {
+                console.log("connected to arduino");
+                set_status_ok();
+                update_branches(data);
+            },
+            error: function() {
+                //$('button').setClass('btn btn-primary');
+                console.error("Can't connect to arduino");
+                set_status_error();
+            }
+        });
+}
 
-	$('#4').data('user-action', 0);
-	$('#4').bootstrapToggle(get_state(branches['4']));	
-	$('#4').data('user-action', 1);
+function set_status_error(){
+    $("#arduino_status").text(class_err.msg);
+    $("#button_gif").removeClass().addClass(class_err.class);
+    $("#status_button").removeClass().addClass('btn btn-danger btn-md');
+}
 
-	$('#7').data('user-action', 0);
-	$('#7').bootstrapToggle(get_state(branches['pump']));	
-	$('#7').data('user-action', 1);
+function set_status_ok(){
+    $("#arduino_status").text(class_ok.msg);
+    $("#button_gif").removeClass().addClass(class_ok.class);
+    $("#status_button").removeClass().addClass('btn btn-default btn-md');
 
+}
 
-	function get_state(i){
-		if (i==0)
-		 return 'off';
-		else
-		  return 'on';
-	}
+function set_status_spinner(){
+    $("#arduino_status").text(class_spin.msg);
+    $("#button_gif").removeClass().addClass(class_spin.class);
+    $("#status_button").removeClass().addClass('btn btn-default btn-md');
+
 }
