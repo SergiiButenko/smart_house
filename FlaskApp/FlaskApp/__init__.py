@@ -99,9 +99,5 @@ def weather():
         temperature=str(json_data[0]['Temperature']['Metric']['Value'])
     )
 
-@app.route('/gitwebhook', methods=['POST'])
-def git_post():
-    return "Done!"
-
 if __name__ == "__main__":
     socketio.run(app)
