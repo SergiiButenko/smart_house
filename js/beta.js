@@ -138,6 +138,8 @@ function branch_on(index, time_min) {
         error: function() {
             alert("Не могу включить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
+            toogle_checkbox(index, 0); 
+            display_alert_status();
         }
     });
 }
@@ -156,43 +158,29 @@ function branch_off(index) {
         error: function() {
             alert("Не могу выключить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
+            toogle_checkbox(index, 1); 
+            display_alert_status();
         }
     });
 }
+
+function display_alert_status(){
+
+}
+
 
 function update_branches_request() {
     $.ajax({
         url: server+'/arduino_status',
         success: function(data) {
         	data = JSON.parse(data);
-
             branches = data['variables'];
-            $('#1').data('user-action', 0);
-            $('#1').bootstrapToggle(get_state(branches['1']));
-            $('#1').data('user-action', 1);
 
-            $('#2').data('user-action', 0);
-            $('#2').bootstrapToggle(get_state(branches['2']));
-            $('#2').data('user-action', 1);
-
-            $('#3').data('user-action', 0);
-            $('#3').bootstrapToggle(get_state(branches['3']));
-            $('#3').data('user-action', 1);
-
-            $('#4').data('user-action', 0);
-            $('#4').bootstrapToggle(get_state(branches['4']));
-            $('#4').data('user-action', 1);
-
-            $('#7').data('user-action', 0);
-            $('#7').bootstrapToggle(get_state(branches['pump']));
-            $('#7').data('user-action', 1);
-
-            function get_state(i) {
-                if (i == 0)
-                    return 'off';
-                else
-                    return 'on';
-            }
+            toogle_checkbox(1, branches['1']);    
+            toogle_checkbox(2, branches['2']);     
+            toogle_checkbox(3, branches['3']);     
+            toogle_checkbox(4, branches['4']);     
+            toogle_checkbox(7, branches['pump']);   
         },
         error: function() {
             console.error("Branches statuses are out-of-date");
@@ -203,34 +191,25 @@ function update_branches_request() {
 
 function update_branches(json) {
 	json = JSON.parse(json);
-    branches = json['variables'];	  
-    $('#1').data('user-action', 0);
-    $('#1').bootstrapToggle(get_state(branches['1']));
-    $('#1').data('user-action', 1);
+    branches = json['variables'];
+    toogle_checkbox(1, branches['1']);	  
+    toogle_checkbox(2, branches['2']);     
+    toogle_checkbox(3, branches['3']);     
+    toogle_checkbox(4, branches['4']);     
+    toogle_checkbox(7, branches['pump']);     
+}
 
-    $('#2').data('user-action', 0);
-    $('#2').bootstrapToggle(get_state(branches['2']));
-    $('#2').data('user-action', 1);
-
-    $('#3').data('user-action', 0);
-    $('#3').bootstrapToggle(get_state(branches['3']));
-    $('#3').data('user-action', 1);
-
-    $('#4').data('user-action', 0);
-    $('#4').bootstrapToggle(get_state(branches['4']));
-    $('#4').data('user-action', 1);
-
-    $('#7').data('user-action', 0);
-    $('#7').bootstrapToggle(get_state(branches['pump']));
-    $('#7').data('user-action', 1);
-
+function toogle_checkbox(element_id, branch_state){
+    $('#'+element_id).data('user-action', 0);
+    $('#'+element_id).bootstrapToggle(get_state(branch_state));
+    $('#'+element_id).data('user-action', 1);
 
     function get_state(i) {
         if (i == 0)
             return 'off';
         else
             return 'on';
-    }
+    }   
 }
 
 function touch_arduino(){
