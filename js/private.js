@@ -36,7 +36,7 @@ $(document).ready(function() {
     });
     
     var socket = io.connect(server);
-    socket.heartbeatTimeout = 10000;
+    socket.heartbeatTimeout = 5000;
     socket.on('connect', function() {
         console.log("connected to websocket")
     });
