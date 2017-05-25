@@ -8,7 +8,7 @@ span.indent {
 
 span.indent_pump { 
   display:block; 
-  height: 20px; 
+  height: 25px; 
 }
 
 .slow .toggle-group { transition: left 0.7s; -webkit-transition: left 0.7s; }
