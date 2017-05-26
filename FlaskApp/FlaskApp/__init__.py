@@ -53,7 +53,7 @@ def update_data():
 
 thread = threading.Thread(name='update_data', target=update_data)
 thread.setDaemon(True)
-thread.start()
+thread.start() 
 
 @app.route("/")
 def hello():
