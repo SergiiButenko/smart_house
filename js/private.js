@@ -40,12 +40,16 @@ $(document).ready(function() {
                update_branches(msg.data);
             });
 
-    $.ajax({
-        url: server + "/weather",
-        success: function(data) {
-            $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
-        }
-    });
+    //Add arduino touch script to determine if connection is alive
+    (function worker2() {
+        $.ajax({
+            url: server+'/weather',
+            success: function(data) {
+                $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
+                setTimeout(worker2, 60 * 1000 * 30);
+            }
+        });
+    })();
 
     //Add arduino touch script to determine if connection is alive
     (function worker() {
