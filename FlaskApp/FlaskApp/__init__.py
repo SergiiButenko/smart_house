@@ -5,8 +5,7 @@ from flask import Flask
 from flask import jsonify, request
  
 # for socketio
-import engineio
-#from eventlet import wsgi
+from eventlet import wsgi
 import eventlet
 eventlet.monkey_patch()
 
@@ -19,7 +18,6 @@ import json, requests
 import threading
 import time
 
-eio = engineio.Server()
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
 
@@ -106,7 +104,6 @@ def weather():
     )
 
 if __name__ == "__main__":
-    app = engineio.Middleware(eio, app)
-    #socketio.run(app, debug=True)
-    eventlet.wsgi.server(eventlet.listen(('', 7541)), app)
+    socketio.run(app, debug=True)
+
     
