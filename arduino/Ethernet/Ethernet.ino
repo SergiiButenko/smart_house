@@ -68,7 +68,7 @@ rest.variable("4",&branch_4_status);
 rest.variable("5",&branch_5_status);
 rest.variable("6",&branch_5_status);
 rest.variable("7",&branch_5_status);
-rest.variable("pump",&pump_status);  
+rest.variable("pump",&pump_status);
 
 
   // Function to be exposed

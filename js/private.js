@@ -238,6 +238,14 @@ var class_spin = {msg:' Проверка статуса системы...', clas
 var class_err = {msg:' Ошибка! Нажмите, чтобы обновить статус', class: 'fa fa-exclamation-circle'}
 
 function set_status_error(){
+    // $('#1').bootstrapToggle('disable')
+    // $('#2').bootstrapToggle('disable')
+    // $('#3').bootstrapToggle('disable')
+    // $('#4').bootstrapToggle('disable')
+    // $('#7').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
     $("#arduino_status").text(class_err.msg);
     $("#button_gif").removeClass().addClass(class_err.class);
     $("#status_button").removeClass().addClass('btn btn-danger btn-md');
