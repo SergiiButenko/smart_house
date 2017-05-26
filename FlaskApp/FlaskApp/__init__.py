@@ -28,26 +28,26 @@ def after_request(response):
     return response
 
 
-def update_data():
-    while True:
-        time.sleep(10)
-        for rule in RULES_FOR_BRANCHES: 
-            if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
-                response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
-                json_data = json.loads(response.text)
-                if (json_data['return_value'] == 0 ):
-                    print("Turned off {0} branch".format(rule['id']))
-                    RULES_FOR_BRANCHES[rule['id']]=None
+# def update_data():
+#     while True:
+#         time.sleep(10)
+#         for rule in RULES_FOR_BRANCHES: 
+#             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
+#                 response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
+#                 json_data = json.loads(response.text)
+#                 if (json_data['return_value'] == 0 ):
+#                     print("Turned off {0} branch".format(rule['id']))
+#                     RULES_FOR_BRANCHES[rule['id']]=None
                     
-                if (json_data['return_value'] == 1 ):
-                    print("Can't turn off {0} branch".format(rule['id']))
+#                 if (json_data['return_value'] == 1 ):
+#                     print("Can't turn off {0} branch".format(rule['id']))
         
-                response_status = requests.get(url=ARDUINO_IP) 
-                socketio.emit('branch_status', {'data':response_status.text})
+#                 response_status = requests.get(url=ARDUINO_IP) 
+#                 socketio.emit('branch_status', {'data':response_status.text})
 
-thread = threading.Thread(name='update_data', target=update_data)
-thread.setDaemon(True)
-thread.start()
+# thread = threading.Thread(name='update_data', target=update_data)
+# thread.setDaemon(True)
+# thread.start()
 
 @app.route("/")
 def hello():
