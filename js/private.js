@@ -14,12 +14,6 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     'Насос'
 ];
 
-
-// this is for status button
-var class_ok = {msg:' Система активна. Нажмите, чтобы обновить', class: 'fa fa-refresh'}
-var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
-var class_err = {msg:' Ошибка! Нажмите, чтобы обновить', class: 'fa fa-exclamation-circle'}
-
 $(document).ready(function() {
     //Rename branches
     for (var i = 1; i < branch_names.length; i++) {
@@ -237,6 +231,11 @@ function touch_arduino(){
             }
         });
 }
+
+// this is for status button
+var class_ok = {msg:' Система активна.', class: 'fa fa-refresh'}
+var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
+var class_err = {msg:' Ошибка! Нажмите, чтобы обновить статус', class: 'fa fa-exclamation-circle'}
 
 function set_status_error(){
     $("#arduino_status").text(class_err.msg);
