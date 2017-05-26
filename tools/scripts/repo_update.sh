@@ -1,4 +1,4 @@
-cd /var/www
+cd /var/www/v2
 git reset --hard
 git pull
 msg=`git log -1 --pretty=%B | tr -s ' ' | tr ' ' '_'`
