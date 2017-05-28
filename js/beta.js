@@ -238,7 +238,7 @@ function touch_arduino(){
 }
 
 // this is for status button
-var class_ok = {msg:' Система активна.', class: 'fa fa-refresh'}
+var class_ok = {msg:' Система активна', class: 'fa fa-refresh'}
 var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
 var class_err = {msg:' Ошибка! Нажмите, чтобы обновить статус', class: 'fa fa-exclamation-circle'}
 
