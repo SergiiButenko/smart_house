@@ -24,7 +24,7 @@ socketio = SocketIO(app, async_mode='eventlet')
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
 
-RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
+RULES_FOR_BRANCHES=[None] * 8
 
 @app.after_request
 def after_request(response):
@@ -34,7 +34,7 @@ def after_request(response):
     return response
 
 
-def update_data():
+def enable_rule():
     while True:
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
@@ -51,7 +51,7 @@ def update_data():
                 response_status = requests.get(url=ARDUINO_IP) 
                 socketio.emit('branch_status', {'data':response_status.text})
 
-thread = threading.Thread(name='update_data', target=update_data)
+thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
