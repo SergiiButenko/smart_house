@@ -1,6 +1,5 @@
-var server = 'http://185.20.216.94:7542';
+var server = 'http://mozart.hopto.org:7543';
 //var server = 'http://127.0.0.1:5000';
-
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -14,12 +13,6 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     '',
     'Насос'
 ];
-
-
-// this is for status button
-var class_ok = {msg:' Система активна', class: 'fa fa-refresh'}
-var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
-var class_err = {msg:' Ошибка! Нажмите, чтобы обновить', class: 'fa fa-exclamation-circle'}
 
 $(document).ready(function() {
     //Rename branches
@@ -37,7 +30,9 @@ $(document).ready(function() {
     });
     
     var socket = io.connect(server);
+    socket.heartbeatTimeout = 5000;
     socket.on('connect', function() {
+        //socket.emit('connect', {data: 'I\'m connected!'});
         console.log("connected to websocket")
     });
 
@@ -46,12 +41,16 @@ $(document).ready(function() {
                update_branches(msg.data);
             });
 
-    $.ajax({
-        url: server + "/weather",
-        success: function(data) {
-            $("#temp_header").text("Температура воздуха - " + data['temperature'] + " C*");
-        }
-    });
+    //Add arduino touch script to determine if connection is alive
+    (function worker2() {
+        $.ajax({
+            url: server+'/weather',
+            success: function(data) {
+                $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
+                setTimeout(worker2, 60 * 1000 * 30);
+            }
+        });
+    })();
 
     //Add arduino touch script to determine if connection is alive
     (function worker() {
@@ -106,7 +105,7 @@ $(document).ready(function() {
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
         if ($(this).data('user-action') == 1) {
-        	
+            
             index = $(this).data('id');
             if ($(this).prop('checked')) {
                 name = branch_names[index];
@@ -178,7 +177,7 @@ function update_branches_request() {
     $.ajax({
         url: server+'/arduino_status',
         success: function(data) {
-        	data = JSON.parse(data);
+            data = JSON.parse(data);
             branches = data['variables'];
 
             toogle_checkbox(1, branches['1']);    
@@ -196,9 +195,9 @@ function update_branches_request() {
 }
 
 function update_branches(json) {
-	json = JSON.parse(json);
+    json = JSON.parse(json);
     branches = json['variables'];
-    toogle_checkbox(1, branches['1']);	  
+    toogle_checkbox(1, branches['1']);    
     toogle_checkbox(2, branches['2']);     
     toogle_checkbox(3, branches['3']);     
     toogle_checkbox(4, branches['4']);     
@@ -238,7 +237,20 @@ function touch_arduino(){
         });
 }
 
+// this is for status button
+var class_ok = {msg:' Система активна.', class: 'fa fa-refresh'}
+var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}
+var class_err = {msg:' Ошибка! Нажмите, чтобы обновить статус', class: 'fa fa-exclamation-circle'}
+
 function set_status_error(){
+    // $('#1').bootstrapToggle('disable')
+    // $('#2').bootstrapToggle('disable')
+    // $('#3').bootstrapToggle('disable')
+    // $('#4').bootstrapToggle('disable')
+    // $('#7').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
+    // $('#toggle-demo').bootstrapToggle('disable')
     $("#arduino_status").text(class_err.msg);
     $("#button_gif").removeClass().addClass(class_err.class);
     $("#status_button").removeClass().addClass('btn btn-danger btn-md');

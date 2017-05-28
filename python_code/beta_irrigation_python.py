@@ -4,6 +4,12 @@ from threading import Timer
 from flask import Flask
 from flask import jsonify, request
  
+# for socketio
+from eventlet import wsgi
+import eventlet
+eventlet.monkey_patch()
+
+
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
 
@@ -13,7 +19,7 @@ import threading
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
@@ -98,6 +104,6 @@ def weather():
     )
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=True)
 
     
