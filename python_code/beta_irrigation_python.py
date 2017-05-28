@@ -9,7 +9,6 @@ from eventlet import wsgi
 import eventlet
 eventlet.monkey_patch()
 
-
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
 
@@ -17,24 +16,18 @@ import datetime
 import json, requests
 import threading
 import time
+import psycopg2
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
+CONN_STR="dbname=test user=sprinkler password=drop# host=127.0.0.1 port=5432"
+RULES_FOR_BRANCHES=[None] * 8
 
-RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
-
-
-def update_data():
+def enable_rule():
     while True:
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
@@ -51,9 +44,32 @@ def update_data():
                 response_status = requests.get(url=ARDUINO_IP) 
                 socketio.emit('branch_status', {'data':response_status.text})
 
-thread = threading.Thread(name='update_data', target=update_data)
+thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
+
+
+@app.route("/update_rules")
+def update_rules():
+    con = None
+    js_string = ''
+ 
+    try:
+        con = psycopg2.connect(CONN_STR)
+        cur = con.cursor()
+        cur.execute("""Select * from life""")
+ 
+        rows = cur.fetchall()        
+ 
+    except psycopg2.DatabaseError, e:
+        print 'DB Error %s' % e    
+        sys.exit(1)
+ 
+    finally:
+        if con:
+        con.close()
+ 
+    return rows
 
 @app.route("/")
 def hello():
@@ -102,6 +118,14 @@ def weather():
     return jsonify(
         temperature=str(json_data[0]['Temperature']['Metric']['Value'])
     )
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=True)
