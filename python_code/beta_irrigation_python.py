@@ -16,15 +16,17 @@ import datetime
 import json, requests
 import threading
 import time
-import psycopg2
+from flask_sqlalchemy import SQLAlchemy
+from db import *
 
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
+
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
-CONN_STR="dbname=test user=sprinkler password=drop# host=127.0.0.1 port=5432"
 RULES_FOR_BRANCHES=[None] * 8
 
 def enable_rule():
@@ -48,28 +50,11 @@ thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
-
 @app.route("/update_rules")
 def update_rules():
-    con = None
-    js_string = ''
- 
-    try:
-        con = psycopg2.connect(CONN_STR)
-        cur = con.cursor()
-        cur.execute("""Select * from life""")
- 
-        rows = cur.fetchall()        
- 
-    except psycopg2.DatabaseError, e:
-        print 'DB Error %s' % e    
-        sys.exit(1)
- 
-    finally:
-        if con:
-        con.close()
- 
-    return rows
+    life = Life.query.all()
+    print(life) 
+    return str(life[0])
 
 @app.route("/")
 def hello():
