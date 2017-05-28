@@ -1,0 +1,639 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: test; Type: DATABASE; Schema: -; Owner: sprinkler
+--
+
+CREATE DATABASE test WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+
+
+ALTER DATABASE test OWNER TO sprinkler;
+
+\connect test
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: current_lines_state; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE current_lines_state (
+    id integer NOT NULL,
+    line_id integer NOT NULL,
+    state_id integer NOT NULL
+);
+
+
+ALTER TABLE current_lines_state OWNER TO sprinkler;
+
+--
+-- Name: current_lines_state_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE current_lines_state_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE current_lines_state_id_seq OWNER TO sprinkler;
+
+--
+-- Name: current_lines_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE current_lines_state_id_seq OWNED BY current_lines_state.id;
+
+
+--
+-- Name: day_of_week; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE day_of_week (
+    id integer NOT NULL,
+    num integer NOT NULL,
+    name text NOT NULL
+);
+
+
+ALTER TABLE day_of_week OWNER TO sprinkler;
+
+--
+-- Name: day_of_week_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE day_of_week_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE day_of_week_id_seq OWNER TO sprinkler;
+
+--
+-- Name: day_of_week_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE day_of_week_id_seq OWNED BY day_of_week.id;
+
+
+--
+-- Name: life; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE life (
+    id integer NOT NULL,
+    line_id integer NOT NULL,
+    rule_id integer NOT NULL,
+    timer time without time zone NOT NULL,
+    state integer DEFAULT 0 NOT NULL,
+    date date NOT NULL
+);
+
+
+ALTER TABLE life OWNER TO sprinkler;
+
+--
+-- Name: life_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE life_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE life_id_seq OWNER TO sprinkler;
+
+--
+-- Name: life_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE life_id_seq OWNED BY life.id;
+
+
+--
+-- Name: lines; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE lines (
+    id integer NOT NULL,
+    number integer NOT NULL,
+    name text
+);
+
+
+ALTER TABLE lines OWNER TO sprinkler;
+
+--
+-- Name: lines_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE lines_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE lines_id_seq OWNER TO sprinkler;
+
+--
+-- Name: lines_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
+
+
+--
+-- Name: state_of_line; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE state_of_line (
+    id integer NOT NULL,
+    short_name text NOT NULL,
+    full_name text NOT NULL
+);
+
+
+ALTER TABLE state_of_line OWNER TO sprinkler;
+
+--
+-- Name: state_of_line_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE state_of_line_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE state_of_line_id_seq OWNER TO sprinkler;
+
+--
+-- Name: state_of_line_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE state_of_line_id_seq OWNED BY state_of_line.id;
+
+
+--
+-- Name: type_of_rule; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE type_of_rule (
+    id integer NOT NULL,
+    name text NOT NULL
+);
+
+
+ALTER TABLE type_of_rule OWNER TO sprinkler;
+
+--
+-- Name: type_of_rule_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE type_of_rule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE type_of_rule_id_seq OWNER TO sprinkler;
+
+--
+-- Name: type_of_rule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE type_of_rule_id_seq OWNED BY type_of_rule.id;
+
+
+--
+-- Name: week_schedule; Type: TABLE; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE TABLE week_schedule (
+    id integer NOT NULL,
+    day_number integer NOT NULL,
+    line_id integer NOT NULL,
+    rule_id integer NOT NULL,
+    "time" time without time zone NOT NULL,
+    "interval" integer NOT NULL
+);
+
+
+ALTER TABLE week_schedule OWNER TO sprinkler;
+
+--
+-- Name: week_schedule_id_seq; Type: SEQUENCE; Schema: public; Owner: sprinkler
+--
+
+CREATE SEQUENCE week_schedule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE week_schedule_id_seq OWNER TO sprinkler;
+
+--
+-- Name: week_schedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: sprinkler
+--
+
+ALTER SEQUENCE week_schedule_id_seq OWNED BY week_schedule.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY current_lines_state ALTER COLUMN id SET DEFAULT nextval('current_lines_state_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY day_of_week ALTER COLUMN id SET DEFAULT nextval('day_of_week_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY life ALTER COLUMN id SET DEFAULT nextval('life_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY lines ALTER COLUMN id SET DEFAULT nextval('lines_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY state_of_line ALTER COLUMN id SET DEFAULT nextval('state_of_line_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY type_of_rule ALTER COLUMN id SET DEFAULT nextval('type_of_rule_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY week_schedule ALTER COLUMN id SET DEFAULT nextval('week_schedule_id_seq'::regclass);
+
+
+--
+-- Data for Name: current_lines_state; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY current_lines_state (id, line_id, state_id) FROM stdin;
+1	1	1
+2	2	3
+\.
+
+
+--
+-- Name: current_lines_state_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('current_lines_state_id_seq', 2, true);
+
+
+--
+-- Data for Name: day_of_week; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY day_of_week (id, num, name) FROM stdin;
+1	0	Воскресенье
+2	1	Понедельник
+3	2	Вторник
+4	3	Среда
+7	6	Суббота
+5	4	Четверг
+6	5	Пятница
+\.
+
+
+--
+-- Name: day_of_week_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('day_of_week_id_seq', 7, true);
+
+
+--
+-- Data for Name: life; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY life (id, line_id, rule_id, timer, state, date) FROM stdin;
+112	1	1	17:00:00	0	2017-05-28
+113	2	1	18:30:00	0	2017-05-28
+114	3	1	20:00:00	0	2017-05-28
+115	5	1	20:10:00	0	2017-05-28
+116	4	3	16:59:00	0	2017-05-28
+117	2	1	23:55:00	0	2017-05-28
+118	1	2	17:05:00	0	2017-05-28
+119	2	2	18:40:00	0	2017-05-28
+120	3	2	20:25:00	0	2017-05-28
+121	5	2	20:20:00	0	2017-05-28
+122	2	2	00:05:00	0	2017-05-28
+\.
+
+
+--
+-- Name: life_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('life_id_seq', 122, true);
+
+
+--
+-- Data for Name: lines; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY lines (id, number, name) FROM stdin;
+1	2	Клубника клумба
+2	3	Клубника беседка
+3	1	Огурцы
+4	4	Помидоры
+5	5	Малина
+\.
+
+
+--
+-- Name: lines_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('lines_id_seq', 5, true);
+
+
+--
+-- Data for Name: state_of_line; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY state_of_line (id, short_name, full_name) FROM stdin;
+1	Active	Рабочая
+2	Deactive	Не рабочая
+3	Repair	Ремонт
+\.
+
+
+--
+-- Name: state_of_line_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('state_of_line_id_seq', 3, true);
+
+
+--
+-- Data for Name: type_of_rule; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY type_of_rule (id, name) FROM stdin;
+1	Start
+2	Stop
+3	Deactivate
+\.
+
+
+--
+-- Name: type_of_rule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('type_of_rule_id_seq', 3, true);
+
+
+--
+-- Data for Name: week_schedule; Type: TABLE DATA; Schema: public; Owner: sprinkler
+--
+
+COPY week_schedule (id, day_number, line_id, rule_id, "time", "interval") FROM stdin;
+1	0	1	1	17:00:00	5
+2	0	2	1	18:30:00	10
+3	0	3	1	20:00:00	25
+4	0	5	1	20:10:00	10
+5	0	4	3	16:59:00	0
+6	0	2	1	23:55:00	10
+7	1	3	1	00:01:00	15
+\.
+
+
+--
+-- Name: week_schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: sprinkler
+--
+
+SELECT pg_catalog.setval('week_schedule_id_seq', 7, true);
+
+
+--
+-- Name: current_lines_state_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY current_lines_state
+    ADD CONSTRAINT current_lines_state_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: day_of_week_num_key; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY day_of_week
+    ADD CONSTRAINT day_of_week_num_key UNIQUE (num);
+
+
+--
+-- Name: day_of_week_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY day_of_week
+    ADD CONSTRAINT day_of_week_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: life_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY life
+    ADD CONSTRAINT life_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lines_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY lines
+    ADD CONSTRAINT lines_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_of_line_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY state_of_line
+    ADD CONSTRAINT state_of_line_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: type_of_rule_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY type_of_rule
+    ADD CONSTRAINT type_of_rule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: week_schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+ALTER TABLE ONLY week_schedule
+    ADD CONSTRAINT week_schedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: week; Type: INDEX; Schema: public; Owner: sprinkler; Tablespace: 
+--
+
+CREATE INDEX week ON week_schedule USING btree (day_number);
+
+
+--
+-- Name: current_lines_state_line_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY current_lines_state
+    ADD CONSTRAINT current_lines_state_line_id_fkey FOREIGN KEY (line_id) REFERENCES lines(id);
+
+
+--
+-- Name: current_lines_state_state_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY current_lines_state
+    ADD CONSTRAINT current_lines_state_state_id_fkey FOREIGN KEY (state_id) REFERENCES state_of_line(id);
+
+
+--
+-- Name: life_line_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY life
+    ADD CONSTRAINT life_line_id_fkey FOREIGN KEY (line_id) REFERENCES lines(id);
+
+
+--
+-- Name: life_rule_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY life
+    ADD CONSTRAINT life_rule_id_fkey FOREIGN KEY (rule_id) REFERENCES type_of_rule(id);
+
+
+--
+-- Name: week_schedule_day_number_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY week_schedule
+    ADD CONSTRAINT week_schedule_day_number_fkey FOREIGN KEY (day_number) REFERENCES day_of_week(num);
+
+
+--
+-- Name: week_schedule_line_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY week_schedule
+    ADD CONSTRAINT week_schedule_line_id_fkey FOREIGN KEY (line_id) REFERENCES lines(id);
+
+
+--
+-- Name: week_schedule_rule_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprinkler
+--
+
+ALTER TABLE ONLY week_schedule
+    ADD CONSTRAINT week_schedule_rule_id_fkey FOREIGN KEY (rule_id) REFERENCES type_of_rule(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
