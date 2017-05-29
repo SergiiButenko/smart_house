@@ -16,13 +16,10 @@ import datetime
 import json, requests
 import threading
 import time
-from flask_sqlalchemy import SQLAlchemy
-from db import *
-
+import psycopg2
+import os
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
-
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
@@ -50,13 +47,27 @@ thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
+#executes query and returns fetch* result
+def execute_request(query, method):
+    dir = os.path.dirname(__file__)
+    sql_file = os.path.join(dir, '..','sql', query)
+    try:
+        conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        # conn.cursor will return a cursor object, you can use this cursor to perform queries
+        cursor = conn.cursor()
+        # execute our Query
+        cursor.execute(open(sql_file, "r").read())
+        return getattr(cursor, method)()
+    except BaseException:
+        print("Unable to connect to the database")
+    finally:
+        if conn:
+            conn.close()
+
 @app.route("/update_rules")
 def update_rules():
-    life=db_session.query(Life.date, Life.timer, Life.state).distinct(Life.date).group_by(Life.date, Life.timer, Life.state)
-    life_on=db_session.query(Life.date, Life.timer).distinct(Life.date).group_by(Life.date, Life.timer).filter(Life.state==0)
-    life_off=db_session.query(Life.date, Life.timer).distinct(Life.date).group_by(Life.date, Life.timer).filter(Life.state==1)
-
-    return 'Select next rule: ' + str(life) + "<br/> Select next ON rule: " + str(life_on) +"<br/> Select next OFF rule: " + str(life_off) 
+    res = execute_request("select_1_record.sql", 'fetchone')
+    return "Line number:"+str(res[0])+" will be deactivated on:"+str(res[1])
 
 @app.route("/")
 def hello():
@@ -116,5 +127,3 @@ def after_request(response):
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=True)
-
-    
