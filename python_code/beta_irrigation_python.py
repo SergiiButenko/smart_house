@@ -52,9 +52,11 @@ thread.start()
 
 @app.route("/update_rules")
 def update_rules():
-    life = Life.query.all()
-    print(life) 
-    return str(life[0])
+    life=db_session.query(Life.date, Life.timer, Life.state).distinct(Life.date).group_by(Life.date, Life.timer, Life.state)
+    life_on=db_session.query(Life.date, Life.timer, Life.state).distinct(Life.date).group_by(Life.date, Life.timer, Life.state).filter(Life.state==0)
+    life_off=db_session.query(Life.date, Life.timer, Life.state).distinct(Life.date).group_by(Life.date, Life.timer, Life.state).filter(Life.state==1)
+
+    return 'Select next rule: ' + str(life) + "<br/> Select next ON rule: " + str(life_on) +"<br/> Select next OFF rule: " + str(life_off) 
 
 @app.route("/")
 def hello():
