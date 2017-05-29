@@ -61,6 +61,27 @@ thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
+<<<<<<< HEAD
+=======
+#executes query and returns fetch* result
+def execute_request(query, method):
+    dir = os.path.dirname(__file__)
+    sql_file = os.path.join(dir, '..','sql', query)
+    try:
+        conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        # conn.cursor will return a cursor object, you can use this cursor to perform queries
+        cursor = conn.cursor()
+        # execute our Query
+        cursor.execute(open(sql_file, "r").read())
+        return getattr(cursor, method)()
+    except BaseException:
+        print("Unable to connect to the database")
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+>>>>>>> 7529781... Added psycopg2; disabled SQLalchemy
 @app.route("/update_rules")
 def update_rules():
     life = Life.query.all()
