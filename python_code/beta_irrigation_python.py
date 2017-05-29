@@ -60,6 +60,7 @@ def execute_request(query, method):
         return getattr(cursor, method)()
     except BaseException:
         print("Unable to connect to the database")
+        return None
     finally:
         if conn:
             conn.close()
