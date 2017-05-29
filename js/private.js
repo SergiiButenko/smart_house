@@ -8,8 +8,8 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
     'Огурцы',
     'Клубника клумба',
     'Клубника беседка',
-    'Помидоры',
     'Малина',
+    'Помидоры',
     '',
     'Насос'
 ];
