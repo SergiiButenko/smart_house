@@ -3,7 +3,8 @@
 from threading import Timer
 from flask import Flask
 from flask import jsonify, request
- 
+from flask import abort
+
 # for socketio
 from eventlet import wsgi
 import eventlet
@@ -34,24 +35,34 @@ def after_request(response):
     return response
 
 
-def update_data():
+def enable_rule():
     while True:
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
-                response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
-                json_data = json.loads(response.text)
-                if (json_data['return_value'] == 0 ):
-                    print("Turned off {0} branch".format(rule['id']))
-                    RULES_FOR_BRANCHES[rule['id']]=None
-                    
-                if (json_data['return_value'] == 1 ):
-                    print("Can't turn off {0} branch".format(rule['id']))
-        
-                response_status = requests.get(url=ARDUINO_IP) 
-                socketio.emit('branch_status', {'data':response_status.text})
+                try:
+                    response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
+                    json_data = json.loads(response.text)
+                    if (json_data['return_value'] == 0 ):
+                        print("Turned off {0} branch".format(rule['id']))
+                        RULES_FOR_BRANCHES[rule['id']]=None
+                        
+                    if (json_data['return_value'] == 1 ):
+                        print("Can't turn off {0} branch".format(rule['id']))
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    print(e)
+                    print("Can't turn off {0} branch. Exception occured".format(rule['id']))
 
-thread = threading.Thread(name='update_data', target=update_data)
+                
+                try:
+                    response_status = requests.get(url=ARDUINO_IP) 
+                    socketio.emit('branch_status', {'data':response_status.text})
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    print(e)
+                    print("Can't get arduino status. Exception occured")
+
+
+thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
@@ -61,23 +72,38 @@ def hello():
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
-    response = requests.get(url=ARDUINO_IP)
-    return (response.text, response.status_code)
-
+    try:
+        response_status = requests.get(url=ARDUINO_IP) 
+        return (response.text, response.status_code)
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
+   
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     id=int(request.args.get('id'))
     time_min=int(request.args.get('time'))
     
-    response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id}) 
+    try:
+        response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id}) 
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(404)
 
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
     
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
     
-    response_status = requests.get(url=ARDUINO_IP)
-    socketio.emit('branch_status', {'data':response_status.text})
+    try:
+        response_status = requests.get(url=ARDUINO_IP)
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
 
     return (response_status.text, response_status.status_code)
 
@@ -85,12 +111,22 @@ def activate_branch():
 def deactivate_branch():
     id=int(request.args.get('id'))
     
-    response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
-
+    try:
+        response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(404)
+        
     RULES_FOR_BRANCHES[id]=None
 
-    response_status = requests.get(url=ARDUINO_IP)         
-    socketio.emit('branch_status', {'data':response_status.text})
+    try:
+        response_status = requests.get(url=ARDUINO_IP)
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
 
     return (response_status.text, response_status.status_code)
 

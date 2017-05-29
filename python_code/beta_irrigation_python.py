@@ -17,9 +17,6 @@ import datetime
 import json, requests
 import threading
 import time
-from flask_sqlalchemy import SQLAlchemy
-from db import *
-
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -51,18 +48,15 @@ def enable_rule():
                 
                 try:
                     response_status = requests.get(url=ARDUINO_IP) 
+                    socketio.emit('branch_status', {'data':response_status.text})
                 except requests.exceptions.RequestException as e:  # This is the correct syntax
                     print(e)
                     print("Can't get arduino status. Exception occured")
-
-                socketio.emit('branch_status', {'data':response_status.text})
-
+                    
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
-<<<<<<< HEAD
-=======
 #executes query and returns fetch* result
 def execute_request(query, method):
     dir = os.path.dirname(__file__)
@@ -81,12 +75,9 @@ def execute_request(query, method):
         if conn:
             conn.close()
 
->>>>>>> 7529781... Added psycopg2; disabled SQLalchemy
 @app.route("/update_rules")
-def update_rules():
-    life = Life.query.all()
-    print(life) 
-    return str(life[0].id)
+def update_rules(): 
+    return 1
 
 @app.route("/")
 def hello():
