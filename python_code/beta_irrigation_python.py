@@ -3,7 +3,8 @@
 from threading import Timer
 from flask import Flask
 from flask import jsonify, request
- 
+from flask import abort
+
 # for socketio
 from eventlet import wsgi
 import eventlet
@@ -16,10 +17,13 @@ import datetime
 import json, requests
 import threading
 import time
-import psycopg2
-import os
+from flask_sqlalchemy import SQLAlchemy
+from db import *
+
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
+
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
@@ -31,44 +35,37 @@ def enable_rule():
         time.sleep(10)
         for rule in RULES_FOR_BRANCHES: 
             if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
-                response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
-                json_data = json.loads(response.text)
-                if (json_data['return_value'] == 0 ):
-                    print("Turned off {0} branch".format(rule['id']))
-                    RULES_FOR_BRANCHES[rule['id']]=None
-                    
-                if (json_data['return_value'] == 1 ):
-                    print("Can't turn off {0} branch".format(rule['id']))
-        
-                response_status = requests.get(url=ARDUINO_IP) 
+                try:
+                    response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
+                    json_data = json.loads(response.text)
+                    if (json_data['return_value'] == 0 ):
+                        print("Turned off {0} branch".format(rule['id']))
+                        RULES_FOR_BRANCHES[rule['id']]=None
+                        
+                    if (json_data['return_value'] == 1 ):
+                        print("Can't turn off {0} branch".format(rule['id']))
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    print(e)
+                    print("Can't turn off {0} branch. Exception occured".format(rule['id']))
+
+                
+                try:
+                    response_status = requests.get(url=ARDUINO_IP) 
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    print(e)
+                    print("Can't get arduino status. Exception occured")
+
                 socketio.emit('branch_status', {'data':response_status.text})
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
-#executes query and returns fetch* result
-def execute_request(query, method):
-    dir = os.path.dirname(__file__)
-    sql_file = os.path.join(dir, '..','sql', query)
-    try:
-        conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        # conn.cursor will return a cursor object, you can use this cursor to perform queries
-        cursor = conn.cursor()
-        # execute our Query
-        cursor.execute(open(sql_file, "r").read())
-        return getattr(cursor, method)()
-    except BaseException:
-        print("Unable to connect to the database")
-        return None
-    finally:
-        if conn:
-            conn.close()
-
 @app.route("/update_rules")
 def update_rules():
-    res = execute_request("select_1_record.sql", 'fetchone')
-    return "Line number:"+str(res[0])+" will be deactivated on:"+str(res[1])
+    life = Life.query.all()
+    print(life) 
+    return str(life[0].id)
 
 @app.route("/")
 def hello():
@@ -76,23 +73,38 @@ def hello():
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
-    response = requests.get(url=ARDUINO_IP)
-    return (response.text, response.status_code)
-
+    try:
+        response_status = requests.get(url=ARDUINO_IP) 
+        return (response.text, response.status_code)
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
+    
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     id=int(request.args.get('id'))
     time_min=int(request.args.get('time'))
     
-    response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id}) 
+    try:
+        response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id}) 
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(404)
 
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
     
     RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
     
-    response_status = requests.get(url=ARDUINO_IP)
-    socketio.emit('branch_status', {'data':response_status.text})
+    try:
+        response_status = requests.get(url=ARDUINO_IP)
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
 
     return (response_status.text, response_status.status_code)
 
@@ -100,12 +112,22 @@ def activate_branch():
 def deactivate_branch():
     id=int(request.args.get('id'))
     
-    response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
-
+    try:
+        response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(404)
+        
     RULES_FOR_BRANCHES[id]=None
 
-    response_status = requests.get(url=ARDUINO_IP)         
-    socketio.emit('branch_status', {'data':response_status.text})
+    try:
+        response_status = requests.get(url=ARDUINO_IP)
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax   
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        abort(404)
 
     return (response_status.text, response_status.status_code)
 
@@ -128,3 +150,5 @@ def after_request(response):
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=True)
+
+    
