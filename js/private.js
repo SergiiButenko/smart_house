@@ -5,11 +5,11 @@ var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
 
 var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
-    'Первая ветка',
-    'Вторая ветка',
-    'Третья ветка',
-    'Четвертая ветка',
-    '',
+    'Огурцы',
+    'Клубника клумба',
+    'Клубника беседка',
+    'Помидоры',
+    'Малина',
     '',
     'Насос'
 ];
