@@ -27,11 +27,10 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                 $('#title-' + i).text(branch_names[i]);
+                 $('#title-'+i).text(branch_names[i]);
             }    
    
       }
-      //async:false
     });
     
     
