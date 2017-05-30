@@ -31,6 +31,15 @@ $(document).ready(function() {
       $('.selectpicker').selectpicker('mobile');
     }
 
+
+    $('body').on('show.bs.modal', function () {
+        $('#time_modal .modal-body').css('overflow-y', 'auto');
+        $('#time_modal .modal-body').css('max-height', $(window).height() * 0.7);
+        $('.selectpicker').selectpicker('refresh');
+    });
+
+        $('.selectpicker').selectpicker();
+
     var $loading = $('#loader').hide();
     $(document)
         .ajaxStart(function() {
