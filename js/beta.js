@@ -115,6 +115,10 @@ $(document).ready(function() {
         update_branches_request();
     });
 
+    $('.modal').on('shown', function(){
+        $('.selectpicker').selectpicker('refresh');
+    });
+
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
         if ($(this).data('user-action') == 1) {
