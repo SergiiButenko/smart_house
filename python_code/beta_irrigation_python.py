@@ -91,7 +91,7 @@ def hello():
 def arduino_status():
     try:
         response_status = requests.get(url=ARDUINO_IP) 
-        return (response.text, response.status_code)
+        return (response_status.text, response_status.status_code)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         print(e)
         print("Can't get arduino status. Exception occured")
