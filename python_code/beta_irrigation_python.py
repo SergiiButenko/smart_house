@@ -95,7 +95,6 @@ def branches_names():
             list=branch_list
         )
 
-
 @app.route("/")
 def hello():
     return str(RULES_FOR_BRANCHES)

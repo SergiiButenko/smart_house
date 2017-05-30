@@ -33,7 +33,6 @@ $(document).ready(function() {
       }
     });
     
-    
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
