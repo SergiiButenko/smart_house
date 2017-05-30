@@ -26,6 +26,11 @@ $(document).ready(function() {
     }
     $('#time_selector').selectpicker('refresh');
 
+
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      $('.selectpicker').selectpicker('mobile');
+    }
+
     var $loading = $('#loader').hide();
     $(document)
         .ajaxStart(function() {
