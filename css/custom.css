@@ -28,3 +28,12 @@ span.indent_pump {
                 50% 50% 
                 no-repeat;   
 }
+
+.selectpicker {
+    z-index: 2000;
+}
+.bootstrap-select.btn-group .dropdown-menu.inner {
+    position: static;
+}
+.modal { overflow: visible; }
+.modal-body { overflow-y: visible !important; }
