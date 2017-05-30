@@ -29,8 +29,7 @@ $(document).ready(function() {
 
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
       $('.selectpicker').selectpicker('mobile');
-      $('.selectpicker').selectpicker('render');
-
+      $('.selectpicker').addClass("mobile-device");
     }
 
     var $loading = $('#loader').hide();
