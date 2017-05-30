@@ -20,14 +20,18 @@ $(document).ready(function() {
         $('#title-' + i + " span").text(branch_names[i]);
     }
 
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      $('#time_selector').selectpicker('mobile');
-    }
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#time_selector').selectpicker('refresh');
+
+
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      $('.selectpicker').selectpicker('mobile');
+      $('.selectpicker').selectpicker('render');
+
+    }
 
     var $loading = $('#loader').hide();
     $(document)
