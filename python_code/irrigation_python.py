@@ -27,6 +27,10 @@ ARDUINO_IP='http://192.168.1.10'
 
 RULES_FOR_BRANCHES=[None,None,None,None,None,None,None,None]
 
+@socketio.on_error_default
+def error_handler(e):
+    print('An error has occurred: ' + str(e))
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')

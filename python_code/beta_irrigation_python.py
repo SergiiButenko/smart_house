@@ -19,13 +19,16 @@ import threading
 import time
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
 
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
 RULES_FOR_BRANCHES=[None] * 8
+
+@socketio.on_error_default
+def error_handler(e):
+    print('An error has occurred: ' + str(e))
 
 def enable_rule():
     while True:
@@ -76,8 +79,9 @@ def execute_request(query, method):
             conn.close()
 
 @app.route("/update_rules")
-def update_rules(): 
-    return 1
+def update_rules():
+    res = execute_request("select_1_record.sql", 'fetchone')
+    return "Line number:"+str(res[0])+" will be deactivated on:"+str(res[1])
 
 @app.route("/")
 def hello():
