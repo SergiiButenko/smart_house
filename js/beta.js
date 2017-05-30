@@ -1,5 +1,5 @@
-//var server = 'http://mozart.hopto.org:7543';
-var server = 'http://127.0.0.1:5000';
+var server = 'http://mozart.hopto.org:7543';
+//var server = 'http://127.0.0.1:5000';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -20,9 +20,9 @@ $(document).ready(function() {
         $('#title-' + i + " span").text(branch_names[i]);
     }
 
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      $('.selectpicker').selectpicker('mobile');
-    }
+    // if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+    //   $('.selectpicker').selectpicker('mobile');
+    // }
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
