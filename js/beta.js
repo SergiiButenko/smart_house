@@ -28,7 +28,6 @@ $(document).ready(function() {
 
 
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      $('.selectpicker').selectpicker('mobile');
       $('.selectpicker').addClass("mobile-device");
     }
 
