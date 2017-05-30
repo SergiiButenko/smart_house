@@ -17,9 +17,10 @@ import datetime
 import json, requests
 import threading
 import time
+import os
+import psycopg2
 
 app = Flask(__name__)
-
 socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
@@ -64,6 +65,7 @@ thread.start()
 def execute_request(query, method):
     dir = os.path.dirname(__file__)
     sql_file = os.path.join(dir, '..','sql', query)
+    conn=None
     try:
         conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
@@ -75,13 +77,24 @@ def execute_request(query, method):
         print("Unable to connect to the database")
         return None
     finally:
-        if conn:
+        if conn is not None:
             conn.close()
 
-@app.route("/update_rules")
-def update_rules():
-    res = execute_request("select_1_record.sql", 'fetchone')
-    return "Line number:"+str(res[0])+" will be deactivated on:"+str(res[1])
+@app.route("/branches_names")
+def branches_names():
+    branch_list=[]
+    res = execute_request("get_branches_names.sql", 'fetchall')
+    if res == None:
+        print("Can't get branches names from database")
+        abort(500)
+
+    for row in res:
+        branch_list.append( {'id':row[0], 'name':row[1]})
+
+    return jsonify(
+            list=branch_list
+        )
+
 
 @app.route("/")
 def hello():

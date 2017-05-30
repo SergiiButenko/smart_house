@@ -1,45 +1,12 @@
-var server = 'http://mozart.hopto.org:7543';
-//var server = 'http://127.0.0.1:5000';
+//var server = 'http://mozart.hopto.org:7543';
+var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
 
-var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
-    'Огурцы',
-    'Клубника клумба',
-    'Клубника беседка',
-    'Помидоры',
-    'Малина',
-    '',
-    'Насос'
-];
+var branch_names = [];
 
 $(document).ready(function() {
-    //Rename branches
-    for (var i = 1; i < branch_names.length; i++) {        
-        $('#title-' + i + " span").text(branch_names[i]);
-    }
-
-
-    for (var i=1; i<=20; i++){
-     $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
-    }
-    $('#time_selector').selectpicker('refresh');
-
-
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      $('.selectpicker').selectpicker('mobile');
-    }
-
-
-    $('body').on('show.bs.modal', function () {
-        $('#time_modal .modal-body').css('overflow-y', 'auto');
-        $('#time_modal .modal-body').css('max-height', $(window).height() * 0.7);
-        $('.selectpicker').selectpicker('refresh');
-    });
-
-        $('.selectpicker').selectpicker();
-
     var $loading = $('#loader').hide();
     $(document)
         .ajaxStart(function() {
@@ -49,6 +16,30 @@ $(document).ready(function() {
             $loading.hide();
     });
     
+    //Rename branches
+    $.ajax({
+      url: server+'/branches_names',
+      success: function(data) {
+         list=data['list']
+            for (i in list) {
+                item = list[i]
+                branch_names[item['id']]=item['name']
+            }
+      },
+      async:false
+    });
+    
+    for (var i = 1; i < branch_names.length; i++) {
+        $('#title-' + i + " span").text(branch_names[i]);
+    }    
+   
+
+    for (var i=1; i<=20; i++){
+     $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+    }
+    $('#time_selector').selectpicker('refresh');
+
+   
     var socket = io.connect(server);
     socket.heartbeatTimeout = 5000;
     socket.on('connect', function() {
@@ -59,7 +50,7 @@ $(document).ready(function() {
     socket.on('branch_status', function(msg) {
                console.log('Message received. New brach status: '  + msg.data);
                update_branches(msg.data);
-            });
+            });       
 
     //Add arduino touch script to determine if connection is alive
     (function worker2() {
@@ -122,10 +113,6 @@ $(document).ready(function() {
         update_branches_request();
     });
 
-    $('.modal').on('shown', function(){
-        $('.selectpicker').selectpicker('refresh');
-    });
-
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
         if ($(this).data('user-action') == 1) {
@@ -140,7 +127,7 @@ $(document).ready(function() {
             }
 
             if (!$(this).prop('checked')) {
-                branch_off(index);
+               //branch_off(index);
             }
         }
     });
@@ -293,5 +280,4 @@ function set_status_spinner(){
     $("#arduino_status").text(class_spin.msg);
     $("#button_gif").removeClass().addClass(class_spin.class);
     $("#status_button").removeClass().addClass('btn btn-default btn-md');
-
 }
