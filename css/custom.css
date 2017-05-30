@@ -28,10 +28,3 @@ span.indent_pump {
                 50% 50% 
                 no-repeat;   
 }
-
-.mobile-device {
-    display: block !important;
-    position: absolute;
-    opacity: 0;
-    z-index: 10;
-}
