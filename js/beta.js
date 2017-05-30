@@ -21,18 +21,20 @@ $(document).ready(function() {
       url: server+'/branches_names',
       success: function(data) {
          list=data['list']
-            for (i in list) {
-                item = list[i]
+            for (j in list) {
+                item = list[j]
                 branch_names[item['id']]=item['name']
             }
-      },
-      async:false
+
+            for (var i = 1; i < branch_names.length; i++) {
+                 $('#title-' + i).text(branch_names[i]);
+            }    
+   
+      }
+      //async:false
     });
     
-    for (var i = 1; i < branch_names.length; i++) {
-        $('#title-' + i + " span").text(branch_names[i]);
-    }    
-   
+    
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
