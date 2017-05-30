@@ -1,5 +1,5 @@
-var server = 'http://mozart.hopto.org:7543';
-//var server = 'http://127.0.0.1:5000';
+//var server = 'http://mozart.hopto.org:7543';
+var server = 'http://127.0.0.1:5000';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -16,9 +16,19 @@ var branch_names = ['', // Arduino stars numeration from 1. So skiping 0 index
 
 $(document).ready(function() {
     //Rename branches
-    for (var i = 1; i < branch_names.length; i++) {
+    for (var i = 1; i < branch_names.length; i++) {        
         $('#title-' + i + " span").text(branch_names[i]);
     }
+
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      $('.selectpicker').selectpicker('mobile');
+    }
+
+    for (var i=1; i<=20; i++){
+     $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     console.log("<option data-value="+i+" id=\"option"+i+"\">"+i+"/option>")
+    }
+    $('.selectpicker').selectpicker('refresh');
 
     var $loading = $('#loader').hide();
     $(document)
@@ -124,9 +134,9 @@ $(document).ready(function() {
     //Function to start irrigation
     $(".start-irrigation").click(function() {
         index = $('#time_modal').data('id');
-        time = $("#time_buttons input:radio:checked").data("value");
+        time = $("#time_selector option:selected").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
-        branch_on(index, time);
+        //branch_on(index, time);
     });
 
 });
