@@ -19,6 +19,7 @@ import json, requests
 import threading
 import time
 import os
+import os.path
 import psycopg2
 
 app = Flask(__name__)
@@ -26,44 +27,49 @@ socketio = SocketIO(app, async_mode='eventlet')
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
-RULES_FOR_BRANCHES=[None] * 8
+RULES_FOR_BRANCHES=[None] * 10
 
 @socketio.on_error_default
 def error_handler(e):
     print('An error has occurred: ' + str(e))
 
-def enable_rule():
-    while True:
-        time.sleep(10)
-        for rule in RULES_FOR_BRANCHES: 
-            if (rule is not None) and (datetime.datetime.now() >= rule['finish']):            
-                try:
-                    response = requests.get(url=ARDUINO_IP+'/off', params={"params":rule['id']})
-                    json_data = json.loads(response.text)
-                    if (json_data['return_value'] == 0 ):
-                        print("Turned off {0} branch".format(rule['id']))
-                        RULES_FOR_BRANCHES[rule['id']]=None
-                        
-                    if (json_data['return_value'] == 1 ):
-                        print("Can't turn off {0} branch".format(rule['id']))
-                except requests.exceptions.RequestException as e:  # This is the correct syntax
-                    print(e)
-                    print("Can't turn off {0} branch. Exception occured".format(rule['id']))
+def branch_on(id):
+    try:
+        response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id})
+        json_data = json.loads(response.text)
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't turn on {0} branch. Exception occured".format(line_id))
+    
+    try:
+        response_status = requests.get(url=ARDUINO_IP) 
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't get arduino status. Exception occured")
 
-                
-                try:
-                    response_status = requests.get(url=ARDUINO_IP) 
-                    socketio.emit('branch_status', {'data':response_status.text})
-                except requests.exceptions.RequestException as e:  # This is the correct syntax
-                    print(e)
-                    print("Can't get arduino status. Exception occured")
-                    
-thread = threading.Thread(name='enable_rule', target=enable_rule)
-thread.setDaemon(True)
-thread.start() 
+    return response_status
+
+def branch_off(line_id):
+    try:
+        response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id})
+        json_data = json.loads(response.text)
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't turn off {0} branch. Exception occured".format(line_id))
+    
+    try:
+        response_status = requests.get(url=ARDUINO_IP) 
+        socketio.emit('branch_status', {'data':response_status.text})
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(e)
+        print("Can't get arduino status. Exception occured")
+        return None
+
+    return response_status
 
 #executes query and returns fetch* result
-def execute_request(query, method):
+def execute_request(query, method='fetchall'):
     dir = os.path.dirname(__file__)
     sql_file = os.path.join(dir, '..','sql', query)
     conn=None
@@ -72,14 +78,72 @@ def execute_request(query, method):
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
-        cursor.execute(open(sql_file, "r").read())
+        if os.path.isfile(sql_file):
+            cursor.execute(open(sql_file, "r").read())
+        else:   
+            cursor.execute(query)
+        conn.commit()
         return getattr(cursor, method)()
-    except BaseException:
-        print("Unable to connect to the database")
+    except BaseException as e:
+        print("Error while performing operation with database")
+        print(e)
         return None
     finally:
         if conn is not None:
             conn.close()
+
+def get_next_active_rule(line_id):
+    query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.line_id={0} AND timer>=now() ORDER BY date, timer LIMIT 1".format(line_id)
+    res = execute_request(query, 'fetchone')
+    if res is None:
+        return None
+
+    return {'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
+
+def enable_rule():
+    while True:
+        time.sleep(10)
+        for rule in RULES_FOR_BRANCHES: 
+            if rule is None:
+                continue
+
+            if (datetime.datetime.now() >= rule['timer']): 
+
+                if rule['rule_id'] == 1:
+                    response=branch_on(rule['line_id'])
+                    if response is None:
+                        print("Can't turn on {0} branch".format(rule['line_id']))
+                        continue
+                    
+                    json_data = json.loads(response.text)
+                    if (json_data['variables'][str(rule['line_id'])] == 0 ):
+                        print("Can't turn on {0} branch".format(rule['line_id']))
+                        continue
+
+                    if (json_data['variables'][str(rule['line_id'])] == 1 ):
+                        print("Turned on {0} branch".format(rule['line_id']))
+                        execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                        RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+
+                if rule['rule_id'] == 2:
+                    response=branch_off(rule['line_id'])
+                    if response is None:
+                        print("Can't turn off {0} branch".format(rule['line_id']))
+                        continue
+                    
+                    json_data = json.loads(response.text)
+                    if (json_data['variables'][str(rule['line_id'])] == 1 ):
+                        print("Can't turn off {0} branch".format(rule['line_id']))
+                        continue
+
+                    if (json_data['variables'][str(rule['line_id'])] == 0 ):
+                        print("Turned off {0} branch".format(rule['line_id']))
+                        execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                        RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+                    
+thread = threading.Thread(name='enable_rule', target=enable_rule)
+thread.setDaemon(True)
+thread.start() 
 
 @app.route("/branches_names")
 def branches_names():
@@ -141,8 +205,10 @@ def activate_branch():
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
     
-    RULES_FOR_BRANCHES[id]={'id':id, 'start':now, 'finish': now_plus}
-    
+    execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 1, 1, now.date(), now), 'fetchone')
+    res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(id, 2, 0, now.date(), now_plus), 'fetchone')
+    RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
+
     try:
         response_status = requests.get(url=ARDUINO_IP)
         socketio.emit('branch_status', {'data':response_status.text})
@@ -163,8 +229,15 @@ def deactivate_branch():
         print(e)
         print("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
-        
+    
+    now = datetime.datetime.now()
+    if RULES_FOR_BRANCHES[id] is not None:
+        execute_request("UPDATE public.life SET state=2 WHERE id = {0}".format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
+    else:
+        execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 2, 1, now.date(), now), 'fetchone')
+
     RULES_FOR_BRANCHES[id]=None
+
 
     try:
         response_status = requests.get(url=ARDUINO_IP)
