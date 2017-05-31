@@ -99,12 +99,14 @@ def branches_names():
 def beta():
     return app.send_static_file('index.html')
 
+
 @app.route("/list")
 def list():
     list_arr = execute_request("select_all_records.sql", 'fetchall')
     rows=[]
+    rules=['',"Начать полив","Остановить полив","Неактивно"]
     for row in list_arr:
-        rows.append({'id':row[1], 'rule_id':row[2], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
+        rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
     return render_template('list.html', my_list=rows)
 
 @app.route("/")
