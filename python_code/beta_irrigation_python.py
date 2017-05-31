@@ -1,8 +1,9 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*- 
 
 from threading import Timer
 from flask import Flask
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from flask import abort
 
 # for socketio
@@ -94,6 +95,22 @@ def branches_names():
     return jsonify(
             list=branch_list
         )
+
+@app.route("/beta")
+def beta():
+    return app.send_static_file('index.html')
+
+
+@app.route("/list")
+def list():
+    list_arr = execute_request("select_all_records.sql", 'fetchall')
+    rows=[]
+    #rules=['',"Начать полив","Остановить полив","Неактивно"]
+    rules=['',"Start","Stop","Deactivated"]
+    
+    for row in list_arr:
+        rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
+    return render_template('list.html', my_list=rows)
 
 @app.route("/")
 def hello():
