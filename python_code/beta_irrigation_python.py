@@ -2,7 +2,7 @@
 
 from threading import Timer
 from flask import Flask
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from flask import abort
 
 # for socketio
@@ -98,6 +98,15 @@ def branches_names():
 @app.route("/beta")
 def beta():
     return app.send_static_file('beta_index.html')
+
+@app.route("/list")
+def list():
+    list_arr = execute_request("select_all_records.sql", 'fetchall')
+    rows=[]
+    for row in list_arr:
+        rows.append("Line id:{0}, Rule id: {1}, State: {2}, Time to be executed: {3}".format(row[1], row[2], row[3], "{:%A, %H:%M, %d %b %Y}".format(row[5])))
+    return render_template('list.html', my_list=rows)
+
 
 @app.route("/")
 def hello():
