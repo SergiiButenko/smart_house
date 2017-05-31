@@ -104,7 +104,9 @@ def list():
     list_arr = execute_request("select_all_records.sql", 'fetchall')
     rows=[]
     for row in list_arr:
-        rows.append("Line id:{0}, Rule id: {1}, State: {2}, Time to be executed: {3}".format(row[1], row[2], row[3], "{:%A, %H:%M, %d %b %Y}".format(row[5])))
+        rows.append({'id':row[1], 'rule_id':row[2], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
+        #rows.append([row[1], row[2], row[3], "{:%A, %H:%M, %d %b %Y}".format(row[5])])
+        #rows.append("Line id:{0}, Rule id: {1}, State: {2}, Time to be executed: {3}".format(row[1], row[2], row[3], "{:%A, %H:%M, %d %b %Y}".format(row[5])))
     return render_template('list.html', my_list=rows)
 
 

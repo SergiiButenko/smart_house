@@ -76,11 +76,31 @@
     
     <div class="container">    
     <div class="modal_spinner" id="loader"></div>
-    	<ul>
-		    {% for n in my_list %}
-		    <li>{{n}}</li>
-		    {% endfor %}
-		</ul>
+    <h2>Рассписание полива</h2>
+    <span class="indent"></span>
+    <button type="button" class="btn btn-default">Деактивировать все правила</button>
+    <table class="table">
+    <thead>
+      <tr>
+        <th>Номер ветки</th>
+        <th>Правило</th>
+        <th>Состояние</th>
+        <th>Время выполнения</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+	{% for n in my_list %}
+	 <tr>
+        <td>{{n['id']}}</td>
+        <td>{{n['rule_id']}}</td>
+        <td>{{n['state']}}</td>
+        <td>{{n['timer']}}</td>
+        <td><button type="button" class="btn btn-default">Деактивировать</button></td>
+      </tr>
+	{% endfor %}
+	</tbody>
+    </table>
     </div>
 
 
