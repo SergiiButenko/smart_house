@@ -90,12 +90,28 @@
     </thead>
     <tbody>
 	{% for n in my_list %}
-	 <tr>
-        <td>{{n['id']}}</td>
-        <td>{{n['rule_id']}}</td>
-        <td>{{n['state']}}</td>
-        <td>{{n['timer']}}</td>
-        <td><button type="button" class="btn btn-default">Деактивировать</button></td>
+	    {% if n['state'] == 1 %}
+		    <tr class="success">
+			<td>{{n['id']}}</td>
+	        <td>{{n['rule_id']}}</td>
+	        <td>{{n['state']}}</td>
+	        <td>{{n['timer']}}</td>
+	        <td><button type="button" class="btn btn-default disabled">Полив окончен</button></td>		
+		{% elif n['rule_id'] == 3 %}
+		    <tr class="warning">
+			<td>{{n['id']}}</td>
+	        <td>{{n['rule_id']}}</td>
+	        <td>{{n['state']}}</td>
+	        <td>{{n['timer']}}</td>
+	        <td><button type="button" class="btn btn-default">Активировать</button></td>		
+		{% else %}	        
+		    <tr>
+			<td>{{n['id']}}</td>
+	        <td>{{n['rule_id']}}</td>
+	        <td>{{n['state']}}</td>
+	        <td>{{n['timer']}}</td>
+	        <td><button type="button" class="btn btn-default">Не выполнять</button></td>		
+		{% endif %}
       </tr>
 	{% endfor %}
 	</tbody>
