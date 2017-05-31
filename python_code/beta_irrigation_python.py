@@ -145,6 +145,16 @@ thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start() 
 
+def update_all_rules():
+    while True:
+        for i in xrange(1,len(RULES_FOR_BRANCHES)):
+            RULES_FOR_BRANCHES[i]=get_next_active_rule(i)    
+        time.sleep(60*60)
+
+thread2 = threading.Thread(name='update_all_rules', target=update_all_rules)
+thread2.setDaemon(True)
+thread2.start() 
+
 @app.route("/branches_names")
 def branches_names():
     branch_list=[]
