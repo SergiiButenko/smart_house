@@ -58,7 +58,7 @@ $(document).ready(function() {
             url: server+'/weather',
             success: function(data) {
                 $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
-                setTimeout(worker2, 60 * 1000 * 30);
+                setTimeout(update_weather, 60 * 1000 * 30);
             },
             global:false
         });

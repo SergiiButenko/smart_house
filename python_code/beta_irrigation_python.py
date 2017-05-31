@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*- 
 
 from threading import Timer
 from flask import Flask
@@ -104,6 +105,7 @@ def beta():
 def list():
     list_arr = execute_request("select_all_records.sql", 'fetchall')
     rows=[]
+    #rules=['',"Начать полив","Остановить полив","Неактивно"]
     rules=['',"Начать полив","Остановить полив","Неактивно"]
     for row in list_arr:
         rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
