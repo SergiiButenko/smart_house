@@ -7,6 +7,7 @@ var arduino_check_broken_connect_sec = 60;
 var branch_names = [];
 
 $(document).ready(function() {
+
     var $loading = $('#loader').hide();
     $(document)
         .ajaxStart(function() {
@@ -43,8 +44,7 @@ $(document).ready(function() {
     var socket = io.connect(server);
     socket.heartbeatTimeout = 5000;
     socket.on('connect', function() {
-        //socket.emit('connect', {data: 'I\'m connected!'});
-        console.log("connected to websocket")
+        console.log("connected to websocket");
     });
 
     socket.on('branch_status', function(msg) {
@@ -96,7 +96,7 @@ $(document).ready(function() {
     })();
 
     // Add labels for swticher values
-    $('.switchers-main').bootstrapToggle({
+    $('.switchers-main').bootstrapToggle({        
         on: 'Остановить Полив',
         off: 'Начать полив'
     });
