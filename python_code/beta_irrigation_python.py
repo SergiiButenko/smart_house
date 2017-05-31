@@ -95,8 +95,8 @@ def branches_names():
             list=branch_list
         )
 
-@app.route("/test")
-def test():
+@app.route("/beta")
+def beta():
     return app.send_static_file('beta_index.html')
 
 @app.route("/")
@@ -182,5 +182,3 @@ def after_request(response):
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=True)
-
-    
