@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*- 
-`
+
 from threading import Timer
 from flask import Flask
 from flask import jsonify, request, render_template
