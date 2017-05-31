@@ -95,6 +95,10 @@ def branches_names():
             list=branch_list
         )
 
+@app.route("/test")
+def test():
+    return app.send_static_file('beta_index.html')
+
 @app.route("/")
 def hello():
     return str(RULES_FOR_BRANCHES)
