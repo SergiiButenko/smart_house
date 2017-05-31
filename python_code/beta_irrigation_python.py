@@ -97,7 +97,7 @@ def branches_names():
 
 @app.route("/beta")
 def beta():
-    return app.send_static_file('beta_index.html')
+    return app.send_static_file('index.html')
 
 @app.route("/list")
 def list():
