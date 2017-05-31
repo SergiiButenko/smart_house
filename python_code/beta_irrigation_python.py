@@ -106,9 +106,8 @@ def list():
     list_arr = execute_request("select_all_records.sql", 'fetchall')
     rows=[]
     #rules=['',"Начать полив","Остановить полив","Неактивно"]
-    rules=['',"%u041D%u0430%u0447%u0430%u0442%u044C%20%u043F%u043E%u043B%u0438%u0432",
-    "%u041E%u0441%u0442%u0430%u043D%u043E%u0432%u0438%u0442%u044C%20%u043F%u043E%u043B%u0438%u0432",
-    "%u041D%u0435%u0430%u043A%u0442%u0438%u0432%u043D%u043E"]
+    rules=['',"Start","Stop","Deactivated"]
+    
     for row in list_arr:
         rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
     return render_template('list.html', my_list=rows)
