@@ -277,11 +277,15 @@ def deactivate_all_rules():
 
 @app.route("/get_list")
 def get_list():
-    days=int(request.args.get('days'))
-    #return get_table_template("select * from life where timer>= now() and timer<=now()::date+{0} order by date, timer desc".format(days))
-    return get_table_template("select * from life where timer<=now()::date+{0} order by date, timer desc".format(days))
+    if 'days' in request.args:       
+        days=int(request.args.get('days'))
+        return get_table_template("select * from life where timer<=now()::date+{0} order by date, timer desc".format(days))
 
-
+    if 'before' in request.args and 'after' in request.args:       
+        before=int(request.args.get('before'))   
+        after=int(request.args.get('after'))  
+        return get_table_template("select * from life where timer>= now() - interval '{0} hour' and timer<=now()+ interval '{1} hour' order by date, timer desc".format(before, after))
+    
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
     try:
