@@ -25,8 +25,8 @@ import psycopg2
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
 
-#ARDUINO_IP='http://192.168.1.10'
-ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://192.168.1.10'
+#ARDUINO_IP='http://185.20.216.94:5555'
 RULES_FOR_BRANCHES=[None] * 10
 RULES_ENABLED=True
 
