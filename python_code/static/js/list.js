@@ -52,7 +52,14 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#datetimepicker1').on('changeDate', function(ev){
+        console.log('here')
+        $('#datetimepicker1').datepicker('hide');
+    });
 });
+
+    
 
     function activate_rule(that){
         id = $(that).data('id');

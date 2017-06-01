@@ -159,7 +159,6 @@ def update_all_rules():
     for i in range(1,len(RULES_FOR_BRANCHES), 1):
         RULES_FOR_BRANCHES[i]=get_next_active_rule(i)    
 
-
 def update_all_rules_daemon():
     while True:
         for i in range(1,len(RULES_FOR_BRANCHES), 1):
@@ -190,9 +189,13 @@ def beta():
     return app.send_static_file('index.html')
 
 
-@app.route("/list")
-def list():
-    list_arr = execute_request("select_all_records.sql", 'fetchall')
+@app.route("/")
+def hello():
+    return str(RULES_FOR_BRANCHES)
+
+
+def get_table_template(query='select_all_records.sql'):
+    list_arr = execute_request(query, 'fetchall')
     rows=[]
     #rules=['',"Начать полив","Остановить полив","Неактивно"]
     rules=['',"Start","Stop","Deactivated"]
@@ -210,11 +213,34 @@ def list():
 
         rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
             'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
-    return render_template('list.html', my_list=rows)
+    
+    template=render_template('table_only.html', my_list=rows)
+    socketio.emit('list_update', {'data':template})
+    return template
 
-@app.route("/")
-def hello():
-    return str(RULES_FOR_BRANCHES)
+@app.route("/list")
+def list():
+    list_arr = execute_request("select_all_records_24_h.sql", 'fetchall')
+    rows=[]
+    #rules=['',"Начать полив","Остановить полив","Неактивно"]
+    rules=['',"Start","Stop","Deactivated"]
+    
+    for row in list_arr:
+        id=row[0]
+        branch_id=row[1]
+        rule_id=row[2]        
+        state=row[3]
+        timer=row[5]
+        active=row[6]
+        outdated=0
+        if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
+            outdated=1
+
+        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
+            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+    
+    template=render_template('list.html', my_list=rows)
+    return template
 
 @app.route("/activate_rule")
 def activate_rule():
@@ -222,28 +248,7 @@ def activate_rule():
     execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
     update_all_rules()
 
-    list_arr = execute_request("select_all_records.sql", 'fetchall')
-    rows=[]
-    #rules=['',"Начать полив","Остановить полив","Неактивно"]
-    rules=['',"Start","Stop","Deactivated"]
-    
-    for row in list_arr:
-        id=row[0]
-        branch_id=row[1]
-        rule_id=row[2]        
-        state=row[3]
-        timer=row[5]
-        active=row[6]
-        outdated=0
-        if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
-            outdated=1
-
-        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
-            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
-    
-    template=render_template('table_only.html', my_list=rows)
-    socketio.emit('list_update', {'data':template})
-    return template
+    return get_table_template()
 
 @app.route("/deactivate_rule")
 def deactivate_rule():
@@ -251,28 +256,7 @@ def deactivate_rule():
     execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
     update_all_rules()
 
-    list_arr = execute_request("select_all_records.sql", 'fetchall')
-    rows=[]
-    #rules=['',"Начать полив","Остановить полив","Неактивно"]
-    rules=['',"Start","Stop","Deactivated"]
-    
-    for row in list_arr:
-        id=row[0]
-        branch_id=row[1]
-        rule_id=row[2]        
-        state=row[3]
-        timer=row[5]
-        active=row[6]
-        outdated=0
-        if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
-            outdated=1
-
-        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
-            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
-    
-    template=render_template('table_only.html', my_list=rows)
-    socketio.emit('list_update', {'data':template})
-    return template
+    return get_table_template()
 
 @app.route("/deactivate_all_rules")
 def deactivate_all_rules():
@@ -290,6 +274,13 @@ def deactivate_all_rules():
         RULES_ENABLED=False
 
     return 'OK'
+
+@app.route("/get_list")
+def get_list():
+    days=int(request.args.get('days'))
+    #return get_table_template("select * from life where timer>= now() and timer<=now()::date+{0} order by date, timer desc".format(days))
+    return get_table_template("select * from life where timer<=now()::date+{0} order by date, timer desc".format(days))
+
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
