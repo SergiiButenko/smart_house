@@ -9,19 +9,19 @@
         <tbody>
     	{% for n in my_list %}
     	    {% if n['state'] == 1 %}
-    		    <tr class="success">
+    		    <tr>
     			<td class="text-center">{{n['branch_id']}}</td>
     	        <td>{{n['rule_text']}}</td>	        
     	        <td>{{n['timer']}}</td>
     	        <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>		
             {% elif n['outdated'] == 1 %}
-                <tr class="info">
+                <tr>
                 <td class="text-center">{{n['branch_id']}}</td>
                 <td>{{n['rule_text']}}</td>         
                 <td>{{n['timer']}}</td>
                 <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>      
     		{% elif n['active'] == 0 %}
-    		    <tr class="warning">
+    		    <tr>
     			<td class="text-center">{{n['branch_id']}}</td>
     	        <td>{{n['rule_text']}}</td>
     	        <td>{{n['timer']}}</td>

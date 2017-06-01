@@ -73,7 +73,7 @@
     <div class="modal_spinner" id="loader"></div>
     <h2>Расписание полива</h2>    
     <button type="button" class="btn btn-default" data-target="#deactivate_rules_modal" onclick="$('#deactivate_rules_modal').modal('show')">Деактивировать правила</button>
-    <table id="rules_table" class="table table-condensed">
+    <table id="rules_table" class="table table-condensed table-striped ">
         <thead>
           <tr>
             <th>Номер ветки</th>
@@ -85,19 +85,19 @@
         <tbody>
     	{% for n in my_list %}
     	    {% if n['state'] == 1 %}
-    		    <tr class="success">
+    		    <tr>
     			<td class="text-center">{{n['branch_id']}}</td>
     	        <td>{{n['rule_text']}}</td>	        
     	        <td>{{n['timer']}}</td>
     	        <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>		
             {% elif n['outdated'] == 1 %}
-                <tr class="info">
+                <tr>
                 <td class="text-center">{{n['branch_id']}}</td>
                 <td>{{n['rule_text']}}</td>         
                 <td>{{n['timer']}}</td>
                 <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>      
     		{% elif n['active'] == 0 %}
-    		    <tr class="warning">
+    		    <tr>
     			<td class="text-center">{{n['branch_id']}}</td>
     	        <td>{{n['rule_text']}}</td>
     	        <td>{{n['timer']}}</td>
