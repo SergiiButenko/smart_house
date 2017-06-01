@@ -94,7 +94,7 @@ def execute_request(query, method='fetchall'):
             conn.close()
 
 def get_next_active_rule(line_id):
-    query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.line_id={0} AND timer>=now() ORDER BY date, timer LIMIT 1".format(line_id)
+    query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY date, timer LIMIT 1".format(line_id)
     res = execute_request(query, 'fetchone')
     if res is None:
         return None
@@ -209,12 +209,14 @@ def hello():
 def activate_rule():
     id=int(request.args.get('id'))
     execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
+    update_all_rules()
     return 'OK'
 
 @app.route("/deactivate_rule")
 def deactivate_rule():
     id=int(request.args.get('id'))
     execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
+    update_all_rules()
     return 'OK'
 
 @app.route("/deactivate_all_rules")
