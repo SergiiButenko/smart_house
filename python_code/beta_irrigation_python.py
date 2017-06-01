@@ -247,7 +247,7 @@ def list():
 def list_all():
 	if 'days' in request.args:       
 		days=int(request.args.get('days'))
-		return get_table_template("select * from life where timer<=now()- interval '{0} day' order by timer desc".format(days))
+		return get_table_template("select * from life where timer>=now()- interval '{0} day' AND timer <=now() order by timer desc".format(days))
 
 	list_arr = execute_request("select * from life where timer <= now() order by timer desc", 'fetchall')
 	rows=[]
