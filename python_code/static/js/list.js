@@ -53,10 +53,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#datetimepicker1').on('changeDate', function(ev){
-        console.log('here')
-        $('#datetimepicker1').datepicker('hide');
-    });
+    
 });
 
     
