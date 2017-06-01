@@ -113,6 +113,11 @@ def enable_rule():
 
             if (datetime.datetime.now() >= rule['timer']): 
 
+                if (rule['line_id'] == 7):                    
+                    arduino_branch_name='pump'
+                else:
+                    arduino_branch_name=rule['line_id']
+
                 if rule['rule_id'] == 1:
                     response=branch_on(rule['line_id'])
                     if response is None:
@@ -120,11 +125,11 @@ def enable_rule():
                         continue
                     
                     json_data = json.loads(response.text)
-                    if (json_data['variables'][str(rule['line_id'])] == 0 ):
+                    if (json_data['variables']['arduino_branch_name'] == 0 ):
                         print("Can't turn on {0} branch".format(rule['line_id']))
                         continue
 
-                    if (json_data['variables'][str(rule['line_id'])] == 1 ):
+                    if (json_data['variables']['arduino_branch_name'] == 1 ):
                         print("Turned on {0} branch".format(rule['line_id']))
                         execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                         RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
@@ -136,11 +141,11 @@ def enable_rule():
                         continue
                     
                     json_data = json.loads(response.text)
-                    if (json_data['variables'][str(rule['line_id'])] == 1 ):
+                    if (json_data['variables']['arduino_branch_name'] == 1 ):
                         print("Can't turn off {0} branch".format(rule['line_id']))
                         continue
 
-                    if (json_data['variables'][str(rule['line_id'])] == 0 ):
+                    if (json_data['variables']['arduino_branch_name'] == 0 ):
                         print("Turned off {0} branch".format(rule['line_id']))
                         execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                         RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
@@ -151,7 +156,7 @@ thread.start()
 
 def update_all_rules():
     while True:
-        for i in xrange(1,len(RULES_FOR_BRANCHES)):
+        for i in range(1,len(RULES_FOR_BRANCHES), 1):
             RULES_FOR_BRANCHES[i]=get_next_active_rule(i)    
         time.sleep(60*60)
 
@@ -264,7 +269,7 @@ def activate_branch():
     execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 1, 1, now.date(), now), 'fetchone')
     res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(id, 2, 0, now.date(), now_plus), 'fetchone')
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
-
+    print(str(RULES_FOR_BRANCHES[id]))
     try:
         response_status = requests.get(url=ARDUINO_IP)
         socketio.emit('branch_status', {'data':response_status.text})
