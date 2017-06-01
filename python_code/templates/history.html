@@ -3,7 +3,7 @@
    <head>
       <script type="text/javascript" src="static/js/jquery.js"></script>
       <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="static/js/list.js"></script>
+      <script type="text/javascript" src="static/js/history.js"></script>
       <script type="text/javascript" src="static/js/bootstrap-toggle.min.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
       <script type="text/javascript" src="https://use.fontawesome.com/41f36ecde2.js"></script>
@@ -50,8 +50,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav">
-                  <li><a href="http://mozart.hopto.org:7543/list" style="color:white">Расписание полива</a></li>
-                  <li><a href="http://mozart.hopto.org:7543/list_all">История</a></li>
+                  <li><a href="http://mozart.hopto.org:7543/list">Расписание полива</a></li>
+                  <li><a href="http://mozart.hopto.org:7543/list_all" style="color:white">История</a></li>
                </ul>
                <ul class="nav navbar-nav navbar-right">
                   <p class="navbar-text" style="color:white" id="temp_header">Температура воздуха - "N/A"</p>
@@ -64,9 +64,10 @@
       <!-- Page Content -->
       <div class="container">
          <div class="modal_spinner" id="loader"></div>
-         <h2>Расписание полива</h2>
-         <button type="button" class="btn btn-default" data-target="#deactivate_rules_modal" onclick="$('#deactivate_rules_modal').modal('show')">Деактивировать правила</button>
-         <button type="button" class="btn btn-default" data-target="#deactivate_rules_modal" onclick="$('#modify_rules').modal('show')">Добавить правило</button>
+         <h2>История полива</h2>
+         <button type="button" class="btn btn-default btn-refresh-history" data-value=1>За 24 часа</button>
+         <button type="button" class="btn btn-default btn-refresh-history" data-value=7>За неделю</button>
+         <button type="button" class="btn btn-default btn-refresh-history" data-value=31>За месяц</button>
          <table id="rules_table" class="table table-condensed table-striped ">
             <thead>
                <tr>
@@ -109,96 +110,6 @@
          </table>
       </div>
       <!-- /.container -->
-      <!-- Modal -->
-      <div id="deactivate_rules_modal" class="modal fade" role="dialog" data-id='0'>
-         <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Выберите правила</h4>
-               </div>
-               <div class="modal-body text-center" style="overflow: visible;" title="">
-                  <label for="time_selector">
-                     <span>Выберите: </span>
-                     <select id='rule_selector' class="selectpicker">
-                        <option data-value=1>На завтра</option>
-                        <option data-value=2>На неделю</option>
-                        <option data-value=2>До отмены</option>
-                     </select>
-                  </label>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                  <button type="button" class="btn btn-default deactivate_rules" data-dismiss="modal">Деактивировать</button>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- Modal -->
-      <div id="modify_rules" class="modal fade" role="dialog" data-id='0'>
-         <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Добавить правило полива</h4>
-               </div>
-               <div class="modal-body" style="overflow: visible;" title="">
-                  <table>
-                     <tbody>
-                        <tr>
-                           <td>
-                              <select id='branch_number_selector' class="selectpicker"></select>
-                              <span> Номер ветки</span>
-                              <span style="display:block;height: 10px;"></span>
-                           </td>
-                           </tr>
-                                <tr>
-                           <td>
-                              <select id='rule_timer_selector' class="selectpicker"></select>
-                              <span> Длительность полива</span>
-                              <span style="display:block;height: 10px;"></span>
-                           </td>
-                           </tr>
-                           <tr>
-                        <td>
-                                    <div class='input-group date' id='datetimepicker2'>
-                                       <input type='text' class="form-control" id="datetimepicker2_input" />
-                                       <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                       </span>
-                           			</div>
-
-                           			<span style="display:block;height: 10px;"></span>
-                        </td>
-                        </tr>
-                   
-                        <tr>
-                           <td>
-                              <button type="button" class="btn btn-default" id= "btn_add_rule">Добавить</button>
-                              <span style="display:block;height: 10px;"></span>
-                           </td>
-                        </tr>
-                     </tbody>
-                  </table>
-
-                  <table id="result_table" class="table table-condensed table-striped ">
-                  </table>
-
-                  <script type="text/javascript">
-                     $(function () {
-                         $('#datetimepicker2').datetimepicker({                            
-                            format: 'YYYY-MM-DD hh:mm:ss'
-                        });
-                     });
-                  </script>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-               </div>
-            </div>
-         </div>
-      </div>
+   
    </body>
 </html>
