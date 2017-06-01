@@ -198,6 +198,7 @@ def list():
     rules=['',"Start","Stop","Deactivated"]
     
     for row in list_arr:
+<<<<<<< HEAD
         id=row[0]
         branch_id=row[1]
         rule_id=row[2]        
@@ -210,6 +211,9 @@ def list():
 
         rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
             'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+=======
+        rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
+>>>>>>> ab09e3e5b49625f4bbdbffaaf94d566c5fcf0755
     return render_template('list.html', my_list=rows)
 
 @app.route("/")
@@ -378,3 +382,5 @@ def after_request(response):
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=True)
+
+    

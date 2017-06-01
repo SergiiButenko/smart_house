@@ -128,7 +128,7 @@ $(document).ready(function() {
             }
 
             if (!$(this).prop('checked')) {
-               //branch_off(index);
+               branch_off(index);
             }
         }
     });
@@ -138,7 +138,7 @@ $(document).ready(function() {
         index = $('#time_modal').data('id');
         time = $("#time_selector option:selected").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
-        //branch_on(index, time);
+        branch_on(index, time);
     });
 
 });
