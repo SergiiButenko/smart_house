@@ -25,9 +25,10 @@ import psycopg2
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
 
-ARDUINO_IP='http://192.168.1.10'
-#ARDUINO_IP='http://185.20.216.94:5555'
+#ARDUINO_IP='http://192.168.1.10'
+ARDUINO_IP='http://185.20.216.94:5555'
 RULES_FOR_BRANCHES=[None] * 10
+RULES_ENABLED=True
 
 @socketio.on_error_default
 def error_handler(e):
@@ -103,6 +104,9 @@ def get_next_active_rule(line_id):
 def enable_rule():
     while True:
         time.sleep(10)
+        if (RULES_ENABLED==False):
+            continue
+
         for rule in RULES_FOR_BRANCHES: 
             if rule is None:
                 continue
@@ -183,12 +187,52 @@ def list():
     rules=['',"Start","Stop","Deactivated"]
     
     for row in list_arr:
-        rows.append({'id':row[1], 'rule_id':row[2], 'rule':rules[row[2]], 'state':row[3], 'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5])})
+        id=row[0]
+        branch_id=row[1]
+        rule_id=row[2]        
+        state=row[3]
+        timer=row[5]
+        active=row[6]
+        outdated=0
+        if (state==0 and timer<datetime.datetime.now()):
+            outdated=1
+
+        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
+            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
     return render_template('list.html', my_list=rows)
 
 @app.route("/")
 def hello():
     return str(RULES_FOR_BRANCHES)
+
+@app.route("/activate_rule")
+def activate_rule():
+    id=int(request.args.get('id'))
+    execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
+    return 'OK'
+
+@app.route("/deactivate_rule")
+def deactivate_rule():
+    id=int(request.args.get('id'))
+    execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
+    return 'OK'
+
+@app.route("/deactivate_all_rules")
+def deactivate_all_rules():
+    id=int(request.args.get('id'))
+    #1-24h;2-7d;3-on demand
+    if (id==1):
+        execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1".format(id))
+        update_all_rules()    
+
+    if (id==2):
+        execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7".format(id))        
+        update_all_rules()
+
+    if (id==3):
+        RULES_ENABLED=False
+
+    return 'OK'
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():

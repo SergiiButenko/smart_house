@@ -1,5 +1,5 @@
-var server = 'http://mozart.hopto.org:7543';
-//var server = 'http://127.0.0.1:7543';
+//var server = 'http://mozart.hopto.org:7543';
+var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -28,18 +28,48 @@ $(document).ready(function() {
         });
     })();
 
-
-    //Assign onClick for close buttons on Modal window
-    $(".modal_close").click(function() {
-        //update_branches_request();
-    });
-
     //Function to start irrigation
-    $(".start-irrigation").click(function() {
-        // index = $('#time_modal').data('id');
-        // time = $("#time_selector option:selected").data("value");
-        // console.log(branch_names[index]+" will be activated on "+time+" minutes");
-        //branch_on(index, time);
+    $(".deactivate_rules").click(function() {        
+        id = $("#rule_selector option:selected").data("value");
+        $.ajax({
+            url: server+'/deactivate_all_rules',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (id != 3) 
+                    location.reload();
+                
+            }
+        });
     });
-
 });
+
+    function activate_rule(that){
+        id = $(that).data('id');
+        $.ajax({
+            url: server+'/activate_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                   
+            }
+        });
+    }
+
+    function deactivate_rule(that){
+        id = $(that).data('id');
+        $.ajax({
+            url: server+'/deactivate_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                   
+            }
+        });
+    }

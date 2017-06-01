@@ -73,7 +73,7 @@
     <div class="modal_spinner" id="loader"></div>
     <h2>Расписание полива</h2>    
     <button type="button" class="btn btn-default" data-target="#deactivate_rules_modal" onclick="$('#deactivate_rules_modal').modal('show')">Деактивировать правила</button>
-    <table class="table table-condensed table-stripedr">
+    <table class="table table-condensed">
         <thead>
           <tr>
             <th>Номер ветки</th>
@@ -86,22 +86,28 @@
     	{% for n in my_list %}
     	    {% if n['state'] == 1 %}
     		    <tr class="success">
-    			<td class="text-center">{{n['id']}}</td>
-    	        <td>{{n['rule']}}</td>	        
+    			<td class="text-center">{{n['branch_id']}}</td>
+    	        <td>{{n['rule_text']}}</td>	        
     	        <td>{{n['timer']}}</td>
-    	        <td><button type="button" class="btn btn-default disabled">Выполнено</button></td>		
-    		{% elif n['rule_id'] == 3 %}
+    	        <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>		
+            {% elif n['outdated'] == 1 %}
+                <tr class="info">
+                <td class="text-center">{{n['branch_id']}}</td>
+                <td>{{n['rule_text']}}</td>         
+                <td>{{n['timer']}}</td>
+                <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>      
+    		{% elif n['active'] == 0 %}
     		    <tr class="warning">
-    			<td class="text-center">{{n['id']}}</td>
-    	        <td>{{n['rule']}}</td>
+    			<td class="text-center">{{n['branch_id']}}</td>
+    	        <td>{{n['rule_text']}}</td>
     	        <td>{{n['timer']}}</td>
-    	        <td><button type="button" class="btn btn-default">Активировать</button></td>		
+    	        <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="activate_rule(this)">Активировать</button></td>		
     		{% else %}	        
     		    <tr>
-    			<td class="text-center">{{n['id']}}</td>
-    	        <td>{{n['rule']}}</td>
+    			<td class="text-center">{{n['branch_id']}}</td>
+    	        <td>{{n['rule_text']}}</td>
     	        <td>{{n['timer']}}</td>
-    	        <td><button type="button" class="btn btn-default">Не выполнять</button></td>		
+    	        <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="deactivate_rule(this)">Не выполнять</button></td>		
     		{% endif %}
           </tr>
     	{% endfor %}
@@ -136,7 +142,7 @@
 
           <div class="modal-footer">
             <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Деактивировать</button>
+            <button type="button" class="btn btn-default deactivate_rules" data-dismiss="modal">Деактивировать</button>
           </div>
         </div>
 
