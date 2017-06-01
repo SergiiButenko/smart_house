@@ -1,4 +1,4 @@
-var server = 'http://mozart.hopto.org:7543';
+var server = 'http://mozart.hopto.org:7543'; 
 //var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60*5;

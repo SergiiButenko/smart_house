@@ -125,11 +125,11 @@ def enable_rule():
                         continue
                     
                     json_data = json.loads(response.text)
-                    if (json_data['variables'][arduino_branch_name] == 0 ):
+                    if (json_data['variables'][str(arduino_branch_name)] == 0 ):
                         print("Can't turn on {0} branch".format(rule['line_id']))
                         continue
 
-                    if (json_data['variables'][arduino_branch_name] == 1 ):
+                    if (json_data['variables'][str(arduino_branch_name)] == 1 ):
                         print("Turned on {0} branch".format(rule['line_id']))
                         execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                         RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
@@ -142,11 +142,11 @@ def enable_rule():
                     
                     json_data = json.loads(response.text)
                     print(str(json_data['variables']))
-                    if (json_data['variables'][arduino_branch_name] == 1 ):
+                    if (json_data['variables'][str(arduino_branch_name)] == 1 ):
                         print("Can't turn off {0} branch".format(rule['line_id']))
                         continue
 
-                    if (json_data['variables'][arduino_branch_name] == 0 ):
+                    if (json_data['variables'][str(arduino_branch_name)] == 0 ):
                         print("Turned off {0} branch".format(rule['line_id']))
                         execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                         RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
