@@ -141,6 +141,7 @@ def enable_rule():
                         continue
                     
                     json_data = json.loads(response.text)
+                    print(str(json_data['variables']))
                     if (json_data['variables'][arduino_branch_name] == 1 ):
                         print("Can't turn off {0} branch".format(rule['line_id']))
                         continue
