@@ -194,7 +194,7 @@ def list():
         timer=row[5]
         active=row[6]
         outdated=0
-        if (state==0 and timer<datetime.datetime.now()):
+        if (state==0 and timer<datetime.timedelta(minutes = -1)):
             outdated=1
 
         rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
