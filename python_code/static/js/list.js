@@ -16,6 +16,16 @@ $(document).ready(function() {
             $loading.hide();
     });
     
+    var socket = io.connect(server);
+    socket.heartbeatTimeout = 5000;
+    socket.on('connect', function() {
+        console.log("connected to websocket");
+    });
+
+    socket.on('list_update', function(msg) {
+            $("#rules_table").html(msg.data);
+    });  
+
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
         $.ajax({
@@ -38,8 +48,6 @@ $(document).ready(function() {
                 'id': id
             },
             success: function(data) {
-                if (id != 3) 
-                    location.reload();
                 
             }
         });
@@ -55,7 +63,8 @@ $(document).ready(function() {
                 'id': id
             },
             success: function(data) {
-                   
+                console.log(data)
+                $("#rules_table").html(data);
             }
         });
     }
@@ -69,7 +78,7 @@ $(document).ready(function() {
                 'id': id
             },
             success: function(data) {
-                   
+                $("#rules_table").html(data);
             }
         });
     }

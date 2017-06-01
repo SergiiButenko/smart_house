@@ -1,1 +1,1 @@
-select * from life order by date, timer 
+select * from life order by date, timer desc

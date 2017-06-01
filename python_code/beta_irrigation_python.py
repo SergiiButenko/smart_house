@@ -42,6 +42,7 @@ def branch_on(id):
         print(e)
         print("Can't turn on {0} branch. Exception occured".format(line_id))
     
+    # this request returns status for all branches
     try:
         response_status = requests.get(url=ARDUINO_IP) 
         socketio.emit('branch_status', {'data':response_status.text})
@@ -155,12 +156,17 @@ thread.setDaemon(True)
 thread.start() 
 
 def update_all_rules():
+    for i in range(1,len(RULES_FOR_BRANCHES), 1):
+        RULES_FOR_BRANCHES[i]=get_next_active_rule(i)    
+
+
+def update_all_rules_daemon():
     while True:
         for i in range(1,len(RULES_FOR_BRANCHES), 1):
             RULES_FOR_BRANCHES[i]=get_next_active_rule(i)    
         time.sleep(60*60)
 
-thread2 = threading.Thread(name='update_all_rules', target=update_all_rules)
+thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
 thread2.setDaemon(True)
 thread2.start() 
 
@@ -215,14 +221,58 @@ def activate_rule():
     id=int(request.args.get('id'))
     execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
     update_all_rules()
-    return 'OK'
+
+    list_arr = execute_request("select_all_records.sql", 'fetchall')
+    rows=[]
+    #rules=['',"Начать полив","Остановить полив","Неактивно"]
+    rules=['',"Start","Stop","Deactivated"]
+    
+    for row in list_arr:
+        id=row[0]
+        branch_id=row[1]
+        rule_id=row[2]        
+        state=row[3]
+        timer=row[5]
+        active=row[6]
+        outdated=0
+        if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
+            outdated=1
+
+        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
+            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+    
+    template=render_template('table_only.html', my_list=rows)
+    socketio.emit('list_update', {'data':template})
+    return template
 
 @app.route("/deactivate_rule")
 def deactivate_rule():
     id=int(request.args.get('id'))
     execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
     update_all_rules()
-    return 'OK'
+
+    list_arr = execute_request("select_all_records.sql", 'fetchall')
+    rows=[]
+    #rules=['',"Начать полив","Остановить полив","Неактивно"]
+    rules=['',"Start","Stop","Deactivated"]
+    
+    for row in list_arr:
+        id=row[0]
+        branch_id=row[1]
+        rule_id=row[2]        
+        state=row[3]
+        timer=row[5]
+        active=row[6]
+        outdated=0
+        if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
+            outdated=1
+
+        rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3], 
+            'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+    
+    template=render_template('table_only.html', my_list=rows)
+    socketio.emit('list_update', {'data':template})
+    return template
 
 @app.route("/deactivate_all_rules")
 def deactivate_all_rules():
