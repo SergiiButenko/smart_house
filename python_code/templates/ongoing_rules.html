@@ -3,7 +3,7 @@
    <head>
       <script type="text/javascript" src="static/js/jquery.js"></script>
       <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="static/js/history.js"></script>
+      <script type="text/javascript" src="static/js/ongoing_rules.js"></script>
       <script type="text/javascript" src="static/js/bootstrap-toggle.min.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
       <script type="text/javascript" src="https://use.fontawesome.com/41f36ecde2.js"></script>
@@ -51,8 +51,8 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav">
                   <li><a href="http://mozart.hopto.org:7543/list">Расписание полива</a></li>
-                  <li><a href="http://mozart.hopto.org:7543/list_all" style="color:white">История</a></li>
-                  <li><a href="http://mozart.hopto.org:7543/list_all">Правила</a></li>
+                  <li><a href="http://mozart.hopto.org:7543/list_all">История</a></li>
+                  <li><a href="http://mozart.hopto.org:7543/list_all" style="color:white">Правила</a></li>
                </ul>
                <ul class="nav navbar-nav navbar-right">
                   <p class="navbar-text" style="color:white" id="temp_header">Температура воздуха - "N/A"</p>
@@ -65,52 +65,49 @@
       <!-- Page Content -->
       <div class="container">
          <div class="modal_spinner" id="loader"></div>
-         <h2>История полива</h2>
-         <button type="button" class="btn btn-default btn-refresh-history" data-value=1>За 24 часа</button>
-         <button type="button" class="btn btn-default btn-refresh-history" data-value=7>За неделю</button>
-         <button type="button" class="btn btn-default btn-refresh-history" data-value=31>За месяц</button>
+         <h2>Правила на неделю</h2>
          <table id="rules_table" class="table table-condensed table-striped ">
             <thead>
                <tr>
+                  <th>День недели</th>
                   <th>Номер ветки</th>
-                  <th>Правило</th>
+                  <th>Тип правила</th>
                   <th>Время выполнения</th>
+                  <th>Длительность полива</th>
                   <th></th>
                </tr>
             </thead>
             <tbody>
                {% for n in my_list %}
-               {% if n['state'] == 1 %}
                <tr>
-                  <td class="text-center">{{n['branch_id']}}</td>
+               {% if n['active'] == 0 %}
+                  <td>{{n['dow']}}</td>
+                  <td>{{n['branch_id']}}</td>
                   <td>{{n['rule_text']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>
-                  {% elif n['outdated'] == 1 %}
-               <tr>
-                  <td class="text-center">{{n['branch_id']}}</td>
+                  <td>{{n['time']}}</td>
+                  <td>{{n['minutest']}} минут</td>
+                  <td>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Активировать</button>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Удалить</button>
+                  </td>
+               {% else %}	        
+                  <td>{{n['dow']}}</td>
+                  <td>{{n['branch_id']}}</td>
                   <td>{{n['rule_text']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>
-                  {% elif n['active'] == 0 %}
-               <tr>
-                  <td class="text-center">{{n['branch_id']}}</td>
-                  <td>{{n['rule_text']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="activate_rule(this)">Активировать</button></td>
-                  {% else %}	        
-               <tr>
-                  <td class="text-center">{{n['branch_id']}}</td>
-                  <td>{{n['rule_text']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="deactivate_rule(this)">Не выполнять</button></td>
-                  {% endif %}
+                  <td>{{n['time']}}</td>
+                  <td>{{n['minutest']}} минут</td>
+                  <td>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Деактивировать</button>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Удалить</button>
+                  </td>
+               {% endif %}
                </tr>
                {% endfor %}
             </tbody>
          </table>
       </div>
       <!-- /.container -->
-   
    </body>
 </html>

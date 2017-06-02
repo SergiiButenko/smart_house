@@ -219,6 +219,25 @@ def get_table_template(query='select * from life order by timer desc'):
 	template=render_template('table_only.html', my_list=rows)
 	return template
 
+@app.route("/ongoing_rules")
+def ongoing_rules():
+	list_arr = execute_request("SELECT id, day_number, line_id, rule_id, \"time\", \"interval\", active FROM week_schedule", 'fetchall')
+	rows=[]
+	rules=['',"Start","Stop","Deactivated"]
+	for row in list_arr:
+		id=row[0]
+		day_number=int(row[1])
+		branch_id=row[2]
+		rule_id=row[3] 
+		time=row[4]
+		minutes=row[5]
+		active=row[6]
+		rows.append({'id':id, 'branch_id':branch_id, 'dow': day_number, 'rule_text':rules[rule_id], 'time':time, 'minutest': minutes, 'active':active})
+
+	template=render_template('ongoing_rules.html', my_list=rows)
+	return template
+
+
 @app.route("/list")
 def list():
 	list_arr = execute_request("select * from life where timer>= now() - interval '{0} hour' and timer<=now()+ interval '{1} hour' order by timer desc".format(12, 24), 'fetchall')
@@ -317,14 +336,14 @@ def deactivate_all_rules():
 	id=int(request.args.get('id'))
 	#1-24h;2-7d;3-on demand
 	if (id==1):
-		execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1".format(id))
+		execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1")
 		update_all_rules()
 		template=get_table_template()
 		socketio.emit('list_update', {'data':template})
 		return template
 
 	if (id==2):
-		execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7".format(id))        
+		execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7")        
 		update_all_rules()
 		template=get_table_template()
 		socketio.emit('list_update', {'data':template})
