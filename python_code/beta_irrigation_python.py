@@ -226,7 +226,7 @@ def ongoing_rules():
 	rules=['',"Start","Stop","Deactivated"]
 	for row in list_arr:
 		id=row[0]
-		day_number=int(row[1])
+		day_number=row[1]
 		branch_id=row[2]
 		rule_id=row[3]
 		time=row[4]
