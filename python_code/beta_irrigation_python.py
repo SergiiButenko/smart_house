@@ -271,7 +271,7 @@ def list_all():
 def add_rule():
 	branch_id=int(request.args.get('branch_id'))
 	time_min=int(request.args.get('time_min'))
-	datetime_start=datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M:%S")
+	datetime_start=datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
 
 	datetime_stop=datetime_start + datetime.timedelta(minutes = time_min)
 	now = datetime.datetime.now()
