@@ -221,18 +221,17 @@ def get_table_template(query='select * from life order by timer desc'):
 
 @app.route("/ongoing_rules")
 def ongoing_rules():
-	list_arr = execute_request("SELECT w.id, dw.name, li.name, w.rule_id, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li WHERE  w.day_number = dw.num AND w.line_id = li.number", 'fetchall')
+	list_arr = execute_request("SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id", 'fetchall')
 	rows=[]
-	rules=['',"Start","Stop","Deactivated"]
 	for row in list_arr:
 		id=row[0]
 		day_number=row[1]
 		branch_id=row[2]
-		rule_id=row[3]
+		rule=row[3]
 		time=row[4]
 		minutes=row[5]
 		active=row[6]
-		rows.append({'id':id, 'branch_id':branch_id, 'dow': day_number, 'rule_text':rules[rule_id], 'time':time, 'minutest': minutes, 'active':active})
+		rows.append({'id':id, 'branch_id':branch_id, 'dow': day_number, 'rule_text':rule_id, 'time':time, 'minutest': minutes, 'active':active})
 
 	template=render_template('ongoing_rules.html', my_list=rows)
 	return template
