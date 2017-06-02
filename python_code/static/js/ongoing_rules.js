@@ -108,7 +108,8 @@ $(document).ready(function() {
         }).prop('selected', true);
         $('#rule_timer_selector_edit').selectpicker('refresh')
         
-        $("#datetimepicker2_edit").datepicker('update', '2011-03-05');
+        time_start = time_start.split(':');
+        date_set = new Date().setHours(time_start[0],time_start[1],time_start[2])
         
         // $.ajax({
         //     url: server+'/add_ongoing_rule',

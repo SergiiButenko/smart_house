@@ -34,6 +34,13 @@ RULES_ENABLED=True
 def error_handler(e):
 	print('An error has occurred: ' + str(e))
 
+def send_message(channel, data):
+	try:
+		socketio.emit(channel, data)
+	except Exception as e:
+		print(e)
+		print("Can't send message. Exeption occured")
+
 def branch_on(line_id):
 	try:
 		response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id})
@@ -72,18 +79,13 @@ def branch_off(line_id):
 
 #executes query and returns fetch* result
 def execute_request(query, method='fetchall'):
-	dir = os.path.dirname(__file__)
-	sql_file = os.path.join(dir, '..','sql', query)
 	conn=None
 	try:
 		conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
 		# conn.cursor will return a cursor object, you can use this cursor to perform queries
 		cursor = conn.cursor()
 		# execute our Query
-		if os.path.isfile(sql_file):
-			cursor.execute(open(sql_file, "r").read())
-		else:
-			cursor.execute(query)
+		cursor.execute(query)
 		conn.commit()
 		return getattr(cursor, method)()
 	except BaseException as e:
