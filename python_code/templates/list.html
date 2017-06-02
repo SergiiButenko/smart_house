@@ -190,7 +190,9 @@
                   <script type="text/javascript">
                      $(function () {
                          $('#datetimepicker2').datetimepicker({   
-                            format: 'YYYY-MM-DD HH:mm:ss'
+                            format: 'YYYY-MM-DD HH:mm',
+                            //startDate: new Date(),
+                            minDate: new Date()
                         });
                      });
                   </script>

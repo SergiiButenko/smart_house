@@ -16,15 +16,15 @@ $(document).ready(function() {
             $loading.hide();
     });
     
-    var socket = io.connect(server);
-    socket.heartbeatTimeout = 5000;
-    socket.on('connect', function() {
-        console.log("connected to websocket");
-    });
+    // var socket = io.connect(server);
+    // socket.heartbeatTimeout = 5000;
+    // socket.on('connect', function() {
+    //     console.log("connected to websocket");
+    // });
 
-    socket.on('list_update', function(msg) {
-            $("#rules_table").html(msg.data);
-    });  
+    // socket.on('list_update', function(msg) {
+    //         $("#rules_table").html(msg.data);
+    // });  
 
     //Rename branches
     $.ajax({
