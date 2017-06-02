@@ -195,17 +195,15 @@ def hello():
 	return str(RULES_FOR_BRANCHES)
 
 
-def get_table_template(query='select * from life order by timer desc'):
+def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"):
 	list_arr = execute_request(query, 'fetchall')
+	
 	rows=[]
 	if list_arr is not None:
-		#rules=['',"Начать полив","Остановить полив","Неактивно"]
-		rules=['',"Start","Stop","Deactivated"]
-
 		for row in list_arr:
 			id=row[0]
-			branch_id=row[1]
-			rule_id=row[2]
+			branch_name=row[1]
+			rule_name=row[2]
 			state=row[3]
 			timer=row[5]
 			active=row[6]
@@ -213,8 +211,8 @@ def get_table_template(query='select * from life order by timer desc'):
 			if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
 				outdated=1
 
-			rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3],
-				'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+			rows.append({'id':id, 'branch_name':branch_name, 'rule_name':rule_name, 'state':state,
+				'timer':"{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated':outdated, 'active':active})
 
 	template=render_template('table_only.html', my_list=rows)
 	return template
@@ -226,12 +224,12 @@ def ongoing_rules():
 	for row in list_arr:
 		id=row[0]
 		day_number=row[1]
-		branch_id=row[2]
-		rule=row[3]
+		branch_name=row[2]
+		rule_name=row[3]
 		time=row[4]
 		minutes=row[5]
 		active=row[6]
-		rows.append({'id':id, 'branch_id':branch_id, 'dow': day_number, 'rule_text':rule_id, 'time':time, 'minutest': minutes, 'active':active})
+		rows.append({'id':id, 'branch_name':branch_name, 'dow': day_number, 'rule_name':rule_name, 'time':time, 'minutest': minutes, 'active':active})
 
 	template=render_template('ongoing_rules.html', my_list=rows)
 	return template
@@ -239,15 +237,16 @@ def ongoing_rules():
 
 @app.route("/list")
 def list():
-	list_arr = execute_request("select * from life where timer>= now() - interval '{0} hour' and timer<=now()+ interval '{1} hour' order by timer desc".format(12, 24), 'fetchall')
+
+	list_arr = execute_request("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' AND l.timer<=now()+ interval '{1} hour' order by l.timer desc".format(12, 24), 'fetchall')
 	rows=[]
 	#rules=['',"Начать полив","Остановить полив","Неактивно"]
 	rules=['',"Start","Stop","Deactivated"]
 
 	for row in list_arr:
 		id=row[0]
-		branch_id=row[1]
-		rule_id=row[2]
+		branch_name=row[1]
+		rule_name=row[2]
 		state=row[3]
 		timer=row[5]
 		active=row[6]
@@ -255,8 +254,8 @@ def list():
 		if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
 			outdated=1
 
-		rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3],
-			'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+		rows.append({'id':id, 'branch_name':branch_name, 'rule_name':rule_name, 'state':state,
+			'timer':"{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated':outdated, 'active':active})
 
 	template=render_template('list.html', my_list=rows)
 	return template
@@ -265,17 +264,14 @@ def list():
 def list_all():
 	if 'days' in request.args:
 		days=int(request.args.get('days'))
-		return get_table_template("select * from life where timer>=now()- interval '{0} day' AND timer <=now() order by timer desc".format(days))
+		return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=now()- interval '{0} day' AND l.timer <=now() order by l.timer desc".format(days))
 
-	list_arr = execute_request("select * from life where timer <= now() order by timer desc", 'fetchall')
+	list_arr = execute_request("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= now() order by l.timer desc", 'fetchall')
 	rows=[]
-	#rules=['',"Начать полив","Остановить полив","Неактивно"]
-	rules=['',"Start","Stop","Deactivated"]
-
 	for row in list_arr:
 		id=row[0]
-		branch_id=row[1]
-		rule_id=row[2]
+		branch_name=row[1]
+		rule_name=row[2]
 		state=row[3]
 		timer=row[5]
 		active=row[6]
@@ -283,8 +279,8 @@ def list_all():
 		if (state==0 and timer<datetime.datetime.now() - datetime.timedelta(minutes=1)):
 			outdated=1
 
-		rows.append({'id':row[0], 'branch_id':row[1], 'rule_id':row[2], 'rule_text':rules[row[2]], 'state':row[3],
-			'timer':"{:%A, %H:%M, %d %b %Y}".format(row[5]), 'outdated':outdated, 'active':active})
+		rows.append({'id':id, 'branch_name':branch_name, 'rule_name':rule_name, 'state':state,
+			'timer':"{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated':outdated, 'active':active})
 
 	template=render_template('history.html', my_list=rows)
 	return template
@@ -357,12 +353,12 @@ def deactivate_all_rules():
 def get_list():
 	if 'days' in request.args:
 		days=int(request.args.get('days'))
-		return get_table_template("select * from life where timer<=now()::date+{0} order by timer desc".format(days))
+		return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=now()::date+{0} order by l.timer desc".format(days))
 
 	if 'before' in request.args and 'after' in request.args:
 		before=int(request.args.get('before'))
 		after=int(request.args.get('after'))
-		return get_table_template("select * from life where timer>= now() - interval '{0} hour' and timer<=now()+ interval '{1} hour' order by timer desc".format(before, after))
+		return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' and l.timer<=now()+ interval '{1} hour' order by l.timer desc".format(before, after))
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():

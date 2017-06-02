@@ -70,9 +70,8 @@
             <thead>
                <tr>
                   <th>День недели</th>
-                  <th>Номер ветки</th>
-                  <th>Тип правила</th>
-                  <th>Время выполнения</th>
+                  <th>Номер ветки</th>                  
+                  <th>Начало полива</th>
                   <th>Длительность полива</th>
                   <th></th>
                </tr>
@@ -82,8 +81,7 @@
                <tr>
                {% if n['active'] == 0 %}
                   <td>{{n['dow']}}</td>
-                  <td>{{n['branch_id']}}</td>
-                  <td>{{n['rule_text']}}</td>
+                  <td>{{n['branch_name']}}</td>
                   <td>{{n['time']}}</td>
                   <td>{{n['minutest']}} минут</td>
                   <td>
@@ -93,8 +91,7 @@
                   </td>
                {% else %}	        
                   <td>{{n['dow']}}</td>
-                  <td>{{n['branch_id']}}</td>
-                  <td>{{n['rule_text']}}</td>
+                  <td>{{n['branch_name']}}</td>
                   <td>{{n['time']}}</td>
                   <td>{{n['minutest']}} минут</td>
                   <td>
