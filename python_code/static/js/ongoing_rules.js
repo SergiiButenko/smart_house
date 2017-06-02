@@ -1,5 +1,5 @@
-var server = 'http://mozart.hopto.org:7543'; 
-//var server = 'http://127.0.0.1:7543';
+//var server = 'http://mozart.hopto.org:7543'; 
+var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -38,15 +38,19 @@ $(document).ready(function() {
 
             for (var i = 1; i < branch_names.length; i++) {
                 $('#branch_number_selector').append("<option data-id="+i+" id=\"option"+i+"\">"+branch_names[i]+"</option>");
+                $('#branch_number_selector_edit').append("<option data-id="+i+" id=\"option"+i+"\">"+branch_names[i]+"</option>");
             }    
             $('#branch_number_selector').selectpicker('refresh');
+            $('#branch_number_selector_edit').selectpicker('refresh');
       }
     });
 
     for (var i=1; i<=20; i++){
      $('#rule_timer_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     $('#rule_timer_selector_edit').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#rule_timer_selector').selectpicker('refresh');
+    $('#rule_timer_selector_edit').selectpicker('refresh');
 
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
@@ -80,6 +84,47 @@ $(document).ready(function() {
             }
         });
     });
+
+    $(".btn_edit").on('click', function(e){
+        id=$(this).data('id')
+
+        branch_id = $('#brname_for_'+id).text();
+        dow = $('#dow_for_'+id).text();
+        time_start = $('#time_for_'+id).text();
+        minutes = $('#minutes_for_'+id).text().split(" ")[0];
+        
+        $("#branch_number_selector_edit option").filter(function(){
+            return $.trim($(this).text()) ==  branch_id
+        }).prop('selected', true);
+        $('#branch_number_selector_edit').selectpicker('refresh')
+
+        $("#dow_selector_edit option").filter(function(){
+            return $.trim($(this).text()) ==  dow
+        }).prop('selected', true);
+        $('#dow_selector_edit').selectpicker('refresh')
+
+        $("#rule_timer_selector_edit option").filter(function(){
+            return $.trim($(this).text()) ==  minutes
+        }).prop('selected', true);
+        $('#rule_timer_selector_edit').selectpicker('refresh')
+        
+        $("#datetimepicker2_edit").datepicker('update', '2011-03-05');
+        
+        // $.ajax({
+        //     url: server+'/add_ongoing_rule',
+        //     type: "get",
+        //     data: {
+        //         'branch_id': branch_id,
+        //         'time_min':time_min,
+        //         'datetime_start':datetime_start,
+        //         'dow':dow
+        //     },
+        //     complete: function(data) {
+        //         //$('#add_rules').modal('hide');
+        //     }
+        // });
+    });
+
 });
 
 

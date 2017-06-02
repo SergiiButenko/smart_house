@@ -1,4 +1,4 @@
-            <thead>
+<thead>
                <tr>
                   <th>День недели</th>
                   <th>Номер ветки</th>                  
@@ -10,28 +10,19 @@
             <tbody>
                {% for n in my_list %}
                <tr>
-               {% if n['active'] == 0 %}
-                  <td>{{n['dow']}}</td>
-                  <td>{{n['branch_name']}}</td>
-                  <td>{{n['time']}}</td>
-                  <td>{{n['minutest']}} минут</td>
-                  <td>
-                     <button type="button" class="btn btn-default " onclick="activate_rule(this)" data-id={{n['id']}}>Активировать</button>
-                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
-                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
-                  </td>
-               {% else %}	        
-                  <td>{{n['dow']}}</td>
-                  <td>{{n['branch_name']}}</td>
-                  <td>{{n['time']}}</td>
-                  <td>{{n['minutest']}} минут</td>
-                  <td>
+               <td id="dow_for_"{{n['id']}}>{{n['dow']}}</td>
+               <td id="brname_for_"{{n['id']}}>{{n['branch_name']}}</td>
+               <td id="time_for_"{{n['id']}}>{{n['time']}}</td>
+               <td id="minutes_for_"{{n['id']}}>{{n['minutest']}} минут</td>
+               <td>
+               {% if n['active'] == 0 %}         
+                     <button type="button" class="btn btn-default" onclick="activate_rule(this)" data-id={{n['id']}}>Активировать</button>
+               {% else %}
                      <button type="button" class="btn btn-default " onclick="deactivate_rule(this)" data-id={{n['id']}}>Деактивировать</button>
-                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
-                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
-                  </td>
                {% endif %}
+               <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
+               <button type="button" class="btn btn-default" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
+               </td>
                </tr>
                {% endfor %}
             </tbody>
-   
