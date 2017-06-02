@@ -1,1 +1,0 @@
-# irrigation_peregonivka
