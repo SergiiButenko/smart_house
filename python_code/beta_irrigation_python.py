@@ -34,7 +34,7 @@ RULES_ENABLED=True
 def error_handler(e):
 	print('An error has occurred: ' + str(e))
 
-def branch_on(id):
+def branch_on(line_id):
 	try:
 		response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id})
 		json_data = json.loads(response.text)
