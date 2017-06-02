@@ -217,24 +217,6 @@ def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.d
 	template=render_template('table_only.html', my_list=rows)
 	return template
 
-@app.route("/ongoing_rules")
-def ongoing_rules():
-	list_arr = execute_request("SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id", 'fetchall')
-	rows=[]
-	for row in list_arr:
-		id=row[0]
-		day_number=row[1]
-		branch_name=row[2]
-		rule_name=row[3]
-		time=row[4]
-		minutes=row[5]
-		active=row[6]
-		rows.append({'id':id, 'branch_name':branch_name, 'dow': day_number, 'rule_name':rule_name, 'time':time, 'minutest': minutes, 'active':active})
-
-	template=render_template('ongoing_rules.html', my_list=rows)
-	return template
-
-
 @app.route("/list")
 def list():
 
@@ -301,8 +283,14 @@ def add_rule():
 	socketio.emit('list_update', {'data':template})
 	return template
 
-# @app.route("/remove_rule")
-# def remove_rule():
+@app.route("/remove_rule")
+def remove_rule():
+	id=int(request.args.get('id'))
+	execute_request("DELETE from life WHERE id={0}".format(id))
+	update_all_rules()
+	template=get_table_template()
+	socketio.emit('list_update', {'data':template})
+	return template
 
 # @app.route("/modify_rule")
 # def modify_rule():
@@ -348,6 +336,89 @@ def deactivate_all_rules():
 		RULES_ENABLED=False
 
 	return 'OK'
+
+def ongoing_rules_table(query="SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"):
+	list_arr = execute_request(query, 'fetchall')
+	rows=[]
+	for row in list_arr:
+		id=row[0]
+		day_number=row[1]
+		branch_name=row[2]
+		rule_name=row[3]
+		time=row[4]
+		minutes=row[5]
+		active=row[6]
+		rows.append({'id':id, 'branch_name':branch_name, 'dow': day_number, 'rule_name':rule_name, 'time':time, 'minutest': minutes, 'active':active})
+
+	template=render_template('ongoing_rules_table_only.html', my_list=rows)
+	return template
+
+
+@app.route("/ongoing_rules")
+def ongoing_rules():
+	list_arr = execute_request("SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time", 'fetchall')
+	rows=[]
+	for row in list_arr:
+		id=row[0]
+		day_number=row[1]
+		branch_name=row[2]
+		rule_name=row[3]
+		time=row[4]
+		minutes=row[5]
+		active=row[6]
+		rows.append({'id':id, 'branch_name':branch_name, 'dow': day_number, 'rule_name':rule_name, 'time':time, 'minutest': minutes, 'active':active})
+
+	template=render_template('ongoing_rules.html', my_list=rows)
+	return template
+
+@app.route("/add_ongoing_rule")
+def add_ongoing_rule():
+	branch_id=int(request.args.get('branch_id'))
+	time_min=int(request.args.get('time_min'))
+	time_start=request.args.get('datetime_start')
+	dow=int(request.args.get('dow'))
+
+	execute_request("INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)".format(dow, branch_id, 1, time_start, time_min))
+	update_all_rules()
+	template=ongoing_rules_table()
+	socketio.emit('ongoind_rules_update', {'data':template})
+	return template
+
+@app.route("/remove_ongoing_rule")
+def remove_ongoing_rule():
+	id=int(request.args.get('id'))
+	execute_request("DELETE from week_schedule WHERE id={0}".format(id))
+	update_all_rules()
+	template=ongoing_rules_table()
+	socketio.emit('ongoind_rules_update', {'data':template})
+	return template
+
+@app.route("/edit_ongoing_rule")
+def edit_ongoing_rule():
+	id=int(request.args.get('id'))
+	#execute_request("DELETE from week_schedule WHERE id={0}".format(id))
+	update_all_rules()
+	template=ongoing_rules_table()
+	socketio.emit('ongoind_rules_update', {'data':template})
+	return template
+
+@app.route("/activate_ongoing_rule")
+def activate_ongoing_rule():
+	id=int(request.args.get('id'))
+	execute_request("UPDATE week_schedule SET active=1 WHERE id={0}".format(id))
+	update_all_rules()
+	template=ongoing_rules_table()
+	socketio.emit('ongoind_rules_update', {'data':template})
+	return template
+
+@app.route("/deactivate_ongoing_rule")
+def deactivate_ongoing_rule():
+	id=int(request.args.get('id'))
+	execute_request("UPDATE week_schedule SET active=0 WHERE id={0}".format(id))
+	update_all_rules()
+	template=ongoing_rules_table()
+	socketio.emit('ongoind_rules_update', {'data':template})
+	return template
 
 @app.route("/get_list")
 def get_list():

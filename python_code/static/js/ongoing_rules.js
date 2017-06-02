@@ -1,5 +1,5 @@
-var server = 'http://mozart.hopto.org:7543'; 
-//var server = 'http://127.0.0.1:7543';
+//var server = 'http://mozart.hopto.org:7543'; 
+var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -16,15 +16,15 @@ $(document).ready(function() {
             $loading.hide();
     });
     
-    // var socket = io.connect(server);
-    // socket.heartbeatTimeout = 5000;
-    // socket.on('connect', function() {
-    //     console.log("connected to websocket");
-    // });
+    var socket = io.connect(server);
+    socket.heartbeatTimeout = 5000;
+    socket.on('connect', function() {
+        console.log("connected to websocket");
+    });
 
-    // socket.on('list_update', function(msg) {
-    //         $("#rules_table").html(msg.data);
-    // });  
+    socket.on('ongoind_rules_update', function(msg) {
+            $("#rules_table").html(msg.data);
+    });  
 
     //Rename branches
     $.ajax({
@@ -60,52 +60,23 @@ $(document).ready(function() {
         });
     })();
 
-    //Function to start irrigation
-    $(".deactivate_rules").click(function() {        
-        id = $("#rule_selector option:selected").data("value");
-        $.ajax({
-            url: server+'/deactivate_all_rules',
-            type: "get",
-            data: {
-                'id': id
-            },
-            success: function(data) {
-                $("#rules_table").html(data);
-            }
-        });
-    });
-
-
-    $("#datetimepicker2").on("dp.hide", function(e) {
-                             $('.bootstrap-datetimepicker-widget').hide();
-                             $('#datetimepicker2_input').blur();
-                             $.ajax({
-                             url: server + '/get_list',
-                             type: "get",
-                             data: {
-                                 'before': '12',
-                                 'after': '12',
-                             },
-                             success: function(data) {
-                                 $('#result_table').html(data);
-                             }
-                             });
-                         });
-
-    $('#btn_add_rule').on('click', function(e){
+    $('#btn_add_ongoing_rule').on('click', function(e){
         branch_id = $("#branch_number_selector option:selected").data("id");
         time_min = $("#rule_timer_selector option:selected").data("value");
         datetime_start = $("#datetimepicker2_input").val();
+        dow = $("#dow_selector option:selected").data("value");
+
         $.ajax({
-            url: server+'/add_rule',
+            url: server+'/add_ongoing_rule',
             type: "get",
             data: {
                 'branch_id': branch_id,
                 'time_min':time_min,
-                'datetime_start':datetime_start
+                'datetime_start':datetime_start,
+                'dow':dow
             },
-            success: function(data) {
-                $("#result_table").html(data);
+            complete: function(data) {
+                //$('#add_rules').modal('hide');
             }
         });
     });
@@ -115,7 +86,7 @@ $(document).ready(function() {
     function activate_rule(that){
         id = $(that).data('id');
         $.ajax({
-            url: server+'/activate_rule',
+            url: server+'/activate_ongoing_rule',
             type: "get",
             data: {
                 'id': id
@@ -129,7 +100,21 @@ $(document).ready(function() {
     function deactivate_rule(that){
         id = $(that).data('id');
         $.ajax({
-            url: server+'/deactivate_rule',
+            url: server+'/deactivate_ongoing_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                $("#rules_table").html(data);
+            }
+        });
+    }
+
+    function remove_rule(that){
+        id = $(that).data('id');
+        $.ajax({
+            url: server+'/remove_ongoing_rule',
             type: "get",
             data: {
                 'id': id

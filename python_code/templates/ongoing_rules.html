@@ -66,6 +66,7 @@
       <div class="container">
          <div class="modal_spinner" id="loader"></div>
          <h2>Правила на неделю</h2>
+         <button type="button" class="btn btn-default" data-target="#deactivate_rules_modal" onclick="$('#add_rules').modal('show')">Добавить правило</button>
          <table id="rules_table" class="table table-condensed table-striped ">
             <thead>
                <tr>
@@ -85,9 +86,9 @@
                   <td>{{n['time']}}</td>
                   <td>{{n['minutest']}} минут</td>
                   <td>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Активировать</button>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Изменить</button>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Удалить</button>
+                     <button type="button" class="btn btn-default " onclick="activate_rule(this)" data-id={{n['id']}}>Активировать</button>
+                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
                   </td>
                {% else %}	        
                   <td>{{n['dow']}}</td>
@@ -95,9 +96,9 @@
                   <td>{{n['time']}}</td>
                   <td>{{n['minutest']}} минут</td>
                   <td>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Деактивировать</button>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Изменить</button>
-                     <button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Удалить</button>
+                     <button type="button" class="btn btn-default " onclick="deactivate_rule(this)" data-id={{n['id']}}>Деактивировать</button>
+                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
                   </td>
                {% endif %}
                </tr>
@@ -106,5 +107,83 @@
          </table>
       </div>
       <!-- /.container -->
+
+
+      <!-- Modal -->
+      <div id="add_rules" class="modal fade" role="dialog" data-id='0'>
+         <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Добавить правило полива</h4>
+               </div>
+               <div class="modal-body" style="overflow: visible;" title="">
+                  <table>
+                     <tbody>
+                        <tr>
+                           <td>
+                              <select id='branch_number_selector' class="selectpicker"></select>
+                              <span> Номер ветки</span>
+                              <span style="display:block;height: 10px;"></span>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <select id='dow_selector' class="selectpicker">
+                                 <option data-value=1>Понедельник</option>
+                                 <option data-value=2>Вторник</option>
+                                 <option data-value=3>Среда</option>
+                                 <option data-value=4>Четверг</option>
+                                 <option data-value=5>Пятница</option>
+                                 <option data-value=6>Суббота</option>
+                                 <option data-value=7>Воскресенье</option>
+                              </select>
+                              <span> День недели</span>
+                              <span style="display:block;height: 10px;"></span>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <select id='rule_timer_selector' class="selectpicker"></select>
+                              <span> Длительность полива</span>
+                              <span style="display:block;height: 10px;"></span>
+                           </td>
+                           </tr>
+                           <tr>
+                        <td>
+                                    <div class='input-group date' id='datetimepicker2'>
+                                       <input type='text' class="form-control" id="datetimepicker2_input" />
+                                       <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                       </span>
+                                    </div>
+
+                                    <span style="display:block;height: 10px;"></span>
+                        </td>
+                        </tr>
+                     </tbody>
+                  </table>
+
+                  <table id="result_table" class="table table-condensed table-striped ">
+                  </table>
+
+                  <script type="text/javascript">
+                     $(function () {
+                         $('#datetimepicker2').datetimepicker({   
+                            format: 'HH:mm:ss',
+                            minDate: new Date()
+                        });
+                     });
+                  </script>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                  <button type="button" class="btn btn-default" id="btn_add_ongoing_rule" data-dismiss="modal">Добавить</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
    </body>
 </html>

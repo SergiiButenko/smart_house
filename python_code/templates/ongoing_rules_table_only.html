@@ -1,0 +1,37 @@
+            <thead>
+               <tr>
+                  <th>День недели</th>
+                  <th>Номер ветки</th>                  
+                  <th>Начало полива</th>
+                  <th>Длительность полива</th>
+                  <th></th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for n in my_list %}
+               <tr>
+               {% if n['active'] == 0 %}
+                  <td>{{n['dow']}}</td>
+                  <td>{{n['branch_name']}}</td>
+                  <td>{{n['time']}}</td>
+                  <td>{{n['minutest']}} минут</td>
+                  <td>
+                     <button type="button" class="btn btn-default " onclick="activate_rule(this)" data-id={{n['id']}}>Активировать</button>
+                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
+                  </td>
+               {% else %}	        
+                  <td>{{n['dow']}}</td>
+                  <td>{{n['branch_name']}}</td>
+                  <td>{{n['time']}}</td>
+                  <td>{{n['minutest']}} минут</td>
+                  <td>
+                     <button type="button" class="btn btn-default " onclick="deactivate_rule(this)" data-id={{n['id']}}>Деактивировать</button>
+                     <button type="button" class="btn btn-default btn_edit" data-id={{n['id']}}>Изменить</button>
+                     <button type="button" class="btn btn-default btn_remove" onclick="remove_rule(this)" data-id={{n['id']}}>Удалить</button>
+                  </td>
+               {% endif %}
+               </tr>
+               {% endfor %}
+            </tbody>
+   
