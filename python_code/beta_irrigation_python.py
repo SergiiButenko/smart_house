@@ -21,6 +21,8 @@ import time
 import os
 import os.path
 import psycopg2
+from locale import setlocale, LC_ALL
+from time import strftime
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
@@ -29,6 +31,7 @@ ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
 RULES_FOR_BRANCHES=[None] * 10
 RULES_ENABLED=True
+setlocale(LC_ALL, 'ru_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
@@ -199,7 +202,7 @@ def hello():
 
 def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"):
 	list_arr = execute_request(query, 'fetchall')
-	
+
 	rows=[]
 	if list_arr is not None:
 		for row in list_arr:
@@ -264,7 +267,7 @@ def list_all():
 			outdated=1
 
 		rows.append({'id':id, 'branch_name':branch_name, 'rule_name':rule_name, 'state':state,
-			'timer':"{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated':outdated, 'active':active})
+			'timer':strftime("%A %d-%m-%y %R", timer.timetuple()).capitalize(), 'outdated':outdated, 'active':active})
 
 	template=render_template('history.html', my_list=rows)
 	return template
