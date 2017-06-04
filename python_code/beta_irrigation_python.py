@@ -108,6 +108,7 @@ def get_next_active_rule(line_id):
 	return {'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
 
 def enable_rule():
+	print("enable rule thread started.")
 	while True:
 		time.sleep(10)
 		if (RULES_ENABLED==False):
@@ -155,6 +156,7 @@ def enable_rule():
 						print("Turned off {0} branch".format(rule['line_id']))
 						execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
 						RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+	print("enable rule thread stoped.")						
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
