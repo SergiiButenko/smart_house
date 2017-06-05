@@ -367,7 +367,8 @@ def deactivate_all_rules():
 		return template
 
 	if (id==3):
-		RULES_ENABLED=False
+		logging.warn("Is not implemented yet")
+		#RULES_ENABLED=False
 
 	return 'OK'
 
