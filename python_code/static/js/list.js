@@ -19,6 +19,7 @@ $(document).ready(function() {
     var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
         console.log("connected to websocket");
+        console.log(socket.id);
     });
 
     socket.on('list_update', function(msg) {
