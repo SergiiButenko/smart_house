@@ -16,8 +16,7 @@ $(document).ready(function() {
             $loading.hide();
     });
     
-    var socket = io.connect(server);
-    socket.heartbeatTimeout = 5000;
+    var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
         console.log("connected to websocket");
     });

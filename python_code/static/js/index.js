@@ -1,5 +1,5 @@
 var server = 'http://mozart.hopto.org:7543';
-//var server = 'http://127.0.0.1:7543';
+//var server = 'http://192.168.1.53:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -41,8 +41,7 @@ $(document).ready(function() {
     $('#time_selector').selectpicker('refresh');
 
    
-    var socket = io.connect(server);
-    socket.heartbeatTimeout = 5000;
+    var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
         console.log("connected to websocket");
     });
