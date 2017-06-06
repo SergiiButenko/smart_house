@@ -26,7 +26,7 @@ from time import strftime
 
 # added logging
 import logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 
 app = Flask(__name__)
@@ -66,19 +66,20 @@ def branch_on(line_id):
 		response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id})
 		json_data = json.loads(response.text)
 
-		logging.info('Branch {0} is turned on'.format(line_id))
+		logging.info('Branch {0} is turned on by rule'.format(line_id))
 	except requests.exceptions.RequestException as e:  # This is the correct syntax
 		logging.error(e)
-		logging.error("Can't turn on {0} branch. Exception occured".format(line_id))
-
+		logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
+		
+		time.sleep(1)
 	# this request returns status for all branches
 	try:
 		response_status = requests.get(url=ARDUINO_IP)
-		socketio.emit('branch_status', {'data':response_status.text})
-		logging.info("Arudino status retreived")
+		send_message('branch_status', {'data':response_status.text})
+		logging.info("Arudino status retreived. by rule")
 	except requests.exceptions.RequestException as e:  # This is the correct syntax
 		logging.error(e)
-		logging.error("Can't get arduino status. Exception occured")
+		logging.error("Can't get arduino status. by rule. Exception occured")
 
 	return response_status
 
@@ -86,20 +87,22 @@ def branch_off(line_id):
 	try:
 		response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id})
 		json_data = json.loads(response.text)
-		logging.info('Branch {0} is turned off'.format(line_id))
-	#except requests.exceptions.RequestException as e:  # This is the correct syntax
-	except Exception as e:  # This is the correct syntax
-		logging.error(e)
-		logging.error("Can't turn off {0} branch. Exception occured".format(line_id))
 
+		logging.info('Branch {0} is turned off by rule'.format(line_id))
+	#except requests.exceptions.RequestException as e:  # This is the correct syntax
+	except Exception as e:
+		logging.error(e)
+		logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
+
+		time.sleep(1)
 	try:
 		response_status = requests.get(url=ARDUINO_IP)
-		socketio.emit('branch_status', {'data':response_status.text})
-		logging.info("Arudino status retreived")
+		send_message('branch_status', {'data':response_status.text})
+		logging.info("Arudino status retreived. by rule")
 	#except requests.exceptions.RequestException as e:  # This is the correct syntax
 	except Exception as e:  # This is the correct syntax
 		logging.error(e)
-		logging.error("Can't get arduino status. Exception occured")
+		logging.error("Can't get arduino status. by rule. Exception occured")
 		return None
 
 	return response_status
@@ -172,6 +175,7 @@ def enable_rule():
 							logging.info("Turned on {0} branch".format(rule['line_id']))
 							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 
 					if rule['rule_id'] == 2:
 						response=branch_off(rule['line_id'])
@@ -188,6 +192,7 @@ def enable_rule():
 							logging.info("Turned off {0} branch".format(rule['line_id']))
 							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 							
 		logging.info("enable rule thread stoped.")						
 	except Exception as e:
