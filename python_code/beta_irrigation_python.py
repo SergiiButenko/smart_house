@@ -35,6 +35,7 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=True)
 
 ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
+
 RULES_FOR_BRANCHES=[None] * 10
 RULES_ENABLED=True
 setlocale(LC_ALL, 'ru_UA.utf-8')
@@ -131,61 +132,64 @@ def get_next_active_rule(line_id):
 	return {'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
 
 def enable_rule():
-	logging.info("enable rule thread started.")
-	while True:
-		logging.info("enable_rule_daemon heartbeat")	
-		time.sleep(10)
-		
-		if (RULES_ENABLED==False):
-			logging.warn("All rules are disabled on demand")
-			continue
-
-		for rule in RULES_FOR_BRANCHES:
-			if rule is None:
+	try:
+		logging.info("enable rule thread started.")
+		while True:
+			logging.info("enable_rule_daemon heartbeat")	
+			time.sleep(10)
+			
+			if (RULES_ENABLED==False):
+				logging.warn("All rules are disabled on demand")
 				continue
 
-			logging.info("Rule '{0}' is going to be executed".format(str(rule)))
+			for rule in RULES_FOR_BRANCHES:
+				if rule is None:
+					continue
 
-			if (datetime.datetime.now() >= rule['timer']):
+				logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
-				if (rule['line_id'] == 7):
-					arduino_branch_name='pump'
-				else:
-					arduino_branch_name=rule['line_id']
+				if (datetime.datetime.now() >= rule['timer']):
 
-				if rule['rule_id'] == 1:
-					response=branch_on(rule['line_id'])
-					if response is None:
-						logging.error("Can't turn on {0} branch".format(rule['line_id']))
-						continue
+					if (rule['line_id'] == 7):
+						arduino_branch_name='pump'
+					else:
+						arduino_branch_name=rule['line_id']
 
-					json_data = json.loads(response.text)
-					if (json_data['variables'][str(arduino_branch_name)] == 0 ):
-						logging.error("Can't turn on {0} branch".format(rule['line_id']))
-						continue
+					if rule['rule_id'] == 1:
+						response=branch_on(rule['line_id'])
+						if response is None:
+							logging.error("Can't turn on {0} branch".format(rule['line_id']))
+							continue
 
-					if (json_data['variables'][str(arduino_branch_name)] == 1 ):
-						logging.info("Turned on {0} branch".format(rule['line_id']))
-						execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-						RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+						json_data = json.loads(response.text)
+						if (json_data['variables'][str(arduino_branch_name)] == 0 ):
+							logging.error("Can't turn on {0} branch".format(rule['line_id']))
+							continue
 
-				if rule['rule_id'] == 2:
-					response=branch_off(rule['line_id'])
-					if response is None:
-						logging.error("Can't turn off {0} branch".format(rule['line_id']))
-						continue
+						if (json_data['variables'][str(arduino_branch_name)] == 1 ):
+							logging.info("Turned on {0} branch".format(rule['line_id']))
+							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
 
-					json_data = json.loads(response.text)
-					if (json_data['variables'][str(arduino_branch_name)] == 1 ):
-						logging.error("Can't turn off {0} branch".format(rule['line_id']))
-						continue
+					if rule['rule_id'] == 2:
+						response=branch_off(rule['line_id'])
+						if response is None:
+							logging.error("Can't turn off {0} branch".format(rule['line_id']))
+							continue
 
-					if (json_data['variables'][str(arduino_branch_name)] == 0 ):
-						logging.info("Turned off {0} branch".format(rule['line_id']))
-						execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-						RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
-						
-	logging.info("enable rule thread stoped.")						
+						json_data = json.loads(response.text)
+						if (json_data['variables'][str(arduino_branch_name)] == 1 ):
+							logging.error("Can't turn off {0} branch".format(rule['line_id']))
+							continue
+
+						if (json_data['variables'][str(arduino_branch_name)] == 0 ):
+							logging.info("Turned off {0} branch".format(rule['line_id']))
+							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+							
+		logging.info("enable rule thread stoped.")						
+	except Exception as e:
+		logging.error("enable rule thread exception occured. {0}".format(e))		
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
