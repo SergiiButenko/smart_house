@@ -141,6 +141,7 @@ def enable_rule():
 		logging.info("enable rule thread started.")
 		while True:
 			logging.info("enable_rule_daemon heartbeat")	
+			logging.info("RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))	
 			time.sleep(10)
 			
 			if (RULES_ENABLED==False):
