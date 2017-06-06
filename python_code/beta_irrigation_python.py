@@ -87,7 +87,7 @@ def branch_off(line_id):
 		response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id})
 		json_data = json.loads(response.text)
 		logging.info('Branch {0} is turned off'.format(line_id))
-	except requests.exceptions.RequestException as e:  # This is the correct syntax
+	#except requests.exceptions.RequestException as e:  # This is the correct syntax
 	except Exception as e:  # This is the correct syntax
 		logging.error(e)
 		logging.error("Can't turn off {0} branch. Exception occured".format(line_id))
@@ -96,7 +96,7 @@ def branch_off(line_id):
 		response_status = requests.get(url=ARDUINO_IP)
 		socketio.emit('branch_status', {'data':response_status.text})
 		logging.info("Arudino status retreived")
-	except requests.exceptions.RequestException as e:  # This is the correct syntax
+	#except requests.exceptions.RequestException as e:  # This is the correct syntax
 	except Exception as e:  # This is the correct syntax
 		logging.error(e)
 		logging.error("Can't get arduino status. Exception occured")
