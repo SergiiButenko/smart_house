@@ -137,6 +137,7 @@ def get_next_active_rule(line_id):
 	return {'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
 
 def enable_rule():
+	global RULES_FOR_BRANCHES
 	try:
 		logging.info("enable rule thread started.")
 		while True:
