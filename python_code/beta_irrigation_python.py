@@ -133,7 +133,9 @@ def get_next_active_rule(line_id):
 def enable_rule():
 	logging.info("enable rule thread started.")
 	while True:
+		logging.info("enable_rule_daemon heartbeat")	
 		time.sleep(10)
+		
 		if (RULES_ENABLED==False):
 			logging.warn("All rules are disabled on demand")
 			continue
