@@ -149,6 +149,7 @@ def update_all_rules_daemon():
 	global RULES_FOR_BRANCHES
 	logging.info("update_all_rules_daemon started")
 	while True:
+		time.sleep(60*10)
 		try:
 			for i in range(1,len(RULES_FOR_BRANCHES), 1):
 				RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
