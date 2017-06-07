@@ -119,13 +119,15 @@ def execute_request(query, method='fetchall'):
 		conn.commit()
 		logging.debug("db request '{0}' executed".format(query))
 		return getattr(cursor, method)()
-	except BaseException as e:
-		logging.error("Error while performing operation with database")
-		logging.error(e)
+	except Exception as e:
+		logging.error("Error while performing operation with database: {0}".format(e))
 		return None
 	finally:
-		if conn is not None:
-			conn.close()
+		try:
+			if conn is not None:
+				conn.close()
+		except Exception as e:
+			logging.error("Error while closing connection with database: {0}".format(e))
 
 def get_next_active_rule(line_id):
 	query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY timer LIMIT 1".format(line_id)
