@@ -206,14 +206,13 @@ def enable_rule():
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
                 if (datetime.datetime.now() >= rule['timer']):
-                
-                logging.info("Rule '{0}' execution started".format(str(rule)))
+                    logging.info("Rule '{0}' execution started".format(str(rule)))
                     if (rule['line_id'] == 7):
                         arduino_branch_name='pump'
                     else:
                         arduino_branch_name=rule['line_id']
                 
-                logging.info(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
+                    logging.info(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
 
                     if rule['rule_id'] == 1:
                         logging.info("rule['rule_id'] : {0}".format(rule['rule_id']))
