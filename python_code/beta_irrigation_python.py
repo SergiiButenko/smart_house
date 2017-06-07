@@ -64,33 +64,71 @@ def send_message(channel, data):
 
 def branch_on(line_id):
     try:
-        response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id})
+        response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id}, timeout=5)
         json_data = json.loads(response.text)
 
         logging.info('Branch {0} is turned on by rule'.format(line_id))
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+    except requests.exceptions.Timeout as e:
+        logging.error(e)
+        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
+    except requests.exceptions.TooManyRedirects as e:
+        logging.error(e)
+        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
+    
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
+    
+    except Exception as e:
         logging.error(e)
         logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
         
-        time.sleep(1)
+    time.sleep(1)
     # this request returns status for all branches
     try:
-        response_status = requests.get(url=ARDUINO_IP)
+        response_status = requests.get(url=ARDUINO_IP, timeout=5)
         send_message('branch_status', {'data':response_status.text})
         logging.info("Arudino status retreived. by rule")
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+    except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't get arduino status. by rule. Exception occured")
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+        
+    except requests.exceptions.TooManyRedirects as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+    
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+    
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
 
     return response_status
 
 def branch_off(line_id):
     try:
         logging.debug('Branch {0} is turning off by rule'.format(line_id))
-        response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id})
+        response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id}, timeout=5)
         json_data = json.loads(response.text)
         logging.debug('response {0}'.format(response.text))
         logging.info('Branch {0} is turned off by rule'.format(line_id))
+    except requests.exceptions.Timeout as e:
+        logging.error(e)
+        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
+    except requests.exceptions.TooManyRedirects as e:
+        logging.error(e)
+        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
+    
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
+    
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
@@ -99,14 +137,29 @@ def branch_off(line_id):
     time.sleep(1)
     try:
         logging.debug('get status')
-        response_status = requests.get(url=ARDUINO_IP)
+        response_status = requests.get(url=ARDUINO_IP, timeout=5)
         logging.debug('send message')
         send_message('branch_status', {'data':response_status.text})
         logging.info("Arudino status retreived. by rule")
     #except requests.exceptions.RequestException as e:  # This is the correct syntax
-    except Exception as e:  # This is the correct syntax
+    except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't get arduino status. by rule. Exception occured")
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+
+    except requests.exceptions.TooManyRedirects as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+    
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        return None
+    
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
         return None
     
     logging.debug('return status')
@@ -216,10 +269,10 @@ def enable_rule():
                     else:
                         arduino_branch_name=rule['line_id']
                 
-                    logging.info(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
+                    logging.debug(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
 
                     if rule['rule_id'] == 1:
-                        logging.info("rule['rule_id'] : {0}".format(rule['rule_id']))
+                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
 
                         response=branch_on(rule['line_id'])
                         if response is None:
@@ -233,14 +286,14 @@ def enable_rule():
 
                         if (json_data['variables'][str(arduino_branch_name)] == 1 ):
                             logging.info("Turned on {0} branch".format(rule['line_id']))
-                            logging.info("updating db")
+                            logging.debug("updating db")
                             update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-                            logging.info("get next active rule")
+                            logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 
                     if rule['rule_id'] == 2:
-                        logging.info("rule['rule_id'] : {0}".format(rule['rule_id']))
+                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
                         response=branch_off(rule['line_id'])
                         if response is None:
                             logging.error("Can't turn off {0} branch".format(rule['line_id']))
@@ -253,9 +306,9 @@ def enable_rule():
 
                         if (json_data['variables'][str(arduino_branch_name)] == 0 ):
                             logging.info("Turned off {0} branch".format(rule['line_id']))
-                            logging.info("updating db")
+                            logging.debug("updating db")
                             update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-                            logging.info("get next active rule")
+                            logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])                           
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
                             
