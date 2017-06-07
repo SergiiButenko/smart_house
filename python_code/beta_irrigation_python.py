@@ -26,7 +26,7 @@ from time import strftime
 
 # added logging
 import logging
-logging.basicConfig(format='%(asctime)s - %(process)d - %(processName)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(process)d - %(processName)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
 
 app = Flask(__name__)
@@ -34,13 +34,13 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=True)
 
 
 ARDUINO_IP='http://192.168.1.10'
-#ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None] * 10
 threadErrors = [] #global list
 
 RULES_ENABLED=True
-setlocale(LC_ALL, 'ru_UA.utf-8')
+#setlocale(LC_ALL, 'ru_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
@@ -131,6 +131,26 @@ def execute_request(query, method='fetchall'):
 		except Exception as e:
 			logging.error("Error while closing connection with database: {0}".format(e))
 
+#executes query and returns fetch* result
+def update_db_request(query):
+	conn=None
+	try:
+		conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+		# conn.cursor will return a cursor object, you can use this cursor to perform queries
+		cursor = conn.cursor()
+		# execute our Query
+		cursor.execute(query)
+		logging.debug("db request '{0}' executed".format(query))
+	except Exception as e:
+		logging.error("Error while performing operation with database: {0}".format(e))
+	finally:
+		try:
+			if conn is not None:
+				conn.close()
+		except Exception as e:
+			logging.error("Error while closing connection with database: {0}".format(e))
+
+
 def get_next_active_rule(line_id):
 	query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY timer LIMIT 1".format(line_id)
 	res = execute_request(query, 'fetchone')
@@ -206,7 +226,7 @@ def enable_rule():
 
 						if (json_data['variables'][str(arduino_branch_name)] == 1 ):
 							logging.info("Turned on {0} branch".format(rule['line_id']))
-							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+							update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
 							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 
@@ -223,33 +243,7 @@ def enable_rule():
 
 						if (json_data['variables'][str(arduino_branch_name)] == 0 ):
 							logging.info("Turned off {0} branch".format(rule['line_id']))
-							#execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-
-
-							conn=None
-							try:
-								conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-								# conn.cursor will return a cursor object, you can use this cursor to perform queries
-								cursor = conn.cursor()
-								# execute our Query
-								cursor.execute("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-								conn.commit()
-								logging.debug("db request '{0}' executed".format(query))
-								#return getattr(cursor, method)()
-							except Exception as e:
-								logging.error("Error while performing operation with database: {0}".format(e))
-								#return None
-							finally:
-								try:
-									if conn is not None:
-										conn.close()
-								except Exception as e:
-									logging.error("Error while closing connection with database: {0}".format(e))
-
-
-
-
-
+							update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])							
 							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 							
@@ -257,7 +251,9 @@ def enable_rule():
 	except Exception as e:
 		logging.error("enable rule thread exception occured. {0}".format(e))	
 		threadErrors.append([repr(e), current_thread.name])	
-		raise 
+		raise
+	finally:
+		logging.info("enable rule thread stoped.")
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 #thread.setDaemon(True)
