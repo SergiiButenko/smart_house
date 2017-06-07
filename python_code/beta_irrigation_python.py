@@ -223,8 +223,34 @@ def enable_rule():
 
 						if (json_data['variables'][str(arduino_branch_name)] == 0 ):
 							logging.info("Turned off {0} branch".format(rule['line_id']))
-							execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
-							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
+							#execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+
+
+							conn=None
+							try:
+								conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+								# conn.cursor will return a cursor object, you can use this cursor to perform queries
+								cursor = conn.cursor()
+								# execute our Query
+								cursor.execute("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+								conn.commit()
+								logging.debug("db request '{0}' executed".format(query))
+								#return getattr(cursor, method)()
+							except Exception as e:
+								logging.error("Error while performing operation with database: {0}".format(e))
+								#return None
+							finally:
+								try:
+									if conn is not None:
+										conn.close()
+								except Exception as e:
+									logging.error("Error while closing connection with database: {0}".format(e))
+
+
+
+
+
+							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])							
 							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 							
 		logging.info("enable rule thread stoped.")						
