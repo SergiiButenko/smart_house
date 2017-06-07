@@ -37,10 +37,9 @@ ARDUINO_IP='http://192.168.1.10'
 ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None] * 10
-threadErrors = [] #global list
 
 RULES_ENABLED=True
-#setlocale(LC_ALL, 'ru_UA.utf-8')
+setlocale(LC_ALL, 'ru_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
@@ -207,13 +206,18 @@ def enable_rule():
 				logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
 				if (datetime.datetime.now() >= rule['timer']):
-
+				
+				logging.info("Rule '{0}' execution started".format(str(rule)))
 					if (rule['line_id'] == 7):
 						arduino_branch_name='pump'
 					else:
 						arduino_branch_name=rule['line_id']
+				
+				logging.info(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
 
 					if rule['rule_id'] == 1:
+						logging.info("rule['rule_id'] : {0}".format(rule['rule_id']))
+
 						response=branch_on(rule['line_id'])
 						if response is None:
 							logging.error("Can't turn on {0} branch".format(rule['line_id']))
@@ -226,11 +230,14 @@ def enable_rule():
 
 						if (json_data['variables'][str(arduino_branch_name)] == 1 ):
 							logging.info("Turned on {0} branch".format(rule['line_id']))
+							logging.info("updating db")
 							update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+							logging.info("get next active rule")
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
 							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 
 					if rule['rule_id'] == 2:
+						logging.info("rule['rule_id'] : {0}".format(rule['rule_id']))
 						response=branch_off(rule['line_id'])
 						if response is None:
 							logging.error("Can't turn off {0} branch".format(rule['line_id']))
@@ -243,25 +250,25 @@ def enable_rule():
 
 						if (json_data['variables'][str(arduino_branch_name)] == 0 ):
 							logging.info("Turned off {0} branch".format(rule['line_id']))
+							logging.info("updating db")
 							update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+							logging.info("get next active rule")
 							RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])							
 							logging.info("Rule '{0}' is done. Removing".format(str(rule)))
 							
 		logging.info("enable rule thread stoped.")						
 	except Exception as e:
 		logging.error("enable rule thread exception occured. {0}".format(e))	
-		threadErrors.append([repr(e), current_thread.name])	
-		raise
 	finally:
-		logging.info("enable rule thread stoped.")
+		logging.info("enable rule thread stopped.")
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
-#thread.setDaemon(True)
+thread.setDaemon(True)
 thread.start()
 
 @app.route("/error")
 def errorlist():
-	return str(threadErrors)
+	return str(thread.isAlive())
 
 @app.route("/branches_names")
 def branches_names():
