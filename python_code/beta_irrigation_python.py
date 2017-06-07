@@ -136,6 +136,32 @@ def get_next_active_rule(line_id):
 	logging.info("Next active rule retrieved for line id {0}".format(line_id))
 	return {'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
 
+def update_all_rules():
+	try:
+		global RULES_FOR_BRANCHES
+		for i in range(1,len(RULES_FOR_BRANCHES), 1):
+			RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
+		logging.info("Rules updated")
+	except Exception as e:
+		logging.error("Exeption occured while updating all rules. {0}".format(e))
+
+def update_all_rules_daemon():
+	global RULES_FOR_BRANCHES
+	logging.info("update_all_rules_daemon started")
+	while True:
+		try:
+			for i in range(1,len(RULES_FOR_BRANCHES), 1):
+				RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
+			logging.info("Rules updated by deamon")
+		except Exception as e:
+			logging.error("Exeption occured while updating all rules by deamon. {0}".format(e))
+
+	logging.info("update_all_rules_daemon stoped")
+
+thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
+thread2.setDaemon(True)
+thread2.start()
+
 def enable_rule():
 	global RULES_FOR_BRANCHES
 	try:
@@ -203,27 +229,6 @@ def enable_rule():
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start()
-
-def update_all_rules():
-	global RULES_FOR_BRANCHES
-	for i in range(1,len(RULES_FOR_BRANCHES), 1):
-		RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
-	logging.info("Rules updated")
-
-def update_all_rules_daemon():
-	global RULES_FOR_BRANCHES
-	logging.info("update_all_rules_daemon started")
-	while True:
-		for i in range(1,len(RULES_FOR_BRANCHES), 1):
-			RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
-		time.sleep(60*60)
-		logging.info("update_all_rules_daemon heartbeat")
-
-	logging.info("update_all_rules_daemon stoped")
-
-thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
-thread2.setDaemon(True)
-thread2.start()
 
 @app.route("/branches_names")
 def branches_names():
@@ -513,6 +518,8 @@ def activate_branch():
 	execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 1, 1, now.date(), now), 'fetchone')
 	res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(id, 2, 0, now.date(), now_plus), 'fetchone')
 	RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
+	logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+
 	try:
 		response_status = requests.get(url=ARDUINO_IP)
 		socketio.emit('branch_status', {'data':response_status.text})
@@ -521,7 +528,7 @@ def activate_branch():
 		logging.error("Can't get arduino status. Exception occured")
 		abort(404)
 
-	logging.info("Branch '{0}' activated manually")
+	logging.info("Branch '{0}' activated manually".format(id))
 	return (response_status.text, response_status.status_code)
 
 @app.route('/deactivate_branch', methods=['GET'])
@@ -543,7 +550,7 @@ def deactivate_branch():
 		execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 2, 1, now.date(), now), 'fetchone')
 
 	RULES_FOR_BRANCHES[id]=get_next_active_rule(id)
-
+	logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
 	try:
 		response_status = requests.get(url=ARDUINO_IP)
@@ -553,7 +560,7 @@ def deactivate_branch():
 		logging.error("Can't get arduino status. Exception occured")
 		abort(404)
 	
-	logging.info("Branch '{0}' deactivated manually")
+	logging.info("Branch '{0}' deactivated manually".format(id))
 	return (response_status.text, response_status.status_code)
 
 @app.route("/weather")
