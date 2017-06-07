@@ -205,11 +205,13 @@ thread.setDaemon(True)
 thread.start()
 
 def update_all_rules():
+	global RULES_FOR_BRANCHES
 	for i in range(1,len(RULES_FOR_BRANCHES), 1):
 		RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
 	logging.info("Rules updated")
 
 def update_all_rules_daemon():
+	global RULES_FOR_BRANCHES
 	logging.info("update_all_rules_daemon started")
 	while True:
 		for i in range(1,len(RULES_FOR_BRANCHES), 1):
@@ -246,6 +248,7 @@ def beta():
 
 @app.route("/")
 def hello():
+	global RULES_FOR_BRANCHES
 	return str(RULES_FOR_BRANCHES)
 
 def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"):
@@ -493,6 +496,7 @@ def arduino_status():
 
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
+	global RULES_FOR_BRANCHES
 	id=int(request.args.get('id'))
 	time_min=int(request.args.get('time'))
 
@@ -522,6 +526,7 @@ def activate_branch():
 
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
+	global RULES_FOR_BRANCHES
 	id=int(request.args.get('id'))
 
 	try:
