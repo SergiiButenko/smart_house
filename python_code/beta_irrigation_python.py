@@ -37,6 +37,8 @@ ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None] * 10
+threadErrors = [] #global list
+
 RULES_ENABLED=True
 setlocale(LC_ALL, 'ru_UA.utf-8')
 
@@ -227,11 +229,19 @@ def enable_rule():
 							
 		logging.info("enable rule thread stoped.")						
 	except Exception as e:
-		logging.error("enable rule thread exception occured. {0}".format(e))		
+		logging.error("enable rule thread exception occured. {0}".format(e))	
+		threadErrors.append([repr(e), current_thread.name])	
+		raise 
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
 #thread.setDaemon(True)
 thread.start()
+
+@app.route("/error")
+def errorlist():
+	if len(threadErrors) > 0: #check if there are any errors 
+	    for e in threadErrors:
+	        return threadErrors[e][0]+' occurred in thread: '+threadErrors[e][1]
 
 @app.route("/branches_names")
 def branches_names():
