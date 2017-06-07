@@ -228,7 +228,7 @@ def enable_rule():
 		logging.error("enable rule thread exception occured. {0}".format(e))		
 
 thread = threading.Thread(name='enable_rule', target=enable_rule)
-thread.setDaemon(True)
+#thread.setDaemon(True)
 thread.start()
 
 @app.route("/branches_names")
