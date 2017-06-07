@@ -45,7 +45,7 @@ setlocale(LC_ALL, 'ru_UA.utf-8')
 def error_handler(e):
     logging.error('error_handler for socketio. An error has occurred: ' + str(e))
 
-@socketio.on('connect')
+@socketio.on('connect') 
 def connect():
     logging.info('Client connected')
 
@@ -86,18 +86,21 @@ def branch_on(line_id):
 
 def branch_off(line_id):
     try:
+        logging.debug('Branch {0} is turning off by rule'.format(line_id))
         response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id})
         json_data = json.loads(response.text)
-
+        logging.debug('response {0}'.format(response.text))
         logging.info('Branch {0} is turned off by rule'.format(line_id))
-    #except requests.exceptions.RequestException as e:  # This is the correct syntax
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-
-        time.sleep(1)
+    
+    logging.debug('sleep 1')
+    time.sleep(1)
     try:
+        logging.debug('get status')
         response_status = requests.get(url=ARDUINO_IP)
+        logging.debug('send message')
         send_message('branch_status', {'data':response_status.text})
         logging.info("Arudino status retreived. by rule")
     #except requests.exceptions.RequestException as e:  # This is the correct syntax
@@ -105,7 +108,8 @@ def branch_off(line_id):
         logging.error(e)
         logging.error("Can't get arduino status. by rule. Exception occured")
         return None
-
+    
+    logging.debug('return status')
     return response_status
 
 #executes query and returns fetch* result
