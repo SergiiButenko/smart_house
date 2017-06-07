@@ -145,23 +145,23 @@ def update_all_rules():
 	except Exception as e:
 		logging.error("Exeption occured while updating all rules. {0}".format(e))
 
-# def update_all_rules_daemon():
-# 	global RULES_FOR_BRANCHES
-# 	logging.info("update_all_rules_daemon started")
-# 	while True:
-# 		time.sleep(60*10)
-# 		try:
-# 			for i in range(1,len(RULES_FOR_BRANCHES), 1):
-# 				RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
-# 			logging.info("Rules updated by deamon")
-# 		except Exception as e:
-# 			logging.error("Exeption occured while updating all rules by deamon. {0}".format(e))
+def update_all_rules_daemon():
+	global RULES_FOR_BRANCHES
+	logging.info("update_all_rules_daemon started")
+	while True:
+		time.sleep(60*10)
+		try:
+			for i in range(1,len(RULES_FOR_BRANCHES), 1):
+				RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
+			logging.info("Rules updated by deamon")
+		except Exception as e:
+			logging.error("Exeption occured while updating all rules by deamon. {0}".format(e))
 
-# 	logging.info("update_all_rules_daemon stoped")
+	logging.info("update_all_rules_daemon stoped")
 
-# thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
-# thread2.setDaemon(True)
-# thread2.start()
+thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
+thread2.setDaemon(True)
+thread2.start()
 
 def enable_rule():
 	global RULES_FOR_BRANCHES
