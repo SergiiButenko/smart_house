@@ -5,4 +5,7 @@ msg=`git log -1 --pretty=%B | tr -s ' ' | tr ' ' '_'`
 sed -i "s|test|$msg|g" /var/www/v2/index.html
 sed -i "s|test|$msg|g" /var/www/v2/beta.html
 sed -i "s|test|$msg|g" /var/www/v2/python_code/static/index.html
+
+systemctl restart irrigation_backend_beta.service
+
 echo 'HEAD is now '$msg
