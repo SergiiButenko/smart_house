@@ -26,7 +26,7 @@ from time import strftime
 
 # added logging
 import logging
-logging.basicConfig(format='%(asctime)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(process)d - %(processName)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 
 app = Flask(__name__)
