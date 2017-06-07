@@ -239,9 +239,7 @@ thread.start()
 
 @app.route("/error")
 def errorlist():
-	if len(threadErrors) > 0: #check if there are any errors 
-	    for e in threadErrors:
-	        return threadErrors[e][0]+' occurred in thread: '+threadErrors[e][1]
+	return str(threadErrors)
 
 @app.route("/branches_names")
 def branches_names():
