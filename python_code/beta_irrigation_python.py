@@ -34,7 +34,7 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=True)
 
 
 ARDUINO_IP='http://192.168.1.10'
-ARDUINO_IP='http://185.20.216.94:5555'
+#ARDUINO_IP='http://185.20.216.94:5555'
 
 RULES_FOR_BRANCHES=[None] * 10
 
@@ -70,15 +70,7 @@ def branch_on(line_id):
         logging.info('Branch {0} is turned on by rule'.format(line_id))
     except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-    except requests.exceptions.TooManyRedirects as e:
-        logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-    
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-    
+        logging.error("Can't turn on {0} branch by rule. Timeout Exception occured".format(line_id))
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
@@ -91,19 +83,9 @@ def branch_on(line_id):
         logging.info("Arudino status retreived. by rule")
     except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        logging.error("Can't gets status {0} branch by rule. Timeout Exception occured".format(line_id))
         return None
         
-    except requests.exceptions.TooManyRedirects as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
-        return None
-    
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
-        return None
-    
     except Exception as e:
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
@@ -120,15 +102,8 @@ def branch_off(line_id):
         logging.info('Branch {0} is turned off by rule'.format(line_id))
     except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-    except requests.exceptions.TooManyRedirects as e:
-        logging.error(e)
-        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-    
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
-        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-    
+        logging.error("Can't turn off {0} branch by rule.Timeout Exception occured".format(line_id))
+
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
@@ -144,19 +119,9 @@ def branch_off(line_id):
     #except requests.exceptions.RequestException as e:  # This is the correct syntax
     except requests.exceptions.Timeout as e:
         logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
+        logging.error("Can't gets status {0} branch by rule.Timeout Exception occured".format(line_id))
         return None
 
-    except requests.exceptions.TooManyRedirects as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
-        return None
-    
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
-        return None
-    
     except Exception as e:
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
