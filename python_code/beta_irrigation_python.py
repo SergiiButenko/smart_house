@@ -252,7 +252,7 @@ def enable_rule():
                         if (json_data['variables'][str(arduino_branch_name)] == 1 ):
                             logging.info("Turned on {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
-                            update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                            execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
@@ -272,7 +272,7 @@ def enable_rule():
                         if (json_data['variables'][str(arduino_branch_name)] == 0 ):
                             logging.info("Turned off {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
-                            update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                            execute_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])                           
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
