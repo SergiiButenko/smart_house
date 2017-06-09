@@ -76,7 +76,12 @@ $(document).ready(function() {
     });
 
 
-    $("#datetimepicker2").on("dp.hide", function(e) {
+    $('#datetimepicker2').on("dp.show", function(e){
+    	$('#datetimepicker2_input').prop("readonly", true);
+    });
+
+        $("#datetimepicker2").on("dp.hide", function(e) {
+        					 $('#datetimepicker2_input').prop("readonly", false);
                              $('.bootstrap-datetimepicker-widget').hide();
                              $('#datetimepicker2_input').blur();
                              $.ajax({
