@@ -26,11 +26,11 @@ from time import strftime
 
 # added logging
 import logging
-logging.basicConfig(format='%(asctime)s - %(process)d - %(processName)s - %(threadName)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet', engineio_logger=True)
+socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 
 ARDUINO_IP='http://192.168.1.10'
@@ -103,7 +103,6 @@ def branch_off(line_id):
     except requests.exceptions.Timeout as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule.Timeout Exception occured".format(line_id))
-
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
@@ -116,7 +115,6 @@ def branch_off(line_id):
         logging.debug('send message')
         send_message('branch_status', {'data':response_status.text})
         logging.info("Arudino status retreived. by rule")
-    #except requests.exceptions.RequestException as e:  # This is the correct syntax
     except requests.exceptions.Timeout as e:
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule.Timeout Exception occured".format(line_id))
@@ -191,31 +189,17 @@ def update_all_rules():
     except Exception as e:
         logging.error("Exeption occured while updating all rules. {0}".format(e))
 
-def update_all_rules_daemon():
-    global RULES_FOR_BRANCHES
-    logging.info("update_all_rules_daemon started")
-    while True:
-        time.sleep(60*10)
-        try:
-            for i in range(1,len(RULES_FOR_BRANCHES), 1):
-                RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
-            logging.info("Rules updated by deamon")
-        except Exception as e:
-            logging.error("Exeption occured while updating all rules by deamon. {0}".format(e))
-
-    logging.info("update_all_rules_daemon stoped")
-
-thread2 = threading.Thread(name='update_all_rules_daemon', target=update_all_rules_daemon)
-thread2.setDaemon(True)
-thread2.start()
-
 def enable_rule():
     global RULES_FOR_BRANCHES
     try:
         logging.info("enable rule thread started.")
+
+        logging.info("Updating rules on start.")
+        update_all_rules()
+        logging.debug("rules updated")
+
         while True:
-            logging.info("enable_rule_daemon heartbeat")    
-            logging.info("RULES_FOR_BRANCHES from deamon: {0}".format(str(RULES_FOR_BRANCHES))) 
+            logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))    
             time.sleep(10)
             
             if (RULES_ENABLED==False):
@@ -235,7 +219,7 @@ def enable_rule():
                     else:
                         arduino_branch_name=rule['line_id']
                 
-                    logging.debug(" arduino_branch_name retrieved : {0}".format(arduino_branch_name))
+                    logging.debug("arduino_branch_name retrieved : {0}".format(arduino_branch_name))
 
                     if rule['rule_id'] == 1:
                         logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
@@ -277,8 +261,6 @@ def enable_rule():
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])                           
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
-                            
-        logging.info("enable rule thread stoped.")                      
     except Exception as e:
         logging.error("enable rule thread exception occured. {0}".format(e))    
     finally:
@@ -288,9 +270,15 @@ thread = threading.Thread(name='enable_rule', target=enable_rule)
 thread.setDaemon(True)
 thread.start()
 
-@app.route("/error")
+@app.route("/isalive")
 def errorlist():
-    return str(thread.isAlive())
+    return "enable_rule.isAlive(): " + str(thread.isAlive())
+
+
+@app.route("/update_all_rules")
+def update_rules():
+    update_rules()
+    return str(RULES_FOR_BRANCHES)
 
 @app.route("/branches_names")
 def branches_names():
@@ -307,11 +295,9 @@ def branches_names():
             list=branch_list
         )
 
-
 @app.route("/beta")
 def beta():
     return app.send_static_file('index.html')
-
 
 @app.route("/")
 def hello():
@@ -399,7 +385,7 @@ def add_rule():
     execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(branch_id, 2, 0, now.date(), datetime_stop))
     update_all_rules()
     template=get_table_template()
-    socketio.emit('list_update', {'data':template})
+    send_message('list_update', {'data':template})
     return template
 
 @app.route("/remove_rule")
@@ -408,12 +394,11 @@ def remove_rule():
     execute_request("DELETE from life WHERE id={0}".format(id))
     update_all_rules()
     template=get_table_template()
-    socketio.emit('list_update', {'data':template})
+    send_message('list_update', {'data':template})
     return template
 
 # @app.route("/modify_rule")
 # def modify_rule():
-
 
 @app.route("/activate_rule")
 def activate_rule():
@@ -421,7 +406,7 @@ def activate_rule():
     execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
     update_all_rules()
     template=get_table_template()
-    socketio.emit('list_update', {'data':template})
+    send_message('list_update', {'data':template})
     return template
 
 @app.route("/deactivate_rule")
@@ -430,7 +415,7 @@ def deactivate_rule():
     execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
     update_all_rules()
     template=get_table_template()
-    socketio.emit('list_update', {'data':template})
+    send_message('list_update', {'data':template})
     return template
 
 @app.route("/deactivate_all_rules")
@@ -441,14 +426,14 @@ def deactivate_all_rules():
         execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1")
         update_all_rules()
         template=get_table_template()
-        socketio.emit('list_update', {'data':template})
+        send_message('list_update', {'data':template})
         return template
 
     if (id==2):
         execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7")
         update_all_rules()
         template=get_table_template()
-        socketio.emit('list_update', {'data':template})
+        send_message('list_update', {'data':template})
         return template
 
     if (id==3):
@@ -501,7 +486,7 @@ def add_ongoing_rule():
     execute_request("INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)".format(dow, branch_id, 1, time_start, time_min))
     update_all_rules()
     template=ongoing_rules_table()
-    socketio.emit('ongoind_rules_update', {'data':template})
+    send_message('ongoind_rules_update', {'data':template})
     return template
 
 @app.route("/remove_ongoing_rule")
@@ -510,7 +495,7 @@ def remove_ongoing_rule():
     execute_request("DELETE from week_schedule WHERE id={0}".format(id))
     update_all_rules()
     template=ongoing_rules_table()
-    socketio.emit('ongoind_rules_update', {'data':template})
+    send_message('ongoind_rules_update', {'data':template})
     return template
 
 @app.route("/edit_ongoing_rule")
@@ -519,7 +504,7 @@ def edit_ongoing_rule():
     #execute_request("DELETE from week_schedule WHERE id={0}".format(id))
     update_all_rules()
     template=ongoing_rules_table()
-    socketio.emit('ongoind_rules_update', {'data':template})
+    send_message('ongoind_rules_update', {'data':template})
     return template
 
 @app.route("/activate_ongoing_rule")
@@ -528,7 +513,7 @@ def activate_ongoing_rule():
     execute_request("UPDATE week_schedule SET active=1 WHERE id={0}".format(id))
     update_all_rules()
     template=ongoing_rules_table()
-    socketio.emit('ongoind_rules_update', {'data':template})
+    send_message('ongoind_rules_update', {'data':template})
     return template
 
 @app.route("/deactivate_ongoing_rule")
@@ -537,7 +522,7 @@ def deactivate_ongoing_rule():
     execute_request("UPDATE week_schedule SET active=0 WHERE id={0}".format(id))
     update_all_rules()
     template=ongoing_rules_table()
-    socketio.emit('ongoind_rules_update', {'data':template})
+    send_message('ongoind_rules_update', {'data':template})
     return template
 
 @app.route("/get_list")
@@ -556,7 +541,7 @@ def arduino_status():
     try:
         response_status = requests.get(url=ARDUINO_IP)
         return (response_status.text, response_status.status_code)
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+    except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
         abort(404)
@@ -569,7 +554,7 @@ def activate_branch():
 
     try:
         response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id})
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+    except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
@@ -584,7 +569,7 @@ def activate_branch():
 
     try:
         response_status = requests.get(url=ARDUINO_IP)
-        socketio.emit('branch_status', {'data':response_status.text})
+        send_message('branch_status', {'data':response_status.text})
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
@@ -616,7 +601,7 @@ def deactivate_branch():
 
     try:
         response_status = requests.get(url=ARDUINO_IP)
-        socketio.emit('branch_status', {'data':response_status.text})
+        send_message('branch_status', {'data':response_status.text})
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
