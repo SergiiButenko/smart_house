@@ -26,6 +26,9 @@ int branch_6_status=0;
 int branch_7_status=0;
 int pump_status=0;
 
+int analog1=A0;
+int analog1_status=0;
+
 void setup()
 {
 // Start Serial
@@ -67,6 +70,11 @@ void loop()
                 // last line of client request is blank and ends with \n
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) {
+
+
+
+                    process_request(client);
+
                     // send a standard http response header
                     client.println(http_headers());
                     
@@ -102,19 +110,22 @@ void loop()
 }
 
 
-// switch LED and send back HTML for LED checkbox
-void ProcessCheckbox(EthernetClient cl)
-{
-    if (HTTP_req.indexOf("LED2=2") > -1) {  // see if checkbox was clicked
-        // the checkbox was clicked, toggle the LED
-        if (LED_status) {
-            LED_status = 0;
-        }
-        else {
-            LED_status = 1;
-        }
+
+void process_request(EthernetClient cl) {
+    
+    if (HTTP_req.indexOf("branch") == -1) { 
+      return_status();
+      return;
+    }
+
+    params=split_request(HTTP_req);
+
+    if (HTTP_req.indexOf("branch") == -1) { 
+      return_status();
     }
     
+
+
     if (LED_status) {    // switch LED on
         digitalWrite(2, HIGH);
         // checkbox is checked
@@ -127,6 +138,10 @@ void ProcessCheckbox(EthernetClient cl)
         cl.println("<input type=\"checkbox\" name=\"LED2\" value=\"2\" \
         onclick=\"submit();\">LED2");
     }
+}
+
+void analog_status(){
+  analog1_status=analogRead(analog1);
 }
 
 void branches_status(){
@@ -219,5 +234,12 @@ String form_branch_status_json(){
     return res
 }
 
-
+String form_analog_pins_json(){
+    //update analog status
+    analog_status();
+    String res = "{";
+    res = res + "\"analog1\":"+"\""+String(analog1_status)+"\"}";
+  
+    return res
+}
 
