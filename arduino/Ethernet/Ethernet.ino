@@ -25,14 +25,14 @@ EthernetServer server(80);
 aREST rest = aREST();
 
 // Variables to be exposed to the API
-int branch_1_status;
-int branch_2_status;
-int branch_3_status;
-int branch_4_status;
-int branch_5_status;
-int branch_6_status;
-int branch_7_status;
-int pump_status;
+int branch_1_statu=0;
+int branch_2_status=0;
+int branch_3_status=0;
+int branch_4_status=0;
+int branch_5_status=0;
+int branch_6_status=0;
+int branch_7_status=0;
+int pump_status=0;
 
 int branch_1 = 2;
 int branch_2 = 3;
@@ -57,7 +57,7 @@ void setup(void)
   pinMode(branch_6, OUTPUT);
   pinMode(branch_7, OUTPUT);
   pinMode(pump, OUTPUT);
-
+  branches_status();
 
   // Init variables and expose them to REST API
  
@@ -66,8 +66,8 @@ rest.variable("2",&branch_2_status);
 rest.variable("3",&branch_3_status);
 rest.variable("4",&branch_4_status);
 rest.variable("5",&branch_5_status);
-rest.variable("6",&branch_5_status);
-rest.variable("7",&branch_5_status);
+rest.variable("6",&branch_6_status);
+rest.variable("7",&branch_7_status);
 rest.variable("pump",&pump_status);
 
 
@@ -150,7 +150,7 @@ int get_branch_pin(int i){
 int on(String branch){
   // Get state from command
   int pin = get_branch_pin(branch.toInt());
-  Serial.println(pin);
+  
   digitalWrite(pin,HIGH);
   digitalWrite(pump, HIGH);
 
