@@ -199,7 +199,7 @@ def enable_rule():
         logging.debug("rules updated")
 
         while True:
-            logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))    
+            #logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))    
             time.sleep(10)
             
             if (RULES_ENABLED==False):
