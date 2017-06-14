@@ -8,14 +8,14 @@ EthernetServer server(80);
 
 String HTTP_req;          // stores the HTTP request
 
-byte branch_1 = 2;
-byte branch_2 = 3;
-byte branch_3 = 4;
-byte branch_4 = 5;
-byte branch_5 = 6;
-byte branch_6 = 7;
-byte branch_7 = 8;
-byte pump = 9;
+const byte branch_1 = 2;
+const byte branch_2 = 3;
+const byte branch_3 = 4;
+const byte branch_4 = 5;
+const byte branch_5 = 6;
+const byte branch_6 = 7;
+const byte branch_7 = 8;
+const byte pump = 9;
 
 byte branch_1_status=0;
 byte branch_2_status=0;
@@ -26,44 +26,43 @@ byte branch_6_status=0;
 byte branch_7_status=0;
 byte pump_status=0;
 
-byte analog1=A0;
+const byte analog1=A0;
 byte analog1_status=0;
 
 const byte timers_count=9;
-int timers[timers_count];
+unsigned long int timers[timers_count];
 
-void setup()
-{
-// Start Serial
-Serial.begin(115200);
-
-fill_up_timers_array();
-
-// Init all outputs
-pinMode(branch_1, OUTPUT);
-pinMode(branch_2, OUTPUT);
-pinMode(branch_3, OUTPUT);
-pinMode(branch_4, OUTPUT);
-pinMode(branch_5, OUTPUT);
-pinMode(branch_6, OUTPUT);
-pinMode(branch_7, OUTPUT);
-pinMode(pump, OUTPUT);
-
-// Start the Ethernet connection and the server
-if (Ethernet.begin(mac) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
-    // no point in carrying on, so do nothing forevermore:
-    // try to congifure using IP address instead of DHCP:
-    Ethernet.begin(mac, ip);
-} 
-server.begin();
-Serial.print("server is at ");
-Serial.println(Ethernet.localIP());
+void setup() {
+  // Start Serial
+  Serial.begin(115200);
+  
+  fill_up_timers_array();
+  
+  // Init all outputs
+  pinMode(branch_1, OUTPUT);
+  pinMode(branch_2, OUTPUT);
+  pinMode(branch_3, OUTPUT);
+  pinMode(branch_4, OUTPUT);
+  pinMode(branch_5, OUTPUT);
+  pinMode(branch_6, OUTPUT);
+  pinMode(branch_7, OUTPUT);
+  pinMode(pump, OUTPUT);
+  
+  // Start the Ethernet connection and the server
+  if (Ethernet.begin(mac) == 0) {
+      Serial.println("Failed to configure Ethernet using DHCP");
+      // no point in carrying on, so do nothing forevermore:
+      // try to congifure using IP address instead of DHCP:
+      Ethernet.begin(mac, ip);
+  } 
+  
+  server.begin();
+  Serial.print("server is at ");
+  Serial.println(Ethernet.localIP());
 }
 
 
-void loop()
-{
+void loop() {
     EthernetClient client = server.available();  // try to get client
 
     if (client) {  // got client?
@@ -75,11 +74,8 @@ void loop()
                 // last line of client request is blank and ends with \n
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) {
-
-
-
+                  
                     process_request(client);
-
                   
                     Serial.print(HTTP_req);
                     HTTP_req = "";    // finished with request, empty string
@@ -104,12 +100,10 @@ void loop()
     check_all_branches_timer();
 }
 
-
-
 void process_request(EthernetClient cl) {
-     
     String host = get_host_from_request(HTTP_req);
     String data="";
+    
     if (HTTP_req.indexOf("status") > -1) { 
       data = form_branch_status_json();
       send_data_to_client(cl, host, data);
@@ -147,7 +141,7 @@ void send_data_to_client(EthernetClient client, String host, String data){
   client.println(http_headers());
   // Send request
   client.println("POST /1/events HTTP/1.1");
-  //client.println("Host: " + host);
+  client.println("Host: " + host);
   client.println("Content-Type: application/x-www-form-urlencoded");
   client.print("Content-Length: ");
   client.println(data.length());
@@ -157,8 +151,8 @@ void send_data_to_client(EthernetClient client, String host, String data){
 
 // turn on off logic
 void on(byte branch, int alert_time){
-  // Get state from command
-  timers[branch]=alert_time;
+  // Add timers rule
+  timers[branch]=millis()+alert_time;
   
   byte pin = get_branch_pin(branch);
   
@@ -167,7 +161,7 @@ void on(byte branch, int alert_time){
 }
 
 void off(byte branch){
-  // Get state from command
+  // Remove timers rule
   timers[branch]=0;
   
   byte pin = get_branch_pin(branch);
@@ -272,19 +266,21 @@ String get_host_from_request(String request){
   return "";
 }
 
+
 void check_all_branches_timer(){
-  for (int i = 0; i > timers_count; i++) {
+  for (byte i = 0; i > timers_count; i++) {
     if (timers[i]==0){
       continue;
     } else {
-      if ( millis() > int(millis()+timers[i]))
+      if ( int(timers[i]-millis()) < 0  ){
         off(i); 
+      }
     }
   }
 }
 
 void fill_up_timers_array(){
-  for (int i = 0; i > timers_count; i++) {
+  for (byte i = 0; i > timers_count; i++) {
     timers[i]=0;
   }
 }
