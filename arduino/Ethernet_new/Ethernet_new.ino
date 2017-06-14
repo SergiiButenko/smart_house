@@ -8,36 +8,41 @@ EthernetServer server(80);
 
 String HTTP_req;          // stores the HTTP request
 
-int branch_1 = 2;
-int branch_2 = 3;
-int branch_3 = 4;
-int branch_4 = 5;
-int branch_5 = 6;
-int branch_6 = 7;
-int branch_7 = 8;
-int pump = 9;
+byte branch_1 = 2;
+byte branch_2 = 3;
+byte branch_3 = 4;
+byte branch_4 = 5;
+byte branch_5 = 6;
+byte branch_6 = 7;
+byte branch_7 = 8;
+byte pump = 9;
 
-int branch_1_status=0;
-int branch_2_status=0;
-int branch_3_status=0;
-int branch_4_status=0;
-int branch_5_status=0;
-int branch_6_status=0;
-int branch_7_status=0;
-int pump_status=0;
+byte branch_1_status=0;
+byte branch_2_status=0;
+byte branch_3_status=0;
+byte branch_4_status=0;
+byte branch_5_status=0;
+byte branch_6_status=0;
+byte branch_7_status=0;
+byte pump_status=0;
 
-int analog1=A0;
-int analog1_status=0;
+byte analog1=A0;
+byte analog1_status=0;
+
+const byte timers_count=9;
+int timers[timers_count];
 
 void setup()
 {
 // Start Serial
 Serial.begin(115200);
 
+fill_up_timers_array();
+
 // Init all outputs
 pinMode(branch_1, OUTPUT);
 pinMode(branch_2, OUTPUT);
-inMode(branch_3, OUTPUT);
+pinMode(branch_3, OUTPUT);
 pinMode(branch_4, OUTPUT);
 pinMode(branch_5, OUTPUT);
 pinMode(branch_6, OUTPUT);
@@ -50,10 +55,10 @@ if (Ethernet.begin(mac) == 0) {
     // no point in carrying on, so do nothing forevermore:
     // try to congifure using IP address instead of DHCP:
     Ethernet.begin(mac, ip);
-} else {
-    server.begin();
-    Serial.print("server is at ");
-    Serial.println(Ethernet.localIP());
+} 
+server.begin();
+Serial.print("server is at ");
+Serial.println(Ethernet.localIP());
 }
 
 
@@ -75,19 +80,7 @@ void loop()
 
                     process_request(client);
 
-                    // send a standard http response header
-                    client.println(http_headers());
-                    
-                    // Send request
-                    data = form_branch_status_json();
-                    client.println("POST /1/events HTTP/1.1");
-                    client.println("Host: " + String(remote_server) + ":" + String(port));
-                    client.println("Content-Type: application/x-www-form-urlencoded");
-                    client.print("Content-Length: ");
-                    client.println(data.length());
-                    client.println();
-                    client.print(data);
-
+                  
                     Serial.print(HTTP_req);
                     HTTP_req = "";    // finished with request, empty string
                     break;
@@ -107,37 +100,83 @@ void loop()
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
+
+    check_all_branches_timer();
 }
 
 
 
 void process_request(EthernetClient cl) {
-    
-    if (HTTP_req.indexOf("branch") == -1) { 
-      return_status();
+     
+    String host = get_host_from_request(HTTP_req);
+    String data="";
+    if (HTTP_req.indexOf("status") > -1) { 
+      data = form_branch_status_json();
+      send_data_to_client(cl, host, data);
       return;
     }
 
-    params=split_request(HTTP_req);
-
-    if (HTTP_req.indexOf("branch") == -1) { 
-      return_status();
+    if (HTTP_req.indexOf("on") > -1) { 
+      //int branch_id = get_branch_from_request(HTTP_req);
+      //int alert_time = get_alert_time_from_request(HTTP_req);
+      //on(branch_id, alert_time);
+      delay(1);
+      data = form_branch_status_json();
+      send_data_to_client(cl, host, data);
+      return;
     }
-    
 
+    if (HTTP_req.indexOf("off") > -1) { 
+      //int branch_id = get_branch_from_request(HTTP_req);
+      //off(branch_id);
+      delay(1);
+      data = form_branch_status_json();
+      send_data_to_client(cl, host, data);
+      return;
+    }
 
-    if (LED_status) {    // switch LED on
-        digitalWrite(2, HIGH);
-        // checkbox is checked
-        cl.println("<input type=\"checkbox\" name=\"LED2\" value=\"2\" \
-        onclick=\"submit();\" checked>LED2");
+    if (HTTP_req.indexOf("analog") > -1) { 
+      data = form_analog_pins_json();
+      send_data_to_client(cl, host, data);
+      return;
     }
-    else {              // switch LED off
-        digitalWrite(2, LOW);
-        // checkbox is unchecked
-        cl.println("<input type=\"checkbox\" name=\"LED2\" value=\"2\" \
-        onclick=\"submit();\">LED2");
-    }
+}
+
+void send_data_to_client(EthernetClient client, String host, String data){
+  // send a standard http response header
+  client.println(http_headers());
+  // Send request
+  client.println("POST /1/events HTTP/1.1");
+  //client.println("Host: " + host);
+  client.println("Content-Type: application/x-www-form-urlencoded");
+  client.print("Content-Length: ");
+  client.println(data.length());
+  client.println();
+  client.print(data);
+}
+
+// turn on off logic
+void on(byte branch, int alert_time){
+  // Get state from command
+  timers[branch]=alert_time;
+  
+  byte pin = get_branch_pin(branch);
+  
+  digitalWrite(pin,HIGH);
+  digitalWrite(pump, HIGH);
+}
+
+void off(byte branch){
+  // Get state from command
+  timers[branch]=0;
+  
+  byte pin = get_branch_pin(branch);
+
+  digitalWrite(pin,LOW);
+   
+  if ( if_no_branch_active() ){
+    digitalWrite(pump, LOW);
+  }
 }
 
 void analog_status(){
@@ -157,13 +196,13 @@ void branches_status(){
 
 bool if_no_branch_active(){
   if (branch_1_status==LOW and branch_2_status==LOW and branch_3_status==LOW and branch_4_status==LOW and branch_5_status==LOW
-    and branch_5_status==LOW and branch_7_status==LOW){
+    and branch_6_status==LOW and branch_7_status==LOW){
     return true;
   }
   return false;
 }
 
-int get_branch_pin(int i){
+int get_branch_pin(byte i){
   if (i==1){
     return branch_1;
   }
@@ -190,30 +229,7 @@ int get_branch_pin(int i){
   }
 }
 
-void on(String branch){
-  // Get state from command
-  int pin = get_branch_pin(branch.toInt());
-  
-  digitalWrite(pin,HIGH);
-  digitalWrite(pump, HIGH);
-
-  branches_status();
-}
-
-void off(String branch){
-  // Get state from command
-  int pin = get_branch_pin(branch.toInt());
-
-  digitalWrite(pin,LOW);
-  branches_status();
-  
-  if ( if_no_branch_active() ){
-    digitalWrite(pump, LOW);
-  }
-
-  branches_status();
-}
-
+// Headers and json strings
 String http_headers(){
   return "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: POST, GET, PUT, OPTIONS\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n";
 }
@@ -231,7 +247,7 @@ String form_branch_status_json(){
     res = res + "\"7\":"+"\""+String(branch_7_status)+"\", ";
     res = res + "\"pump\":"+"\""+String(pump_status)+"\"}";
 
-    return res
+    return res;
 }
 
 String form_analog_pins_json(){
@@ -240,6 +256,37 @@ String form_analog_pins_json(){
     String res = "{";
     res = res + "\"analog1\":"+"\""+String(analog1_status)+"\"}";
   
-    return res
+    return res;
 }
+
+
+int get_branch_from_request(String request){
+  return 0;
+}
+
+int get_alert_time_from_request(String request){
+  return 0;
+}
+
+String get_host_from_request(String request){
+  return "";
+}
+
+void check_all_branches_timer(){
+  for (int i = 0; i > timers_count; i++) {
+    if (timers[i]==0){
+      continue;
+    } else {
+      if ( millis() > int(millis()+timers[i]))
+        off(i); 
+    }
+  }
+}
+
+void fill_up_timers_array(){
+  for (int i = 0; i > timers_count; i++) {
+    timers[i]=0;
+  }
+}
+
 
