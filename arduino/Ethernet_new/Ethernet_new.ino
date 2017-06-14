@@ -65,12 +65,12 @@ void setup() {
 void loop() {
     EthernetClient client = server.available();  // try to get client
 
-    if (client) {  // got client?
+    if (client) { 
         boolean currentLineIsBlank = true;
         while (client.connected()) {
-            if (client.available()) {   // client data available to read
+            if (client.available()) {   
                 char c = client.read(); // read 1 byte (character) from client
-                HTTP_req += c;  // save the HTTP request 1 char at a time
+                HTTP_req += c; 
                 // last line of client request is blank and ends with \n
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) {
@@ -78,7 +78,7 @@ void loop() {
                     process_request(client);
                   
                     Serial.print(HTTP_req);
-                    HTTP_req = "";    // finished with request, empty string
+                    HTTP_req = "";
                     break;
                 }
                 // every line of text received from the client ends with \r\n
@@ -88,14 +88,13 @@ void loop() {
                     currentLineIsBlank = true;
                 } 
                 else if (c != '\r') {
-                    // a text character was received from client
                     currentLineIsBlank = false;
                 }
-            } // end if (client.available())
-        } // end while (client.connected())
+            } 
+        } 
         delay(1);      // give the web browser time to receive the data
-        client.stop(); // close the connection
-    } // end if (client)
+        client.stop(); 
+    } 
 
     check_all_branches_timer();
 }
@@ -196,7 +195,7 @@ bool if_no_branch_active(){
   return false;
 }
 
-int get_branch_pin(byte i){
+byte get_branch_pin(byte i){
   if (i==1){
     return branch_1;
   }
@@ -254,7 +253,7 @@ String form_analog_pins_json(){
 }
 
 
-int get_branch_from_request(String request){
+byte get_branch_from_request(String request){
   return 0;
 }
 
