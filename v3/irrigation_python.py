@@ -577,7 +577,8 @@ def activate_branch():
 
     update_db_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now))
     lastid=update_db_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus))    
-
+    logging.debug("lastid:{0}".format(lastid))
+    
     res = execute_request(QUERY[mn()+'_2'].format(lastid))
 
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
