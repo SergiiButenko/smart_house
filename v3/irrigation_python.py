@@ -60,7 +60,7 @@ QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.
 QUERY['add_rule'] = "INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
-QUERY['activate_branch_2'] = "SELECT id,line_id, rule_id, timer FROM life where id = lastid"
+QUERY['activate_branch_2'] = "SELECT id,line_id, rule_id, timer FROM life where id = {0}"
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=1 WHERE id = {0}"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['enable_rule'] = "UPDATE life SET state=1 WHERE id={0}"
@@ -178,6 +178,7 @@ def update_db_request(query):
                 conn.close()
         except Exception as e:
             logging.error("Error while closing connection with database: {0}".format(e))
+            return None
 
 
 def get_next_active_rule(line_id):
@@ -577,7 +578,8 @@ def activate_branch():
 
     execute_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now), 'fetchone')
     lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')
-    res = execute_request(QUERY[mn()+'_2'])
+    
+    res = execute_request(QUERY[mn()+'_2'].format(lastid))
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
