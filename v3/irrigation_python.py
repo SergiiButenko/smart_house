@@ -525,8 +525,8 @@ def arduino_status():
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     global RULES_FOR_BRANCHES
-    id=int(request.args.get('id'))
-    time_min=int(request.args.get('time'))
+    line_id=int(request.args.get('id'))
+    alert_time=int(request.args.get('time'))
 
     try:
         response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":alert_time}, timeout=60)
@@ -550,7 +550,7 @@ def activate_branch():
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
     global RULES_FOR_BRANCHES
-    id=int(request.args.get('id'))
+    line_id=int(request.args.get('id'))
 
     try:
         response_off = requests.get(url=ARDUINO_IP+'/branch_off', params={"branch_id":line_id}, timeout=60)
