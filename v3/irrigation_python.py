@@ -147,14 +147,13 @@ def execute_request(query, method='fetchall'):
         cursor.execute(query)
         conn.commit()
         logging.debug("db request '{0}' executed".format(query))
-        return getattr(cursor, method)()
+        return [getattr(cursor, method)(), cursor.lastrowid]
     except Exception as e:
         logging.error("Error while performing operation with database: {0}".format(e))
         return None
     finally:
         try:
-            if conn is not None:
-                #return cursor.lastrowid
+            if conn is not None:                
                 conn.close()
         except Exception as e:
             logging.error("Error while closing connection with database: {0}".format(e))
@@ -183,8 +182,7 @@ def update_db_request(query):
 
 def get_next_active_rule(line_id):
     query=QUERY[mn()].format(line_id)
-    res = execute_request(query, 'fetchone')
-    logging.debug("Response: {0}".format(res))
+    res[ = execute_request(query, 'fetchone')[0]
     if res is None:
         return None
 
@@ -577,9 +575,9 @@ def activate_branch():
     now_plus = now + datetime.timedelta(minutes = time_min)
 
     execute_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now), 'fetchone')
-    lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')
-    
+    lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')    
     res = execute_request(QUERY[mn()+'_2'].format(lastid))
+
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
