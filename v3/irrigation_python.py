@@ -43,7 +43,7 @@ RULES_FOR_BRANCHES=[None] * 10
 
 RULES_ENABLED=True
 
-#For get function name intro function. Usage mn(). Return string with carrent function name. Instead 'query' will be QUERY[mn()].format(....)
+#For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
@@ -74,7 +74,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-#setlocale(LC_ALL, 'ua_UA.utf-8')
+setlocale(LC_ALL, 'ua_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
