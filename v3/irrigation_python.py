@@ -23,6 +23,7 @@ import os.path
 import psycopg2
 from locale import setlocale, LC_ALL
 from time import strftime
+import inspect
 
 # added logging
 import logging
@@ -39,13 +40,45 @@ ARDUINO_IP='http://192.168.1.10'
 RULES_FOR_BRANCHES=[None] * 10
 
 RULES_ENABLED=True
+
+#For get function name intro function. Usage mn(). Return string with carrent function name. Instead 'query' will be QUERY[mn()].format(....)
+mn = lambda: inspect.stack()[1][3]
+
+QUERY = {}
+QUERY['get_next_active_rule']="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY timer LIMIT 1"
+QUERY['get_table_template']="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"
+QUERY['ongoing_rules_table']="SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
+QUERY['branches_names'] = "SELECT number, name from lines order by number"
+QUERY['list'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' AND l.timer<=now()+ interval '{1} hour' order by l.timer desc"
+QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=now()- interval '{0} day' AND l.timer <=now() order by l.timer desc"
+QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= now() order by l.timer desc"
+QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
+QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=now()::date+{0} order by l.timer desc"
+QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' and l.timer<=now()+ interval '{1} hour' order by l.timer desc"
+QUERY['add_rule'] = "INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
+QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['activate_branch_2'] = "SELECT id,line_id, rule_id, timer FROM life where id = lastid"
+QUERY['deactivate_branch_1'] = "UPDATE life SET state=1 WHERE id = {0}"
+QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['enable_rule'] = "UPDATE life SET state=1 WHERE id={0}"
+QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
+QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
+QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1"
+QUERY['deactivate_all_rules_2'] = "UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7"
+QUERY['activate_ongoing_rule'] = "UPDATE week_schedule SET active=1 WHERE id={0}"
+QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={0}"
+QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
+QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+
 setlocale(LC_ALL, 'ru_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
     logging.error('error_handler for socketio. An error has occurred: ' + str(e))
 
-@socketio.on('connect') 
+@socketio.on('connect')
 def connect():
     logging.info('Client connected')
 
@@ -74,7 +107,7 @@ def branch_on(line_id):
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-        
+
     time.sleep(1)
     # this request returns status for all branches
     try:
@@ -85,7 +118,7 @@ def branch_on(line_id):
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule. Timeout Exception occured".format(line_id))
         return None
-        
+
     except Exception as e:
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
@@ -106,7 +139,7 @@ def branch_off(line_id):
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-    
+
     logging.debug('sleep 1')
     time.sleep(1)
     try:
@@ -124,7 +157,7 @@ def branch_off(line_id):
         logging.error(e)
         logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
         return None
-    
+
     logging.debug('return status')
     return response_status
 
@@ -146,6 +179,7 @@ def execute_request(query, method='fetchall'):
     finally:
         try:
             if conn is not None:
+                return cursor.lastrowid
                 conn.close()
         except Exception as e:
             logging.error("Error while closing connection with database: {0}".format(e))
@@ -172,7 +206,7 @@ def update_db_request(query):
 
 
 def get_next_active_rule(line_id):
-    query="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY timer LIMIT 1".format(line_id)
+    query=QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
     if res is None:
         return None
@@ -199,9 +233,9 @@ def enable_rule():
         logging.debug("rules updated")
 
         while True:
-            #logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))    
+            #logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))
             time.sleep(10)
-            
+
             if (RULES_ENABLED==False):
                 logging.warn("All rules are disabled on demand")
                 continue
@@ -218,7 +252,7 @@ def enable_rule():
                         arduino_branch_name='pump'
                     else:
                         arduino_branch_name=rule['line_id']
-                
+
                     logging.debug("arduino_branch_name retrieved : {0}".format(arduino_branch_name))
 
                     if rule['rule_id'] == 1:
@@ -237,7 +271,7 @@ def enable_rule():
                         if (json_data['variables'][str(arduino_branch_name)] == 1 ):
                             logging.info("Turned on {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
-                            update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                            update_db_request(QUERY[mn()].format(rule['id']))
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
@@ -257,12 +291,12 @@ def enable_rule():
                         if (json_data['variables'][str(arduino_branch_name)] == 0 ):
                             logging.info("Turned off {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
-                            update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                            update_db_request(QUERY[mn()].format(rule['id']))
                             logging.debug("get next active rule")
-                            RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])                           
+                            RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
     except Exception as e:
-        logging.error("enable rule thread exception occured. {0}".format(e))    
+        logging.error("enable rule thread exception occured. {0}".format(e))
     finally:
         logging.info("enable rule thread stopped.")
 
@@ -283,7 +317,7 @@ def update_rules():
 @app.route("/branches_names")
 def branches_names():
     branch_list=[]
-    res = execute_request("select number, name from lines order by number", 'fetchall')
+    res = execute_request(QUERY[mn()], 'fetchall')
     if res == None:
         logging.error("Can't get branches names from database")
         abort(500)
@@ -304,7 +338,7 @@ def hello():
     global RULES_FOR_BRANCHES
     return str(RULES_FOR_BRANCHES)
 
-def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"):
+def get_table_template(query=QUERY[mn()]:
     list_arr = execute_request(query, 'fetchall')
 
     rows=[]
@@ -328,7 +362,7 @@ def get_table_template(query="SELECT l.id, li.name, rule_type.name, l.state, l.d
 
 @app.route("/list")
 def list():
-    list_arr = execute_request("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' AND l.timer<=now()+ interval '{1} hour' order by l.timer desc".format(12, 24), 'fetchall')
+    list_arr = execute_request(QUERY[mn()].format(12, 24), 'fetchall')
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -351,9 +385,9 @@ def list():
 def list_all():
     if 'days' in request.args:
         days=int(request.args.get('days'))
-        return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=now()- interval '{0} day' AND l.timer <=now() order by l.timer desc".format(days))
+        return get_table_template(QUERY[mn()+'_1'].format(days))
 
-    list_arr = execute_request("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= now() order by l.timer desc", 'fetchall')
+    list_arr = execute_request(QUERY[mn()+'_2'], 'fetchall')
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -381,8 +415,8 @@ def add_rule():
     datetime_stop=datetime_start + datetime.timedelta(minutes = time_min)
     now = datetime.datetime.now()
 
-    execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(branch_id, 1, 0, now.date(), datetime_start))
-    execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(branch_id, 2, 0, now.date(), datetime_stop))
+    execute_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))
+    execute_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -391,7 +425,7 @@ def add_rule():
 @app.route("/remove_rule")
 def remove_rule():
     id=int(request.args.get('id'))
-    execute_request("DELETE from life WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -403,7 +437,7 @@ def remove_rule():
 @app.route("/activate_rule")
 def activate_rule():
     id=int(request.args.get('id'))
-    execute_request("UPDATE life SET active=1 WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -412,7 +446,7 @@ def activate_rule():
 @app.route("/deactivate_rule")
 def deactivate_rule():
     id=int(request.args.get('id'))
-    execute_request("UPDATE life SET active=0 WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -423,14 +457,14 @@ def deactivate_all_rules():
     id=int(request.args.get('id'))
     #1-24h;2-7d;3-on demand
     if (id==1):
-        execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+1")
+        execute_request(QUERY[mn()+'_1'])
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
         return template
 
     if (id==2):
-        execute_request("UPDATE life SET active=0 WHERE timer>= now() AND timer<=now()::date+7")
+        execute_request(QUERY[mn()+'_2'])
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
@@ -442,7 +476,7 @@ def deactivate_all_rules():
 
     return 'OK'
 
-def ongoing_rules_table(query="SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"):
+def ongoing_rules_table(query=QUERY[mn()]):
     list_arr = execute_request(query, 'fetchall')
     rows=[]
     for row in list_arr:
@@ -461,7 +495,7 @@ def ongoing_rules_table(query="SELECT w.id, dw.name, li.name, rule_type.name, \"
 
 @app.route("/ongoing_rules")
 def ongoing_rules():
-    list_arr = execute_request("SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time", 'fetchall')
+    list_arr = execute_request(QUERY[mn()], 'fetchall')
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -483,7 +517,7 @@ def add_ongoing_rule():
     time_start=request.args.get('datetime_start')
     dow=int(request.args.get('dow'))
 
-    execute_request("INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)".format(dow, branch_id, 1, time_start, time_min))
+    execute_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -492,7 +526,7 @@ def add_ongoing_rule():
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request("DELETE from week_schedule WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -501,7 +535,7 @@ def remove_ongoing_rule():
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
     id=int(request.args.get('id'))
-    #execute_request("DELETE from week_schedule WHERE id={0}".format(id))
+    #execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -510,7 +544,7 @@ def edit_ongoing_rule():
 @app.route("/activate_ongoing_rule")
 def activate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request("UPDATE week_schedule SET active=1 WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -519,7 +553,7 @@ def activate_ongoing_rule():
 @app.route("/deactivate_ongoing_rule")
 def deactivate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request("UPDATE week_schedule SET active=0 WHERE id={0}".format(id))
+    execute_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -529,12 +563,12 @@ def deactivate_ongoing_rule():
 def get_list():
     if 'days' in request.args:
         days=int(request.args.get('days'))
-        return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=now()::date+{0} order by l.timer desc".format(days))
+        return get_table_template(QUERY[mn()+'_1'].format(days))
 
     if 'before' in request.args and 'after' in request.args:
         before=int(request.args.get('before'))
         after=int(request.args.get('after'))
-        return get_table_template("SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= now() - interval '{0} hour' and l.timer<=now()+ interval '{1} hour' order by l.timer desc".format(before, after))
+        return get_table_template(QUERY[mn()+'_2'].format(before, after))
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
@@ -562,8 +596,9 @@ def activate_branch():
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
 
-    execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 1, 1, now.date(), now), 'fetchone')
-    res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(id, 2, 0, now.date(), now_plus), 'fetchone')
+    execute_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now), 'fetchone')
+    lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')
+    res = execute_request(QUERY[mn()+'_2'])
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
@@ -592,9 +627,9 @@ def deactivate_branch():
 
     now = datetime.datetime.now()
     if RULES_FOR_BRANCHES[id] is not None:
-        execute_request("UPDATE public.life SET state=1 WHERE id = {0}".format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
+        execute_request(QUERY[mn()+'_1'].format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
     else:
-        execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 2, 1, now.date(), now), 'fetchone')
+        execute_request(QUERY[mn()+'_2'].format(id, 2, 1, now.date(), now), 'fetchone')
 
     RULES_FOR_BRANCHES[id]=get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
@@ -606,7 +641,7 @@ def deactivate_branch():
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
         abort(404)
-    
+
     logging.info("Branch '{0}' deactivated manually".format(id))
     return (response_status.text, response_status.status_code)
 
