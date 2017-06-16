@@ -161,6 +161,7 @@ def execute_request(query, method='fetchall'):
 #executes query and returns fetch* result
 def update_db_request(query):
     conn=None
+    lastrowid=0
     try:
         conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
@@ -169,7 +170,8 @@ def update_db_request(query):
         cursor.execute(query)
         conn.commit()
         logging.debug("db request '{0}' executed".format(query))
-        return cursor.lastrowid
+        lastrowid = cursor.lastrowid
+        return lastrowid
     except Exception as e:
         logging.error("Error while performing operation with database: {0}".format(e))
     finally:
@@ -578,7 +580,7 @@ def activate_branch():
     update_db_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now))
     lastid=update_db_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus))    
     logging.debug("lastid:{0}".format(lastid))
-    
+
     res = execute_request(QUERY[mn()+'_2'].format(lastid))
 
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
