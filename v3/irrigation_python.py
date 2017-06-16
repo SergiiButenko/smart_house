@@ -154,7 +154,7 @@ def execute_request(query, method='fetchall'):
     finally:
         try:
             if conn is not None:
-                return cursor.lastrowid
+                #return cursor.lastrowid
                 conn.close()
         except Exception as e:
             logging.error("Error while closing connection with database: {0}".format(e))
@@ -182,7 +182,7 @@ def update_db_request(query):
 
 
 def get_next_active_rule(line_id):
-    query=QUERY[str(mn())].format(line_id)
+    query=QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
     logging.debug("Response: {0}".format(res))
     if res is None:
