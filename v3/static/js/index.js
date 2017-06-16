@@ -148,7 +148,7 @@ function branch_on(index, time_min) {
         type: "get",
         data: {
             'id': index,
-            'time' : time_min
+            'time_min' : time_min
         },
         success: function(data) {
             console.log('Line ' + branch_names[index] + ' should be activated now');

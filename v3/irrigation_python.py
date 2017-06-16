@@ -526,10 +526,10 @@ def arduino_status():
 def activate_branch():
     global RULES_FOR_BRANCHES
     line_id=int(request.args.get('id'))
-    alert_time=int(request.args.get('time'))
+    time_min=int(request.args.get('time_min'))
 
     try:
-        response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":alert_time}, timeout=60)
+        response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":time_min+1}, timeout=60)
         send_message('branch_status', {'data':response_on.text})
     except requests.exceptions.RequestException as e:
         logging.error(e)
