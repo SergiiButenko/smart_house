@@ -64,11 +64,13 @@ def send_message(channel, data):
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
 
-def branch_on(line_id):
+def branch_on(line_id, alert_time=10000):
     try:
-        response = requests.get(url=ARDUINO_IP+'/on', params={"params":line_id}, timeout=5)
+        response = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":alert_time}, timeout=60)
         json_data = json.loads(response.text)
-
+        
+        logging.debug('response {0}'.format(response.text))
+        send_message('branch_status', {'data':response.text})
         logging.info('Branch {0} is turned on by rule'.format(line_id))
     except requests.exceptions.Timeout as e:
         logging.error(e)
@@ -76,30 +78,18 @@ def branch_on(line_id):
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-        
-    time.sleep(1)
-    # this request returns status for all branches
-    try:
-        response_status = requests.get(url=ARDUINO_IP, timeout=5)
-        send_message('branch_status', {'data':response_status.text})
-        logging.info("Arudino status retreived. by rule")
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Timeout Exception occured".format(line_id))
-        return None
-        
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
         return None
 
-    return response_status
+    logging.debug('return status')
+    return response
 
 def branch_off(line_id):
     try:
         logging.debug('Branch {0} is turning off by rule'.format(line_id))
-        response = requests.get(url=ARDUINO_IP+'/off', params={"params":line_id}, timeout=5)
+        response = requests.get(url=ARDUINO_IP+'/branch_off', params={"branch_id":line_id}, timeout=60)
         json_data = json.loads(response.text)
+        send_message('branch_status', {'data':response.text})
+
         logging.debug('response {0}'.format(response.text))
         logging.info('Branch {0} is turned off by rule'.format(line_id))
     except requests.exceptions.Timeout as e:
@@ -108,23 +98,6 @@ def branch_off(line_id):
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-    
-    logging.debug('sleep 1')
-    time.sleep(1)
-    try:
-        logging.debug('get status')
-        response_status = requests.get(url=ARDUINO_IP, timeout=5)
-        logging.debug('send message')
-        send_message('branch_status', {'data':response_status.text})
-        logging.info("Arudino status retreived. by rule")
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule.Timeout Exception occured".format(line_id))
-        return None
-
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't gets status {0} branch by rule. Exception occured".format(line_id))
         return None
     
     logging.debug('return status')
@@ -232,14 +205,15 @@ def enable_rule():
                             continue
 
                         json_data = json.loads(response.text)
-                        if (json_data['variables'][str(arduino_branch_name)] == 0 ):
+                        if (json_data[str(arduino_branch_name)] == 0 ):
                             logging.error("Can't turn on {0} branch".format(rule['line_id']))
                             continue
 
-                        if (json_data['variables'][str(arduino_branch_name)] == 1 ):
+                        if (json_data[str(arduino_branch_name)] == 1 ):
                             logging.info("Turned on {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
                             update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
+                            
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
@@ -252,11 +226,11 @@ def enable_rule():
                             continue
 
                         json_data = json.loads(response.text)
-                        if (json_data['variables'][str(arduino_branch_name)] == 1 ):
+                        if (json_data[str(arduino_branch_name)] == 1 ):
                             logging.error("Can't turn off {0} branch".format(rule['line_id']))
                             continue
 
-                        if (json_data['variables'][str(arduino_branch_name)] == 0 ):
+                        if (json_data[str(arduino_branch_name)] == 0 ):
                             logging.info("Turned off {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
                             update_db_request("UPDATE life SET state=1 WHERE id={0}".format(rule['id']))
@@ -541,7 +515,7 @@ def get_list():
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
     try:
-        response_status = requests.get(url=ARDUINO_IP)
+        response_status = requests.get(url=ARDUINO_IP+'/branch_status')
         return (response_status.text, response_status.status_code)
     except requests.exceptions.RequestException as e:
         logging.error(e)
@@ -555,7 +529,8 @@ def activate_branch():
     time_min=int(request.args.get('time'))
 
     try:
-        response_on = requests.get(url=ARDUINO_IP+'/on', params={"params":id})
+        response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":alert_time}, timeout=60)
+        send_message('branch_status', {'data':response_on.text})
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -569,16 +544,8 @@ def activate_branch():
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
-    try:
-        response_status = requests.get(url=ARDUINO_IP)
-        send_message('branch_status', {'data':response_status.text})
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
-        logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
-        abort(404)
-
     logging.info("Branch '{0}' activated manually".format(id))
-    return (response_status.text, response_status.status_code)
+    return (response_on.text, response_on.status_code)
 
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
@@ -586,7 +553,7 @@ def deactivate_branch():
     id=int(request.args.get('id'))
 
     try:
-        response_off = requests.get(url=ARDUINO_IP+'/off', params={"params":id})
+        response_off = requests.get(url=ARDUINO_IP+'/branch_off', params={"branch_id":line_id}, timeout=60)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -600,17 +567,9 @@ def deactivate_branch():
 
     RULES_FOR_BRANCHES[id]=get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
-
-    try:
-        response_status = requests.get(url=ARDUINO_IP)
-        send_message('branch_status', {'data':response_status.text})
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
-        logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
-        abort(404)
     
     logging.info("Branch '{0}' deactivated manually".format(id))
-    return (response_status.text, response_status.status_code)
+    return (response_off.text, response_off.status_code)
 
 @app.route("/weather")
 def weather():
