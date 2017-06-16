@@ -33,8 +33,10 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 
-ARDUINO_IP='http://192.168.1.10'
+#ARDUINO_IP='http://192.168.1.10'
 #ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://192.168.1.143'
+
 
 RULES_FOR_BRANCHES=[None] * 10
 
@@ -295,11 +297,11 @@ def branches_names():
             list=branch_list
         )
 
-@app.route("/beta")
+@app.route("/")
 def beta():
     return app.send_static_file('index.html')
 
-@app.route("/")
+@app.route("/beta")
 def hello():
     global RULES_FOR_BRANCHES
     return str(RULES_FOR_BRANCHES)
@@ -629,3 +631,4 @@ def after_request(response):
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=7543, debug=False)
+

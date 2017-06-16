@@ -1,4 +1,4 @@
-var server = 'http://mozart.hopto.org:7543'; 
+var server = 'http://butenko.asuscomm.com:7543'; 
 //var server = 'http://127.0.0.1:7543';
 
 $(document).ready(function() {
