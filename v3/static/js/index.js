@@ -1,4 +1,4 @@
-var server = 'http://mozart.hopto.org:7543';
+var server = 'http://butenko.asuscomm.com:7543';
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;
@@ -148,7 +148,7 @@ function branch_on(index, time_min) {
         type: "get",
         data: {
             'id': index,
-            'time' : time_min
+            'time_min' : time_min
         },
         success: function(data) {
             console.log('Line ' + branch_names[index] + ' should be activated now');
@@ -188,8 +188,7 @@ function update_branches_request() {
     $.ajax({
         url: server+'/arduino_status',
         success: function(data) {
-            data = JSON.parse(data);
-            branches = data['variables'];
+            branches = JSON.parse(data);
 
             toogle_checkbox(1, branches['1']);    
             toogle_checkbox(2, branches['2']);     
@@ -207,8 +206,7 @@ function update_branches_request() {
 }
 
 function update_branches(json) {
-    json = JSON.parse(json);
-    branches = json['variables'];
+    branches = JSON.parse(json);
     toogle_checkbox(1, branches['1']);    
     toogle_checkbox(2, branches['2']);     
     toogle_checkbox(3, branches['3']);     

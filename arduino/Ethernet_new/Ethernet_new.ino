@@ -74,10 +74,7 @@ void loop() {
                 // last line of client request is blank and ends with \n
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) {
-                  
                     process_request(client);
-                  
-                    Serial.print(HTTP_req);
                     HTTP_req = "";
                     break;
                 }
@@ -94,54 +91,74 @@ void loop() {
         } 
         delay(1);      // give the web browser time to receive the data
         client.stop(); 
-    } 
-
-    check_all_branches_timer();
+    }
+        
+    //check_all_branches_timer();
 }
 
 void process_request(EthernetClient cl) {
     String host = get_host_from_request(HTTP_req);
     String data="";
     
-    if (HTTP_req.indexOf("status") > -1) { 
+    if (HTTP_req.indexOf("/favicon.ico") > -1) { 
+      return;
+    }
+    
+    if (HTTP_req.indexOf("/branch_status") > -1) { 
       data = form_branch_status_json();
       send_data_to_client(cl, host, data);
       return;
     }
 
-    if (HTTP_req.indexOf("on") > -1) { 
-      //int branch_id = get_branch_from_request(HTTP_req);
-      //int alert_time = get_alert_time_from_request(HTTP_req);
-      //on(branch_id, alert_time);
+    if (HTTP_req.indexOf("/branch_on") > -1) { 
+      byte id_start = HTTP_req.indexOf("branch_id=");
+      byte id_end = HTTP_req.indexOf("&");
+      String id_str = HTTP_req.substring(id_start+10, id_end);
+      byte branch_id=id_str.toInt();
+     
+      byte alert_start = HTTP_req.indexOf("branch_alert=");
+      byte alert_end = HTTP_req.indexOf(" HTTP/1.1");
+      String alert_str = HTTP_req.substring(alert_start+13, alert_end);
+      char* tmp; // will point behind the number
+      long alert_time = strtol(alert_str.c_str(), &tmp, 10);
+
+      on(branch_id, alert_time);
       delay(1);
       data = form_branch_status_json();
       send_data_to_client(cl, host, data);
       return;
     }
 
-    if (HTTP_req.indexOf("off") > -1) { 
-      //int branch_id = get_branch_from_request(HTTP_req);
-      //off(branch_id);
+    if (HTTP_req.indexOf("/branch_off") > -1) { 
+      byte id_start = HTTP_req.indexOf("branch_id=");
+      byte id_end = HTTP_req.indexOf(" HTTP/1.1");
+      String id_str = HTTP_req.substring(id_start+10, id_end);
+      byte branch_id=id_str.toInt();
+      
+      off(branch_id);
       delay(1);
       data = form_branch_status_json();
       send_data_to_client(cl, host, data);
       return;
     }
 
-    if (HTTP_req.indexOf("analog") > -1) { 
+    if (HTTP_req.indexOf("/analog") > -1) { 
       data = form_analog_pins_json();
       send_data_to_client(cl, host, data);
       return;
     }
+
+    data = form_branch_status_json();
+    send_data_to_client(cl, host, data);
+    return;
 }
 
 void send_data_to_client(EthernetClient client, String host, String data){
-  // send a standard http response header
-  client.println(http_headers());
   // Send request
-  client.println("POST /1/events HTTP/1.1");
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: application/json");
   client.println("Host: " + host);
-  client.println("Content-Type: application/x-www-form-urlencoded");
+  client.println("Connection: close");
   client.print("Content-Length: ");
   client.println(data.length());
   client.println();
@@ -151,7 +168,7 @@ void send_data_to_client(EthernetClient client, String host, String data){
 // turn on off logic
 void on(byte branch, int alert_time){
   // Add timers rule
-  timers[branch]=millis()+alert_time;
+  timers[branch]=long(millis()+alert_time);
   
   byte pin = get_branch_pin(branch);
   
@@ -188,6 +205,8 @@ void branches_status(){
 }
 
 bool if_no_branch_active(){
+  branches_status();
+  
   if (branch_1_status==LOW and branch_2_status==LOW and branch_3_status==LOW and branch_4_status==LOW and branch_5_status==LOW
     and branch_6_status==LOW and branch_7_status==LOW){
     return true;
@@ -222,11 +241,6 @@ byte get_branch_pin(byte i){
   }
 }
 
-// Headers and json strings
-String http_headers(){
-  return "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: POST, GET, PUT, OPTIONS\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n";
-}
-
 String form_branch_status_json(){
     //update branch status
     branches_status();
@@ -252,26 +266,22 @@ String form_analog_pins_json(){
     return res;
 }
 
-
-byte get_branch_from_request(String request){
-  return 0;
-}
-
-int get_alert_time_from_request(String request){
-  return 0;
-}
-
 String get_host_from_request(String request){
-  return "";
+  return "192.168.1.143";
 }
 
 
 void check_all_branches_timer(){
-  for (byte i = 0; i > timers_count; i++) {
+  for (byte i = 0; i < timers_count; i++) {
     if (timers[i]==0){
       continue;
     } else {
       if ( int(timers[i]-millis()) < 0  ){
+        Serial.print(i);
+        Serial.print(" ");
+        Serial.print(timers[i]);
+        Serial.print(" ");
+        Serial.println("OFF");
         off(i); 
       }
     }
@@ -283,5 +293,7 @@ void fill_up_timers_array(){
     timers[i]=0;
   }
 }
+
+
 
 
