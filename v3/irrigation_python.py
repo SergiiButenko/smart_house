@@ -293,7 +293,7 @@ def update_rules():
 @app.route("/branches_names")
 def branches_names():
     branch_list=[]
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = execute_request(QUERY[mn()], 'fetchall')[0]
     if res == None:
         logging.error("Can't get branches names from database")
         abort(500)
@@ -316,7 +316,7 @@ def hello():
 
 def get_table_template():
     query=QUERY[mn()]
-    list_arr = execute_request(query, 'fetchall')
+    list_arr = execute_request(query, 'fetchall')[0]
 
     rows=[]
     if list_arr is not None:
@@ -339,7 +339,7 @@ def get_table_template():
 
 @app.route("/list")
 def list():
-    list_arr = execute_request(QUERY[mn()].format(12, 24), 'fetchall')
+    list_arr = execute_request(QUERY[mn()].format(12, 24), 'fetchall')[0]
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -364,7 +364,7 @@ def list_all():
         days=int(request.args.get('days'))
         return get_table_template(QUERY[mn()+'_1'].format(days))
 
-    list_arr = execute_request(QUERY[mn()+'_2'], 'fetchall')
+    list_arr = execute_request(QUERY[mn()+'_2'], 'fetchall')[0]
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -392,8 +392,8 @@ def add_rule():
     datetime_stop=datetime_start + datetime.timedelta(minutes = time_min)
     now = datetime.datetime.now()
 
-    execute_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))
-    execute_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))
+    execute_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))[0]
+    execute_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))[0]
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -402,7 +402,7 @@ def add_rule():
 @app.route("/remove_rule")
 def remove_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -414,7 +414,7 @@ def remove_rule():
 @app.route("/activate_rule")
 def activate_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -423,7 +423,7 @@ def activate_rule():
 @app.route("/deactivate_rule")
 def deactivate_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -434,14 +434,14 @@ def deactivate_all_rules():
     id=int(request.args.get('id'))
     #1-24h;2-7d;3-on demand
     if (id==1):
-        execute_request(QUERY[mn()+'_1'])
+        execute_request(QUERY[mn()+'_1'])[0]
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
         return template
 
     if (id==2):
-        execute_request(QUERY[mn()+'_2'])
+        execute_request(QUERY[mn()+'_2'])[0]
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
@@ -454,7 +454,7 @@ def deactivate_all_rules():
     return 'OK'
 
 def ongoing_rules_table():
-    list_arr = execute_request(QUERY[mn()], 'fetchall')
+    list_arr = execute_request(QUERY[mn()], 'fetchall')[0]
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -472,7 +472,7 @@ def ongoing_rules_table():
 
 @app.route("/ongoing_rules")
 def ongoing_rules():
-    list_arr = execute_request(QUERY[mn()], 'fetchall')
+    list_arr = execute_request(QUERY[mn()], 'fetchall')[0]
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -494,7 +494,7 @@ def add_ongoing_rule():
     time_start=request.args.get('datetime_start')
     dow=int(request.args.get('dow'))
 
-    execute_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
+    execute_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))[0]
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -503,7 +503,7 @@ def add_ongoing_rule():
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -512,7 +512,7 @@ def remove_ongoing_rule():
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
     id=int(request.args.get('id'))
-    #execute_request(QUERY[mn()].format(id))
+    #execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -521,7 +521,7 @@ def edit_ongoing_rule():
 @app.route("/activate_ongoing_rule")
 def activate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -530,7 +530,7 @@ def activate_ongoing_rule():
 @app.route("/deactivate_ongoing_rule")
 def deactivate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    execute_request(QUERY[mn()].format(id))[0]
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -574,9 +574,9 @@ def activate_branch():
     now = datetime.datetime.now()
     now_plus = now + datetime.timedelta(minutes = time_min)
 
-    execute_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now), 'fetchone')
-    lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')    
-    res = execute_request(QUERY[mn()+'_2'].format(lastid))
+    execute_request(QUERY[mn()+'_1'].format(id, 1, 1, now.date(), now), 'fetchone')[0]
+    lastid=execute_request(QUERY[mn()+'_1'].format(id, 2, 0, now.date(), now_plus), 'fetchone')[1]
+    res = execute_request(QUERY[mn()+'_2'].format(lastid))[0]
 
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
@@ -598,9 +598,9 @@ def deactivate_branch():
 
     now = datetime.datetime.now()
     if RULES_FOR_BRANCHES[id] is not None:
-        execute_request(QUERY[mn()+'_1'].format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
+        execute_request(QUERY[mn()+'_1'].format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')[0]
     else:
-        execute_request(QUERY[mn()+'_2'].format(id, 2, 1, now.date(), now), 'fetchone')
+        execute_request(QUERY[mn()+'_2'].format(id, 2, 1, now.date(), now), 'fetchone')[0]
 
     RULES_FOR_BRANCHES[id]=get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
