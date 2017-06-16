@@ -72,7 +72,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-setlocale(LC_ALL, 'ru_UA.utf-8')
+#setlocale(LC_ALL, 'ua_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
@@ -338,7 +338,8 @@ def hello():
     global RULES_FOR_BRANCHES
     return str(RULES_FOR_BRANCHES)
 
-def get_table_template(query=QUERY[mn()]:
+def get_table_template():
+    query=QUERY[mn()]
     list_arr = execute_request(query, 'fetchall')
 
     rows=[]
@@ -476,8 +477,8 @@ def deactivate_all_rules():
 
     return 'OK'
 
-def ongoing_rules_table(query=QUERY[mn()]):
-    list_arr = execute_request(query, 'fetchall')
+def ongoing_rules_table():
+    list_arr = execute_request(QUERY[mn()], 'fetchall')
     rows=[]
     for row in list_arr:
         id=row[0]
@@ -663,4 +664,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7543, debug=False)
+    socketio.run(app, host='0.0.0.0',  debug=True)
