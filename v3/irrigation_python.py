@@ -101,7 +101,7 @@ def branch_off(line_id):
         return None
     
     logging.debug('return status')
-    return response_status
+    return response
 
 #executes query and returns fetch* result
 def execute_request(query, method='fetchall'):
