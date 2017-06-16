@@ -183,6 +183,7 @@ def update_db_request(query):
 def get_next_active_rule(line_id):
     query=QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
+    logging.debug("Response: {0}".format(res))
     if res is None:
         return None
 
@@ -192,7 +193,7 @@ def get_next_active_rule(line_id):
 def update_all_rules():
     try:
         global RULES_FOR_BRANCHES
-        for i in range(1,len(RULES_FOR_BRANCHES), 1):
+        for i in range(1, len(RULES_FOR_BRANCHES), 1):
             RULES_FOR_BRANCHES[i]=get_next_active_rule(i)
         logging.info("Rules updated")
     except Exception as e:
