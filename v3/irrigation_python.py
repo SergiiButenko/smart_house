@@ -182,7 +182,7 @@ def update_db_request(query):
 
 def get_next_active_rule(line_id):
     query=QUERY[mn()].format(line_id)
-    res[ = execute_request(query, 'fetchone')[0]
+    res = execute_request(query, 'fetchone')[0]
     if res is None:
         return None
 
