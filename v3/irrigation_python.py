@@ -525,11 +525,11 @@ def arduino_status():
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     global RULES_FOR_BRANCHES
-    line_id=int(request.args.get('id'))
+    id=int(request.args.get('id'))
     time_min=int(request.args.get('time_min'))
 
     try:
-        response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":line_id, "branch_alert":time_min+1}, timeout=60)
+        response_on = requests.get(url=ARDUINO_IP+'/branch_on', params={"branch_id":id, "branch_alert":time_min+1}, timeout=60)
         send_message('branch_status', {'data':response_on.text})
     except requests.exceptions.RequestException as e:
         logging.error(e)
@@ -540,7 +540,7 @@ def activate_branch():
     now_plus = now + datetime.timedelta(minutes = time_min)
 
     execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')".format(id, 1, 1, now.date(), now), 'fetchone')
-    res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(id, 2, 0, now.date(), now_plus), 'fetchone')
+    res=execute_request("INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}') RETURNING id,line_id, rule_id, timer".format(line_id, 2, 0, now.date(), now_plus), 'fetchone')
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
@@ -550,10 +550,10 @@ def activate_branch():
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
     global RULES_FOR_BRANCHES
-    line_id=int(request.args.get('id'))
+    id=int(request.args.get('id'))
 
     try:
-        response_off = requests.get(url=ARDUINO_IP+'/branch_off', params={"branch_id":line_id}, timeout=60)
+        response_off = requests.get(url=ARDUINO_IP+'/branch_off', params={"branch_id":id}, timeout=60)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
