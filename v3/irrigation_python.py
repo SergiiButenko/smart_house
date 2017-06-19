@@ -48,7 +48,7 @@ RULES_ENABLED=True
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule']="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=now() ORDER BY timer LIMIT 1"
+QUERY['get_next_active_rule']="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>='datetime()' ORDER BY timer LIMIT 1"
 QUERY['get_table_template']="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"
 QUERY['ongoing_rules_table']="SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name from lines order by number"
