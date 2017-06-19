@@ -4,22 +4,6 @@ CREATE TABLE current_lines_state (
     state_id integer NOT NULL
 );
 
-CREATE TABLE life (
-    id INTEGER PRIMARY KEY,
-    line_id integer NOT NULL,
-    FOREIGN KEY(line_id) REFERENCES lines(number),
-
-    rule_id integer NOT NULL,
-    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
-
-    state integer DEFAULT 0 NOT NULL,
-    FOREIGN KEY(state) REFERENCES state_of_rule(id),
-
-    date date NOT NULL,
-    timer timestamp without time zone NOT NULL,
-    active integer DEFAULT 1 NOT NULL
-);
-
 CREATE TABLE lines (
     id INTEGER PRIMARY KEY,
     number integer NOT NULL,
@@ -51,32 +35,40 @@ CREATE TABLE day_of_week (
 
 CREATE TABLE week_schedule (
     id INTEGER PRIMARY KEY,
-    
     day_number integer NOT NULL,
     FOREIGN KEY(day_number) REFERENCES day_of_week(num),
-    
     line_id integer NOT NULL,
     FOREIGN KEY(line_id) REFERENCES lines(number),
-
     rule_id integer NOT NULL,
     FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
-
     "time" time without time zone NOT NULL,
     "interval" integer NOT NULL
 );
 
+CREATE TABLE life (
+    id INTEGER PRIMARY KEY,
+    line_id integer NOT NULL,
+    FOREIGN KEY(line_id) REFERENCES lines(number),
+    rule_id integer NOT NULL,
+    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
+    state integer DEFAULT 0 NOT NULL,
+    FOREIGN KEY(state) REFERENCES state_of_rule(id),
+    date date NOT NULL,
+    timer timestamp without time zone NOT NULL,
+    active integer DEFAULT 1 NOT NULL
+);
 
-INSERT INTO day_of_week (num, name) VAKUES (0,'Воскресенье');
-INSERT INTO day_of_week (num, name) VAKUES (1,'Понедельник');
-INSERT INTO day_of_week (num, name) VAKUES (2,'Вторник');
-INSERT INTO day_of_week (num, name) VAKUES (3,'Среда');
-INSERT INTO day_of_week (num, name) VAKUES (4,'Четверг');
-INSERT INTO day_of_week (num, name) VAKUES (5,'Пятница');
-INSERT INTO day_of_week (num, name) VAKUES (6,'Суббота');
+INSERT INTO day_of_week (num, name) VALUES (0,'Воскресенье');
+INSERT INTO day_of_week (num, name) VALUES (1,'Понедельник');
+INSERT INTO day_of_week (num, name) VALUES (2,'Вторник');
+INSERT INTO day_of_week (num, name) VALUES (3,'Среда');
+INSERT INTO day_of_week (num, name) VALUES (4,'Четверг');
+INSERT INTO day_of_week (num, name) VALUES (5,'Пятница');
+INSERT INTO day_of_week (num, name) VALUES (6,'Суббота');
 
-INSERT INTO state_of_line (short_name, full_name) VALUES (Active,'Рабочая');
-INSERT INTO state_of_line (short_name, full_name) VALUES (Deactive,'Не рабочая');
-INSERT INTO state_of_line (short_name, full_name) VALUES (Repair,'Ремонт');
+INSERT INTO state_of_line (short_name, full_name) VALUES ('Active','Рабочая');
+INSERT INTO state_of_line (short_name, full_name) VALUES ('Deactive','Не рабочая');
+INSERT INTO state_of_line (short_name, full_name) VALUES ('Repair','Ремонт');
 
 INSERT INTO state_of_rule (short_name, full_name) VALUES ('Pending', 'Запланировано');
 INSERT INTO state_of_rule (short_name, full_name) VALUES ('Done', 'Выполнено');
@@ -87,9 +79,9 @@ INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled by humidity'
 INSERT INTO type_of_rule (id, name) VALUES (1,'Start');
 INSERT INTO type_of_rule (id, name) VALUES (2,'Stop');
 
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 1, 1, 17:00:00, 5);
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 2, 1, 18:30:00, 5);
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 3, 1, 20:00:00, 5);
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 5, 1, 16:00:00, 5);
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 4, 1, 23:55:00, 5);
-INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 2, 1, 00:01:00, 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 1, 1, '17:00:00', 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 2, 1, '18:30:00', 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 3, 1, '20:00:00', 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 5, 1, '16:00:00', 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 4, 1, '23:55:00', 5);
+INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 2, 1, '00:01:00', 5);
