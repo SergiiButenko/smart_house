@@ -321,8 +321,10 @@ def hello():
     global RULES_FOR_BRANCHES
     return str(RULES_FOR_BRANCHES)
 
-def get_table_template():
-    query=QUERY[mn()]
+def get_table_template(query=None):
+    if (query is None):
+        query=QUERY[mn()]
+        
     list_arr = execute_request(query, 'fetchall')
 
     rows=[]
