@@ -48,16 +48,16 @@ RULES_ENABLED=True
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule']="SELECT l.id, l.line_id, l.rule_id, l.timer FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=datetime() ORDER BY timer LIMIT 1"
-QUERY['get_table_template']="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"
+QUERY['get_next_active_rule']="SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\" FROM life AS l WHERE l.state = 0 AND l.active=1 AND l.line_id={0} AND timer>=datetime() ORDER BY timer LIMIT 1"
+QUERY['get_table_template']="SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number order by timer desc"
 QUERY['ongoing_rules_table']="SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name from lines order by number"
-QUERY['list'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') AND l.timer<=datetime('now', '+{1} hour') order by l.timer desc"
-QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=datetime('now', '-{0} day') AND l.timer <=datetime() order by l.timer desc"
-QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime() order by l.timer desc"
-QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now','+{0} day') order by l.timer desc"
-QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer, l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') and l.timer<=datetime('now', '+{0} hour') order by l.timer desc"
+QUERY['list'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') AND l.timer<=datetime('now', '+{1} hour') order by l.timer desc"
+QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=datetime('now', '-{0} day') AND l.timer <=datetime() order by l.timer desc"
+QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime() order by l.timer desc"
+QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
+QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now','+{0} day') order by l.timer desc"
+QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') and l.timer<=datetime('now', '+{0} hour') order by l.timer desc"
 QUERY['add_rule'] = "INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
@@ -142,7 +142,7 @@ def execute_request(query, method='fetchall'):
     conn=None
     try:
         #conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        conn = sqlite3.connect('/var/sqlite_db/test')
+        conn = sqlite3.connect('/var/sqlite_db/test', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -165,7 +165,7 @@ def update_db_request(query):
     lastrowid=0
     try:
         #conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        conn = sqlite3.connect('/var/sqlite_db/test')
+        conn = sqlite3.connect('/var/sqlite_db/test', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
