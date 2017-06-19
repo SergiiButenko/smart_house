@@ -20,10 +20,11 @@ import threading
 import time
 import os
 import os.path
-import psycopg2
 from locale import setlocale, LC_ALL
 from time import strftime
 import inspect
+import sqlite3
+from sqlite3 import Error
 
 # added logging
 import logging
@@ -140,12 +141,12 @@ def branch_off(line_id):
 def execute_request(query, method='fetchall'):
     conn=None
     try:
-        conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        #conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        conn = sqlite3.connect('/var/sqlite_db/test')
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
         cursor.execute(query)
-        conn.commit()
         logging.debug("db request '{0}' executed".format(query))
         return getattr(cursor, method)()
     except Exception as e:
@@ -163,7 +164,8 @@ def update_db_request(query):
     conn=None
     lastrowid=0
     try:
-        conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        #conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
+        conn = sqlite3.connect('/var/sqlite_db/test')
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query

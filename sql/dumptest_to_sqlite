@@ -36,27 +36,27 @@ CREATE TABLE day_of_week (
 CREATE TABLE week_schedule (
     id INTEGER PRIMARY KEY,
     day_number integer NOT NULL,
-    FOREIGN KEY(day_number) REFERENCES day_of_week(num),
     line_id integer NOT NULL,
-    FOREIGN KEY(line_id) REFERENCES lines(number),
     rule_id integer NOT NULL,
-    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
     "time" time without time zone NOT NULL,
-    "interval" integer NOT NULL
+    "interval" integer NOT NULL,
+    FOREIGN KEY(day_number) REFERENCES day_of_week(num),
+    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
+    FOREIGN KEY(line_id) REFERENCES lines(number)
 );
 
 CREATE TABLE life (
     id INTEGER PRIMARY KEY,
     line_id integer NOT NULL,
-    FOREIGN KEY(line_id) REFERENCES lines(number),
     rule_id integer NOT NULL,
-    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
     state integer DEFAULT 0 NOT NULL,
-    FOREIGN KEY(state) REFERENCES state_of_rule(id),
     date date NOT NULL,
     timer timestamp without time zone NOT NULL,
-    active integer DEFAULT 1 NOT NULL
-);
+    active integer DEFAULT 1 NOT NULL,
+    FOREIGN KEY(line_id) REFERENCES lines(number),
+    FOREIGN KEY(state) REFERENCES state_of_rule(id),
+    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id)
+);  
 
 INSERT INTO day_of_week (num, name) VALUES (0,'Воскресенье');
 INSERT INTO day_of_week (num, name) VALUES (1,'Понедельник');
