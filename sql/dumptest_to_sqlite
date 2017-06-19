@@ -40,6 +40,7 @@ CREATE TABLE week_schedule (
     rule_id integer NOT NULL,
     "time" time without time zone NOT NULL,
     "interval" integer NOT NULL,
+    active integer DEFAULT 1 NOT NULL,
     FOREIGN KEY(day_number) REFERENCES day_of_week(num),
     FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
     FOREIGN KEY(line_id) REFERENCES lines(number)
