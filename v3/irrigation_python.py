@@ -58,7 +58,7 @@ QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now','+{0} day') order by l.timer desc"
 QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active FROM life as l, type_of_rule as rule_type, lines as li WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') and l.timer<=datetime('now', '+{0} hour') order by l.timer desc"
-QUERY['add_rule'] = "INSERT INTO public.life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where id = {0}"
@@ -324,7 +324,7 @@ def hello():
 def get_table_template(query=None):
     if (query is None):
         query=QUERY[mn()]
-        
+
     list_arr = execute_request(query, 'fetchall')
 
     rows=[]
