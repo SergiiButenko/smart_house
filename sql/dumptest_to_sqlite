@@ -1,0 +1,47 @@
+CREATE TABLE current_lines_state (
+    id integer NOT NULL,
+    line_id integer NOT NULL,
+    state_id integer NOT NULL
+);
+
+CREATE TABLE day_of_week (
+    id integer NOT NULL,
+    num integer NOT NULL,
+    name text NOT NULL
+);
+
+CREATE TABLE life (
+    id integer NOT NULL,
+    line_id integer NOT NULL,
+    rule_id integer NOT NULL,
+    state integer DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    timer timestamp without time zone NOT NULL
+);
+
+CREATE TABLE lines (
+    id integer NOT NULL,
+    number integer NOT NULL,
+    name text
+);
+
+CREATE TABLE state_of_line (
+    id integer NOT NULL,
+    short_name text NOT NULL,
+    full_name text NOT NULL
+);
+
+
+CREATE TABLE type_of_rule (
+    id integer NOT NULL,
+    name text NOT NULL
+);
+
+CREATE TABLE week_schedule (
+    id integer NOT NULL,
+    day_number integer NOT NULL,
+    line_id integer NOT NULL,
+    rule_id integer NOT NULL,
+    "time" time without time zone NOT NULL,
+    "interval" integer NOT NULL
+);
