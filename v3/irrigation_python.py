@@ -592,9 +592,9 @@ def activate_branch():
     logging.debug("lastid:{0}".format(lastid))
 
     res = execute_request(QUERY[mn()+'_2'].format(lastid))
-    logging.debug("res:{0}".format(res))
+    logging.debug("res:{0}".format(res[0]))
 
-    for row in res:
+    for row in res[0]:
         logging.debug("row:{0}".format(row))
 
     RULES_FOR_BRANCHES[id]={'id':res[0], 'line_id':res[1], 'rule_id':res[2], 'timer':res[3]}
