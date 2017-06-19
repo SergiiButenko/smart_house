@@ -245,11 +245,11 @@ def enable_rule():
                             continue
 
                         json_data = json.loads(response.text)
-                        if (json_data[str(arduino_branch_name)] == 0 ):
+                        if (json_data[str(arduino_branch_name)] == '0' ):
                             logging.error("Can't turn on {0} branch".format(rule['line_id']))
                             continue
 
-                        if (json_data[str(arduino_branch_name)] == 1 ):
+                        if (json_data[str(arduino_branch_name)] == '1' ):
                             logging.info("Turned on {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
                             update_db_request(QUERY[mn()].format(rule['id']))
@@ -266,17 +266,18 @@ def enable_rule():
                             continue
 
                         json_data = json.loads(response.text)
-                        if (json_data[str(arduino_branch_name)] == 1 ):
+                        if (json_data[str(arduino_branch_name)] == '1' ):
                             logging.error("Can't turn off {0} branch".format(rule['line_id']))
                             continue
 
-                        if (json_data[str(arduino_branch_name)] == 0 ):
+                        if (json_data[str(arduino_branch_name)] == '0' ):
                             logging.info("Turned off {0} branch".format(rule['line_id']))
                             logging.debug("updating db")
                             update_db_request(QUERY[mn()].format(rule['id']))
                             logging.debug("get next active rule")
                             RULES_FOR_BRANCHES[rule['line_id']]=get_next_active_rule(rule['line_id'])
                             logging.info("Rule '{0}' is done. Removing".format(str(rule)))
+
     except Exception as e:
         logging.error("enable rule thread exception occured. {0}".format(e))
     finally:
