@@ -401,8 +401,8 @@ def add_rule():
     datetime_stop=datetime_start + datetime.timedelta(minutes = time_min)
     now = datetime.datetime.now()
 
-    execute_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))
-    execute_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))
+    update_db_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))
+    update_db_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -411,7 +411,7 @@ def add_rule():
 @app.route("/remove_rule")
 def remove_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -423,7 +423,7 @@ def remove_rule():
 @app.route("/activate_rule")
 def activate_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -432,7 +432,7 @@ def activate_rule():
 @app.route("/deactivate_rule")
 def deactivate_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=get_table_template()
     send_message('list_update', {'data':template})
@@ -443,14 +443,14 @@ def deactivate_all_rules():
     id=int(request.args.get('id'))
     #1-24h;2-7d;3-on demand
     if (id==1):
-        execute_request(QUERY[mn()+'_1'])
+        update_db_request(QUERY[mn()+'_1'])
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
         return template
 
     if (id==2):
-        execute_request(QUERY[mn()+'_2'])
+        update_db_request(QUERY[mn()+'_2'])
         update_all_rules()
         template=get_table_template()
         send_message('list_update', {'data':template})
@@ -518,7 +518,7 @@ def add_ongoing_rule():
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -527,7 +527,7 @@ def remove_ongoing_rule():
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
     id=int(request.args.get('id'))
-    #execute_request(QUERY[mn()].format(id))
+    #update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -536,7 +536,7 @@ def edit_ongoing_rule():
 @app.route("/activate_ongoing_rule")
 def activate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
@@ -545,7 +545,7 @@ def activate_ongoing_rule():
 @app.route("/deactivate_ongoing_rule")
 def deactivate_ongoing_rule():
     id=int(request.args.get('id'))
-    execute_request(QUERY[mn()].format(id))
+    update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template=ongoing_rules_table()
     send_message('ongoind_rules_update', {'data':template})
