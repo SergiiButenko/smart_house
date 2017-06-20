@@ -5,7 +5,6 @@ from flask import jsonify, request, render_template
 from flask import abort
 from eventlet import wsgi
 import eventlet
-eventlet.monkey_patch()
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
@@ -19,6 +18,7 @@ import inspect
 import sqlite3
 import logging
 
+eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
@@ -91,7 +91,7 @@ def disconnect():
 def send_message(channel, data):
     """Blablbal."""
     try:
-        emit(channel, data)
+        socketio.emit(channel, data)
         logging.info('Message was sent')
     except Exception as e:
         logging.error(e)
