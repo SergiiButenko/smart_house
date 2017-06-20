@@ -12,8 +12,6 @@ import json
 import requests
 import threading
 import time
-import os
-import os.path
 from locale import setlocale, LC_ALL
 from time import strftime
 import inspect
@@ -55,7 +53,7 @@ QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALU
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where id = {0}"
-QUERY['deactivate_branch_1'] = "UPDATE life SET state=1 WHERE id = {0}"
+QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE id = {0}"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['enable_rule'] = "UPDATE life SET state=1 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
@@ -430,8 +428,8 @@ def add_rule():
     datetime_stop = datetime_start + datetime.timedelta(minutes=time_min)
     now = datetime.datetime.now()
 
-    update_db_request(QUERY[mn()].format(branch_id, 1, 0, now.date(), datetime_start))
-    update_db_request(QUERY[mn()].format(branch_id, 2, 0, now.date(), datetime_stop))
+    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), datetime_start))
+    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), datetime_stop))
     update_all_rules()
     template = get_table_template()
     send_message('list_update', {'data': template})
@@ -679,7 +677,7 @@ def deactivate_branch():
     if RULES_FOR_BRANCHES[id] is not None:
         update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
     else:
-        update_db_request(QUERY[mn() + '_2'].format(id, 2, 2, now.date(), now), 'fetchone')
+        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now), 'fetchone')
 
     RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
