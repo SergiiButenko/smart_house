@@ -356,7 +356,7 @@ def get_table_template(query=None):
             active = row[6]
             rule_state = row[7]
             outdated = 0
-            if (state == 0 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
+            if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
                 outdated = 1
 
             rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
@@ -380,7 +380,7 @@ def list():
         active = row[6]
         rule_state = row[7]
         outdated = 0
-        if (state == 0 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
+        if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
             outdated = 1
 
         rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
@@ -408,7 +408,7 @@ def list_all():
         active = row[6]
         rule_state = row[7]
         outdated = 0
-        if (state == 0 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
+        if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
             outdated = 1
 
         rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
