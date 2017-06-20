@@ -80,34 +80,29 @@
             </thead>
             <tbody>
                {% for n in my_list %}
-               {% if n['state'] == 2 %}
                <tr>
-                  <td class="text-center">{{n['branch_name']}}</td>
-                  <td>{{n['rule_name']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td>{{n['rule_state']}}</td>
-                  <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>
+               <td class="text-center">{{n['branch_name']}}</td>
+               <td>{{n['rule_name']}}</td>
+               <td>{{n['timer']}}</td>
+                  {% if n['state'] == 2 %}
+                     <td>{{n['rule_state']}}</td>
+                     <td></td>
                   {% elif n['outdated'] == 1 %}
-               <tr>
-                  <td class="text-center">{{n['branch_name']}}</td>
-                  <td>{{n['rule_name']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td>{{n['rule_state']}}</td>
-                  <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>
+                     <td class="text-center">{{n['branch_name']}}</td>
+                     <td>Устарело</td>
+                     <td></td>
                   {% elif n['active'] == 0 %}
-               <tr>
-                  <td class="text-center">{{n['branch_name']}}</td>
-                  <td>{{n['rule_name']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td>{{n['rule_state']}}</td>
-                  <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="activate_rule(this)">Активировать</button></td>
-                  {% else %}	        
-               <tr>
-                  <td class="text-center">{{n['branch_name']}}</td>
-                  <td>{{n['rule_name']}}</td>
-                  <td>{{n['timer']}}</td>
-                  <td>{{n['rule_state']}}</td>
-                  <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="deactivate_rule(this)">Не выполнять</button></td>
+                     <td class="text-center">{{n['branch_name']}}</td>
+                     <td>Неактивно</td>
+                     <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="activate_rule(this)">Активировать</button></td>
+                  {% elif 'Отменено' in n['rule_state'] %}	        
+                     <td class="text-center">{{n['branch_name']}}</td>
+                     <td>{{n['rule_state']}}</td>
+                     <td></td>
+                  {% else %}
+                     <td class="text-center">{{n['branch_name']}}</td>
+                     <td>{{n['rule_state']}}</td>
+                     <button type="button" class="btn btn-default" data-id={{n['id']}} onclick="deactivate_rule(this)">Не выполнять</button>
                   {% endif %}
                </tr>
                {% endfor %}
