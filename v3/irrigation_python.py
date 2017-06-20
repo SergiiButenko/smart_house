@@ -239,7 +239,7 @@ def enable_rule():
 
                 if (datetime.datetime.now() >= rule['timer']):
                     logging.info("Rule '{0}' execution started".format(str(rule)))
-                    if (rule['line_id'] == 7):
+                    if (rule['line_id'] == 8):
                         arduino_branch_name = 'pump'
                     else:
                         arduino_branch_name = rule['line_id']

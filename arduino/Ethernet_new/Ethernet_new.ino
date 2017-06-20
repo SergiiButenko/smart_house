@@ -171,7 +171,10 @@ void on(byte branch, int alert_time){
   timers[branch]=long(millis()+alert_time);
   
   byte pin = get_branch_pin(branch);
-  
+  if (pin==0){
+    return;
+  }
+
   digitalWrite(pin,HIGH);
   digitalWrite(pump, HIGH);
 }
@@ -181,7 +184,10 @@ void off(byte branch){
   timers[branch]=0;
   
   byte pin = get_branch_pin(branch);
-
+  if (pin==0){
+    return;
+  }
+  
   digitalWrite(pin,LOW);
    
   if ( if_no_branch_active() ){
@@ -239,6 +245,8 @@ byte get_branch_pin(byte i){
   if (i==8){
     return pump;
   }
+
+  return 0;
 }
 
 String form_branch_status_json(){
