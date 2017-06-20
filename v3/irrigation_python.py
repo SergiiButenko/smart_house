@@ -56,7 +56,7 @@ QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, ti
 QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where id = {0}"
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE id = {0}"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
-QUERY['enable_rule'] = "UPDATE life SET state=1 WHERE id={0}"
+QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
 QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
 QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer>= datetime() AND timer<=datetime('now','+1 day')"
