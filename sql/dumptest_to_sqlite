@@ -73,12 +73,13 @@ INSERT INTO state_of_line (short_name, full_name) VALUES ('Repair','Ремонт
 
 INSERT INTO state_of_rule (short_name, full_name) VALUES ('Pending', 'Запланировано');
 INSERT INTO state_of_rule (short_name, full_name) VALUES ('Done', 'Выполнено');
-INSERT INTO state_of_rule (short_name, full_name) VALUES ('Failed', 'Отменено');
-INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled by rain', 'Отменено из-за дождя');
-INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled by humidity', 'Отменено из-за влажности');
+INSERT INTO state_of_rule (short_name, full_name) VALUES ('Failed', 'Не выполнено');
+INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled', 'Отменено');
+INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled_by_rain', 'Отменено из-за дождя');
+INSERT INTO state_of_rule (short_name, full_name) VALUES ('Canceled_by_humidity', 'Отменено из-за влажности');
 
-INSERT INTO type_of_rule (id, name) VALUES (1,'Start');
-INSERT INTO type_of_rule (id, name) VALUES (2,'Stop');
+INSERT INTO type_of_rule (name) VALUES ('Начать полив');
+INSERT INTO type_of_rule (name) VALUES ('Остановить полив');
 
 INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 1, 1, '17:00:00', 5);
 INSERT INTO week_schedule (day_number, line_id, rule_id, "time", "interval") VALUES (0, 2, 1, '18:30:00', 5);
