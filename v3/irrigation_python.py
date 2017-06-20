@@ -5,6 +5,7 @@ from flask import jsonify, request, render_template
 from flask import abort
 from eventlet import wsgi
 import eventlet
+eventlet.monkey_patch()
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
@@ -20,7 +21,7 @@ import logging
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
-eventlet.monkey_patch()
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
