@@ -19,7 +19,7 @@ import inspect
 import sqlite3
 import logging
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
 
@@ -676,9 +676,9 @@ def deactivate_branch():
 
     now = datetime.datetime.now()
     if RULES_FOR_BRANCHES[id] is not None:
-        update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['id']), 'fetchone')
+        update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['id']))
     else:
-        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now), 'fetchone')
+        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now))
 
     RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
