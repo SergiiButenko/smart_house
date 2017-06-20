@@ -3,6 +3,7 @@
             <th>Номер ветки</th>
             <th>Правило</th>
             <th>Время выполнения</th>
+            <th>Статус</th>
             <th></th>
           </tr>
         </thead>
@@ -13,24 +14,28 @@
     			<td class="text-center">{{n['branch_name']}}</td>
     	        <td>{{n['rule_name']}}</td>	        
     	        <td>{{n['timer']}}</td>
+                <td>{{n['rule_state']}}</td>
     	        <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}>Выполнено</button></td>		
             {% elif n['outdated'] == 1 %}
                 <tr>
                 <td class="text-center">{{n['branch_name']}}</td>
                 <td>{{n['rule_name']}}</td>         
                 <td>{{n['timer']}}</td>
+                <td>{{n['rule_state']}}</td>
                 <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>      
     		{% elif n['active'] == 0 %}
     		    <tr>
     			<td class="text-center">{{n['branch_name']}}</td>
     	        <td>{{n['rule_name']}}</td>
     	        <td>{{n['timer']}}</td>
+                <td>{{n['rule_state']}}</td>
     	        <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="activate_rule(this)">Активировать</button></td>		
     		{% else %}	        
     		    <tr>
     			<td class="text-center">{{n['branch_name']}}</td>
     	        <td>{{n['rule_name']}}</td>
     	        <td>{{n['timer']}}</td>
+                <td>{{n['rule_state']}}</td>
     	        <td><button type="button" class="btn btn-default" data-id={{n['id']}} onclick="deactivate_rule(this)">Не выполнять</button></td>		
     		{% endif %}
           </tr>
