@@ -93,7 +93,7 @@ void loop() {
         client.stop(); 
     }
         
-    //check_all_branches_timer();
+    check_all_branches_timer();
 }
 
 void process_request(EthernetClient cl) {
@@ -119,8 +119,7 @@ void process_request(EthernetClient cl) {
       byte alert_start = HTTP_req.indexOf("branch_alert=");
       byte alert_end = HTTP_req.indexOf(" HTTP/1.1");
       String alert_str = HTTP_req.substring(alert_start+13, alert_end);
-      char* tmp; // will point behind the number
-      long alert_time = strtol(alert_str.c_str(), &tmp, 10);
+      byte alert_time=alert_str.toInt();
 
       on(branch_id, alert_time);
       delay(1);
@@ -168,7 +167,9 @@ void send_data_to_client(EthernetClient client, String host, String data){
 // turn on off logic
 void on(byte branch, int alert_time){
   // Add timers rule
-  timers[branch]=long(millis()+alert_time);
+  if (branch < timers_count){
+    timers[branch] = long(millis() / 60000 + alert_time);
+  }
   
   byte pin = get_branch_pin(branch);
   if (pin==0){
@@ -181,15 +182,14 @@ void on(byte branch, int alert_time){
 
 void off(byte branch){
   // Remove timers rule
-  timers[branch]=0;
-  
-  byte pin = get_branch_pin(branch);
-  if (pin==0){
-    return;
+  if (branch < timers_count){
+    timers[branch]=0;
   }
   
-  digitalWrite(pin,LOW);
-   
+  byte pin = get_branch_pin(branch);  
+  if (pin!=0){
+    digitalWrite(pin,LOW);
+  }  
   if ( if_no_branch_active() ){
     digitalWrite(pump, LOW);
   }
@@ -284,7 +284,7 @@ void check_all_branches_timer(){
     if (timers[i]==0){
       continue;
     } else {
-      if ( int(timers[i]-millis()) < 0  ){
+      if ( int(timers[i] - millis() / 60000) < 0  ){
         Serial.print(i);
         Serial.print(" ");
         Serial.print(timers[i]);
