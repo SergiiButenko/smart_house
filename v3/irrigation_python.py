@@ -505,7 +505,7 @@ def ongoing_rules():
         active=row[6]
         rule_state=row[7]
         rows.append({'id':id, 'branch_name':branch_name, 'dow': day_number, 'rule_name':rule_name, 
-                    'time':time, 'minutest': minutes, 'active':active 'rule_state':rule_state})
+                    'time':time, 'minutest': minutes, 'active':active, 'rule_state':rule_state})
 
     template=render_template('ongoing_rules.html', my_list=rows)
     return template
