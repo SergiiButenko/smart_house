@@ -556,7 +556,7 @@ def add_ongoing_rule():
     time_start = request.args.get('datetime_start')
     dow = int(request.args.get('dow'))
 
-    execute_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
+    update_db_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
