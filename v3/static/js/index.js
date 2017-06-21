@@ -63,6 +63,9 @@ $(document).ready(function() {
         });
     })();
 
+
+    touch_analog_sensor();
+    
     //Add arduino touch script to determine if connection is alive
     (function worker() {
         $.ajax({
@@ -252,7 +255,7 @@ function touch_analog_sensor(){
     $.ajax({
             url: server+'/humidity_sensor',
             success: function(data) {
-                $("#humidity_span").text(data['text']);
+                $("#humidity_text").text(data['text']);
             }
         });
 }
