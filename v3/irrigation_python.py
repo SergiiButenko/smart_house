@@ -724,7 +724,12 @@ def weather():
 @app.route("/humidity_sensor")
 def humidity_sensor():
     """Blablbal."""
-    return get_humidity()
+    hum = get_humidity()
+    return jsonify(
+        tank_sensor=hum['tank_sensor_value'],
+        allow_irrigation=hum['allow_irrigation'],
+        text=hum['text']
+    )
 
 
 @app.route("/sensors")
