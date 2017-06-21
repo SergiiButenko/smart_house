@@ -32,6 +32,8 @@ $(document).ready(function() {
             url: server+'/humidity_sensor',
             success: function(data) {
                 $("#humidity_span").text(data['tank_sensor']);
+                $("#humidity_text").text(data['text']);
+                humidity_text
                 setTimeout(humidity_sensor, 10 * 1000 * 30);
             },
             global:false
