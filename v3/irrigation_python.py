@@ -103,7 +103,7 @@ def get_humidity():
     response = requests.get(url=ARDUINO_IP + "/analog_status")
     json_data = json.loads(response.text)
 
-    tank_sensor_value = json_data['analog1']
+    tank_sensor_value = int(json_data['analog1'])
 
     allow_irrigation = True
     text = 'Автоматический полив разрешен.'
