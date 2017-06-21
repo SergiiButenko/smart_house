@@ -248,6 +248,15 @@ function touch_arduino(){
         });
 }
 
+function touch_analog_sensor(){
+    $.ajax({
+            url: server+'/humidity_sensor',
+            success: function(data) {
+                $("#humidity_span").text(data['text']);
+            }
+        });
+}
+
 // this is for status button
 var class_ok = {msg:' Система активна', class: 'fa fa-refresh'}
 var class_spin = {msg:' Проверка статуса системы...', class: 'fa fa-refresh fa-spin'}

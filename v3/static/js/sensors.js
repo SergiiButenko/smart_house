@@ -49,6 +49,7 @@ function touch_analog_sensor(){
             url: server+'/humidity_sensor',
             success: function(data) {
                 $("#humidity_span").text(data['tank_sensor']);
+                $("#humidity_text").text(data['text']);
             }
         });
 }
