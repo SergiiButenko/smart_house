@@ -31,7 +31,7 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 # ARDUINO_IP='http://185.20.216.94:5555'
 ARDUINO_IP = 'http://192.168.1.143'
 
-HUMIDITY_MAX = 600
+HUMIDITY_MAX = 20
 RULES_FOR_BRANCHES = [None] * 10
 
 RULES_ENABLED = True
@@ -259,6 +259,8 @@ def enable_rule():
                 if (get_humidity()['allow_irrigation'] is False):
                     update_db_request(QUERY[mn() + '_state_5'].format(rule['id']))
                     logging.warn("Rule '{0}' is disabled because of humidity sensor".format(str(rule)))
+                    RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
+                    continue
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
