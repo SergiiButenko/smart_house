@@ -112,7 +112,7 @@ def get_humidity():
         allow_irrigation = False
         text = 'Автоматический полив запрещен.'
 
-    return jsonify(
+    return socketio.jsonify(
         tank_sensor=tank_sensor_value,
         allow_irrigation=allow_irrigation,
         text=text
