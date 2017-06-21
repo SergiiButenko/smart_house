@@ -28,11 +28,3 @@ span.indent_pump {
                 50% 50% 
                 no-repeat;   
 }
-
-input:invalid {
-  border: 1px red;
-}
-
-input:valid {
-  border: 1px solid black;
-}
