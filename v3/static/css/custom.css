@@ -29,3 +29,7 @@ span.indent_pump {
                 no-repeat;   
 }
 
+input:invalid {
+  border: 2px dashed red;
+}
+
