@@ -31,7 +31,7 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 # ARDUINO_IP='http://185.20.216.94:5555'
 ARDUINO_IP = 'http://192.168.1.143'
 
-HUMIDITY_MAX = 20
+HUMIDITY_MAX = 600
 RULES_FOR_BRANCHES = [None] * 10
 
 RULES_ENABLED = True
