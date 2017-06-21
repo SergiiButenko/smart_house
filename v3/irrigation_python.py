@@ -112,11 +112,7 @@ def get_humidity():
         allow_irrigation = False
         text = 'Автоматический полив запрещен.'
 
-    return socketio.jsonify(
-        tank_sensor=tank_sensor_value,
-        allow_irrigation=allow_irrigation,
-        text=text
-    )
+    return {"tank_sensor": tank_sensor_value, "allow_irrigation": allow_irrigation, "text": text}
 
 
 def branch_on(line_id, alert_time=25):
