@@ -31,7 +31,7 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 # ARDUINO_IP='http://185.20.216.94:5555'
 ARDUINO_IP = 'http://192.168.1.143'
 
-
+HUMIDITY_MAX = 20
 RULES_FOR_BRANCHES = [None] * 10
 
 RULES_ENABLED = True
@@ -57,6 +57,7 @@ QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE id = {0}"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
+QUERY['enable_rule_state_5'] = "UPDATE life SET state=5 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
 QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
 QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer>= datetime() AND timer<=datetime('now','+1 day')"
@@ -107,7 +108,7 @@ def get_humidity():
 
     allow_irrigation = True
     text = 'Автоматический полив разрешен.'
-    if (tank_sensor_value > 600):
+    if (tank_sensor_value > HUMIDITY_MAX):
         allow_irrigation = False
         text = 'Автоматический полив запрещен.'
 
@@ -254,6 +255,10 @@ def enable_rule():
             for rule in RULES_FOR_BRANCHES:
                 if rule is None:
                     continue
+
+                if (get_humidity()['allow_irrigation'] is False):
+                    update_db_request(QUERY[mn() + '_state_5'].format(rule['id']))
+                    logging.warn("Rule '{0}' is disabled because of humidity sensor".format(str(rule)))
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
