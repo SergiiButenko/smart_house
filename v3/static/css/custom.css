@@ -30,6 +30,9 @@ span.indent_pump {
 }
 
 input:invalid {
-  border: 2px dashed red;
+  border: 1px red;
 }
 
+input:valid {
+  border: 1px solid black;
+}
