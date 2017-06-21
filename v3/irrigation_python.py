@@ -98,6 +98,15 @@ def send_message(channel, data):
         logging.error("Can't send message. Exeption occured")
 
 
+def get_humidity():
+    """Blablabla."""
+    response = requests.get(url=ARDUINO_IP + "/analog_status")
+    json_data = json.loads(response.text)
+    return jsonify(
+        tank_sensor=str(json_data['analog1'])
+    )
+
+
 def branch_on(line_id, alert_time=25):
     """Blablbal."""
     try:
@@ -696,6 +705,12 @@ def weather():
     return jsonify(
         temperature=str(json_data[0]['Temperature']['Metric']['Value'])
     )
+
+
+@app.route("/humidity_sensor")
+def humidity_sensor():
+    """Blablbal."""
+    return get_humidity()
 
 
 @app.after_request

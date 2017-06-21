@@ -51,6 +51,8 @@ $(document).ready(function() {
                update_branches(msg.data);
             });       
 
+    touch_analog_sensor();
+
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
         $.ajax({
@@ -244,6 +246,15 @@ function touch_arduino(){
                 //$('button').setClass('btn btn-primary');
                 console.error("Can't connect to arduino");
                 set_status_error();
+            }
+        });
+}
+
+function touch_analog_sensor(){
+    $.ajax({
+            url: server+'/humidity_sensor',
+            success: function(data) {
+                $("#humidity_span").text(data['tank_sensor']);
             }
         });
 }
