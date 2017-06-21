@@ -57,7 +57,7 @@ QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE id = {0}"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
-QUERY['enable_rule_state_5'] = "UPDATE life SET state=5 WHERE id={0}"
+QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
 QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
 QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer>= datetime() AND timer<=datetime('now','+1 day')"
@@ -253,8 +253,8 @@ def enable_rule():
                     continue
 
                 if (get_humidity()['allow_irrigation'] is False):
-                    update_db_request(QUERY[mn() + '_state_5'].format(rule['id']))
-                    logging.warn("Rule '{0}' is disabled because of humidity sensor".format(str(rule)))
+                    update_db_request(QUERY[mn() + '_state_6'].format(rule['id']))
+                    logging.warn("Rule '{0}' is canceled because of humidity sensor".format(str(rule)))
                     RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
                     continue
 
@@ -726,7 +726,7 @@ def humidity_sensor():
     """Blablbal."""
     hum = get_humidity()
     return jsonify(
-        tank_sensor=hum['tank_sensor_value'],
+        tank_sensor=hum['tank_sensor'],
         allow_irrigation=hum['allow_irrigation'],
         text=hum['text']
     )
