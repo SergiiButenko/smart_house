@@ -102,8 +102,19 @@ def get_humidity():
     """Blablabla."""
     response = requests.get(url=ARDUINO_IP + "/analog_status")
     json_data = json.loads(response.text)
+
+    tank_sensor_value = json_data['analog1']
+
+    allow_irrigation = True
+    text = 'Автоматический полив разрешен.'
+    if (tank_sensor_value > 600):
+        allow_irrigation = False
+        text = 'Автоматический полив запрещен.'
+
     return jsonify(
-        tank_sensor=str(json_data['analog1'])
+        tank_sensor=tank_sensor_value,
+        allow_irrigation=allow_irrigation,
+        text=text
     )
 
 
@@ -711,6 +722,12 @@ def weather():
 def humidity_sensor():
     """Blablbal."""
     return get_humidity()
+
+
+@app.route("/sensors")
+def sensors():
+    """Blablbal."""
+    return app.send_static_file('index.html')
 
 
 @app.after_request
