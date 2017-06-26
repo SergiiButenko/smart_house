@@ -8,23 +8,23 @@ EthernetServer server(80);
 
 String HTTP_req;          // stores the HTTP request
 
-const byte branch_1 = 2;
-const byte branch_2 = 3;
-const byte branch_3 = 4;
-const byte branch_4 = 5;
-const byte branch_5 = 6;
-const byte branch_6 = 7;
-const byte branch_7 = 8;
-const byte branch_8 = 8;
-const byte branch_9 = 8;
-const byte branch_10 = 8;
-const byte branch_11 = 8;
-const byte branch_12 = 8;
-const byte branch_13 = 8;
-const byte branch_14 = 8;
-const byte branch_15 = 8;
-const byte branch_16 = 8;
-const byte pump = 17;
+const byte branch_1 = 22;
+const byte branch_2 = 23;
+const byte branch_3 = 24;
+const byte branch_4 = 25;
+const byte branch_5 = 26;
+const byte branch_6 = 27;
+const byte branch_7 = 28;
+const byte branch_8 = 29;
+const byte branch_9 = 30;
+const byte branch_10 = 31;
+const byte branch_11 = 32;
+const byte branch_12 = 33;
+const byte branch_13 = 34;
+const byte branch_14 = 35;
+const byte branch_15 = 36;
+const byte branch_16 = 37;
+const byte pump = 7;
 
 byte branch_1_status=0;
 byte branch_2_status=0;
@@ -52,6 +52,7 @@ const byte analog4=A5;
 const byte analog5=A6;
 const byte analog6=A7;
 const byte analog7=A8;
+
 byte analog0_status=0;
 byte analog1_status=0;
 byte analog2_status=0;
@@ -250,7 +251,14 @@ void off(byte branch){
 }
 
 void analog_status(){
+  analog0_status=analogRead(analog0);
   analog1_status=analogRead(analog1);
+  analog2_status=analogRead(analog2);
+  analog3_status=analogRead(analog3);
+  analog4_status=analogRead(analog4);
+  analog5_status=analogRead(analog5);
+  analog6_status=analogRead(analog6);
+  analog7_status=analogRead(analog7);
 }
 
 void branches_status(){
