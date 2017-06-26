@@ -15,7 +15,16 @@ const byte branch_4 = 5;
 const byte branch_5 = 6;
 const byte branch_6 = 7;
 const byte branch_7 = 8;
-const byte pump = 9;
+const byte branch_8 = 8;
+const byte branch_9 = 8;
+const byte branch_10 = 8;
+const byte branch_11 = 8;
+const byte branch_12 = 8;
+const byte branch_13 = 8;
+const byte branch_14 = 8;
+const byte branch_15 = 8;
+const byte branch_16 = 8;
+const byte pump = 17;
 
 byte branch_1_status=0;
 byte branch_2_status=0;
@@ -24,12 +33,36 @@ byte branch_4_status=0;
 byte branch_5_status=0;
 byte branch_6_status=0;
 byte branch_7_status=0;
+byte branch_8_status=0;
+byte branch_9_status=0;
+byte branch_10_status=0;
+byte branch_11_status=0;
+byte branch_12_status=0;
+byte branch_13_status=0;
+byte branch_14_status=0;
+byte branch_15_status=0;
+byte branch_16_status=0;
 byte pump_status=0;
 
-const byte analog1=A0;
+const byte analog0=A0;
+const byte analog1=A1;
+const byte analog2=A2;
+const byte analog3=A4;
+const byte analog4=A5;
+const byte analog5=A6;
+const byte analog6=A7;
+const byte analog7=A8;
+byte analog0_status=0;
 byte analog1_status=0;
+byte analog2_status=0;
+byte analog3_status=0;
+byte analog4_status=0;
+byte analog5_status=0;
+byte analog6_status=0;
+byte analog7_status=0;
 
-const byte timers_count=9;
+//quantity of branches = branches + 1 since branch id starts from 1
+const byte timers_count=17;
 unsigned long int timers[timers_count];
 
 void setup() {
@@ -46,7 +79,16 @@ void setup() {
   pinMode(branch_5, OUTPUT);
   pinMode(branch_6, OUTPUT);
   pinMode(branch_7, OUTPUT);
-  pinMode(pump, OUTPUT);
+  pinMode(branch_8, OUTPUT);
+  pinMode(branch_9, OUTPUT);
+  pinMode(branch_10, OUTPUT);
+  pinMode(branch_11, OUTPUT);
+  pinMode(branch_12, OUTPUT);
+  pinMode(branch_13, OUTPUT);
+  pinMode(branch_14, OUTPUT);
+  pinMode(branch_15, OUTPUT);
+  pinMode(branch_16, OUTPUT);
+  pinMode(pump, OUTPUT);  
   
   // Start the Ethernet connection and the server
   if (Ethernet.begin(mac) == 0) {
@@ -61,12 +103,25 @@ void setup() {
   Serial.println(Ethernet.localIP());
 }
 
-
+//MAIN
 void loop() {
     EthernetClient client = server.available();  // try to get client
+      process_incoming_client(client);        
+      check_all_branches_timer();
+    
+    process_incoming_weatcher_string();
+}
+//END MAIN
 
-    if (client) { 
-        boolean currentLineIsBlank = true;
+void process_incoming_weatcher_string(){
+  return;
+}
+
+void process_incoming_client(EthernetClient client){
+  if (!client) 
+    return;
+  
+  boolean currentLineIsBlank = true;
         while (client.connected()) {
             if (client.available()) {   
                 char c = client.read(); // read 1 byte (character) from client
@@ -91,10 +146,9 @@ void loop() {
         } 
         delay(1);      // give the web browser time to receive the data
         client.stop(); 
-    }
-        
-    check_all_branches_timer();
+   
 }
+
 
 void process_request(EthernetClient cl) {
     String host = get_host_from_request(HTTP_req);
@@ -207,6 +261,15 @@ void branches_status(){
   branch_5_status = digitalRead(branch_5);
   branch_6_status = digitalRead(branch_6);
   branch_7_status = digitalRead(branch_7);
+  branch_8_status = digitalRead(branch_8);
+  branch_9_status = digitalRead(branch_9);
+  branch_10_status = digitalRead(branch_10);
+  branch_11_status = digitalRead(branch_11);
+  branch_12_status = digitalRead(branch_12);
+  branch_13_status = digitalRead(branch_13);
+  branch_14_status = digitalRead(branch_14);
+  branch_15_status = digitalRead(branch_15);
+  branch_16_status = digitalRead(branch_16);
   pump_status = digitalRead(pump);
 }
 
@@ -214,7 +277,9 @@ bool if_no_branch_active(){
   branches_status();
   
   if (branch_1_status==LOW and branch_2_status==LOW and branch_3_status==LOW and branch_4_status==LOW and branch_5_status==LOW
-    and branch_6_status==LOW and branch_7_status==LOW){
+    and branch_6_status==LOW and branch_7_status==LOW and branch_8_status==LOW and branch_9_status==LOW and branch_10_status==LOW
+    and branch_11_status==LOW and branch_12_status==LOW and branch_13_status==LOW and branch_14_status==LOW and branch_15_status==LOW
+    and branch_16_status==LOW){
     return true;
   }
   return false;
@@ -243,9 +308,35 @@ byte get_branch_pin(byte i){
     return branch_7;
   }
   if (i==8){
+    return branch_8;
+  }
+  if (i==9){
+    return branch_9;
+  }
+  if (i==10){
+    return branch_10;
+  }
+  if (i==11){
+    return branch_11;
+  }
+  if (i==12){
+    return branch_12;
+  }
+  if (i==13){
+    return branch_13;
+  }
+  if (i==14){
+    return branch_14;
+  }
+  if (i==15){
+    return branch_15;
+  }
+  if (i==16){
+    return branch_16;
+  }
+  if (i==17){
     return pump;
   }
-
   return 0;
 }
 
@@ -260,6 +351,15 @@ String form_branch_status_json(){
     res = res + "\"5\":"+"\""+String(branch_5_status)+"\", ";
     res = res + "\"6\":"+"\""+String(branch_6_status)+"\", ";
     res = res + "\"7\":"+"\""+String(branch_7_status)+"\", ";
+    res = res + "\"8\":"+"\""+String(branch_8_status)+"\", ";
+    res = res + "\"9\":"+"\""+String(branch_9_status)+"\", ";
+    res = res + "\"10\":"+"\""+String(branch_10_status)+"\", ";
+    res = res + "\"11\":"+"\""+String(branch_11_status)+"\", ";
+    res = res + "\"12\":"+"\""+String(branch_12_status)+"\", ";
+    res = res + "\"13\":"+"\""+String(branch_13_status)+"\", ";
+    res = res + "\"14\":"+"\""+String(branch_14_status)+"\", ";
+    res = res + "\"15\":"+"\""+String(branch_15_status)+"\", ";
+    res = res + "\"16\":"+"\""+String(branch_16_status)+"\", ";
     res = res + "\"pump\":"+"\""+String(pump_status)+"\"}";
 
     return res;
@@ -269,7 +369,14 @@ String form_analog_pins_json(){
     //update analog status
     analog_status();
     String res = "{";
-    res = res + "\"analog1\":"+"\""+String(analog1_status)+"\"}";
+    res = res + "\"analog0\":"+"\""+String(analog0_status)+"\", ";
+    res = res + "\"analog1\":"+"\""+String(analog1_status)+"\", ";
+    res = res + "\"analog2\":"+"\""+String(analog2_status)+"\", ";
+    res = res + "\"analog3\":"+"\""+String(analog3_status)+"\", ";
+    res = res + "\"analog4\":"+"\""+String(analog4_status)+"\", ";
+    res = res + "\"analog5\":"+"\""+String(analog5_status)+"\", ";
+    res = res + "\"analog6\":"+"\""+String(analog6_status)+"\", ";
+    res = res + "\"analog7\":"+"\""+String(analog7_status)+"\"}";
   
     return res;
 }
