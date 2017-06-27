@@ -29,10 +29,10 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 # ARDUINO_IP='http://192.168.1.10'
 # ARDUINO_IP='http://185.20.216.94:5555'
-ARDUINO_IP = 'http://192.168.1.143'
+ARDUINO_IP = 'http://192.168.1.144'
 
 HUMIDITY_MAX = 600
-RULES_FOR_BRANCHES = [None] * 10
+RULES_FOR_BRANCHES = [None] * 17
 
 RULES_ENABLED = True
 
@@ -104,7 +104,7 @@ def get_humidity():
     response = requests.get(url=ARDUINO_IP + "/analog_status")
     json_data = json.loads(response.text)
 
-    tank_sensor_value = int(json_data['analog1'])
+    tank_sensor_value = int(json_data['analog0'])
 
     allow_irrigation = True
     text = 'Автоматический полив разрешен.'
