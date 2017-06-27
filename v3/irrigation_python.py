@@ -118,7 +118,8 @@ def get_humidity():
 def branch_on(line_id, alert_time=25):
     """Blablbal."""
     try:
-        response = requests.get(url=ARDUINO_IP + '/branch_on', params={"branch_id": line_id, "branch_alert": alert_time}, timeout=60)
+        payload = (('branch_id', line_id, ('branch_alert', alert_time))
+        response = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
 
         logging.debug('response {0}'.format(response.text))
         send_message('branch_status', {'data': response.text})
@@ -661,7 +662,8 @@ def activate_branch():
     time_min = int(request.args.get('time_min'))
 
     try:
-        response_on = requests.get(url=ARDUINO_IP + '/branch_on', params={"branch_id": id, "branch_alert": time_min + 3}, timeout=60)
+        payload = (('branch_id', line_id, ('branch_alert', time_min + 2))
+        response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
         send_message('branch_status', {'data': response_on.text})
     except requests.exceptions.RequestException as e:
         logging.error(e)
