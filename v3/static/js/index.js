@@ -216,7 +216,7 @@ function update_branches(json) {
     toogle_checkbox(3, branches['3']);     
     toogle_checkbox(4, branches['4']);     
     toogle_checkbox(5, branches['5']);     
-    toogle_checkbox(17 branches['pump']);     
+    toogle_checkbox(17, branches['pump']);     
 }
 
 function toogle_checkbox(element_id, branch_state){
