@@ -130,8 +130,14 @@ $(document).ready(function() {
 
     $('#time_modal').on('shown.bs.modal', function() {
         $('#time_selector').val(1);
+        $('#time_selector').selectpicker('refresh');
+
         $('#interval_selector').val(0);
+        $('#interval_selector').selectpicker('refresh');
+
         $('#time_wait_selector').val(1);
+        $('#time_wait_selector').selectpicker('refresh');
+
         $('#time_wait_selector').selectpicker('hide');
     })
 
