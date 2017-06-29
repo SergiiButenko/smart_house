@@ -71,16 +71,16 @@
          <button type="button" class="btn btn-default btn-refresh-history" data-value=7>За неделю</button>
          <button type="button" class="btn btn-default btn-refresh-history" data-value=31>За месяц</button>
          <table id="rules_table" class="table table-condensed table-striped ">
-            <thead>
-               <tr>
-                  <th>Номер ветки</th>
-                  <th>Правило</th>
-                  <th>Время выполнения</th>
-                  <th>Статус</th>
-                  <th></th>
-               </tr>
-            </thead>
-               <tbody>
+         <thead>
+          <tr>
+            <th>Номер ветки</th>
+            <th>Правило</th>
+            <th>Время выполнения</th>
+            <th>Статус</th>
+            <th></th>
+          </tr>
+        </thead>
+            <tbody>
                {% for n in my_list %}
                <tr>
                <td class="text-center">{{n['branch_name']}}</td>
