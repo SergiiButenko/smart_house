@@ -187,22 +187,35 @@ $(document).ready(function() {
     $(".start-irrigation").click(function() {
         index = $('#time_modal').data('id');
         time = $("#time_selector option:selected").data("value");
-        console.log(branch_names[index]+" will be activated on "+time+" minutes");
-        branch_on(index, time);
+        interval_quantity = $("#interval_selector option:selected").data("value");
+        time_wait = $("#time_wait_selector option:selected").data("value");
+        console.log(branch_names[index]+" will be activated on "+time+" minutes, "+interval+" times with "+time_wait+" period");
+        branch_on(index, time, interval_quantity, time_wait);
     });
 
 });
 
-function branch_on(index, time_min) {
+function branch_on(index, time_minutes, interval_quantity, time_wait) {
+    if (interval_quantity == 0){
+        is_interval = false
+    } else if (interval_quantity > 0){
+        is_interval = true
+    } else {
+        is_interval = null
+    }
+    
     $.ajax({
         url: server + '/activate_branch',
         type: "get",
         data: {
             'id': index,
-            'time_min' : time_min
+            'is_interval': is_interval, 
+            'time_min' : time_minutes,
+            'time_wait' : time_wait,
+            'quantity' : interval_quantity
         },
         success: function(data) {
-            console.log('Line ' + branch_names[index] + ' should be activated now');
+            console.log('Line ' + branch_names[index] + ' should be active now');
             update_branches(data);
         },
         error: function() {
@@ -250,7 +263,6 @@ function update_branches_request() {
         },
         error: function() {
             console.error("Branches statuses are out-of-date");
-            
             set_status_error();
         }
     });
