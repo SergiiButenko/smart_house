@@ -128,7 +128,7 @@ $(document).ready(function() {
         off: 'Включить насос'
     });
 
-    $('#time_modal').on('shown.bs.modal', function() {
+    $('#time_modal').on('hidden.bs.modal', function() {
         $('#time_selector').val(1);
         $('#time_selector').selectpicker('refresh');
 
