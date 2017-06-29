@@ -49,7 +49,7 @@ $(document).ready(function() {
     
     $('#interval_selector').on('change', function(){
      var selected = $(this).find("option:selected").data("value");
-     if selected>0 {
+     if (selected > 0) {
         $('#time_wait_selector').show();
      }
     });
