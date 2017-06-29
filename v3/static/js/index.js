@@ -27,8 +27,7 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                console.log('#title-'+i);
-                 $('#title-'+i).text(branch_names[i]);
+                $('#title-'+i).text(branch_names[i]);
             }    
    
       }
@@ -82,36 +81,36 @@ $(document).ready(function() {
     touch_analog_sensor();
     
     //Add arduino touch script to determine if connection is alive
-    // (function worker() {
-    //     $.ajax({
-    //         url: server+'/arduino_status',
-    //         beforeSend: function(xhr, opts) {
-    //             set_status_spinner();
+    (function worker() {
+        $.ajax({
+            url: server+'/arduino_status',
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
 
-    //             if ($('#time_modal').hasClass('in')) {
-    //                 xhr.abort();
-    //             }
-    //         },
-    //         success: function(data) {
-    //             $('#loader').hide();
-    //             console.log("connected to arduino");
+                if ($('#time_modal').hasClass('in')) {
+                    xhr.abort();
+                }
+            },
+            success: function(data) {
+                $('#loader').hide();
+                console.log("connected to arduino");
                 
-    //             set_status_ok();
+                set_status_ok();
 
-    //             update_branches(data);
-    //             setTimeout(worker, arduino_check_connect_sec * 1000);
-    //         },
-    //         error: function() {
-    //             console.error("Can't connect to arduino");
+                update_branches(data);
+                setTimeout(worker, arduino_check_connect_sec * 1000);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
 
-    //             set_status_error();
+                set_status_error();
 
-    //             $('#loader').show()
-    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-    //         },
-    //         complete: function(){$("#button_gif").removeClass("fa-spin");}
-    //     });
-    // })();
+                $('#loader').show()
+                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+            },
+            complete: function(){$("#button_gif").removeClass("fa-spin");}
+        });
+    })();
 
     // Add labels for swticher values
     $('.switchers-main').bootstrapToggle({        
@@ -129,12 +128,9 @@ $(document).ready(function() {
     //Assign onClick for close buttons on Modal window
     $(".modal_close").click(function() {
         update_branches_request();
-    });
-
-    $("#time_modal").on("hidden.bs.modal", function(){
-        $("#time_selector")
-        $("#interval_selector")
-        $("#time_wait_selector")
+        $("#time_selector").val(1);
+        $("#interval_selector").val(0);
+        $("#time_wait_selector").val(1);
     });
 
     //Assign onChange for all switchers, so they open modal window
@@ -163,6 +159,9 @@ $(document).ready(function() {
         time = $("#time_selector option:selected").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
         branch_on(index, time);
+        $("#time_selector").val(1);
+        $("#interval_selector").val(0);
+        $("#time_wait_selector").val(1);
     });
 
 });
