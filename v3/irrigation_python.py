@@ -48,7 +48,7 @@ QUERY['get_table_template'] = "SELECT l.id, li.name, rule_type.name, l.state, l.
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name from lines order by number"
 QUERY['list'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer, l.id, l.interval_id"
-QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>=datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer, l.id, l.interval_id"
+QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer, l.id, l.interval_id"
 QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') order by l.timer and l.state = rule_state.id desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time and l.state = rule_state.id"
 QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer, l.id, l.interval_id"
@@ -225,8 +225,7 @@ def get_next_active_rule(line_id):
 
 def update_all_rules():
     """Blablbal."""
-    try:
-        global RULES_FOR_BRANCHES
+    try:        
         for i in range(1, len(RULES_FOR_BRANCHES), 1):
             RULES_FOR_BRANCHES[i] = get_next_active_rule(i)
         logging.info("Rules updated")
@@ -387,7 +386,7 @@ def get_table_template(query=None):
                 outdated = 1
 
             rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
-                'timer': "{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
+                'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
     template = render_template('table_only.html', my_list=rows)
     return template
@@ -411,7 +410,7 @@ def list():
             outdated = 1
 
         rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
-            'timer': "{:%A, %H:%M, %d %b %Y}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
+            'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
     template = render_template('list.html', my_list=rows)
     return template
