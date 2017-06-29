@@ -51,10 +51,12 @@ $(document).ready(function() {
      var selected = $(this).find("option:selected").data("value");
      if (selected == 0) {
         $('#time_wait_selector').selectpicker('hide');
+        $('#interval_selector_label').hide();
      } 
 
      if (selected > 0) {
         $('#time_wait_selector').selectpicker('show');
+        $('#interval_selector_label').show();
      } 
     });
 
@@ -132,10 +134,12 @@ $(document).ready(function() {
      var selected = $("#interval_selector option:selected").data("value");
      if (selected == 0) {
         $('#time_wait_selector').selectpicker('hide');
+        $('#interval_selector_label').hide();
      } 
 
      if (selected > 0) {
         $('#time_wait_selector').selectpicker('show');
+        $('#interval_selector_label').show();
      } 
     })
 
@@ -150,12 +154,15 @@ $(document).ready(function() {
         $('#time_wait_selector').selectpicker('refresh');
 
         $('#time_wait_selector').selectpicker('hide');
+        $('#interval_selector_label').hide();
+
+        update_branches_request();
     })
 
     //Assign onClick for close buttons on Modal window
-    $(".modal_close").click(function() {
-        update_branches_request();
-    });
+    // $(".modal_close").click(function() {
+    //     update_branches_request();
+    // });
 
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
