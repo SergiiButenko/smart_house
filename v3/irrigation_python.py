@@ -704,7 +704,7 @@ def activate_branch():
 
     if (is_interval == 'true'):
         # first interval is executed
-        for x in range(2, num_of_intervals):
+        for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
             update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id))
