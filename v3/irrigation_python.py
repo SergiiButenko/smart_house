@@ -708,7 +708,7 @@ def activate_branch():
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
             update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id))
-            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), stop_time, interval_id))
+            update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     logging.info("Branch '{0}' activated manually".format(id))
