@@ -45,8 +45,29 @@ $(document).ready(function() {
 
     for (var i=1; i<=20; i++){
      $('#rule_timer_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     $('#time_wait_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#rule_timer_selector').selectpicker('refresh');
+    $('#time_wait_selector').selectpicker('refresh');
+    
+    for (var i=0; i<=10; i++){
+     $('#interval_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+    }
+    $('#interval_selector').selectpicker('refresh');
+    
+    $('#interval_selector').on('change', function(){
+     var selected = $(this).find("option:selected").data("value");
+     if (selected == 0) {
+        $('#time_wait_selector').selectpicker('hide');
+        $('#time_wait_selector_label').hide();
+     } 
+
+     if (selected > 0) {
+        $('#time_wait_selector').selectpicker('show');
+        $('#time_wait_selector_label').show();
+     } 
+    });
+
 
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
@@ -114,6 +135,35 @@ $(document).ready(function() {
             }
         });
     });
+
+
+     $('#add_rule').on('shown.bs.modal', function() {
+     var selected = $("#interval_selector option:selected").data("value");
+     if (selected == 0) {
+        $('#time_wait_selector').selectpicker('hide');
+        $('#time_wait_selector_label').hide();
+     } 
+
+     if (selected > 0) {
+        $('#time_wait_selector').selectpicker('show');
+        $('#time_wait_selector_label').show();
+     } 
+    })
+
+    $('#add_rule').on('hidden.bs.modal', function() {
+        $('#branch_number_selector').val(1);
+        $('#branch_number_selector').selectpicker('refresh');
+
+        $('#interval_selector').val(0);
+        $('#interval_selector').selectpicker('refresh');
+
+        $('#time_wait_selector').val(1);
+        $('#time_wait_selector').selectpicker('refresh');
+
+        $('#time_wait_selector').selectpicker('hide');
+        $('#time_wait_selector_label').hide();
+    })
+
 });
 
 
