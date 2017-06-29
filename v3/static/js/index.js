@@ -49,11 +49,14 @@ $(document).ready(function() {
     
     $('#interval_selector').on('change', function(){
      var selected = $(this).find("option:selected").data("value");
-     if (selected > 0) {
-        $('#time_wait_selector').show()
-     }
-    });
+     if (selected == 0) {
+        $('#time_wait_selector').selectpicker('hide');
+     } 
 
+     if (selected > 0) {
+        $('#time_wait_selector').selectpicker('show');
+     } 
+    });
 
     var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
