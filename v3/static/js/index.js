@@ -128,6 +128,17 @@ $(document).ready(function() {
         off: 'Включить насос'
     });
 
+    $('#time_modal').on('shown.bs.modal', function() {
+     var selected = $("#interval_selector option:selected").data("value");
+     if (selected == 0) {
+        $('#time_wait_selector').selectpicker('hide');
+     } 
+
+     if (selected > 0) {
+        $('#time_wait_selector').selectpicker('show');
+     } 
+    })
+
     $('#time_modal').on('hidden.bs.modal', function() {
         $('#time_selector').val(1);
         $('#time_selector').selectpicker('refresh');
