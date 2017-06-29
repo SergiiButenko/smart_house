@@ -37,13 +37,13 @@ $(document).ready(function() {
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
-     $('#time_wait_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     $('#time_wait_selector').append("<option data-value="+i+">"+i+"</option>");
     }
     $('#time_selector').selectpicker('refresh');
     $('#time_wait_selector').selectpicker('refresh');
 
     for (var i=0; i<=10; i++){
-     $('#interval_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     $('#interval_selector').append("<option data-value="+i+">"+i+"</option>");
     }
     $('#interval_selector').selectpicker('refresh');
     
@@ -82,36 +82,36 @@ $(document).ready(function() {
     touch_analog_sensor();
     
     //Add arduino touch script to determine if connection is alive
-    (function worker() {
-        $.ajax({
-            url: server+'/arduino_status',
-            beforeSend: function(xhr, opts) {
-                set_status_spinner();
+    // (function worker() {
+    //     $.ajax({
+    //         url: server+'/arduino_status',
+    //         beforeSend: function(xhr, opts) {
+    //             set_status_spinner();
 
-                if ($('#time_modal').hasClass('in')) {
-                    xhr.abort();
-                }
-            },
-            success: function(data) {
-                $('#loader').hide();
-                console.log("connected to arduino");
+    //             if ($('#time_modal').hasClass('in')) {
+    //                 xhr.abort();
+    //             }
+    //         },
+    //         success: function(data) {
+    //             $('#loader').hide();
+    //             console.log("connected to arduino");
                 
-                set_status_ok();
+    //             set_status_ok();
 
-                update_branches(data);
-                setTimeout(worker, arduino_check_connect_sec * 1000);
-            },
-            error: function() {
-                console.error("Can't connect to arduino");
+    //             update_branches(data);
+    //             setTimeout(worker, arduino_check_connect_sec * 1000);
+    //         },
+    //         error: function() {
+    //             console.error("Can't connect to arduino");
 
-                set_status_error();
+    //             set_status_error();
 
-                $('#loader').show()
-                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-            },
-            complete: function(){$("#button_gif").removeClass("fa-spin");}
-        });
-    })();
+    //             $('#loader').show()
+    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+    //         },
+    //         complete: function(){$("#button_gif").removeClass("fa-spin");}
+    //     });
+    // })();
 
     // Add labels for swticher values
     $('.switchers-main').bootstrapToggle({        
