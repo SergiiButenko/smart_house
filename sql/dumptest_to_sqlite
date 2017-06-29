@@ -54,6 +54,7 @@ CREATE TABLE life (
     date date NOT NULL,
     timer timestamp without time zone NOT NULL,
     active integer DEFAULT 1 NOT NULL,
+    interval_id TEXT, 
     FOREIGN KEY(line_id) REFERENCES lines(number),
     FOREIGN KEY(state) REFERENCES state_of_rule(id),
     FOREIGN KEY(rule_id) REFERENCES type_of_rule(id)

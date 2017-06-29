@@ -17,6 +17,7 @@ from time import strftime
 import inspect
 import sqlite3
 import logging
+import uuid
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -29,7 +30,9 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 # ARDUINO_IP='http://192.168.1.10'
 # ARDUINO_IP='http://185.20.216.94:5555'
-ARDUINO_IP = 'http://192.168.1.144'
+
+# ARDUINO_IP = 'http://192.168.1.144'
+ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
 
 HUMIDITY_MAX = 600
 RULES_FOR_BRANCHES = [None] * 18
@@ -52,10 +55,10 @@ QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.
 QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', '-{0} hour') and l.timer<=datetime('now', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
 QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
-QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
-QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer FROM life where id = {0}"
-QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE id = {0}"
-QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
+QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id FROM life where id = {0}"
+QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = {0}"
+QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
@@ -68,7 +71,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-setlocale(LC_ALL, 'ru_UA.utf-8')
+#setlocale(LC_ALL, 'ru_UA.utf-8')
 
 
 @socketio.on_error_default
@@ -658,8 +661,18 @@ def arduino_status():
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     """Blablbal."""
-    id = int(request.args.get('id'))
-    time_min = int(request.args.get('time_min'))
+    is_interval = request.args.get('interval')
+    if (is_interval is False):
+        id = int(request.args.get('id'))
+        time_min = int(request.args.get('time_min'))
+    elif (is_interval is True):
+        id = int(request.args.get('id'))
+        time_min = int(request.args.get('time_min'))
+        time_wait = int(request.args.get('time_wait'))
+        num_of_intervals = int(request.args.get('quantity'))
+    else:
+        logging.error("no interval parameter passed")
+        abort(404)
 
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
@@ -670,18 +683,26 @@ def activate_branch():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
 
+    interval_id = str(uuid.uuid4())
     now = datetime.datetime.now()
-    now_plus = now + datetime.timedelta(minutes=time_min)
+    stop_time = now + datetime.timedelta(minutes=time_min)
 
-    update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now))
-    lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), now_plus))
+    update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id))
+    lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
     logging.debug("lastid:{0}".format(lastid))
 
     res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
     logging.debug("res:{0}".format(res[0]))
 
-    RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3]}
+    RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+
+    if (is_interval is True):
+        # first interval is executed
+        for x in range(2, num_of_intervals):
+            start_time = stop_time + datetime.timedelta(minutes=time_wait)
+            stop_time = start_time + datetime.timedelta(minutes=time_min)
+            logging.info("Start time: {0}. Stop time: {1} added".format(str(start_time), str(stop_time)))
 
     logging.info("Branch '{0}' activated manually".format(id))
     return (response_on.text, response_on.status_code)
@@ -701,9 +722,9 @@ def deactivate_branch():
 
     now = datetime.datetime.now()
     if RULES_FOR_BRANCHES[id] is not None:
-        update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['id']))
+        update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['interval_id']))
     else:
-        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now))
+        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
 
     RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
