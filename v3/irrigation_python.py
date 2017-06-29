@@ -667,10 +667,10 @@ def activate_branch():
         abort(404)
     is_interval = str(is_interval)
 
-    if (is_interval is 'false'):
+    if (is_interval == 'false'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
-    elif (is_interval is 'true'):
+    elif (is_interval == 'true'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
         time_wait = int(request.args.get('time_wait'))
@@ -702,7 +702,7 @@ def activate_branch():
     RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
-    if (is_interval is 'true'):
+    if (is_interval == 'true'):
         # first interval is executed
         for x in range(2, num_of_intervals):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
