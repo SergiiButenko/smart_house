@@ -57,7 +57,7 @@ QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALU
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id FROM life where id = {0}"
-QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = {0}"
+QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}'"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
