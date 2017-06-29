@@ -665,6 +665,7 @@ def activate_branch():
     if (is_interval is None):
         logging.error("no interval parameter passed")
         abort(404)
+    is_interval = str(is_interval)
 
     if (is_interval is 'false'):
         id = int(request.args.get('id'))
@@ -677,7 +678,7 @@ def activate_branch():
     else:
         logging.error("incorrect interval parameter passed: {0}".format(is_interval))
         abort(404)
-    
+
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
         response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
@@ -701,7 +702,7 @@ def activate_branch():
     RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
     logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
-    if (is_interval is True):
+    if (is_interval is 'true'):
         # first interval is executed
         for x in range(2, num_of_intervals):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
