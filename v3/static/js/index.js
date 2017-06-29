@@ -206,12 +206,12 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
     $.ajax({
         url: server + '/activate_branch',
         type: "get",
-        data: {
-            'id': index,
+        data: {            
             'is_interval': is_interval, 
+            'id': index,
             'time_min' : time_minutes,
-            'time_wait' : time_wait,
-            'quantity' : interval_quantity
+            'quantity' : interval_quantity,
+            'time_wait' : time_wait
         },
         success: function(data) {
             console.log('Line ' + branch_names[index] + ' should be active now');

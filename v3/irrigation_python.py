@@ -661,7 +661,7 @@ def arduino_status():
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     """Blablbal."""
-    is_interval = request.args.get('interval')
+    is_interval = request.args.get('is_interval')
     if (is_interval is None):
         logging.error("no interval parameter passed")
         abort(404)
