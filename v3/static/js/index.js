@@ -27,7 +27,8 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                $('#title-'+i).text(branch_names[i]);
+                console.log('#title-'+i);
+                 $('#title-'+i).text(branch_names[i]);
             }    
    
       }
@@ -36,20 +37,20 @@ $(document).ready(function() {
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
-     $('#time_wait_selector').append("<option data-value="+i+">"+i+"</option>");
+     $('#time_wait_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#time_selector').selectpicker('refresh');
     $('#time_wait_selector').selectpicker('refresh');
 
     for (var i=0; i<=10; i++){
-     $('#interval_selector').append("<option data-value="+i+">"+i+"</option>");
+     $('#interval_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#interval_selector').selectpicker('refresh');
     
     $('#interval_selector').on('change', function(){
      var selected = $(this).find("option:selected").data("value");
      if (selected > 0) {
-        $('#time_wait_selector').show();
+        $('#time_wait_selector').show()
      }
     });
 
@@ -128,9 +129,6 @@ $(document).ready(function() {
     //Assign onClick for close buttons on Modal window
     $(".modal_close").click(function() {
         update_branches_request();
-        // $("#time_selector").val(1);
-        // $("#interval_selector").val(0);
-        // $("#time_wait_selector").val(1);
     });
 
     //Assign onChange for all switchers, so they open modal window
@@ -141,10 +139,9 @@ $(document).ready(function() {
             if ($(this).prop('checked')) {
                 name = branch_names[index];
 
-                $('#time_modal').val(1);
-                $('.modal-title').val(0);
-                $('#time_modal').val(1)
-                $('#time_modal').hide();
+                $('#time_modal').data('id', index);
+                $('.modal-title').html(name);
+                $('#time_modal').modal('show');
             }
 
             if (!$(this).prop('checked')) {
@@ -159,9 +156,6 @@ $(document).ready(function() {
         time = $("#time_selector option:selected").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
         branch_on(index, time);
-        // $("#time_selector").val(1);
-        // $("#interval_selector").val(0);
-        // $("#time_wait_selector").val(1);
     });
 
 });
