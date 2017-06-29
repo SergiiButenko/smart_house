@@ -674,8 +674,10 @@ def activate_branch():
         time_min = int(request.args.get('time_min'))
         time_wait = int(request.args.get('time_wait'))
         num_of_intervals = int(request.args.get('quantity'))
+    else:
+        logging.error("incorrect interval parameter passed: {0}".format(is_interval))
+        abort(404)
     
-
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
         response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
