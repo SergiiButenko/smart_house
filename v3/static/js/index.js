@@ -128,6 +128,12 @@ $(document).ready(function() {
         off: 'Включить насос'
     });
 
+    $('#time_modal').on('shown.bs.modal', function() {
+        $('#time_selector').val(1);
+        $('#interval_selector').val(0);
+        $('#time_wait_selector').val(1);
+        $('#time_wait_selector').selectpicker('hide');
+    })
 
     //Assign onClick for close buttons on Modal window
     $(".modal_close").click(function() {
