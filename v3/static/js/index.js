@@ -53,7 +53,7 @@ $(document).ready(function() {
         $('#time_wait_selector_label').hide();
      } 
 
-     if (selected > 0) {
+     if (selected > 1) {
         $('#time_wait_selector').selectpicker('show');
         $('#time_wait_selector_label').show();
      } 
