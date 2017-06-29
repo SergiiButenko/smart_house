@@ -662,17 +662,19 @@ def arduino_status():
 def activate_branch():
     """Blablbal."""
     is_interval = request.args.get('interval')
-    if (is_interval is False):
+    if (is_interval is None):
+        logging.error("no interval parameter passed")
+        abort(404)
+
+    if (is_interval is 'false'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
-    elif (is_interval is True):
+    elif (is_interval is 'true'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
         time_wait = int(request.args.get('time_wait'))
         num_of_intervals = int(request.args.get('quantity'))
-    else:
-        logging.error("no interval parameter passed")
-        abort(404)
+    
 
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
