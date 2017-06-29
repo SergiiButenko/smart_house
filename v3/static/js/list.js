@@ -125,13 +125,26 @@ $(document).ready(function() {
         interval_quantity = $("#interval_selector option:selected").data("value");
         time_wait = $("#time_wait_selector option:selected").data("value");
 
+        if (interval_quantity == 0){
+        is_interval = false
+        } else if (interval_quantity > 0){
+            is_interval = true
+        } else {
+            is_interval = null
+        }
+
+
+
         $.ajax({
             url: server+'/add_rule',
             type: "get",
             data: {
+                'is_interval': is_interval, 
                 'branch_id': branch_id,
                 'time_min':time_min,
-                'datetime_start':datetime_start
+                'datetime_start':datetime_start,
+                'quantity' : interval_quantity,
+                'time_wait' : time_wait
             },
             success: function(data) {
                 $("#result_table").html(data);
