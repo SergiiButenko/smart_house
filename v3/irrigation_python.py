@@ -53,7 +53,7 @@ QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time and l.state = rule_state.id"
 QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer, l.id, l.interval_id"
 QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer, l.id, l.interval_id"
-QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
+QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id FROM life where id = {0}"
@@ -449,15 +449,45 @@ def list_all():
 @app.route("/add_rule")
 def add_rule():
     """Blablbal."""
-    branch_id = int(request.args.get('branch_id'))
-    time_min = int(request.args.get('time_min'))
-    datetime_start = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+    is_interval = request.args.get('is_interval')
+    if (is_interval is None):
+        logging.error("no interval parameter passed")
+        abort(404)
+    is_interval = str(is_interval)
 
-    datetime_stop = datetime_start + datetime.timedelta(minutes=time_min)
+    if (is_interval == 'false'):
+        branch_id = int(request.args.get('branch_id'))
+        time_min = int(request.args.get('time_min'))
+        datetime_start = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+
+        time_wait = 0
+        num_of_intervals = 0
+    elif (is_interval == 'true'):
+        branch_id = int(request.args.get('branch_id'))
+        time_min = int(request.args.get('time_min'))
+        datetime_start = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+
+        time_wait = int(request.args.get('time_wait'))
+        num_of_intervals = int(request.args.get('quantity'))
+    else:
+        logging.error("incorrect interval parameter passed: {0}".format(is_interval))
+        abort(404)
+
+    interval_id = str(uuid.uuid4())
     now = datetime.datetime.now()
+    datetime_stop = datetime_start + datetime.timedelta(minutes=time_min)
 
-    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), datetime_start))
-    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), datetime_stop))
+    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), datetime_start, interval_id))
+    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), datetime_stop, interval_id))
+
+    # first interval is executed
+    for x in range(1, num_of_intervals + 1):
+        start_time = datetime_stop + datetime.timedelta(minutes=time_wait)
+        stop_time = start_time + datetime.timedelta(minutes=time_min)
+        update_db_request(QUERY[mn()].format(id, 1, 1, now.date(), start_time, interval_id))
+        update_db_request(QUERY[mn()].format(id, 2, 1, now.date(), stop_time, interval_id))
+        logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
+
     update_all_rules()
     template = get_table_template()
     send_message('list_update', {'data': template})

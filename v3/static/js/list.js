@@ -122,6 +122,9 @@ $(document).ready(function() {
         branch_id = $("#branch_number_selector option:selected").data("id");
         time_min = $("#rule_timer_selector option:selected").data("value");
         datetime_start = $("#datetimepicker2_input").val();
+        interval_quantity = $("#interval_selector option:selected").data("value");
+        time_wait = $("#time_wait_selector option:selected").data("value");
+
         $.ajax({
             url: server+'/add_rule',
             type: "get",
