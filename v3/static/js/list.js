@@ -88,7 +88,7 @@ $(document).ready(function() {
                              url: server + '/get_list',
                              type: "get",
                              data: {
-                                 'before': '12',
+                                 'before': '0',
                                  'after': '12',
                              },
                              success: function(data) {
