@@ -128,9 +128,9 @@ $(document).ready(function() {
     //Assign onClick for close buttons on Modal window
     $(".modal_close").click(function() {
         update_branches_request();
-        $("#time_selector").val(1);
-        $("#interval_selector").val(0);
-        $("#time_wait_selector").val(1);
+        // $("#time_selector").val(1);
+        // $("#interval_selector").val(0);
+        // $("#time_wait_selector").val(1);
     });
 
     //Assign onChange for all switchers, so they open modal window
@@ -159,9 +159,9 @@ $(document).ready(function() {
         time = $("#time_selector option:selected").data("value");
         console.log(branch_names[index]+" will be activated on "+time+" minutes");
         branch_on(index, time);
-        $("#time_selector").val(1);
-        $("#interval_selector").val(0);
-        $("#time_wait_selector").val(1);
+        // $("#time_selector").val(1);
+        // $("#interval_selector").val(0);
+        // $("#time_wait_selector").val(1);
     });
 
 });
