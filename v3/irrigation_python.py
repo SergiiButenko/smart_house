@@ -458,14 +458,14 @@ def add_rule():
     if (is_interval == 'false'):
         branch_id = int(request.args.get('branch_id'))
         time_min = int(request.args.get('time_min'))
-        datetime_start = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+        start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
 
         time_wait = 0
         num_of_intervals = 0
     elif (is_interval == 'true'):
         branch_id = int(request.args.get('branch_id'))
         time_min = int(request.args.get('time_min'))
-        datetime_start = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+        start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
 
         time_wait = int(request.args.get('time_wait'))
         num_of_intervals = int(request.args.get('quantity'))
@@ -475,14 +475,14 @@ def add_rule():
 
     interval_id = str(uuid.uuid4())
     now = datetime.datetime.now()
-    datetime_stop = datetime_start + datetime.timedelta(minutes=time_min)
+    stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), datetime_start, interval_id))
-    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), datetime_stop, interval_id))
+    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
+    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
 
     # first interval is executed
-    for x in range(1, num_of_intervals + 1):
-        start_time = datetime_stop + datetime.timedelta(minutes=time_wait)
+    for x in range(2, num_of_intervals + 1):
+        start_time = stop_time + datetime.timedelta(minutes=time_wait)
         stop_time = start_time + datetime.timedelta(minutes=time_min)
         update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
         update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
