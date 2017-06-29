@@ -220,7 +220,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
 
 
 def update_all_rules():
@@ -707,8 +707,8 @@ def activate_branch():
         for x in range(2, num_of_intervals):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), start_time, interval_id))
-            update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
+            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id))
+            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), stop_time, interval_id))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     logging.info("Branch '{0}' activated manually".format(id))
