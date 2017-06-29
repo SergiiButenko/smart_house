@@ -484,8 +484,8 @@ def add_rule():
     for x in range(1, num_of_intervals + 1):
         start_time = datetime_stop + datetime.timedelta(minutes=time_wait)
         stop_time = start_time + datetime.timedelta(minutes=time_min)
-        update_db_request(QUERY[mn()].format(id, 1, 1, now.date(), start_time, interval_id))
-        update_db_request(QUERY[mn()].format(id, 2, 1, now.date(), stop_time, interval_id))
+        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
+        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
