@@ -27,7 +27,6 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                console.log('#title-'+i);
                  $('#title-'+i).text(branch_names[i]);
             }    
    
@@ -189,7 +188,7 @@ $(document).ready(function() {
         time = $("#time_selector option:selected").data("value");
         interval_quantity = $("#interval_selector option:selected").data("value");
         time_wait = $("#time_wait_selector option:selected").data("value");
-        console.log(branch_names[index]+" will be activated on "+time+" minutes, "+interval+" times with "+time_wait+" period");
+        console.log(branch_names[index]+" will be activated on "+time+" minutes, "+interval_quantity+" times with "+time_wait+" period");
         branch_on(index, time, interval_quantity, time_wait);
     });
 
