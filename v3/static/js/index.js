@@ -37,10 +37,24 @@ $(document).ready(function() {
 
     for (var i=1; i<=20; i++){
      $('#time_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+     $('#time_wait_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#time_selector').selectpicker('refresh');
+    $('#time_wait_selector').selectpicker('refresh');
 
-   
+    for (var i=0; i<=10; i++){
+     $('#interval_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
+    }
+    $('#interval_selector').selectpicker('refresh');
+    
+    $('#interval_selector').on('change', function(){
+     var selected = $(this).find("option:selected").data("value");
+     if selected>0 {
+        $('#time_wait_selector').show();
+     }
+    });
+
+
     var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
         console.log("connected to websocket");
@@ -117,6 +131,12 @@ $(document).ready(function() {
         update_branches_request();
     });
 
+    $("#time_modal").on("hidden.bs.modal", function(){
+        $("#time_selector")
+        $("#interval_selector")
+        $("#time_wait_selector")
+    });
+
     //Assign onChange for all switchers, so they open modal window
     $(".switchers-main, .switchers-pump").change(function() {
         if ($(this).data('user-action') == 1) {
@@ -125,9 +145,10 @@ $(document).ready(function() {
             if ($(this).prop('checked')) {
                 name = branch_names[index];
 
-                $('#time_modal').data('id', index);
-                $('.modal-title').html(name);
-                $('#time_modal').modal('show');
+                $('#time_modal').val(1);
+                $('.modal-title').val(0);
+                $('#time_modal').val(1)
+                $('#time_modal').hide();
             }
 
             if (!$(this).prop('checked')) {
