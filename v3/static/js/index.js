@@ -131,12 +131,12 @@ $(document).ready(function() {
 
     $('#time_modal').on('shown.bs.modal', function() {
      var selected = $("#interval_selector option:selected").data("value");
-     if (selected == 0) {
+     if (selected  == 1) {
         $('#time_wait_selector').selectpicker('hide');
         $('#time_wait_selector_label').hide();
      } 
 
-     if (selected > 0) {
+     if (selected > 1) {
         $('#time_wait_selector').selectpicker('show');
         $('#time_wait_selector_label').show();
      } 
@@ -146,7 +146,7 @@ $(document).ready(function() {
         $('#time_selector').val(1);
         $('#time_selector').selectpicker('refresh');
 
-        $('#interval_selector').val(0);
+        $('#interval_selector').val(1);
         $('#interval_selector').selectpicker('refresh');
 
         $('#time_wait_selector').val(1);
