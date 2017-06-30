@@ -41,14 +41,14 @@ $(document).ready(function() {
     $('#time_selector').selectpicker('refresh');
     $('#time_wait_selector').selectpicker('refresh');
 
-    for (var i=0; i<=10; i++){
+    for (var i=1; i<=10; i++){
      $('#interval_selector').append("<option data-value="+i+" id=\"option"+i+"\">"+i+"</option>");
     }
     $('#interval_selector').selectpicker('refresh');
     
     $('#interval_selector').on('change', function(){
      var selected = $(this).find("option:selected").data("value");
-     if (selected == 0) {
+     if (selected == 1) {
         $('#time_wait_selector').selectpicker('hide');
         $('#time_wait_selector_label').hide();
      } 
