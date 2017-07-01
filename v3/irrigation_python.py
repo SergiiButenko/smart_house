@@ -28,13 +28,13 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 
-# ARDUINO_IP='http://192.168.1.10'
+ARDUINO_IP='http://192.168.1.10'
 # ARDUINO_IP='http://185.20.216.94:5555'
 
 # ARDUINO_IP = 'http://192.168.1.144'
-ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
+# ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
 
-HUMIDITY_MAX = 600
+HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 18
 
 RULES_ENABLED = True
@@ -71,7 +71,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-#setlocale(LC_ALL, 'ru_UA.utf-8')
+setlocale(LC_ALL, 'ru_UA.utf-8')
 
 
 @socketio.on_error_default
