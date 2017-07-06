@@ -27,11 +27,12 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                if (branch_names[i] != undefined)
+                if (branch_names[i] != undefined){
                     $('#label-' + i).show();
-                $('#title-' + i).text(branch_names[i]);
-                else
+                    $('#title-' + i).text(branch_names[i]);
+                } else {
                     $('#label-' + i).hide();
+                }
             }
         }
     });
