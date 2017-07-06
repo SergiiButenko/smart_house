@@ -258,6 +258,17 @@ function update_branches_request() {
             toogle_checkbox(14, branches['14']);     
             toogle_checkbox(13, branches['13']);     
             toogle_checkbox(12, branches['12']);
+            toogle_checkbox(11, branches['11']);
+            toogle_checkbox(10, branches['10']);
+            toogle_checkbox(9, branches['9']);
+            toogle_checkbox(8, branches['8']);
+            toogle_checkbox(7, branches['7']);
+            toogle_checkbox(6, branches['6']);
+            toogle_checkbox(5, branches['5']);
+            toogle_checkbox(4, branches['4']);
+            toogle_checkbox(3, branches['3']);
+            toogle_checkbox(2, branches['2']);
+            toogle_checkbox(1, branches['1']);
             toogle_checkbox(17, branches['pump']);   
         },
         error: function() {
@@ -273,7 +284,18 @@ function update_branches(json) {
     toogle_checkbox(15, branches['15']);     
     toogle_checkbox(14, branches['14']);     
     toogle_checkbox(13, branches['13']);     
-    toogle_checkbox(12, branches['12']);     
+    toogle_checkbox(12, branches['12']);
+    toogle_checkbox(11, branches['11']);
+    toogle_checkbox(10, branches['10']);
+    toogle_checkbox(9, branches['9']);
+    toogle_checkbox(8, branches['8']);
+    toogle_checkbox(7, branches['7']);
+    toogle_checkbox(6, branches['6']);
+    toogle_checkbox(5, branches['5']);
+    toogle_checkbox(4, branches['4']);
+    toogle_checkbox(3, branches['3']);
+    toogle_checkbox(2, branches['2']);
+    toogle_checkbox(1, branches['1']);   
     toogle_checkbox(17, branches['pump']);     
 }
 
