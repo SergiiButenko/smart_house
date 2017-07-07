@@ -68,12 +68,12 @@ INSERT INTO day_of_week (num, name) VALUES (4,'Четверг');
 INSERT INTO day_of_week (num, name) VALUES (5,'Пятница');
 INSERT INTO day_of_week (num, name) VALUES (6,'Суббота');
 
-INSERT INTO lines (number, name) VALUES (1, 'Огурцы');
-INSERT INTO lines (number, name) VALUES (2, 'Клубника клумба');
-INSERT INTO lines (number, name) VALUES (3, 'Клубника беседка');
-INSERT INTO lines (number, name) VALUES (4, 'Помидоры');
-INSERT INTO lines (number, name) VALUES (5, 'Малина');
-INSERT INTO lines (number, name) VALUES (8, 'Насос');
+INSERT INTO lines (number, name) VALUES (15, 'Огурцы');
+INSERT INTO lines (number, name) VALUES (13, 'Клубника клумба');
+INSERT INTO lines (number, name) VALUES (16, 'Клубника беседка');
+INSERT INTO lines (number, name) VALUES (12, 'Помидоры');
+INSERT INTO lines (number, name) VALUES (14, 'Малина');
+INSERT INTO lines (number, name) VALUES (17, 'Насос');
 
 INSERT INTO state_of_line (short_name, full_name) VALUES ('Active','Рабочая');
 INSERT INTO state_of_line (short_name, full_name) VALUES ('Deactive','Не рабочая');
