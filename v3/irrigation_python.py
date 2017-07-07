@@ -255,14 +255,14 @@ def enable_rule():
                 if rule is None:
                     continue
 
-                if (get_humidity()['allow_irrigation'] is False):
-                    if (rule['rule_id'] == 1):
-                        update_db_request(QUERY[mn() + '_state_6'].format(rule['id']))
-                        logging.warn("Rule '{0}' is canceled because of humidity sensor".format(str(rule)))
-                        RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
-                        continue
-                    else:
-                        logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
+                # if (get_humidity()['allow_irrigation'] is False):
+                #     if (rule['rule_id'] == 1):
+                #         update_db_request(QUERY[mn() + '_state_6'].format(rule['id']))
+                #         logging.warn("Rule '{0}' is canceled because of humidity sensor".format(str(rule)))
+                #         RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
+                #         continue
+                #     else:
+                #         logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
