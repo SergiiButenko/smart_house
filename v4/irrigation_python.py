@@ -3,17 +3,13 @@
 from flask import Flask
 from flask import jsonify, request, render_template
 from flask import abort
-from eventlet import wsgi
 import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
 import json
 import requests
-import threading
-import time
 from locale import setlocale, LC_ALL
-from time import strftime
 import inspect
 import sqlite3
 import logging
@@ -28,7 +24,8 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 
-ARDUINO_IP='http://192.168.1.10'
+ARDUINO_IP = 'http://192.168.1.10'
+ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 # ARDUINO_IP='http://185.20.216.94:5555'
 
 # ARDUINO_IP = 'http://192.168.1.144'
@@ -36,23 +33,24 @@ ARDUINO_IP='http://192.168.1.10'
 
 HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 18
+SENSORS = {'time': datetime.now, 'data': {'temperature': 0, 'humidity': 0, 'rain': False, 'daylight': False}, 
+'user_message': '', 'allow_irrigation': False}
 
-RULES_ENABLED = True
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
 QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
-QUERY['get_table_template'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
+QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name from lines order by number"
-QUERY['list'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
-QUERY['list_all_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
-QUERY['list_all_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.id, l.timer desc"
+QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
+QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
+QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.id, l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id and l.state = rule_state.id ORDER BY w.day_number, w.time"
-QUERY['get_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.id, l.timer desc, l.interval_id"
-QUERY['get_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.id, l.timer desc, l.interval_id"
+QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.id, l.timer desc, l.interval_id"
+QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.id, l.timer desc, l.interval_id"
 QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
@@ -76,97 +74,88 @@ setlocale(LC_ALL, 'ru_UA.utf-8')
 
 @socketio.on_error_default
 def error_handler(e):
-    """Blablbal."""
+    """Used to handle error for websockets."""
     logging.error('error_handler for socketio. An error has occurred: ' + str(e))
 
 
 @socketio.on('connect')
 def connect():
-    """Blablbal."""
+    """Log info if user is connected to websocket."""
     logging.info('Client connected')
 
 
 @socketio.on('disconnect')
 def disconnect():
-    """Blablbal."""
+    """Log info if user is disconnected to websocket."""
     logging.info('Client disconnected')
 
 
+def set_next_rule_in_redis(branch_id, data):
+    """Set next rule in redis."""
+    return data
+
+
+def get_next_rule_in_redis(branch_id):
+    """Get next rule from redis."""
+    return 'data'
+
+
 def send_message(channel, data):
-    """Blablbal."""
+    """Enclose emit method into try except block."""
     try:
         socketio.emit(channel, data)
-        logging.info('Message was sent')
+        logging.debug('Message was sent')
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
 
 
-def get_humidity():
-    """Blablabla."""
-    response = requests.get(url=ARDUINO_IP + "/analog_status")
-    json_data = json.loads(response.text)
+def get_weather(force_update=False):
+    """Use data from weather station. Refresh data per hour."""
+    if (force_update is True or datetime.datetime.now() > (datetime.datetime.now() + datetime.timedelta(minutes=60))):
+        json_data = ''
+        try:
+            response = requests.get(url=ARDUINO_WEATHER_IP + "/weather")
+            json_data = json.loads(response.text)
+        except Exception as e:
+            logging.error(e)
+            logging.error("Can't get weather status. Exeption occured")
+            return None
 
-    tank_sensor_value = int(json_data['analog0'])
+        SENSORS['time'] = datetime.datetime.now()
+        SENSORS['data']['temperature'] = json_data['temperature']
+        SENSORS['data']['humidity'] = json_data['humidity']
+        SENSORS['data']['rain'] = json_data['rain']
+        SENSORS['data']['daylight'] = json_data['daylight']
 
-    allow_irrigation = True
-    text = 'Автоматический полив разрешен.'
-    if (tank_sensor_value > HUMIDITY_MAX):
-        allow_irrigation = False
-        text = 'Автоматический полив запрещен.'
+    SENSORS['data']['allow_irrigation'] = True
+    SENSORS['data']['user_message'] = 'Автоматический полив разрешен.'
 
-    return {"tank_sensor": tank_sensor_value, "allow_irrigation": allow_irrigation, "text": text}
+    if (SENSORS['data']['rain'] is True):
+        SENSORS['data']['allow_irrigation'] = False
+        SENSORS['data']['user_message'] = 'Автоматический полив запрещен из-за дождя.'
 
+    if (SENSORS['data']['humidity'] > HUMIDITY_MAX):
+        SENSORS['data']['allow_irrigation'] = False
+        SENSORS['data']['user_message'] = 'Автоматический полив датчиком влажности.'
 
-def branch_on(line_id, alert_time=25):
-    """Blablbal."""
-    try:
-        payload = (('branch_id', line_id), ('branch_alert', alert_time))
-        response = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
-
-        logging.debug('response {0}'.format(response.text))
-        send_message('branch_status', {'data': response.text})
-        logging.info('Branch {0} is turned on by rule'.format(line_id))
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Timeout Exception occured".format(line_id))
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
-        return None
-
-    logging.debug('return status')
-    return response
+    return SENSORS
 
 
-def branch_off(line_id):
-    """Blablbal."""
-    try:
-        logging.debug('Branch {0} is turning off by rule'.format(line_id))
-        response = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": line_id}, timeout=60)
-        send_message('branch_status', {'data': response.text})
-
-        logging.debug('response {0}'.format(response.text))
-        logging.info('Branch {0} is turned off by rule'.format(line_id))
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't turn off {0} branch by rule.Timeout Exception occured".format(line_id))
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
-        return None
-
-    logging.debug('return status')
-    return response
+@app.route("/weather_station")
+def weather_station():
+    """Synchronize with weather station."""
+    get_weather(True)
+    return str(SENSORS)
 
 
 # executes query and returns fetch* result
 def execute_request(query, method='fetchall'):
-    """Blablbal."""
+    """Use this method in case you need to get info from database."""
     conn = None
     try:
         # conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        conn = sqlite3.connect('/var/sqlite_db/test', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -187,7 +176,7 @@ def execute_request(query, method='fetchall'):
 
 # executes query and returns fetch* result
 def update_db_request(query):
-    """Blablbal."""
+    """Doesn't have fetch* methods. Returns lastrowid after database insert command."""
     conn = None
     lastrowid = 0
     try:
@@ -213,7 +202,7 @@ def update_db_request(query):
 
 
 def get_next_active_rule(line_id):
-    """Blablbal."""
+    """Return nex active rule."""
     query = QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
     if res is None:
@@ -224,7 +213,7 @@ def get_next_active_rule(line_id):
 
 
 def update_all_rules():
-    """Blablbal."""
+    """Set next active rules for all branches."""
     try:
         for i in range(1, len(RULES_FOR_BRANCHES), 1):
             RULES_FOR_BRANCHES[i] = get_next_active_rule(i)
@@ -233,122 +222,16 @@ def update_all_rules():
         logging.error("Exeption occured while updating all rules. {0}".format(e))
 
 
-def inspect_conditions(rule):
-    """Blablabla."""
-    if (RULES_ENABLED is False):
-        logging.warn("All rules are disabled on demand")
-        return False
-
-    if rule is None:
-        return False
-
-    if (get_humidity()['allow_irrigation'] is False):
-        if (rule['rule_id'] == 1):
-            update_db_request(QUERY[mn() + '_state_6'].format(rule['id']))
-            logging.warn("Rule '{0}' is canceled because of humidity sensor".format(str(rule)))
-            RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
-            return False
-        else:
-            logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
-            return True
-
-
-def enable_rule():
-    """Blablbal."""
-    try:
-        logging.info("enable rule thread started.")
-
-        logging.info("Updating rules on start.")
-        update_all_rules()
-        logging.debug("rules updated")
-
-        while True:
-            # logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))
-            time.sleep(10)
-
-            for rule in RULES_FOR_BRANCHES:
-                if (inspect_conditions(rule) is False):
-                    continue
-
-                logging.info("Rule '{0}' is going to be executed".format(str(rule)))
-
-                if (datetime.datetime.now() >= rule['timer']):
-                    logging.info("Rule '{0}' execution started".format(str(rule)))
-                    if (rule['line_id'] == 17):
-                        arduino_branch_name = 'pump'
-                    else:
-                        arduino_branch_name = rule['line_id']
-
-                    logging.debug("arduino_branch_name retrieved : {0}".format(arduino_branch_name))
-
-                    if rule['rule_id'] == 1:
-                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
-
-                        response = branch_on(rule['line_id'])
-                        if response is None:
-                            logging.error("Can't turn on {0} branch".format(rule['line_id']))
-                            continue
-
-                        json_data = json.loads(response.text)
-                        if (json_data[str(arduino_branch_name)] == '0'):
-                            logging.error("Can't turn on {0} branch".format(rule['line_id']))
-                            continue
-
-                        if (json_data[str(arduino_branch_name)] == '1'):
-                            logging.info("Turned on {0} branch".format(rule['line_id']))
-                            logging.debug("updating db")
-                            update_db_request(QUERY[mn()].format(rule['id']))
-
-                            logging.debug("get next active rule")
-                            RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
-                            logging.info("Rule '{0}' is done. Removing".format(str(rule)))
-
-                    if rule['rule_id'] == 2:
-                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
-                        response = branch_off(rule['line_id'])
-                        if response is None:
-                            logging.error("Can't turn off {0} branch".format(rule['line_id']))
-                            continue
-
-                        json_data = json.loads(response.text)
-                        if (json_data[str(arduino_branch_name)] == '1'):
-                            logging.error("Can't turn off {0} branch".format(rule['line_id']))
-                            continue
-
-                        if (json_data[str(arduino_branch_name)] == '0'):
-                            logging.info("Turned off {0} branch".format(rule['line_id']))
-                            logging.debug("updating db")
-                            update_db_request(QUERY[mn()].format(rule['id']))
-                            logging.debug("get next active rule")
-                            RULES_FOR_BRANCHES[rule['line_id']] = get_next_active_rule(rule['line_id'])
-                            logging.info("Rule '{0}' is done. Removing".format(str(rule)))
-
-    except Exception as e:
-        logging.error("enable rule thread exception occured. {0}".format(e))
-    finally:
-        logging.info("enable rule thread stopped.")
-
-thread = threading.Thread(name='enable_rule', target=enable_rule)
-thread.setDaemon(True)
-thread.start()
-
-
-@app.route("/isalive")
-def errorlist():
-    """Blablbal."""
-    return "enable_rule.isAlive(): " + str(thread.isAlive())
-
-
 @app.route("/update_all_rules")
 def update_rules():
-    """Blablbal."""
+    """Synchronize rules with database."""
     update_rules()
     return str(RULES_FOR_BRANCHES)
 
 
 @app.route("/branches_names")
 def branches_names():
-    """Blablbal."""
+    """Return branch names."""
     branch_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
     if res is None:
@@ -362,19 +245,13 @@ def branches_names():
 
 
 @app.route("/")
-def beta():
-    """Blablbal."""
+def index():
+    """Index page."""
     return app.send_static_file('index.html')
 
 
-@app.route("/beta")
-def hello():
-    """Blablbal."""
-    return str(RULES_FOR_BRANCHES)
-
-
-def get_table_template(query=None):
-    """Blablbal."""
+def get_table_body_only(query=None):
+    """If no query is passed returns all entries from life table."""
     if (query is None):
         query = QUERY[mn()]
 
@@ -397,12 +274,12 @@ def get_table_template(query=None):
             rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
                 'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
-    template = render_template('table_only.html', my_list=rows)
+    template = render_template('timetable_table_only.html', my_list=rows)
     return template
 
 
-@app.route("/list")
-def list():
+@app.route("/timetable")
+def timetable():
     """Blablbal."""
     list_arr = execute_request(QUERY[mn()].format(1, 24), 'fetchall')
     rows = []
@@ -421,16 +298,16 @@ def list():
         rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
             'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
-    template = render_template('list.html', my_list=rows)
+    template = render_template('timetable.html', my_list=rows)
     return template
 
 
-@app.route("/list_all")
-def list_all():
-    """Blablbal."""
+@app.route("/history")
+def history():
+    """Return history page if no parameters passed and only table body if opposite."""
     if 'days' in request.args:
         days = int(request.args.get('days'))
-        return get_table_template(QUERY[mn() + '_1'].format(days))
+        return get_table_body_only(QUERY[mn() + '_1'].format(days))
 
     list_arr = execute_request(QUERY[mn() + '_2'], 'fetchall')
     rows = []
@@ -456,7 +333,7 @@ def list_all():
 
 @app.route("/add_rule")
 def add_rule():
-    """Blablbal."""
+    """Used in add rule modal window."""
     is_interval = request.args.get('is_interval')
     if (is_interval is None):
         logging.error("no interval parameter passed")
@@ -497,18 +374,18 @@ def add_rule():
         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
-    template = get_table_template()
+    template = get_table_body_only()
     send_message('list_update', {'data': template})
     return template
 
 
 @app.route("/remove_rule")
 def remove_rule():
-    """Blablbal."""
+    """User can remove rule from ongoing rules table."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
-    template = get_table_template()
+    template = get_table_body_only()
     send_message('list_update', {'data': template})
     return template
 
@@ -519,42 +396,42 @@ def remove_rule():
 
 @app.route("/activate_rule")
 def activate_rule():
-    """Blablbal."""
+    """Rule can be activated from timetable and hostory pages."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
-    template = get_table_template()
+    template = get_table_body_only()
     send_message('list_update', {'data': template})
     return template
 
 
 @app.route("/deactivate_rule")
 def deactivate_rule():
-    """Blablbal."""
+    """Rule can be deactivated from timetable and hostory pages."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
-    template = get_table_template()
+    template = get_table_body_only()
     send_message('list_update', {'data': template})
     return template
 
 
 @app.route("/deactivate_all_rules")
 def deactivate_all_rules():
-    """Blablbal."""
+    """User can deactivate all rules for one day and a week."""
     id = int(request.args.get('id'))
     # 1-24h;2-7d;3-on demand
     if (id == 1):
         update_db_request(QUERY[mn() + '_1'])
         update_all_rules()
-        template = get_table_template()
+        template = get_table_body_only()
         send_message('list_update', {'data': template})
         return template
 
     if (id == 2):
         update_db_request(QUERY[mn() + '_2'])
         update_all_rules()
-        template = get_table_template()
+        template = get_table_body_only()
         send_message('list_update', {'data': template})
         return template
 
@@ -566,7 +443,7 @@ def deactivate_all_rules():
 
 
 def ongoing_rules_table():
-    """Blablbal."""
+    """Return only table for ongoing rules page."""
     list_arr = execute_request(QUERY[mn()], 'fetchall')
     if (list_arr is None):
         list_arr = []
@@ -590,7 +467,7 @@ def ongoing_rules_table():
 
 @app.route("/ongoing_rules")
 def ongoing_rules():
-    """Blablbal."""
+    """Return ongoing_rules.html."""
     list_arr = execute_request(QUERY[mn()], 'fetchall')
     if (list_arr is None):
         list_arr = []
@@ -614,7 +491,7 @@ def ongoing_rules():
 
 @app.route("/add_ongoing_rule")
 def add_ongoing_rule():
-    """Blablbal."""
+    """User can add ongoing rule from ui."""
     branch_id = int(request.args.get('branch_id'))
     time_min = int(request.args.get('time_min'))
     time_start = request.args.get('datetime_start')
@@ -629,7 +506,7 @@ def add_ongoing_rule():
 
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
-    """Blablbal."""
+    """User can remove ongoing rule from ui."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
@@ -640,7 +517,7 @@ def remove_ongoing_rule():
 
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
-    """Blablbal."""
+    """User can edit ongoing rule from ui."""
     id = int(request.args.get('id'))
     # update_db_request(QUERY[mn()].format(id))
     update_all_rules()
@@ -651,7 +528,7 @@ def edit_ongoing_rule():
 
 @app.route("/activate_ongoing_rule")
 def activate_ongoing_rule():
-    """Blablbal."""
+    """User can activate ongoing rule from ui."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
@@ -662,7 +539,7 @@ def activate_ongoing_rule():
 
 @app.route("/deactivate_ongoing_rule")
 def deactivate_ongoing_rule():
-    """Blablbal."""
+    """User can deactivate ongoing rule from ui."""
     id = int(request.args.get('id'))
     update_db_request(QUERY[mn()].format(id))
     update_all_rules()
@@ -671,77 +548,83 @@ def deactivate_ongoing_rule():
     return template
 
 
-@app.route("/get_list")
-def get_list():
+@app.route("/get_timetable_list")
+def get_timetable_list():
     """Blablbal."""
     if 'days' in request.args:
         days = int(request.args.get('days'))
-        return get_table_template(QUERY[mn() + '_1'].format(days))
+        return get_table_body_only(QUERY[mn() + '_1'].format(days))
 
     if 'before' in request.args and 'after' in request.args:
         before = int(request.args.get('before'))
         after = int(request.args.get('after'))
-        return get_table_template(QUERY[mn() + '_2'].format(before, after))
+        return get_table_body_only(QUERY[mn() + '_2'].format(before, after))
 
 
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
-    """Blablbal."""
+    """Return status of arduino relay."""
     try:
         response_status = requests.get(url=ARDUINO_IP + '/branch_status')
-        return (response_status.text, response_status.status_code)
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
         abort(404)
 
+    return (response_status.text, response_status.status_code)
+
 
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     """Blablbal."""
-    is_interval = request.args.get('is_interval')
-    if (is_interval is None):
-        logging.error("no interval parameter passed")
+    mode = request.args.get('mode')
+    if (mode is None):
+        logging.error("no 'mode' parameter passed")
         abort(404)
-    is_interval = str(is_interval)
 
-    if (is_interval == 'false'):
+    if (mode == 'single'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
-    elif (is_interval == 'true'):
+    elif (mode == 'interval'):
         id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
         time_wait = int(request.args.get('time_wait'))
         num_of_intervals = int(request.args.get('quantity'))
+    elif (mode == 'auto'):
+        id = int(request.args.get('id'))
+        # time_min = int(request.args.get('time_min')) || 25
+        time_min = 25
     else:
-        logging.error("incorrect interval parameter passed: {0}".format(is_interval))
+        logging.error("incorrect mode parameter passed: {0}".format(mode))
         abort(404)
 
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
-        response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=60)
+        response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload)
         send_message('branch_status', {'data': response_on.text})
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
 
-    interval_id = str(uuid.uuid4())
-    now = datetime.datetime.now()
-    stop_time = now + datetime.timedelta(minutes=time_min)
+    # needs to be executed in both cases single and interval, but in in auto
+    if (mode != 'auto'):
+        interval_id = str(uuid.uuid4())
+        now = datetime.datetime.now()
+        stop_time = now + datetime.timedelta(minutes=time_min)
 
-    update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id))
-    lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
-    logging.debug("lastid:{0}".format(lastid))
+        update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id))
+        lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
+        logging.debug("lastid:{0}".format(lastid))
 
-    res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
-    logging.debug("res:{0}".format(res[0]))
+        res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
+        logging.debug("res:{0}".format(res[0]))
 
-    RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
-    logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+        RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
+        logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
 
-    if (is_interval == 'true'):
-        # first interval is executed
+    if (mode == 'interval'):
+        # first interval is already added
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
@@ -749,32 +632,46 @@ def activate_branch():
             update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
-    logging.info("Branch '{0}' activated manually".format(id))
+    if (mode == 'auto'):
+        logging.info("Branch '{0}' activated from rules service".format(id))
+    else:
+        logging.info("Branch '{0}' activated manually".format(id))
+
     return (response_on.text, response_on.status_code)
 
 
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
-    """Blablbal."""
+    """Route is used to disable branch."""
+    """Can be executed manaully - row will be added to database
+    or with rules service - no new row will be added to database"""
     id = int(request.args.get('id'))
+    mode = request.args.get('mode')
+    if (mode is None):
+        logging.error("no 'mode' parameter passed")
+        abort(404)
 
     try:
-        response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id}, timeout=60)
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
-        logging.error(e)
+        response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id})
+    except requests.exceptions.RequestException as e:
+        logging.error(e.inspect)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
 
-    now = datetime.datetime.now()
-    if RULES_FOR_BRANCHES[id] is not None:
-        update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['interval_id']))
+    if (mode == 'manually'):
+        now = datetime.datetime.now()
+        if RULES_FOR_BRANCHES[id] is not None:
+            update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['interval_id']))
+        else:
+            update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
+
+        RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
+        logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+
+        logging.info("Branch '{0}' deactivated manually".format(id))
     else:
-        update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
+        logging.info('No new entries is added to database.')
 
-    RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
-    logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
-
-    logging.info("Branch '{0}' deactivated manually".format(id))
     return (response_off.text, response_off.status_code)
 
 
@@ -786,17 +683,6 @@ def weather():
     json_data = json.loads(response.text)
     return jsonify(
         temperature=str(json_data[0]['Temperature']['Metric']['Value'])
-    )
-
-
-@app.route("/humidity_sensor")
-def humidity_sensor():
-    """Blablbal."""
-    hum = get_humidity()
-    return jsonify(
-        tank_sensor=hum['tank_sensor'],
-        allow_irrigation=hum['allow_irrigation'],
-        text=hum['text']
     )
 
 
