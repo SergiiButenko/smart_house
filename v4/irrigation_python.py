@@ -3,17 +3,18 @@
 from flask import Flask
 from flask import jsonify, request, render_template
 from flask import abort
+from eventlet import wsgi
 import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
 import json
 import requests
-from locale import setlocale, LC_ALL
 import inspect
 import sqlite3
 import logging
 import uuid
+import redis
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -22,7 +23,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
-
+redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 ARDUINO_IP = 'http://192.168.1.10'
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
@@ -33,8 +34,8 @@ ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 
 HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 18
-SENSORS = {'time': datetime.now, 'data': {'temperature': 0, 'humidity': 0, 'rain': False, 'daylight': False}, 
-'user_message': '', 'allow_irrigation': False}
+SENSORS = {'time': datetime.datetime.now(), 'data': {'temperature': 0, 'humidity': 0, 'rain': False, 'daylight': False},
+'user_message': '', 'allow_irrigation': False, 'rule_status': 0}
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
@@ -69,8 +70,6 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-setlocale(LC_ALL, 'ru_UA.utf-8')
-
 
 @socketio.on_error_default
 def error_handler(e):
@@ -90,14 +89,29 @@ def disconnect():
     logging.info('Client disconnected')
 
 
-def set_next_rule_in_redis(branch_id, data):
+def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
-    return data
+    try:
+        data = json.dumps(data)
+        res = redis_db.set(branch_id, data)
+    except Exception as e:
+        logging.error("Can't save data to redis. Exception occured {0}".format(e))
+
+    return res
 
 
-def get_next_rule_in_redis(branch_id):
+def get_next_rule_from_redis(branch_id):
     """Get next rule from redis."""
-    return 'data'
+    try:
+        data = redis_db.get(branch_id)
+        if data is None:
+            return None
+
+        json_to_data = json.loads(data.decode("utf-8"))
+    except Exception as e:
+        logging.error("Can't get data from redis. Exception occured {0}".format(e))
+
+    return json_to_data
 
 
 def send_message(channel, data):
@@ -110,9 +124,9 @@ def send_message(channel, data):
         logging.error("Can't send message. Exeption occured")
 
 
-def get_weather(force_update=False):
+def get_weather(force_update='false', ignore_sensors='false'):
     """Use data from weather station. Refresh data per hour."""
-    if (force_update is True or datetime.datetime.now() > (datetime.datetime.now() + datetime.timedelta(minutes=60))):
+    if (force_update == 'true' or datetime.datetime.now() > (datetime.datetime.now() + datetime.timedelta(minutes=60))):
         json_data = ''
         try:
             response = requests.get(url=ARDUINO_WEATHER_IP + "/weather")
@@ -131,21 +145,31 @@ def get_weather(force_update=False):
     SENSORS['data']['allow_irrigation'] = True
     SENSORS['data']['user_message'] = 'Автоматический полив разрешен.'
 
-    if (SENSORS['data']['rain'] is True):
+    if (ignore_sensors == 'false' and SENSORS['data']['rain'] is True):
         SENSORS['data']['allow_irrigation'] = False
         SENSORS['data']['user_message'] = 'Автоматический полив запрещен из-за дождя.'
+        SENSORS['data']['rule_status'] = 5
 
-    if (SENSORS['data']['humidity'] > HUMIDITY_MAX):
+    if (ignore_sensors == 'false' and SENSORS['data']['humidity'] > HUMIDITY_MAX):
         SENSORS['data']['allow_irrigation'] = False
         SENSORS['data']['user_message'] = 'Автоматический полив датчиком влажности.'
+        SENSORS['data']['rule_status'] = 6
 
     return SENSORS
 
 
-@app.route("/weather_station")
+@app.route("/weather2")
 def weather_station():
     """Synchronize with weather station."""
-    get_weather(True)
+    force_update = request.args.get('force_update')
+    if (force_update is None):
+        force_update = 'false'
+
+    ignore_sensors = request.args.get('ignore_sensors')
+    if (ignore_sensors is None):
+        ignore_sensors = 'false'
+
+    get_weather(force_update, ignore_sensors)
     return str(SENSORS)
 
 
@@ -215,8 +239,8 @@ def get_next_active_rule(line_id):
 def update_all_rules():
     """Set next active rules for all branches."""
     try:
-        for i in range(1, len(RULES_FOR_BRANCHES), 1):
-            RULES_FOR_BRANCHES[i] = get_next_active_rule(i)
+        for i in range(1, len(RULES_FOR_BRANCHES)):
+            set_next_rule_to_redis(i, get_next_active_rule(i))
         logging.info("Rules updated")
     except Exception as e:
         logging.error("Exeption occured while updating all rules. {0}".format(e))
@@ -225,8 +249,8 @@ def update_all_rules():
 @app.route("/update_all_rules")
 def update_rules():
     """Synchronize rules with database."""
-    update_rules()
-    return str(RULES_FOR_BRANCHES)
+    update_all_rules()
+    return "OK"
 
 
 @app.route("/branches_names")
@@ -283,20 +307,21 @@ def timetable():
     """Blablbal."""
     list_arr = execute_request(QUERY[mn()].format(1, 24), 'fetchall')
     rows = []
-    for row in list_arr:
-        id = row[0]
-        branch_name = row[1]
-        rule_name = row[2]
-        state = row[3]
-        timer = row[5]
-        active = row[6]
-        rule_state = row[7]
-        outdated = 0
-        if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
-            outdated = 1
+    if (list_arr is not None):
+        for row in list_arr:
+            id = row[0]
+            branch_name = row[1]
+            rule_name = row[2]
+            state = row[3]
+            timer = row[5]
+            active = row[6]
+            rule_state = row[7]
+            outdated = 0
+            if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
+                outdated = 1
 
-        rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
-            'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
+            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
+                'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
     template = render_template('timetable.html', my_list=rows)
     return template
@@ -620,8 +645,8 @@ def activate_branch():
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
-        RULES_FOR_BRANCHES[id] = {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
-        logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]})
+        logging.info("Rule '{0}' added".format(str(get_next_active_rule(id))))
 
     if (mode == 'interval'):
         # first interval is already added
@@ -660,13 +685,13 @@ def deactivate_branch():
 
     if (mode == 'manually'):
         now = datetime.datetime.now()
-        if RULES_FOR_BRANCHES[id] is not None:
-            update_db_request(QUERY[mn() + '_1'].format(RULES_FOR_BRANCHES[id]['interval_id']))
+        if get_next_rule_from_redis(id) is not None:
+            update_db_request(QUERY[mn() + '_1'].format(get_next_rule_from_redis(id)['interval_id']))
         else:
             update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
 
-        RULES_FOR_BRANCHES[id] = get_next_active_rule(id)
-        logging.info("Rule '{0}' added".format(str(RULES_FOR_BRANCHES[id])))
+        set_next_rule_to_redis(id, get_next_active_rule(id))
+        logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(id))))
 
         logging.info("Branch '{0}' deactivated manually".format(id))
     else:

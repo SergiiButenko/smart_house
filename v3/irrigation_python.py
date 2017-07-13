@@ -71,7 +71,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-setlocale(LC_ALL, 'ru_UA.utf-8')
+#setlocale(LC_ALL, 'ru_UA.utf-8')
 
 
 @socketio.on_error_default

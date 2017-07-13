@@ -1,4 +1,4 @@
-var server = 'http://185.20.216.94:7543';
+var server = 'http://127.0.0.1:7543';
 
 var arduino_check_connect_sec = 60 * 5;
 var arduino_check_broken_connect_sec = 60;
@@ -202,19 +202,17 @@ $(document).ready(function() {
 });
 
 function branch_on(index, time_minutes, interval_quantity, time_wait) {
-    if (interval_quantity == 0) {
-        is_interval = false
-    } else if (interval_quantity > 0) {
-        is_interval = true
+    if (interval_quantity == 1) {
+        mode = 'single'
     } else {
-        is_interval = null
+        mode = 'interval'
     }
 
     $.ajax({
         url: server + '/activate_branch',
         type: "get",
         data: {
-            'is_interval': is_interval,
+            'mode': mode,
             'id': index,
             'time_min': time_minutes,
             'quantity': interval_quantity,
@@ -239,7 +237,8 @@ function branch_off(index) {
         url: server + '/deactivate_branch',
         type: "get",
         data: {
-            'id': index
+            'id': index,
+            'mode': 'manually'
         },
         success: function(data) {
             console.log('Line ' + branch_names[index] + ' should be deactivated now');
