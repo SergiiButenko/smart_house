@@ -47,11 +47,11 @@ byte pump_status=0;
 const byte analog0=A0;
 const byte analog1=A1;
 const byte analog2=A2;
-const byte analog3=A4;
-const byte analog4=A5;
-const byte analog5=A6;
-const byte analog6=A7;
-const byte analog7=A8;
+const byte analog3=A3;
+const byte analog4=A4;
+const byte analog5=A5;
+const byte analog6=A6;
+const byte analog7=A7;
 
 byte analog0_status=0;
 byte analog1_status=0;
