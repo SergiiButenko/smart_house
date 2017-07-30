@@ -152,7 +152,7 @@ def get_weather(force_update='false', ignore_sensors='false'):
 
     if (ignore_sensors == 'false' and SENSORS['data']['humidity'] > HUMIDITY_MAX):
         SENSORS['data']['allow_irrigation'] = False
-        SENSORS['data']['user_message'] = 'Автоматический полив датчиком влажности.'
+        SENSORS['data']['user_message'] = 'Автоматический полив запрещен датчиком влажности.'
         SENSORS['data']['rule_status'] = 6
 
     return SENSORS

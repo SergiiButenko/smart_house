@@ -102,7 +102,6 @@ def execute_request(query, method='fetchall'):
     """Blablbal."""
     conn = None
     try:
-        # conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
         conn = sqlite3.connect('/var/sqlite_db/test4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
