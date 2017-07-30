@@ -1,4 +1,4 @@
-var server = 'http://127.0.0.1:7543';
+var server = 'http://185.20.216.94:7542';
 
 $(document).ready(function() {
 
