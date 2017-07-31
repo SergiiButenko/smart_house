@@ -26,7 +26,7 @@ mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
 QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
-QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
+QUERY['enable_rule'] = "UPDATE life SET state={1} WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
 
@@ -255,40 +255,45 @@ def enable_rule():
                     else:
                         arduino_branch_name = str(rule['line_id'])
 
-                    if rule['rule_id'] == 1:
-                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
+                    try:
+                        if rule['rule_id'] == 1:
+                            logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
 
-                        response = branch_on(rule['line_id'])
-                        if response is None:
-                            logging.error("Can't turn on {0} branch".format(rule['line_id']))
-                        else:
-                            json_data = json.loads(response.text)
-                            if (json_data[arduino_branch_name] == '0'):
-                                logging.error("Can't turn on {0} branch".format(rule['line_id']))
+                            response = branch_on(rule['line_id'])
+                            if response is None:
+                                raise Exception("Can't turn on {0} branch".format(rule['line_id']))
+                            else:
+                                json_data = json.loads(response.text)
+                                if (json_data[arduino_branch_name] == '0'):
+                                    raise Exception("Can't turn on {0} branch".format(rule['line_id']))
 
-                            if (json_data[arduino_branch_name] == '1'):
-                                logging.info("Turned on {0} branch".format(rule['line_id']))
+                                if (json_data[arduino_branch_name] == '1'):
+                                    logging.info("Turned on {0} branch".format(rule['line_id']))
 
-                    if rule['rule_id'] == 2:
-                        logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
-                        response = branch_off(rule['line_id'])
-                        if response is None:
-                            logging.error("Can't turn off {0} branch".format(rule['line_id']))
-                        else:
-                            json_data = json.loads(response.text)
-                            if (json_data[arduino_branch_name] == '1'):
-                                logging.error("Can't turn off {0} branch".format(rule['line_id']))
+                        if rule['rule_id'] == 2:
+                            logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
+                            response = branch_off(rule['line_id'])
+                            if response is None:
+                                raise Exception("Can't turn off {0} branch".format(rule['line_id']))
+                            else:
+                                json_data = json.loads(response.text)
+                                if (json_data[arduino_branch_name] == '1'):
+                                    raise Exception("Can't turn off {0} branch".format(rule['line_id']))
 
-                            if (json_data[arduino_branch_name] == '0'):
-                                logging.info("Turned off {0} branch".format(rule['line_id']))
+                                if (json_data[arduino_branch_name] == '0'):
+                                    logging.info("Turned off {0} branch".format(rule['line_id']))
 
-                    logging.info("Rule '{0}' is done.".format(str(rule)))
-
-                    logging.debug("updating db")
-                    update_db_request(QUERY[mn()].format(rule['id']))
-
-                    logging.debug("get next active rule")
-                    set_next_rule_to_redis(rule['line_id'], get_next_active_rule(rule['line_id']))
+                    except Exception as e:
+                        logging.error("Rule '{0}' can't be executed. Exception occured. {1}".format(str(rule), e))
+                        # Set failed state
+                        update_db_request(QUERY[mn()].format(rule['id']), 3)
+                    else:
+                        logging.info("Rule '{0}' is done.".format(str(rule)))
+                        # Set ok state
+                        update_db_request(QUERY[mn()].format(rule['id']), 2)
+                    finally:
+                        logging.debug("get next active rule")
+                        set_next_rule_to_redis(rule['line_id'], get_next_active_rule(rule['line_id']))
     except Exception as e:
         logging.error("enable rule thread exception occured. {0}".format(e))
     finally:
