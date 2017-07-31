@@ -292,11 +292,11 @@ def enable_rule():
                     except Exception as e:
                         logging.error("Rule '{0}' can't be executed. Exception occured. {1}".format(str(rule), e))
                         # Set failed state
-                        update_db_request(QUERY[mn()].format(rule['id']), 3)
+                        update_db_request(QUERY[mn()].format(rule['id'], 3))
                     else:
                         logging.info("Rule '{0}' is done.".format(str(rule)))
                         # Set ok state
-                        update_db_request(QUERY[mn()].format(rule['id']), 2)
+                        update_db_request(QUERY[mn()].format(rule['id'], 2))
                     finally:
                         logging.debug("get next active rule")
                         set_next_rule_to_redis(rule['line_id'], get_next_active_rule(rule['line_id']))
