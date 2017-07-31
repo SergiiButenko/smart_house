@@ -33,21 +33,13 @@ $(document).ready(function() {
          list=data['list']
             for (j in list) {
                 item = list[j]
-                console.log(item['name'] == undefined + " item['name'] == undefined")
-                console.log(item['name'] == 'undefined' + " item['name'] == undefined")
-                console.log(item['name'] + " name")
-
-                if (item['name'] == undefined){
-                    console.log(item['name'] == undefined + " item['name'] == undefined")
-                    console.log(item['name'] == 'undefined' + " item['name'] == undefined")
-                    console.log(item['name'] + " name")
-                    continue;
-                }
-
                 branch_names[item['id']]=item['name']
             }
 
             for (var i = 1; i < branch_names.length; i++) {
+                if (item['name'] == undefined){
+                    continue;
+                }
                 $('#branch_number_selector').append("<option data-id="+i+" id=\"option"+i+"\">"+branch_names[i]+"</option>");
             }    
             $('#branch_number_selector').selectpicker('refresh');
