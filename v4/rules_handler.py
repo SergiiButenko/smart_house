@@ -32,6 +32,7 @@ QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
 
 
 def date_handler(obj):
+    """Convert datatime to string format."""
     if hasattr(obj, 'isoformat'):
         return obj.isoformat()
     else:
@@ -39,9 +40,14 @@ def date_handler(obj):
 
 
 def date_hook(json_dict):
+    """Convert str to datatime object."""
     for (key, value) in json_dict.items():
         try:
             json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+        except:
+            pass
+        try:
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
         except:
             pass
     return json_dict
