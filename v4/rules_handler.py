@@ -31,10 +31,26 @@ QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
 
 
+def date_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError
+
+
+def date_hook(json_dict):
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        except:
+            pass
+    return json_dict
+
+
 def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
     try:
-        data = json.dumps(data)
+        data = json.dumps(data, default=date_handler)
         res = redis_db.set(branch_id, data)
     except Exception as e:
         logging.error("Can't save data to redis. Exception occured {0}".format(e))
@@ -49,7 +65,7 @@ def get_next_rule_from_redis(branch_id):
         if data is None:
             return None
 
-        json_to_data = json.loads(data.decode("utf-8"))
+        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
     except Exception as e:
         logging.error("Can't get data from redis. Exception occured {0}".format(e))
 
@@ -172,7 +188,7 @@ def update_all_rules():
 def sync_rules_from_redis():
     """Synchronize all rules that are present in redis."""
     try:
-        for i in range(1, 18):
+        for i in range(1, 18):`
             RULES_FOR_BRANCHES[i] = get_next_rule_from_redis(i)
             print(i)
             print(get_next_rule_from_redis(str(i)))

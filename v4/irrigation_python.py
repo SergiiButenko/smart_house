@@ -93,12 +93,12 @@ def disconnect():
 
 def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
+    res = False
     try:
         data = json.dumps(data)
         print(data)
         print(branch_id)
         res = redis_db.set(branch_id, data)
-        print(res)
     except Exception as e:
         logging.error("Can't save data to redis. Exception occured {0}".format(e))
 
