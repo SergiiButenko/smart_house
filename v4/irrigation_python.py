@@ -91,13 +91,28 @@ def disconnect():
     logging.info('Client disconnected')
 
 
+def date_handler(obj):
+    """Convert datatime to string format."""
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError
+
+
+def date_hook(json_dict):
+    """Convert str to datatime object."""
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        except:
+            pass
+    return json_dict
+
+
 def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
-    res = False
     try:
-        data = json.dumps(data)
-        print(data)
-        print(branch_id)
+        data = json.dumps(data, default=date_handler)
         res = redis_db.set(branch_id, data)
     except Exception as e:
         logging.error("Can't save data to redis. Exception occured {0}".format(e))
@@ -112,7 +127,7 @@ def get_next_rule_from_redis(branch_id):
         if data is None:
             return None
 
-        json_to_data = json.loads(data.decode("utf-8"))
+        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
     except Exception as e:
         logging.error("Can't get data from redis. Exception occured {0}".format(e))
 
