@@ -20,6 +20,8 @@ eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
+logging.getLogger('socketio').setLevel(logging.ERROR)
+logging.getLogger('engineio').setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
@@ -93,7 +95,10 @@ def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
     try:
         data = json.dumps(data)
+        print(data)
+        print(branch_id)
         res = redis_db.set(branch_id, data)
+        print(res)
     except Exception as e:
         logging.error("Can't save data to redis. Exception occured {0}".format(e))
 
