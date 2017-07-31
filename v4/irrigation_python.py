@@ -103,7 +103,7 @@ def date_hook(json_dict):
     """Convert str to datatime object."""
     for (key, value) in json_dict.items():
         try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
         except:
             pass
     return json_dict

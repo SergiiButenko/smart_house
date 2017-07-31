@@ -41,13 +41,13 @@ def date_handler(obj):
 def date_hook(json_dict):
     for (key, value) in json_dict.items():
         try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
         except:
             pass
     return json_dict
 
 
-def set_next_rule_to_redis(branch_id, data):
+def set_next_rule_to_redis(branch_id, data):`
     """Set next rule in redis."""
     try:
         data = json.dumps(data, default=date_handler)
