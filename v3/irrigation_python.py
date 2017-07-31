@@ -13,7 +13,7 @@ import requests
 import threading
 import time
 from locale import setlocale, LC_ALL
-from time import strftimeget
+from time import strftime
 import inspect
 import sqlite3
 import logging
