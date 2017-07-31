@@ -188,7 +188,7 @@ def update_all_rules():
 def sync_rules_from_redis():
     """Synchronize all rules that are present in redis."""
     try:
-        for i in range(1, 18):`
+        for i in range(1, 18):
             RULES_FOR_BRANCHES[i] = get_next_rule_from_redis(i)
             print(i)
             print(get_next_rule_from_redis(str(i)))
