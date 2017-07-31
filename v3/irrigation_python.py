@@ -270,7 +270,7 @@ def enable_rule():
                 if (inspect_conditions(rule) is False):
                     continue
 
-                # if (get_humidity()['allow_irrigation'] is False):
+`                # if (get_humidity()['allow_irrigation'] is False):
                 #     if (rule['rule_id'] == 1):
                 #         update_db_request(QUERY[mn() + '_state_6'].format(rule['id']))
                 #         logging.warn("Rule '{0}' is canceled because of humidity sensor".format(str(rule)))

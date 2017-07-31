@@ -33,6 +33,10 @@ $(document).ready(function() {
          list=data['list']
             for (j in list) {
                 item = list[j]
+                if (item['name'] == undefined){
+                    continue;
+                }
+
                 branch_names[item['id']]=item['name']
             }
 
@@ -106,7 +110,7 @@ $(document).ready(function() {
                              $('.bootstrap-datetimepicker-widget').hide();
                              $('#datetimepicker2_input').blur();
                              $.ajax({
-                             url: server + '/get_list',
+                             url: server + '/history',
                              type: "get",
                              data: {
                                  'before': '0',
