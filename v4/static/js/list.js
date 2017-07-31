@@ -34,6 +34,9 @@ $(document).ready(function() {
             for (j in list) {
                 item = list[j]
                 if (item['name'] == undefined){
+                    console.log(item['name'] == undefined + " item['name'] == undefined")
+                    console.log(item['name'] == 'undefined' + " item['name'] == undefined")
+                    console.log(item['name'] + " name")
                     continue;
                 }
 
@@ -110,7 +113,7 @@ $(document).ready(function() {
                              $('.bootstrap-datetimepicker-widget').hide();
                              $('#datetimepicker2_input').blur();
                              $.ajax({
-                             url: server + '/history',
+                             url: server + '/get_timetable_list',
                              type: "get",
                              data: {
                                  'before': '0',
