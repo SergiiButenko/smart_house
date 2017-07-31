@@ -629,7 +629,7 @@ def activate_branch():
     mode = request.args.get('mode')
     if (mode is None):
         logging.error("no 'mode' parameter passed")
-        abort(404)
+        abort(500)
 
     if (mode == 'single'):
         id = int(request.args.get('id'))
@@ -645,7 +645,7 @@ def activate_branch():
         time_min = 25
     else:
         logging.error("incorrect mode parameter passed: {0}".format(mode))
-        abort(404)
+        abort(500)
 
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
@@ -654,7 +654,7 @@ def activate_branch():
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        abort(404)
+        abort(500)
 
     # needs to be executed in both cases single and interval, but in in auto
     if (mode != 'auto'):
@@ -698,14 +698,15 @@ def deactivate_branch():
     mode = request.args.get('mode')
     if (mode is None):
         logging.error("no 'mode' parameter passed")
-        abort(404)
+        abort(500)
 
     try:
         response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id})
+        send_message('branch_status', {'data': response_off.text})
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        abort(404)
+        abort(500)
 
     if (mode == 'manually'):
         now = datetime.datetime.now()

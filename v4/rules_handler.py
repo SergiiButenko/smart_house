@@ -81,8 +81,7 @@ def get_next_rule_from_redis(branch_id):
 def branch_on(line_id, alert_time=25):
     """Blablbal."""
     try:
-        payload = (('id', line_id), ('mode', 'auto'))
-        response = requests.get(url=BACKEND_IP + '/activate_branch', params=payload)
+        response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'mode': 'auto'})
         response.raise_for_status()
 
         logging.debug('response {0}'.format(response.text))
