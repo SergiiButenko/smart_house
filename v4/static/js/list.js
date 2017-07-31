@@ -37,7 +37,7 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                if (item['name'] == undefined){
+                if (branch_names[i] == undefined){
                     continue;
                 }
                 $('#branch_number_selector').append("<option data-id="+i+" id=\"option"+i+"\">"+branch_names[i]+"</option>");
