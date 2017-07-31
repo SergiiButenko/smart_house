@@ -77,6 +77,7 @@ def branch_on(line_id, alert_time=25):
     try:
         payload = (('id', line_id), ('mode', 'auto'))
         response = requests.get(url=BACKEND_IP + '/activate_branch', params=payload)
+        response.raise_for_status()
 
         logging.debug('response {0}'.format(response.text))
 
@@ -98,6 +99,7 @@ def branch_off(line_id):
     try:
         logging.debug('Branch {0} is turning off by rule'.format(line_id))
         response = requests.get(url=BACKEND_IP + '/deactivate_branch', params={"id": line_id, 'mode': 'auto'})
+        response.raise_for_status()
 
         logging.debug('response {0}'.format(response.text))
         logging.info('Branch {0} is turned off by rule'.format(line_id))

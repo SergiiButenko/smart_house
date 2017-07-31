@@ -699,7 +699,7 @@ def deactivate_branch():
     try:
         response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id})
     except requests.exceptions.RequestException as e:
-        logging.error(e.inspect)
+        logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(404)
 
@@ -724,11 +724,15 @@ def deactivate_branch():
 def weather():
     """Blablbal."""
     url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
-    response = requests.get(url=url)
-    json_data = json.loads(response.text)
-    return jsonify(
-        temperature=str(json_data[0]['Temperature']['Metric']['Value'])
-    )
+    try:
+        response = requests.get(url=url)
+        response.raise_for_status()
+        json_data = json.loads(response.text)
+        return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't get weather info Exception occured")
+        return jsonify(temperature="0")
 
 
 @app.route("/sensors")
