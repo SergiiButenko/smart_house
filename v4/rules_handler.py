@@ -17,7 +17,7 @@ redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 BACKEND_IP = 'http://127.0.0.1:7543'
 
 HUMIDITY_MAX = 1000
-RULES_FOR_BRANCHES = [None] * 18
+RULES_FOR_BRANCHES = [None] * 19
 
 RULES_ENABLED = True
 
@@ -190,8 +190,6 @@ def sync_rules_from_redis():
     try:
         for i in range(1, 18):
             RULES_FOR_BRANCHES[i] = get_next_rule_from_redis(i)
-            print(i)
-            print(get_next_rule_from_redis(str(i)))
     except Exception as e:
         logging.error("Exeption occured while synchronizing rules from redis. {0}".format(e))
         raise e
@@ -203,21 +201,21 @@ def inspect_conditions(rule):
         if rule is None:
             return False
 
-        if (RULES_ENABLED is False):
-            logging.warn("All rules are disabled on demand")
-            return False
+        # if (RULES_ENABLED is False):
+        #     logging.warn("All rules are disabled on demand")
+        #     return False
 
-        response = requests.get(url=BACKEND_IP + '/weather2', params={"force_update": 'false'})
-        logging.debug('response {0}'.format(response.text))
+        # response = requests.get(url=BACKEND_IP + '/weather2', params={"force_update": 'false'})
+        # logging.debug('response {0}'.format(response.text))
 
-        json_data = json.loads(response.text)
-        if (json_data['data']['allow_irrigation'] is False):
-            if (rule['rule_id'] == 1):
-                update_db_request(QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
-                logging.warn("Rule '{0}' is canceled. {1}".format(rule['id'], json_data['data']['user_message']))
-                return False
-            else:
-                logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
+        # json_data = json.loads(response.text)
+        # if (json_data['data']['allow_irrigation'] is False):
+        #     if (rule['rule_id'] == 1):
+        #         update_db_request(QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
+        #         logging.warn("Rule '{0}' is canceled. {1}".format(rule['id'], json_data['data']['user_message']))
+        #         return False
+        #     else:
+        #         logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
     except Exception as e:
         logging.error(e)
         logging.error("Can't check conditions for rule. Ecxeption occured")
@@ -242,8 +240,8 @@ def enable_rule():
             time.sleep(10)
 
             for rule in RULES_FOR_BRANCHES:
-                # if (inspect_conditions(rule) is False):
-                #     continue
+                if (inspect_conditions(rule) is False):
+                    continue
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
