@@ -33,6 +33,10 @@ $(document).ready(function() {
          list=data['list']
             for (j in list) {
                 item = list[j]
+                console.log(item['name'] == undefined + " item['name'] == undefined")
+                console.log(item['name'] == 'undefined' + " item['name'] == undefined")
+                console.log(item['name'] + " name")
+
                 if (item['name'] == undefined){
                     console.log(item['name'] == undefined + " item['name'] == undefined")
                     console.log(item['name'] == 'undefined' + " item['name'] == undefined")
