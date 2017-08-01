@@ -89,6 +89,9 @@
                   {% if n['state'] == 2 %}
                      <td>{{n['rule_state']}}</td>
                      <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Выполнено</button></td>
+                  {% elif n['state'] == 3 %}
+                     <td>n['rule_state']</td>
+                     <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">n['rule_state']</button></td>
                   {% elif n['outdated'] == 1 %}
                      <td>Устарело</td>
                      <td><button type="button" class="btn btn-default disabled" data-id={{n['id']}}">Устарело</button></td>
