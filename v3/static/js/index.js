@@ -1,4 +1,4 @@
-var server = 'http://185.20.216.94:7543';
+var server = 'http://185.20.216.94:7542';
 
 var arduino_check_connect_sec = 60 * 5;
 var arduino_check_broken_connect_sec = 60;
