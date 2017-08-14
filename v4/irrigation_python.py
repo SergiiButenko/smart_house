@@ -728,16 +728,17 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
-    try:
-        response = requests.get(url=url)
-        response.raise_for_status()
-        json_data = json.loads(response.text)
-        return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
-        logging.error("Can't get weather info Exception occured")
-        return jsonify(temperature="0")
+    return jsonify(temperature="0")
+    # url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+    # try:
+    #     response = requests.get(url=url)
+    #     response.raise_for_status()
+    #     json_data = json.loads(response.text)
+    #     return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
+    # except requests.exceptions.RequestException as e:
+    #     logging.error(e)
+    #     logging.error("Can't get weather info Exception occured")
+    #     return jsonify(temperature="0")
 
 
 @app.route("/sensors")
