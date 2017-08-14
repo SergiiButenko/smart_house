@@ -1,5 +1,4 @@
-var server = 'http://185.20.216.94:7543'; 
-//var server = 'http://127.0.0.1:7543';
+var server = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
 var arduino_check_connect_sec = 60*5;
 var arduino_check_broken_connect_sec = 60;

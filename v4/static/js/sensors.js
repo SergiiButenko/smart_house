@@ -1,4 +1,4 @@
-var server = 'http://185.20.216.94:7543';
+var server = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
 $(document).ready(function() {
 
