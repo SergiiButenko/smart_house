@@ -1,4 +1,4 @@
-var server = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+var server = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 
 var arduino_check_connect_sec = 60 * 5;
 var arduino_check_broken_connect_sec = 60;
@@ -7,14 +7,14 @@ var branch_names = [];
 
 $(document).ready(function() {
 
-    var $loading = $('#loader').hide();
-    $(document)
-        .ajaxStart(function() {
-            $loading.show();
-        })
-        .ajaxStop(function() {
-            $loading.hide();
-        });
+    // var $loading = $('#loader').hide();
+    // $(document)
+    //     .ajaxStart(function() {
+    //         $loading.show();
+    //     })
+    //     .ajaxStop(function() {
+    //         $loading.hide();
+    //     });
 
     //Rename branches
     $.ajax({
@@ -27,39 +27,24 @@ $(document).ready(function() {
             }
 
             for (var i = 1; i < branch_names.length; i++) {
-                if (branch_names[i] != undefined){
-                    $('#label-' + i).show();
+                if (branch_names[i] != undefined) {
+                    $('#card-' + i).show();
                     $('#title-' + i).text(branch_names[i]);
                 } else {
-                    $('#label-' + i).hide();
+                    $('#card-' + i).hide();
                 }
             }
         }
     });
 
 
-    for (var i = 1; i <= 20; i++) {
-        $('#time_selector').append("<option data-value=" + i + " id=\"option" + i + "\">" + i + "</option>");
-        $('#time_wait_selector').append("<option data-value=" + i + " id=\"option" + i + "\">" + i + "</option>");
-    }
-    $('#time_selector').selectpicker('refresh');
-    $('#time_wait_selector').selectpicker('refresh');
-
-    for (var i = 1; i <= 10; i++) {
-        $('#interval_selector').append("<option data-value=" + i + " id=\"option" + i + "\">" + i + "</option>");
-    }
-    $('#interval_selector').selectpicker('refresh');
-
-    $('#interval_selector').on('change', function() {
-        var selected = $(this).find("option:selected").data("value");
-        if (selected == 1) {
-            $('#time_wait_selector').selectpicker('hide');
-            $('#time_wait_selector_label').hide();
-        }
-
-        if (selected > 1) {
-            $('#time_wait_selector').selectpicker('show');
-            $('#time_wait_selector_label').show();
+   $('#irrigation_intervals').on('input', function(e) {
+        console.log("here");
+        var selected = $(this).val()
+        if (selected <= 1 || selected == undefined) {
+            $('#irrigation_time_wait_group').hide();
+        } else {
+            $('#irrigation_time_wait_group').show();
         }
     });
 
@@ -75,126 +60,80 @@ $(document).ready(function() {
         update_branches(msg.data);
     });
 
-    //Add arduino touch script to determine if connection is alive
-    (function update_weather() {
-        $.ajax({
-            url: server + '/weather',
-            success: function(data) {
-                $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
-                setTimeout(update_weather, 60 * 1000 * 30);
-            },
-            global: false
-        });
-    })();
+    // //Add arduino touch script to determine if connection is alive
+    // (function update_weather() {
+    //     $.ajax({
+    //         url: server + '/weather',
+    //         success: function(data) {
+    //             $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
+    //             setTimeout(update_weather, 60 * 1000 * 30);
+    //         },
+    //         global: false
+    //     });
+    // })();
 
 
-    touch_analog_sensor();
+    // touch_analog_sensor();
 
-    //Add arduino touch script to determine if connection is alive
-    (function worker() {
-        $.ajax({
-            url: server + '/arduino_status',
-            beforeSend: function(xhr, opts) {
-                set_status_spinner();
+    // //Add arduino touch script to determine if connection is alive
+    // (function worker() {
+    //     $.ajax({
+    //         url: server + '/arduino_status',
+    //         beforeSend: function(xhr, opts) {
+    //             set_status_spinner();
 
-                if ($('#time_modal').hasClass('in')) {
-                    xhr.abort();
-                }
-            },
-            success: function(data) {
-                $('#loader').hide();
-                console.log("connected to arduino");
+    //             if ($('#time_modal').hasClass('in')) {
+    //                 xhr.abort();
+    //             }
+    //         },
+    //         success: function(data) {
+    //             $('#loader').hide();
+    //             console.log("connected to arduino");
 
-                set_status_ok();
+    //             set_status_ok();
 
-                update_branches(data);
-                setTimeout(worker, arduino_check_connect_sec * 1000);
-            },
-            error: function() {
-                console.error("Can't connect to arduino");
+    //             update_branches(data);
+    //             setTimeout(worker, arduino_check_connect_sec * 1000);
+    //         },
+    //         error: function() {
+    //             console.error("Can't connect to arduino");
 
-                set_status_error();
+    //             set_status_error();
 
-                $('#loader').show()
-                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-            },
-            complete: function() {
-                $("#button_gif").removeClass("fa-spin");
-            }
-        });
-    })();
+    //             $('#loader').show()
+    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+    //         },
+    //         complete: function() {
+    //             $("#button_gif").removeClass("fa-spin");
+    //         }
+    //     });
+    // })();
 
-    // Add labels for swticher values
-    $('.switchers-main').bootstrapToggle({
-        on: 'Остановить Полив',
-        off: 'Начать полив'
-    });
+    $('#irrigate_modal').on('hidden.bs.modal', function() {
+        $('#irrigation_minutes').val("");
+        $('#irrigation_intervals').val(1);
+        $('#irrigation_time_wait').val(1);
 
-    // Add labels for swticher values
-    $('.switchers-pump').bootstrapToggle({
-        on: 'Выключить насос',
-        off: 'Включить насос'
-    });
-
-    $('#time_modal').on('shown.bs.modal', function() {
-        var selected = $("#interval_selector option:selected").data("value");
-        if (selected == 1) {
-            $('#time_wait_selector').selectpicker('hide');
-            $('#time_wait_selector_label').hide();
-        }
-
-        if (selected > 1) {
-            $('#time_wait_selector').selectpicker('show');
-            $('#time_wait_selector_label').show();
-        }
-    })
-
-    $('#time_modal').on('hidden.bs.modal', function() {
-        $('#time_selector').val(1);
-        $('#time_selector').selectpicker('refresh');
-
-        $('#interval_selector').val(1);
-        $('#interval_selector').selectpicker('refresh');
-
-        $('#time_wait_selector').val(1);
-        $('#time_wait_selector').selectpicker('refresh');
-
-        $('#time_wait_selector').selectpicker('hide');
-        $('#time_wait_selector_label').hide();
+        $('#irrigation_time_wait_group').hide();
 
         update_branches_request();
     })
 
-    //Assign onClick for close buttons on Modal window
-    // $(".modal_close").click(function() {
-    //     update_branches_request();
-    // });
+    $(".btn-open-modal").click(function() {
+        index = $(this).data('id');
+        name = branch_names[index];
 
-    //Assign onChange for all switchers, so they open modal window
-    $(".switchers-main, .switchers-pump").change(function() {
-        if ($(this).data('user-action') == 1) {
-
-            index = $(this).data('id');
-            if ($(this).prop('checked')) {
-                name = branch_names[index];
-
-                $('#time_modal').data('id', index);
-                $('.modal-title').html(name);
-                $('#time_modal').modal('show');
-            }
-
-            if (!$(this).prop('checked')) {
-                branch_off(index);
-            }
-        }
+        $('#irrigate_modal').data('id', index);
+        $('.modal-title').html(name);
+        $('#irrigate_modal').modal('show');
     });
 
     //Function to start irrigation
     $(".start-irrigation").click(function() {
-        index = $('#time_modal').data('id');
-        time = $("#time_selector option:selected").data("value");
-        interval_quantity = $("#interval_selector option:selected").data("value");
-        time_wait = $("#time_wait_selector option:selected").data("value");
+        index = $('#irrigate_modal').data('id');
+        time = $("#irrigation_minutes").val();
+        interval_quantity = $("#irrigation_intervals").val();
+        time_wait = $("#irrigation_time_wait").val();
         console.log(branch_names[index] + " will be activated on " + time + " minutes, " + interval_quantity + " times with " + time_wait + " period");
         branch_on(index, time, interval_quantity, time_wait);
     });
@@ -257,25 +196,7 @@ function update_branches_request() {
     $.ajax({
         url: server + '/arduino_status',
         success: function(data) {
-            branches = JSON.parse(data);
-
-            toogle_checkbox(16, branches['16']);
-            toogle_checkbox(15, branches['15']);
-            toogle_checkbox(14, branches['14']);
-            toogle_checkbox(13, branches['13']);
-            toogle_checkbox(12, branches['12']);
-            toogle_checkbox(11, branches['11']);
-            toogle_checkbox(10, branches['10']);
-            toogle_checkbox(9, branches['9']);
-            toogle_checkbox(8, branches['8']);
-            toogle_checkbox(7, branches['7']);
-            toogle_checkbox(6, branches['6']);
-            toogle_checkbox(5, branches['5']);
-            toogle_checkbox(4, branches['4']);
-            toogle_checkbox(3, branches['3']);
-            toogle_checkbox(2, branches['2']);
-            toogle_checkbox(1, branches['1']);
-            toogle_checkbox(17, branches['pump']);
+            update_branches(data);
         },
         error: function() {
             console.error("Branches statuses are out-of-date");
@@ -286,35 +207,27 @@ function update_branches_request() {
 
 function update_branches(json) {
     branches = JSON.parse(json);
-    toogle_checkbox(16, branches['16']);
-    toogle_checkbox(15, branches['15']);
-    toogle_checkbox(14, branches['14']);
-    toogle_checkbox(13, branches['13']);
-    toogle_checkbox(12, branches['12']);
-    toogle_checkbox(11, branches['11']);
-    toogle_checkbox(10, branches['10']);
-    toogle_checkbox(9, branches['9']);
-    toogle_checkbox(8, branches['8']);
-    toogle_checkbox(7, branches['7']);
-    toogle_checkbox(6, branches['6']);
-    toogle_checkbox(5, branches['5']);
-    toogle_checkbox(4, branches['4']);
-    toogle_checkbox(3, branches['3']);
-    toogle_checkbox(2, branches['2']);
-    toogle_checkbox(1, branches['1']);
-    toogle_checkbox(17, branches['pump']);
+    for (var i = 0; i >= 16; i++) {
+        toogle_card(i, branches['\'' + i + '\'']);
+    }
+    toogle_card(17, branches['pump']);
 }
 
-function toogle_checkbox(element_id, branch_state) {
-    $('#' + element_id).data('user-action', 0);
-    $('#' + element_id).bootstrapToggle(get_state(branch_state));
-    $('#' + element_id).data('user-action', 1);
-
-    function get_state(i) {
-        if (i == 0)
-            return 'off';
+function toogle_card(element_id, branch_state) {
+    if (branch_state == 1) {
+        $('#card-' + element_id).addClass("card-irrigate-active");
+        $('#btn-' + element_id).removeClass("btn-open-modal");
+        if (element_id != 17)
+            $('#btn-' + element_id).html('Остановить полив');
         else
-            return 'on';
+            $('#btn-' + element_id).html('Выключить');
+    } else {
+        $('#card-' + element_id).removeClass("card-irrigate-active");
+        $('#btn-' + element_id).addClass("btn-open-modal");
+        if (element_id != 17)
+            $('#btn-' + element_id).html('Полить');
+        else
+            $('#btn-' + element_id).html('Включить');
     }
 }
 
@@ -362,14 +275,6 @@ var class_err = {
 }
 
 function set_status_error() {
-    // $('#1').bootstrapToggle('disable')
-    // $('#2').bootstrapToggle('disable')
-    // $('#3').bootstrapToggle('disable')
-    // $('#4').bootstrapToggle('disable')
-    // $('#7').bootstrapToggle('disable')
-    // $('#toggle-demo').bootstrapToggle('disable')
-    // $('#toggle-demo').bootstrapToggle('disable')
-    // $('#toggle-demo').bootstrapToggle('disable')
     $("#arduino_status").text(class_err.msg);
     $("#button_gif").removeClass().addClass(class_err.class);
     $("#status_button").removeClass().addClass('btn btn-danger btn-md');
