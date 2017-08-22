@@ -38,10 +38,9 @@ $(document).ready(function() {
     });
 
 
-   $('#irrigation_intervals').on('input', function(e) {
-        console.log("here");
-        var selected = $(this).val()
-        if (selected <= 1 || selected == undefined) {
+    $('#irrigation_intervals').on('input', function(e) {
+        var input = parseInt($(this).val());
+        if (input <= 1 || isNaN(input)) {
             $('#irrigation_time_wait_group').hide();
         } else {
             $('#irrigation_time_wait_group').show();
@@ -107,7 +106,7 @@ $(document).ready(function() {
     //             $("#button_gif").removeClass("fa-spin");
     //         }
     //     });
-    // })();
+    // })();http://rosskevin.github.io/bootstrap-material-design/components/card/
 
     $('#irrigate_modal').on('hidden.bs.modal', function() {
         $('#irrigation_minutes').val("");
@@ -131,11 +130,35 @@ $(document).ready(function() {
     //Function to start irrigation
     $(".start-irrigation").click(function() {
         index = $('#irrigate_modal').data('id');
-        time = $("#irrigation_minutes").val();
-        interval_quantity = $("#irrigation_intervals").val();
-        time_wait = $("#irrigation_time_wait").val();
-        console.log(branch_names[index] + " will be activated on " + time + " minutes, " + interval_quantity + " times with " + time_wait + " period");
-        branch_on(index, time, interval_quantity, time_wait);
+        time = parseInt($("#irrigation_minutes").val());
+        if (time == 0 || isNaN(time)) {
+            $('#irrigation_minutes_group').addClass("has-danger");
+        } else {
+            $('#irrigation_minutes_group').removeClass("has-danger");
+        }
+
+        interval_quantity = parseInt($("#irrigation_intervals").val());
+        if (interval_quantity == 0 || isNaN(interval_quantity)) {
+            $('#irrigation_intervals_group').addClass("has-danger");
+        } else {
+            $('#irrigation_intervals_group').removeClass("has-danger");
+        }
+
+        time_wait = parseInt($("#irrigation_time_wait").val());
+        if (time_wait == 0 || isNaN(time_wait)) {
+            $('#irrigation_time_wait_group').addClass("has-danger");
+        } else {
+            $('#irrigation_time_wait_group').removeClass("has-danger");
+        }
+
+        if ($('#irrigation_minutes_group').hasClass("has-danger") ||
+            $('#irrigation_intervals_group').hasClass("has-danger") ||
+            $('#irrigation_time_wait_group').hasClass("has-danger")) {
+            console.log("Fill in form correctly");
+        } else {
+            console.log(branch_names[index] + " will be activated on " + time + " minutes, " + interval_quantity + " times with " + time_wait + " period");
+            branch_on(index, time, interval_quantity, time_wait);
+        }
     });
 
 });
@@ -164,7 +187,7 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
         error: function() {
             alert("Не могу включить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
-            toogle_checkbox(index, 0);
+            toogle_card(index, 0);
 
             set_status_error();
         }
@@ -186,7 +209,7 @@ function branch_off(index) {
         error: function() {
             alert("Не могу выключить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
-            toogle_checkbox(index, 1);
+            toogle_card(index, 1);
             set_status_error();
         }
     });
