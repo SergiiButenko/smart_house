@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Bootstrap Material Design">
-    <meta name="author" content="Federico Zivolo, Kevin Ross, and Bootstrap Material Design contributors">
+    <meta name="description" content="Полив">
+    <meta name="author" content="">
     <title>
-        Dashboard Template &middot; Bootstrap Material Design
+        Полив
     </title>
     <!-- Material Design fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
@@ -94,16 +94,16 @@
         </header>
         <div id="my-drawer" class="bmd-layout-drawer">
             <header>
-                <span>Температура воздуха: 0 C*</span>
-                <span>Влажность: 100%</span>
-                <span>Осадки за вчера: 10мм</span>
+                <span id="temp">Температура воздуха: 0 C*</span>
+                <span id="hum">Влажность: 100%</span>
+                <span id="rain">Осадки за вчера: 10мм</span>
                 <br>
-                <span>Полив разрешен</span>
-                <span>Система активна</span>
+                <span id="irrigation_status">Полив разрешен</span>
+                <span id="system_status">Система активна</span>
             </header>
             <ul class="list-group">
                 <a class="list-group-item">
-        <i class="material-icons" role="presentation" href='/#'>home</i>Полив
+        <i class="material-icons" role="presentation" href='/#' >home</i>Полив
       </a>
                 <a class="list-group-item">
         <i class="material-icons" role="presentation">inbox</i>Расписание
@@ -136,7 +136,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="16" id="btn-16">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="16" data-time="" data-interval=1 data-timewait="" id="btn-16">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -150,8 +150,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="15" id="btn-15">Полить</a>
-                                <a href="#" class="btn btn-secondary btn-open-modal" data-id="15" id="btn-default-15">Полить 5 минут</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="15" data-time="" data-interval=1 data-timewait="" id="btn-15">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -167,7 +166,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="14" id="btn-14">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="14" data-time="" data-interval=1 data-timewait="" id="btn-14">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -181,7 +180,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="13" id="btn-13">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="13" data-time="" data-interval=1 data-timewait="" id="btn-13">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -197,7 +196,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="12" id="btn-12">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="12" data-time="" data-interval=1 data-timewait="" id="btn-12">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -211,7 +210,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="11" id="btn-11">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="11" data-time="" data-interval=1 data-timewait="" id="btn-11">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -227,7 +226,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="10" id="btn-10">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="10" data-time="" data-interval=1 data-timewait="" id="btn-10">Полить</a>
                             </div>
                         </div>
                     </div>
@@ -241,7 +240,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="9" id="btn-9">Полить</a>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="9" data-time="" data-interval=1 data-timewait="" id="btn-9">Полить</a>
                             </div>
                         </div>
                     </div>

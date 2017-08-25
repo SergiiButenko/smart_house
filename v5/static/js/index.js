@@ -7,6 +7,10 @@ var branch_names = [];
 
 $(document).ready(function() {
 
+    // $(".list-group-item").click(function() {
+    //     $(this).parent().children().removeClass("active");
+    //     $(this).addClass("active");
+    // });
     // var $loading = $('#loader').hide();
     // $(document)
     //     .ajaxStart(function() {
@@ -59,54 +63,52 @@ $(document).ready(function() {
         update_branches(msg.data);
     });
 
-    // //Add arduino touch script to determine if connection is alive
-    // (function update_weather() {
-    //     $.ajax({
-    //         url: server + '/weather',
-    //         success: function(data) {
-    //             $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
-    //             setTimeout(update_weather, 60 * 1000 * 30);
-    //         },
-    //         global: false
-    //     });
-    // })();
+    //Add arduino touch script to determine if connection is alive
+    (function update_weather() {
+        $.ajax({
+            url: server + '/weather',
+            success: function(data) {
+                $("#temp").text("Температура воздуха: " + data['temperature'] + " C*");
+                setTimeout(update_weather, 60 * 1000 * 30);
+            },
+            global: false
+        });
+    })();
 
 
     // touch_analog_sensor();
 
-    // //Add arduino touch script to determine if connection is alive
-    // (function worker() {
-    //     $.ajax({
-    //         url: server + '/arduino_status',
-    //         beforeSend: function(xhr, opts) {
-    //             set_status_spinner();
+    //Add arduino touch script to determine if connection is alive
+    (function worker() {
+        $.ajax({
+            url: server + '/arduino_status',
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
 
-    //             if ($('#time_modal').hasClass('in')) {
-    //                 xhr.abort();
-    //             }
-    //         },
-    //         success: function(data) {
-    //             $('#loader').hide();
-    //             console.log("connected to arduino");
+                if ($('#irrigate_modal').hasClass('in')) {
+                    xhr.abort();
+                }
+            },
+            success: function(data) {
+                $('#loader').hide();
+                console.log("connected to arduino");
 
-    //             set_status_ok();
+                set_status_ok();
 
-    //             update_branches(data);
-    //             setTimeout(worker, arduino_check_connect_sec * 1000);
-    //         },
-    //         error: function() {
-    //             console.error("Can't connect to arduino");
+                update_branches(data);
+                setTimeout(worker, arduino_check_connect_sec * 1000);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
 
-    //             set_status_error();
+                set_status_error();
 
-    //             $('#loader').show()
-    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-    //         },
-    //         complete: function() {
-    //             $("#button_gif").removeClass("fa-spin");
-    //         }
-    //     });
-    // })();http://rosskevin.github.io/bootstrap-material-design/components/card/
+                $('#loader').show()
+                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+            }
+        });
+    })();
+    // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
     $('#irrigate_modal').on('hidden.bs.modal', function() {
         $('#irrigation_minutes').val("");
@@ -293,25 +295,19 @@ var class_spin = {
     class: 'fa fa-refresh fa-spin'
 }
 var class_err = {
-    msg: ' Ошибка! Нажмите, чтобы обновить статус',
+    msg: ' Ошибка в системе',
     class: 'fa fa-exclamation-circle'
 }
 
 function set_status_error() {
-    $("#arduino_status").text(class_err.msg);
-    $("#button_gif").removeClass().addClass(class_err.class);
-    $("#status_button").removeClass().addClass('btn btn-danger btn-md');
+    $("#system_status").text(class_err.msg);
 }
 
 function set_status_ok() {
-    $("#arduino_status").text(class_ok.msg);
-    $("#button_gif").removeClass().addClass(class_ok.class);
-    $("#status_button").removeClass().addClass('btn btn-default btn-md');
+    $("#system_status").text(class_ok.msg);
 
 }
 
 function set_status_spinner() {
-    $("#arduino_status").text(class_spin.msg);
-    $("#button_gif").removeClass().addClass(class_spin.class);
-    $("#status_button").removeClass().addClass('btn btn-default btn-md');
+    $("#system_status").text(class_spin.msg);
 }
