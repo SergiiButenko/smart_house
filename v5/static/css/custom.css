@@ -1,6 +1,16 @@
-	.card-irrigate-active {
-  border-top: 10px solid green;
-  }
+ .card-irrigate-active {
+ border-top: 10px solid green;
+ }
+
+ .status-error {
+ border-top: 10px solid gray;
+ }
+
+ .status-span{
+ 	display: none;
+ 	color: red;
+ }
+
 .bmd-btn-fab {
     position: fixed;
     bottom: 20px;

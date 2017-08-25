@@ -6,7 +6,6 @@ var arduino_check_broken_connect_sec = 60;
 var branch_names = [];
 
 $(document).ready(function() {
-
     // $(".list-group-item").click(function() {
     //     $(this).parent().children().removeClass("active");
     //     $(this).addClass("active");
@@ -296,18 +295,34 @@ var class_spin = {
 }
 var class_err = {
     msg: ' Ошибка в системе',
-    class: 'fa fa-exclamation-circle'
+    class: 'status-error'
 }
 
 function set_status_error() {
     $("#system_status").text(class_err.msg);
+    $(".card").addClass(class_err.class);
+    
+    $(".btn-open-modal").removeClass('btn-block');
+    $(".btn-open-modal").addClass('disabled');
+
+    $(".status-span").show();
 }
 
 function set_status_ok() {
     $("#system_status").text(class_ok.msg);
+    
+    $(".card").removeClass(class_err.class);
+
+    $(".btn-open-modal").removeClass('disabled');
+    $(".btn-open-modal").addClass('btn-block');
+    $(".status-span").hide();
+    $(".btn-open-modal").show();
+    
+    $(".alert").alert('close')
 
 }
 
 function set_status_spinner() {
     $("#system_status").text(class_spin.msg);
+    $(".btn-open-modal").addClass('disabled');
 }
