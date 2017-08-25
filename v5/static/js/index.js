@@ -159,7 +159,16 @@ $(document).ready(function() {
         } else {
             console.log(branch_names[index] + " will be activated on " + time + " minutes, " + interval_quantity + " times with " + time_wait + " period");
             branch_on(index, time, interval_quantity, time_wait);
+            $('#irrigate_modal').modal('hide');
         }
+    });
+
+    //Function to start irrigation
+    $(".stop-irrigation").click(function() {
+        index = $(this).data('id');
+        console.log(branch_names[index] + " will be deactivated on");
+        branch_off(index);
+
     });
 
 });
@@ -232,6 +241,9 @@ function update_branches_request() {
 function update_branches(json) {
     branches = JSON.parse(json);
     for (var i = 0; i >= 16; i++) {
+        console.log(branches['\'' + i + '\''])
+        console.log(branches[i])
+        console.log(branches[i.toString();])
         toogle_card(i, branches['\'' + i + '\'']);
     }
     toogle_card(17, branches['pump']);
@@ -241,12 +253,15 @@ function toogle_card(element_id, branch_state) {
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
         $('#btn-' + element_id).removeClass("btn-open-modal");
+        $('#btn-' + element_id).addClass("stop-irrigation");
+
         if (element_id != 17)
             $('#btn-' + element_id).html('Остановить полив');
         else
             $('#btn-' + element_id).html('Выключить');
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
+        $('#btn-' + element_id).removeClass("stop-irrigation");
         $('#btn-' + element_id).addClass("btn-open-modal");
         if (element_id != 17)
             $('#btn-' + element_id).html('Полить');
@@ -301,7 +316,7 @@ var class_err = {
 function set_status_error() {
     $("#system_status").text(class_err.msg);
     $(".card").addClass(class_err.class);
-    
+
     $(".btn-open-modal").removeClass('btn-block');
     $(".btn-open-modal").addClass('disabled');
 
@@ -310,14 +325,14 @@ function set_status_error() {
 
 function set_status_ok() {
     $("#system_status").text(class_ok.msg);
-    
+
     $(".card").removeClass(class_err.class);
 
     $(".btn-open-modal").removeClass('disabled');
     $(".btn-open-modal").addClass('btn-block');
     $(".status-span").hide();
     $(".btn-open-modal").show();
-    
+
     $(".alert").alert('close')
 
 }
