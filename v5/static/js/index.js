@@ -243,7 +243,7 @@ function update_branches(json) {
     for (var i = 0; i >= 16; i++) {
         console.log(branches['\'' + i + '\''])
         console.log(branches[i])
-        console.log(branches[i.toString();])
+        console.log(branches[i.toString()])
         toogle_card(i, branches['\'' + i + '\'']);
     }
     toogle_card(17, branches['pump']);
