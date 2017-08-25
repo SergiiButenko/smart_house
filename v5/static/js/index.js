@@ -119,14 +119,9 @@ $(document).ready(function() {
         update_branches_request();
     })
 
-    $(".btn-open-modal").click(function() {
-        index = $(this).data('id');
-        name = branch_names[index];
-
-        $('#irrigate_modal').data('id', index);
-        $('.modal-title').html(name);
-        $('#irrigate_modal').modal('show');
-    });
+    // $(".btn-open-modal").click(function() {
+    //     show_modal(this);
+    // });
 
     //Function to start irrigation
     $(".start-irrigation").click(function() {
@@ -163,14 +158,6 @@ $(document).ready(function() {
         }
     });
 
-    //Function to start irrigation
-    $(".stop-irrigation").click(function() {
-        index = $(this).data('id');
-        console.log(branch_names[index] + " will be deactivated on");
-        branch_off(index);
-
-    });
-
 });
 
 function branch_on(index, time_minutes, interval_quantity, time_wait) {
@@ -195,7 +182,6 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
             update_branches(data);
         },
         error: function() {
-            alert("Не могу включить " + branch_names[index]);
             console.error("Can't update " + branch_names[index]);
             toogle_card(index, 0);
 
@@ -246,11 +232,28 @@ function update_branches(json) {
     toogle_card(17, branches['pump']);
 }
 
+//Function to stop irrigation
+function stop_irrigation() {
+    index = $(this).data('id');
+    console.log(branch_names[index] + " will be deactivated on");
+    branch_off(index);
+}
+
+//Function to stop irrigation
+function show_modal() {
+    index = $(this).data('id');
+    name = branch_names[index];
+
+    $('#irrigate_modal').data('id', index);
+    $('.modal-title').html(name);
+    $('#irrigate_modal').modal('show');
+}
+
 function toogle_card(element_id, branch_state) {
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
         $('#btn-' + element_id).removeClass("btn-open-modal");
-        $('#btn-' + element_id).addClass("stop-irrigation");
+        $('#btn-' + element_id).attr("onclick", "stop_irrigation()");
 
         if (element_id != 17)
             $('#btn-' + element_id).html('Остановить полив');
@@ -260,6 +263,7 @@ function toogle_card(element_id, branch_state) {
         $('#card-' + element_id).removeClass("card-irrigate-active");
         $('#btn-' + element_id).removeClass("stop-irrigation");
         $('#btn-' + element_id).addClass("btn-open-modal");
+        $('#btn-' + element_id).attr("onclick", "show_modal()");
         if (element_id != 17)
             $('#btn-' + element_id).html('Полить');
         else
