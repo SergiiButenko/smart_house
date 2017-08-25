@@ -11,6 +11,10 @@
  	color: red;
  }
 
+ .stop-irrigation{
+ 	display: none;
+ }
+
 .bmd-btn-fab {
     position: fixed;
     bottom: 20px;
