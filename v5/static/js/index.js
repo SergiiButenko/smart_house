@@ -249,7 +249,7 @@ function toogle_card(element_id, branch_state) {
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
         $('#btn-start-' + element_id).hide();
-        $('#btn-stop-' + element_id).show();
+        $('#btn-stop-' + element_id).css('display', 'block');
 
         if (element_id != 17)
             $('#btn-' + element_id).html('Остановить полив');
@@ -258,7 +258,7 @@ function toogle_card(element_id, branch_state) {
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
         $('#btn-stop-' + element_id).hide();
-        $('#btn-start-' + element_id).show();
+        $('#btn-start-' + element_id).css('display', 'block');
         if (element_id != 17)
             $('#btn-' + element_id).html('Полить');
         else
