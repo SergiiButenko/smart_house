@@ -250,19 +250,10 @@ function toogle_card(element_id, branch_state) {
         $('#card-' + element_id).addClass("card-irrigate-active");
         $('#btn-start-' + element_id).hide();
         $('#btn-stop-' + element_id).css('display', 'block');
-
-        if (element_id != 17)
-            $('#btn-' + element_id).html('Остановить полив');
-        else
-            $('#btn-' + element_id).html('Выключить');
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
         $('#btn-stop-' + element_id).hide();
         $('#btn-start-' + element_id).css('display', 'block');
-        if (element_id != 17)
-            $('#btn-' + element_id).html('Полить');
-        else
-            $('#btn-' + element_id).html('Включить');
     }
 }
 
