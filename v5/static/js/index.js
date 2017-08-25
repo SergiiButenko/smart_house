@@ -240,7 +240,7 @@ function update_branches_request() {
 
 function update_branches(json) {
     branches = JSON.parse(json);
-    for (var i = 0; i >= 16; i++) {
+    for (var i = 0; i <= 16; i++) {
         console.log(branches['\'' + i + '\''])
         console.log(branches[i])
         console.log(branches[i.toString()])
