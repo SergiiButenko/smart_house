@@ -6,14 +6,19 @@
 DHT dht(DHTPIN, DHT22);
 
 byte mac[] = { 0x90, 0xA2, 0xDA, 0xFE, 0x0E, 0x40 };
-IPAddress ip(192, 168, 1, 13);
+IPAddress ip(192, 168, 1, 14);
 EthernetServer server(80);  
+EthernetClient client;
 
 String HTTP_req;          // stores the HTTP request
 
 const byte branch_1 = 7;
 const byte branch_2 = 5;
 const byte branch_3 = 6;
+
+//0 is equal to pin=2;
+const byte rain_sensor = 0;
+volatile byte rain_state = 0;
 
 byte branch_1_status=0;
 byte branch_2_status=0;
@@ -38,11 +43,16 @@ byte analog5_status=0;
 const byte timers_count=4;
 unsigned long int timers[timers_count];
 
-float h = 0;
-float t = 0;
-boolean rain = false;
+//float h = 0;
+//float t = 0;
+
+byte h=0;
+byte t =0;
+
+
 int daylight_0 = 0;
 int daylight_1 = 0;
+byte rain = 0;
 
 void setup() {
   // Start Serial
@@ -63,25 +73,30 @@ void setup() {
   pinMode(analog5, INPUT);
   
   // Start the Ethernet connection and the server
-  if (Ethernet.begin(mac) == 0) {
-      Serial.println("Failed to configure Ethernet using DHCP");
-      // no point in carrying on, so do nothing forevermore:
-      // try to congifure using IP address instead of DHCP:
-      Ethernet.begin(mac, ip);
-  } 
-  
-  server.begin();
-  Serial.print("server is at ");
-  Serial.println(Ethernet.localIP());
+//  if (Ethernet.begin(mac) == 0) {
+//      Serial.println("Failed to configure Ethernet using DHCP");
+//      // no point in carrying on, so do nothing forevermore:
+//      // try to congifure using IP address instead of DHCP:
+//      Ethernet.begin(mac, ip);
+//  } 
+//  
+//  server.begin();
+//  Serial.print("server is at ");
+//  Serial.println(Ethernet.localIP());
 
   dht.begin();
+  attachInterrupt(rain_sensor, set_rain_status, RISING);
 }
 
 //MAIN
 void loop() {
-    EthernetClient client = server.available();  // try to get client
-      process_incoming_client(client);        
-      check_all_branches_timer();
+//    EthernetClient client = server.available();  // try to get client
+//      process_incoming_client(client);        
+//      check_all_branches_timer();
+
+      if (rain_state == 1){
+        send_rain_status();
+      }
 }
 //END MAIN
 
@@ -334,6 +349,17 @@ void fill_up_timers_array(){
   }
 }
 
+int ri=0;
+void send_rain_status()
+{  
+  delay(100);
+  ri=ri+1;
+    rain_state=0;  
+    Serial.print("RAIN");
+    Serial.println(ri);
+  
+}
 
-
-
+void set_rain_status(){
+  rain_state=1;
+}

@@ -55,7 +55,7 @@
     <link href="http://rosskevin.github.io/bootstrap-material-design/examples/dashboard/example.css" rel="stylesheet">
     <link href="static/css/custom.css" rel="stylesheet">
     <div class="bmd-layout-container bmd-drawer-f-l bmd-drawer-overlay-md-down bmd-drawer-in-lg-up">
-        <!--        <header class="bmd-layout-header">
+               <header class="bmd-layout-header">
             <div class="navbar navbar-light bg-faded">
                 <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="drawer" data-target="#my-drawer">
                     <span class="sr-only">Toggle drawer</span>
@@ -67,7 +67,7 @@
                     </li>
                 </ul>
                  <ul class="nav navbar-nav pull-xs-right">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
             <button class="btn bmd-btn-icon" for="search" data-toggle="collapse" data-target="#collapse-search" aria-controls="collapse-search">
               <i class="material-icons">search</i>
@@ -89,9 +89,9 @@
             </div>
           </div>
         </li>
-      </ul>
+      </ul> -->
             </div>
-        </header> -->
+        </header>
         <div id="my-drawer" class="bmd-layout-drawer">
             <header>
                 <span id="temp">Температура воздуха: 0 C*</span>
@@ -131,13 +131,14 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-16">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Последний полив: <span id="last-16">вчера</span>
+                                    <br> Следующий полив: <span id="next=16">завтра</span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="16" data-time="" data-interval=1 data-timewait="" id="btn-start-16">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="16" id="btn-stop-16">Остановить полив</a>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="16" id="btn-start-16">Полить</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="16" id="btn-stop-16">Остановить полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="16" id="btn-cancel-16">Отменить полив</a>
                                 <span class="status-span">Ошибка в системе</span>
                             </div>
                         </div>
