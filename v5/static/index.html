@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ua">
 
 <head>
     <meta charset="utf-8">
@@ -25,7 +25,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title ">Начать полив</h4>
+                    <h4 class="modal-title ">Почати полив</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group" id="irrigation_minutes_group">
@@ -33,17 +33,17 @@
                         <input iinput type="number" pattern="\d*" class="form-control" id="irrigation_minutes" autofocus required>
                     </div>
                     <div class="form-group" id="irrigation_intervals_group">
-                        <label for="irrigation_minutes">Количество повторов</label>
+                        <label for="irrigation_minutes">Кількість повторів</label>
                         <input input type="number" pattern="\d*" class="form-control" id="irrigation_intervals" value=1>
                     </div>
                     <div class="form-group" style="display:none" id="irrigation_time_wait_group">
-                        <label for="irrigation_minutes">Время между поливами</label>
+                        <label for="irrigation_minutes">Час між поливами</label>
                         <input input type="number" pattern="\d*" class="form-control" id="irrigation_time_wait" value=1 required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary start-irrigation">Полить</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary start-irrigation">Полити</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -95,10 +95,10 @@
         <div id="my-drawer" class="bmd-layout-drawer">
             <header>
                 <span id="temp">Температура воздуха: 0 C*</span>
-                <span id="hum">Влажность: 100%</span>
-                <span id="rain">Осадки за вчера: 10мм</span>
+                <span id="hum">Вологість: 100%</span>
+                <span id="rain">Осадки за вчора: 10мм</span>
                 <br>
-                <span id="irrigation_status">Полив разрешен</span>
+                <span id="irrigation_status">Полив дозволено</span>
                 <span id="system_status">Система активна</span>
             </header>
             <ul class="list-group">
@@ -106,10 +106,10 @@
         <i class="material-icons" role="presentation" href='/#' >home</i>Полив
       </a>
                 <a class="list-group-item">
-        <i class="material-icons" role="presentation">inbox</i>Расписание
+        <i class="material-icons" role="presentation">inbox</i>Розклад
       </a>
                 <a class="list-group-item">
-        <i class="material-icons" role="presentation">delete</i>История
+        <i class="material-icons" role="presentation">delete</i>Історія
       </a>
                 <a class="list-group-item">
         <i class="material-icons" role="presentation">report</i>Правила
@@ -131,15 +131,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-16">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: <span id="last-16">вчера</span>
-                                    <br> Следующий полив: <span id="next=16">завтра</span>
+                                    Останній полив: <span id="last-16"></span>
+                                    <br> Наступний полив: <span id="next-16"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="16" id="btn-start-16">Полить</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="16" id="btn-stop-16">Остановить полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="16" id="btn-cancel-16">Отменить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="16" id="btn-start-16">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="16" id="btn-stop-16">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="16" id="btn-cancel-16">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -148,14 +148,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-15">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-15"></span>
+                                    <br> Наступний полив: <span id="next-15"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="15" data-time="" data-interval=1 data-timewait="" id="btn-start-15">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="15" id="btn-stop-15">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="15" id="btn-start-15">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="15" id="btn-stop-15">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="15" id="btn-cancel-15">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -166,14 +167,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-14">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-14"></span>
+                                    <br> Наступний полив: <span id="next-14"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="14" data-time="" data-interval=1 data-timewait="" id="btn-start-14">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="14" id="btn-stop-14">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="14" id="btn-start-14">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="14" id="btn-stop-14">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="14" id="btn-cancel-14">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -182,14 +184,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-13">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-13"></span>
+                                    <br> Наступний полив: <span id="next-13"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="13" data-time="" data-interval=1 data-timewait="" id="btn-start-13">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="13" id="btn-stop-13">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="13" id="btn-start-13">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="13" id="btn-stop-13">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="13" id="btn-cancel-13">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -200,14 +203,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-12">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-12"></span>
+                                    <br> Наступний полив: <span id="next-12"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="12" data-time="" data-interval=1 data-timewait="" id="btn-start-12">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="12" id="btn-stop-12">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="12" id="btn-start-12">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="12" id="btn-stop-12">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="12" id="btn-cancel-12">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -216,14 +220,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-11">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-11"></span>
+                                    <br> Наступний полив: <span id="next-11"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="11" data-time="" data-interval=1 data-timewait="" id="btn-start-11">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="11" id="btn-stop-11">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="11" id="btn-start-11">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="11" id="btn-stop-11">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="11" id="btn-cancel-11">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -234,14 +239,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-10">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-10"></span>
+                                    <br> Наступний полив: <span id="next-10"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="10" data-time="" data-interval=1 data-timewait="" id="btn-start-10">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="10" id="btn-stop-10">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="10" id="btn-start-10">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="10" id="btn-stop-10">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="10" id="btn-cancel-10">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -250,14 +256,15 @@
                             <div class="card-block">
                                 <h4 class="card-title" id="title-9">Малина</h4>
                                 <p class="card-text">
-                                    Последний полив: вчера
-                                    <br> Следующий полив: завтра
+                                    Останній полив: <span id="last-9"></span>
+                                    <br> Наступний полив: <span id="next-9"></span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="9" data-time="" data-interval=1 data-timewait="" id="btn-start-9">Полить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="9" id="btn-stop-9">Остановить полив</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-open-modal" data-id="9" id="btn-start-9">Почати полив</a>
+                                <a href="#" class="btn btn-primary stop-irrigation" data-id="9" id="btn-stop-9">Зупинити полив</a>
+                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="9" id="btn-cancel-9">Відмінити полив</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
@@ -270,16 +277,16 @@
                                 <h4 class="card-title" id="title-17">Насос</h4>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Включить</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Выключить</a>
-                                <span class="status-span">Ошибка в системе</span>
+                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Ввімкнути</a>
+                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Вимкнути</a>
+                                <span class="status-span">В системі помилка</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-danger bmd-btn-fab">
                     <i class="material-icons">add</i>
-                </button </div>
+                </button>
                 <!-- containte -->
             </div>
         </main>

@@ -27,9 +27,9 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-ARDUINO_IP = 'http://192.168.1.10'
+#ARDUINO_IP = 'http://192.168.1.10'
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
-# ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://185.20.216.94:5555'
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
@@ -202,9 +202,10 @@ def weather_station():
 def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
-    try:
-        # conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+    try:        
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -229,8 +230,7 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        # conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -621,22 +621,43 @@ def get_timetable_list():
         return get_table_body_only(QUERY[mn() + '_2'].format(before, after))
 
 
+def form_responce_for_branches(payload):
+    """Return responce with rules."""
+    try:
+        res = [None] * 18
+        payload = json.loads(payload)
+        for branch_id in payload:
+            status = payload[branch_id]            
+            last_rule = get_last_start_rule(branch_id)
+            next_rule = get_next_active_rule(branch_id)
+            if branch_id == 'pump':
+                branch_id = 17
+                
+            res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
+        return jsonify(res)
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't form responce. Exception occured")
+        raise e
+
+
 @app.route('/arduino_status', methods=['GET'])
 def arduino_status():
     """Return status of arduino relay."""
     try:
+        logging.info("here")
         response_status = requests.get(url=ARDUINO_IP + '/branch_status')
+        response_status.raise_for_status()
+        
+        response_json = form_responce_for_branches(response_status.text)
+        response_status = response_status.status_code
+
+        return (response_json, response_status)
+
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
         abort(404)
-
-    return (response_status.text, response_status.status_code)
-
-
-def form_responce_for_branches(payload):
-    
-    return jsonify()
 
 
 @app.route('/activate_branch', methods=['GET'])
@@ -666,11 +687,15 @@ def activate_branch():
     try:
         payload = (('branch_id', id), ('branch_alert', time_min + 2))
         response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload)
-        send_message('branch_status', {'data': response_on.text})
+        response_on.raise_for_status()
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
+
+    response_json = form_responce_for_branches(response_on.text)
+    response_status = response_on.status_code
+    send_message('branch_status', {'data': response_json})
 
     # needs to be executed in both cases single and interval, but in in auto
     if (mode != 'auto'):
@@ -702,7 +727,7 @@ def activate_branch():
     else:
         logging.info("Branch '{0}' activated manually".format(id))
 
-    return (response_on.text, response_on.status_code)
+    return (response_json, response_status)
 
 
 @app.route('/deactivate_branch', methods=['GET'])
@@ -718,11 +743,15 @@ def deactivate_branch():
 
     try:
         response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id})
-        send_message('branch_status', {'data': response_off.text})
+        response_off.raise_for_status()
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
+
+    response_json = form_responce_for_branches(response_off.text)
+    response_status = response_off.status_code
+    send_message('branch_status', {'data': response_json})
 
     if (mode == 'manually'):
         now = datetime.datetime.now()
@@ -738,7 +767,7 @@ def deactivate_branch():
     else:
         logging.info('No new entries is added to database.')
 
-    return (response_off.text, response_off.status_code)
+    return (response_json, response_status)
 
 
 @app.route("/weather")
@@ -773,4 +802,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7542, debug=False)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=True)
