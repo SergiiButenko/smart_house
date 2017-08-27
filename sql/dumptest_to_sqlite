@@ -56,6 +56,7 @@ CREATE TABLE life (
     state integer DEFAULT 0 NOT NULL,
     date date NOT NULL,
     timer timestamp without time zone NOT NULL,
+    time integer default 0 NOT NULL,
     active integer DEFAULT 1 NOT NULL,
     interval_id TEXT, 
     FOREIGN KEY(line_id) REFERENCES lines(number),
