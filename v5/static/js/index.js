@@ -16,8 +16,7 @@ $(document).ready(function() {
 
     $floaty.on('mouseover click', function(e) {
       $floaty.addClass('is-active');
-      $("#card-holder").addClass("blur")
-      $("#card-holder").addClass("disabledbutton");
+      $("#card-holder").addClass("blur")      
       e.stopPropagation();
     });
 
