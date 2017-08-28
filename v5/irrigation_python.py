@@ -636,7 +636,7 @@ def form_responce_for_branches(payload):
             next_rule = get_next_active_rule(branch_id)
 
             res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
-        return jsonify(res)
+        return jsonify(branches = res)
     except Exception as e:
         logging.error(e)
         logging.error("Can't form responce. Exception occured")
@@ -803,4 +803,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7542, debug=True)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=False

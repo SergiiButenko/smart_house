@@ -250,8 +250,10 @@ function update_branches_request() {
     });
 }
 
-function update_branches(arr) {
-    for (var i = 0; i <= 17; i++) {
+function update_branches(json) {
+    json = JSON.parse(json)
+    arr = json['branches']
+    for (var i = 0; i <= arr.length; i++) {
         toogle_card(i, arr[i]);
     }
 }
