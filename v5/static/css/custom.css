@@ -29,19 +29,17 @@
    filter:blur(3px);    
 }
 
+
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 /* Setup styles - you don't need these */
 body {
   font-family: 'Roboto', sans-serif;
 }
-.container {
-  position: relative;
-  background-color: #e0e0e0;
-  margin: 25px auto 0;
-  height: 400px;
-  width: 100%;
-  max-width: 500px;
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 /* Component styles - this is what you need to grab */
