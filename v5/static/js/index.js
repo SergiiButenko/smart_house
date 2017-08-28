@@ -349,7 +349,7 @@ function set_status_error() {
     $("#system_status").text(class_err.msg);
     $(".card").addClass(class_err.class);
     $(".btn-open-modal").addClass('disabled');
-    $(".status-span").show();
+    $(".status-span").css('display', 'inline-block');
 }
 
 function set_status_ok() {

@@ -628,12 +628,13 @@ def form_responce_for_branches(payload):
         res = [None] * 18
         payload = json.loads(payload)
         for branch_id in payload:
-            status = payload[branch_id]            
-            last_rule = get_last_start_rule(branch_id)
-            next_rule = get_next_active_rule(branch_id)
             if branch_id == 'pump':
                 branch_id = 17
-                
+
+            status = payload[branch_id]
+            last_rule = get_last_start_rule(branch_id)
+            next_rule = get_next_active_rule(branch_id)
+
             res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
         return jsonify(res)
     except Exception as e:
@@ -646,10 +647,9 @@ def form_responce_for_branches(payload):
 def arduino_status():
     """Return status of arduino relay."""
     try:
-        logging.info("here")
         response_status = requests.get(url=ARDUINO_IP + '/branch_status')
         response_status.raise_for_status()
-        
+
         response_json = form_responce_for_branches(response_status.text)
         response_status = response_status.status_code
 
