@@ -6,6 +6,12 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
+    $(function () {
+            $('.navbar-collapse ul li a:not(.dropdown-toggle)').bind('click touchstart', function () {
+                    $('.navbar-toggle:visible').click();
+            });
+    });
+    
     // $(".list-group-item").click(function() {
     //     $(this).parent().children().removeClass("active");
     //     $(this).addClass("active");
