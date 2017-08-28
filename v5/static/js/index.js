@@ -16,18 +16,18 @@ $(document).ready(function() {
 
     $floaty.on('mouseover click', function(e) {
       $floaty.addClass('is-active');
-      $("#card-holder").addClass("blur")      
+      $("#card-holder").addClass("blur disabledbutton")      
       e.stopPropagation();
     });
 
     $floaty.on('mouseout', function() {
       $floaty.removeClass('is-active');
-      $("#card-holder").removeClass("blur")
+      $("#card-holder").removeClass("blur disabledbutton")
     });
 
     $('.container').on('click', function() {
       $floaty.removeClass('is-active');
-      $("#card-holder").removeClass("blur")
+      $("#card-holder").removeClass("blur disabledbutton")
     });
 
     //Rename branches

@@ -27,14 +27,19 @@
 
 .blur {
    filter:blur(3px);    
-   pointer-events: none;
 }
+
 
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 /* Setup styles - you don't need these */
 body {
   font-family: 'Roboto', sans-serif;
+}
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 /* Component styles - this is what you need to grab */
