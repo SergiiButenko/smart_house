@@ -16,21 +16,57 @@ $(document).ready(function() {
 
     $floaty.on('mouseover click', function(e) {
         $floaty.addClass('is-active');
+        $(".floaty-btn-label").css('opacity', 1);
         $("#card-holder").addClass("blur")
-        $('.btn').addClass("disabledbutton")
         e.stopPropagation();
     });
 
     $floaty.on('mouseout', function() {
         $floaty.removeClass('is-active');
+        $(".floaty-btn-label").css('opacity', 0);
         $("#card-holder").removeClass("blur")
-        $('.btn').removeClass("disabledbutton")
+    });
+
+    $('#irrigate_tommorow').on('click', function() {
+        $('#confirm_modal-body').html("Почати полив завтра?");
+        $('#irrigate_modal').data('date', 1);
+        $('#confirm_modal').modal('show');
+    });
+
+    $('#irrigate_today').on('click', function() {
+        $('#confirm_modal-body').html("Почати полив сьогодні?");
+        $('#irrigate_modal').data('date', 0);
+        $('#confirm_modal').modal('show');
     });
 
     $('.container').on('click', function() {
         $floaty.removeClass('is-active');
         $("#card-holder").removeClass("blur")
-        $('.btn').removeClass("disabledbutton")
+    });
+
+    $('#confirm_modal').on('show.bs.modal', function() {
+        $(".floaty-btn-label").css('opacity', 1);
+    })
+
+    $('#confirm_modal').on('hide.bs.modal', function() {
+        $(".floaty-btn-label").css('opacity', 0);
+    })
+
+    $(".irrigate-all").on('click', function() {
+        data = $('#irrigate_modal').data('date');
+        $.ajax({
+            url: server + '/irrigate_all',
+            type: "get",
+            data: {
+                'add_to_date': data
+            },
+            success: function(data) {
+                $('#confirm_modal').modal('hide');
+            },
+            error: function(data) {
+                $('#confirm_modal-body').html("Сталася помилка. Спробуйте ще раз");
+            }
+        });
     });
 
     //Rename branches

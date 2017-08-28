@@ -51,6 +51,26 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+    <!-- Small modal -->
+    <div id="confirm_modal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-date='0'>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Підтвердження</h4>
+                </div>
+                <div class="modal-body" id="confirm_modal-body">
+                    Полити сьогодні?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary irrigate-all">Полити</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Custom styles for this template -->
     <link href="http://rosskevin.github.io/bootstrap-material-design/examples/dashboard/example.css" rel="stylesheet">
     <link href="static/css/custom.css" rel="stylesheet">
@@ -290,16 +310,16 @@
                     <ul class="floaty-list">
                         <li class="floaty-list-item floaty-list-item--blue">
                             <span class="floaty-list-item-label">Полити все завтра</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center" id="irrigate_tommorow">
                                 <path d="M0 0h24v24h-24z" fill="none" />
                                 <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86 1.29-1.53zm-14.12-2.33l-1.28-1.53-4.6 3.85 1.29 1.53 4.59-3.85zm4.62 4.61h-1.5v6l4.75 2.85.75-1.23-4-2.37v-5.25zm-.5-4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
                             </svg>
                         </li>
                         <li class="floaty-list-item floaty-list-item--yellow">
                             <span class="floaty-list-item-label">Полити все сьогодні ввечері</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center">
-                                <path d="M19 3h-14.01c-1.1 0-1.98.9-1.98 2l-.01 14c0 1.1.89 2 1.99 2h14.01c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm0 12h-4c0 1.66-1.34 3-3 3s-3-1.34-3-3h-4.01v-10h14.01v10zm-3-5h-2v-3h-4v3h-2l4 4 4-4z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center" id="irrigate_today">
                                 <path d="M0 0h24v24h-24z" fill="none" />
+                                <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86 1.29-1.53zm-14.12-2.33l-1.28-1.53-4.6 3.85 1.29 1.53 4.59-3.85zm4.62 4.61h-1.5v6l4.75 2.85.75-1.23-4-2.37v-5.25zm-.5-4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
                             </svg>
                         </li>
                     </ul>

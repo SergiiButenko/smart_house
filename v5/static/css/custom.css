@@ -36,10 +36,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.disabledbutton {
-    pointer-events: none;
-}
-
 /* Component styles - this is what you need to grab */
 .absolute-center {
   position: absolute;
