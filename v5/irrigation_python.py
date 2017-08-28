@@ -628,10 +628,10 @@ def form_responce_for_branches(payload):
         res = [None] * 18
         payload = json.loads(payload)
         for branch_id in payload:
+            status = payload[branch_id]
             if branch_id == 'pump':
                 branch_id = 17
 
-            status = payload[branch_id]
             last_rule = get_last_start_rule(branch_id)
             next_rule = get_next_active_rule(branch_id)
 
