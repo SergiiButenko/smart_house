@@ -15,22 +15,22 @@ $(document).ready(function() {
     var $floaty = $('.floaty');
 
     $floaty.on('mouseover click', function(e) {
-      $floaty.addClass('is-active');
-      $("#card-holder").addClass("blur disabledbutton")     
-      $('.btn').prop('disabled', true); 
-      e.stopPropagation();
+        $floaty.addClass('is-active');
+        $("#card-holder").addClass("blur")
+        $('.btn').addClass("disabledbutton")
+        e.stopPropagation();
     });
 
     $floaty.on('mouseout', function() {
-      $floaty.removeClass('is-active');
-      $("#card-holder").removeClass("blur disabledbutton")
-      $('.btn').prop('disabled', false); 
+        $floaty.removeClass('is-active');
+        $("#card-holder").removeClass("blur")
+        $('.btn').removeClass("disabledbutton")
     });
 
     $('.container').on('click', function() {
-      $floaty.removeClass('is-active');
-      $("#card-holder").removeClass("blur disabledbutton")
-      $('.btn').prop('disabled', false); 
+        $floaty.removeClass('is-active');
+        $("#card-holder").removeClass("blur")
+        $('.btn').removeClass("disabledbutton")
     });
 
     //Rename branches
@@ -124,9 +124,9 @@ $(document).ready(function() {
     })();
     // http: //rosskevin.github.io/bootstrap-material-design/components/card/
 
-        $('#irrigate_modal').on('hidden.bs.modal', function() {
-            update_branches_request();
-        })
+    $('#irrigate_modal').on('hidden.bs.modal', function() {
+        update_branches_request();
+    })
 
     $(".btn-open-modal").click(function() {
         index = $(this).data('id');
@@ -306,7 +306,7 @@ function toogle_card(element_id, branch) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
 
-        if (branch_state == 1){
+        if (branch_state == 1) {
             $('#btn-cancel-' + element_id).css('display', 'inline-block');
         }
 
