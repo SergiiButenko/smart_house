@@ -119,7 +119,7 @@ $(document).ready(function() {
             }
         });
     })();
-    http: //rosskevin.github.io/bootstrap-material-design/components/card/
+    // http: //rosskevin.github.io/bootstrap-material-design/components/card/
 
         $('#irrigate_modal').on('hidden.bs.modal', function() {
             update_branches_request();
