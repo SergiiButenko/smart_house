@@ -55,7 +55,7 @@
     <link href="http://rosskevin.github.io/bootstrap-material-design/examples/dashboard/example.css" rel="stylesheet">
     <link href="static/css/custom.css" rel="stylesheet">
     <div class="bmd-layout-container bmd-drawer-f-l bmd-drawer-overlay-md-down bmd-drawer-in-lg-up">
-               <header class="bmd-layout-header">
+        <header class="bmd-layout-header">
             <div class="navbar navbar-light bg-faded">
                 <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="drawer" data-target="#my-drawer">
                     <span class="sr-only">Toggle drawer</span>
@@ -66,8 +66,8 @@
                         Home
                     </li>
                 </ul>
-                 <ul class="nav navbar-nav pull-xs-right">
-        <!-- <li class="nav-item">
+                <ul class="nav navbar-nav pull-xs-right">
+                    <!-- <li class="nav-item">
           <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
             <button class="btn bmd-btn-icon" for="search" data-toggle="collapse" data-target="#collapse-search" aria-controls="collapse-search">
               <i class="material-icons">search</i>
@@ -125,168 +125,200 @@
         </div>
         <main class="bmd-layout-content">
             <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-16">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-16">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-16"></span>
-                                    <br> Наступний полив: <span id="next-16"></span>
-                                </p>
+                <div id="card-holder">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-16">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-16">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-16"></span>
+                                        <br> Наступний полив: <span id="next-16"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="16" id="btn-start-16">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="16" id="btn-stop-16">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="16" id="btn-cancel-16">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
                             </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="16" id="btn-start-16">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="16" id="btn-stop-16">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="16" id="btn-cancel-16">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-15">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-15">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-15"></span>
+                                        <br> Наступний полив: <span id="next-15"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="15" id="btn-start-15">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="15" id="btn-stop-15">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="15" id="btn-cancel-15">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-15">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-15">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-15"></span>
-                                    <br> Наступний полив: <span id="next-15"></span>
-                                </p>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-14">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-14">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-14"></span>
+                                        <br> Наступний полив: <span id="next-14"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="14" id="btn-start-14">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="14" id="btn-stop-14">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="14" id="btn-cancel-14">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
                             </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="15" id="btn-start-15">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="15" id="btn-stop-15">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="15" id="btn-cancel-15">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-13">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-13">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-13"></span>
+                                        <br> Наступний полив: <span id="next-13"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="13" id="btn-start-13">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="13" id="btn-stop-13">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="13" id="btn-cancel-13">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-12">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-12">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-12"></span>
+                                        <br> Наступний полив: <span id="next-12"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="12" id="btn-start-12">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="12" id="btn-stop-12">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="12" id="btn-cancel-12">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-11">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-11">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-11"></span>
+                                        <br> Наступний полив: <span id="next-11"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="11" id="btn-start-11">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="11" id="btn-stop-11">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="11" id="btn-cancel-11">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-10">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-10">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-10"></span>
+                                        <br> Наступний полив: <span id="next-10"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="10" id="btn-start-10">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="10" id="btn-stop-10">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="10" id="btn-cancel-10">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-9">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-9">Назва</h4>
+                                    <p class="card-text text-muted">
+                                        Останній полив: <span id="last-9"></span>
+                                        <br> Наступний полив: <span id="next-9"></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-open-modal" data-id="9" id="btn-start-9">Почати полив</a>
+                                    <a href="#" class="btn btn-primary stop-irrigation" data-id="9" id="btn-stop-9">Зупинити полив</a>
+                                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id="9" id="btn-cancel-9">Відмінити полив</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 2rem; margin-bottom: 2rem" />
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+                            <div class="card" id="card-17">
+                                <div class="card-block">
+                                    <h4 class="card-title" id="title-17">Насос</h4>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Ввімкнути</a>
+                                    <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Вимкнути</a>
+                                    <span class="status-span">В системі помилка</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-14">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-14">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-14"></span>
-                                    <br> Наступний полив: <span id="next-14"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="14" id="btn-start-14">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="14" id="btn-stop-14">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="14" id="btn-cancel-14">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-13">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-13">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-13"></span>
-                                    <br> Наступний полив: <span id="next-13"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="13" id="btn-start-13">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="13" id="btn-stop-13">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="13" id="btn-cancel-13">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
+
+                <div class="floaty">
+                    <ul class="floaty-list">
+                        <li class="floaty-list-item floaty-list-item--blue">
+                            <span class="floaty-list-item-label">Полити все завтра</span>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center">
+            <path d="M0 0h24v24h-24z" fill="none"/>
+            <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86 1.29-1.53zm-14.12-2.33l-1.28-1.53-4.6 3.85 1.29 1.53 4.59-3.85zm4.62 4.61h-1.5v6l4.75 2.85.75-1.23-4-2.37v-5.25zm-.5-4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+        </svg>
+                        </li>
+                        <li class="floaty-list-item floaty-list-item--yellow">
+                            <span class="floaty-list-item-label">Полити все сьогодні ввечері</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="absolute-center">
+                                <path d="M19 3h-14.01c-1.1 0-1.98.9-1.98 2l-.01 14c0 1.1.89 2 1.99 2h14.01c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm0 12h-4c0 1.66-1.34 3-3 3s-3-1.34-3-3h-4.01v-10h14.01v10zm-3-5h-2v-3h-4v3h-2l4 4 4-4z" />
+                                <path d="M0 0h24v24h-24z" fill="none" />
+                            </svg>
+                        </li>
+                    </ul>
+                    <div class="floaty-btn">
+                        <span class="floaty-btn-label">Додати правило</span>   
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="floaty-btn-icon floaty-btn-icon-plus absolute-center">
+                            <path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z" fill="#fff" />
+                            <path d="M0 0h24v24h-24z" fill="none" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="floaty-btn-icon floaty-btn-icon-create absolute-center">
+                            <path d="M3 17.25v3.75h3.75l11.06-11.06-3.75-3.75-11.06 11.06zm17.71-10.21c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#fff" />
+                            <path d="M0 0h24v24h-24z" fill="none" />
+                        </svg>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-12">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-12">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-12"></span>
-                                    <br> Наступний полив: <span id="next-12"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="12" id="btn-start-12">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="12" id="btn-stop-12">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="12" id="btn-cancel-12">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-11">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-11">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-11"></span>
-                                    <br> Наступний полив: <span id="next-11"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="11" id="btn-start-11">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="11" id="btn-stop-11">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="11" id="btn-cancel-11">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-10">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-10">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-10"></span>
-                                    <br> Наступний полив: <span id="next-10"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="10" id="btn-start-10">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="10" id="btn-stop-10">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="10" id="btn-cancel-10">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-9">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-9">Назва</h4>
-                                <p class="card-text text-muted">
-                                    Останній полив: <span id="last-9"></span>
-                                    <br> Наступний полив: <span id="next-9"></span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-open-modal" data-id="9" id="btn-start-9">Почати полив</a>
-                                <a href="#" class="btn btn-primary stop-irrigation" data-id="9" id="btn-stop-9">Зупинити полив</a>
-                                <a href="#" class="btn btn-secondary cancel-irrigation" data-id="9" id="btn-cancel-9">Відмінити полив</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-                <div class="row">
-                    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                        <div class="card" id="card-17">
-                            <div class="card-block">
-                                <h4 class="card-title" id="title-17">Насос</h4>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Ввімкнути</a>
-                                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Вимкнути</a>
-                                <span class="status-span">В системі помилка</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-danger bmd-btn-fab">
+                <!-- <button type="button" class="btn btn-danger bmd-btn-fab">
                     <i class="material-icons">add</i>
-                </button>
+                </button> -->
                 <!-- containte -->
             </div>
         </main>

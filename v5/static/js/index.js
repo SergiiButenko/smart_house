@@ -6,24 +6,29 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
-    $(function () {
-            $('.navbar-collapse ul li a:not(.dropdown-toggle)').bind('click touchstart', function () {
-                    $('.navbar-toggle:visible').click();
-            });
+    $(".list-group-item").click(function() {
+        // $(this).parent().children().removeClass("active");
+        // $(this).addClass("active");
+        $('.navbar-toggler').click();
     });
-    
-    // $(".list-group-item").click(function() {
-    //     $(this).parent().children().removeClass("active");
-    //     $(this).addClass("active");
-    // });
-    // var $loading = $('#loader').hide();
-    // $(document)
-    //     .ajaxStart(function() {
-    //         $loading.show();
-    //     })
-    //     .ajaxStop(function() {
-    //         $loading.hide();
-    //     });
+
+    var $floaty = $('.floaty');
+
+    $floaty.on('mouseover click', function(e) {
+      $floaty.addClass('is-active');
+      $("#card-holder").addClass("blur")
+      e.stopPropagation();
+    });
+
+    $floaty.on('mouseout', function() {
+      $floaty.removeClass('is-active');
+      $("#card-holder").removeClass("blur")
+    });
+
+    $('.container').on('click', function() {
+      $floaty.removeClass('is-active');
+      $("#card-holder").removeClass("blur")
+    });
 
     //Rename branches
     $.ajax({
