@@ -12,7 +12,7 @@ $(document).ready(function() {
         $('.navbar-toggler').click();
     });
 
-    var $floaty = $('.floaty');
+    var $floaty = $('.floaty-btn');
 
     $floaty.on('mouseover click', function(e) {
         $floaty.addClass('is-active');
