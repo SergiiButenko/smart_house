@@ -12,23 +12,6 @@ $(document).ready(function() {
         $('.navbar-toggler').click();
     });
 
-    var $floaty = $('.floaty-btn');
-
-    $floaty.on('mouseover click', function(e) {
-        $floaty.addClass('is-active');
-        $(".floaty-btn-label").css('opacity', 1);
-        $(".absolute-center").removeClass("disabled");
-        $("#card-holder").addClass("blur")
-        e.stopPropagation();
-    });
-
-    $floaty.on('mouseout', function() {
-        $floaty.removeClass('is-active');
-        $(".floaty-btn-label").css('opacity', 0);
-        $(".absolute-center").addClass("disabled");
-        $("#card-holder").removeClass("blur")
-    });
-
     $('#irrigate_tommorow').on('click', function() {
         $('#confirm_modal-body').html("Почати полив завтра?");
         $('#irrigate_modal').data('date', 1);
@@ -40,19 +23,6 @@ $(document).ready(function() {
         $('#irrigate_modal').data('date', 0);
         $('#confirm_modal').modal('show');
     });
-
-    $('.container').on('click', function() {
-        $floaty.removeClass('is-active');
-        $("#card-holder").removeClass("blur")
-    });
-
-    $('#confirm_modal').on('show.bs.modal', function() {
-        $(".floaty-btn-label").css('opacity', 1);
-    })
-
-    $('#confirm_modal').on('hide.bs.modal', function() {
-        $(".floaty-btn-label").css('opacity', 0);
-    })
 
     $(".irrigate-all").on('click', function() {
         data = $('#irrigate_modal').data('date');
