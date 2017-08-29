@@ -17,6 +17,7 @@ $(document).ready(function() {
     $floaty.on('mouseover click', function(e) {
         $floaty.addClass('is-active');
         $(".floaty-btn-label").css('opacity', 1);
+        $(".absolute-center").removeClass("disabled");
         $("#card-holder").addClass("blur")
         e.stopPropagation();
     });
@@ -24,6 +25,7 @@ $(document).ready(function() {
     $floaty.on('mouseout', function() {
         $floaty.removeClass('is-active');
         $(".floaty-btn-label").css('opacity', 0);
+        $(".absolute-center").addClass("disabled");
         $("#card-holder").removeClass("blur")
     });
 
