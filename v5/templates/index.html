@@ -70,18 +70,18 @@
         {% endif %}
 
         <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-            <div class="card" id="card-16">
+            <div class="card" id="card-{{n}}">
                 <div class="card-block">
-                    <h4 class="card-title" id="title-"{{n}}>Назва</h4>
+                    <h4 class="card-title" id="title-{{n}}">Назва</h4>
                     <p class="card-text text-muted">
-                        Останній полив: <span id="last-"{{n}}></span>
-                        <br> Наступний полив: <span id="next-"{{n}}></span>
+                        Останній полив: <span id="last-{{n}}"></span>
+                        <br> Наступний полив: <span id="next-{{n}}"></span>
                     </p>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary btn-open-modal" data-id={{n}} id="btn-start-"{{n}}>Почати полив</a>
-                    <a href="#" class="btn btn-primary stop-irrigation" data-id={{n}} id="btn-stop-"{{n}}>Зупинити полив</a>
-                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n}} id="btn-cancel-"{{n}}>Відмінити полив</a>
+                    <a href="#" class="btn btn-primary btn-open-modal" data-id={{n}} id="btn-start-{{n}}">Почати полив</a>
+                    <a href="#" class="btn btn-primary stop-irrigation" data-id={{n}} id="btn-stop-{{n}}">Зупинити полив</a>
+                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n}} id="btn-cancel-{{n}}">Відмінити полив</a>
                     <span class="status-span">В системі помилка</span>
                 </div>
             </div>
