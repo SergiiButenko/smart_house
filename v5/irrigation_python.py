@@ -204,7 +204,7 @@ def execute_request(query, method='fetchall'):
     conn = None
     try:        
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/c/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
@@ -231,7 +231,7 @@ def update_db_request(query):
     lastrowid = 0
     try:
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/c/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -307,7 +307,7 @@ def branches_names():
 @app.route("/")
 def index():
     """Index page."""
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
 
 def get_table_body_only(query=None):
@@ -803,4 +803,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7542, debug=False)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=True)

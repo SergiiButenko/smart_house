@@ -1,34 +1,110 @@
  .card-irrigate-active {
- border-top: 10px solid green;
+     border-top: 10px solid green;
  }
 
  .status-error {
- border-top: 10px solid gray;
+     border-top: 10px solid gray;
  }
 
- .status-span{
- 	display: none;
- 	color: red;
+ .status-span {
+     display: none;
+     color: red;
  }
 
- .stop-irrigation{
- 	display: none;
+ .stop-irrigation {
+     display: none;
  }
 
-.bmd-btn-fab {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}
+ .bmd-btn-fab {
+     position: fixed;
+     bottom: 20px;
+     right: 20px;
+ }
 
-.cancel-irrigation{
-	display: none;
-}
+ .cancel-irrigation {
+     display: none;
+ }
 
-.blur {
-   filter:blur(3px);    
-}
+ .blur {
+     filter: blur(3px);
+ }
 
-.disabled {
-pointer-events: none;
-}
+ .disabled {
+     pointer-events: none;
+ }
+
+
+ a,
+ a:hover {
+     color: rgba(255, 255, 255, 0.56);
+ }
+
+ .bmd-layout-header {
+     background-color: #f5f5f5;
+     color: #757575;
+ }
+
+ .bmd-layout-header>.navbar {
+     min-height: 3.5rem;
+ }
+
+ @media (min-width: 992px) {
+     .bmd-layout-header>.navbar {
+         min-height: 4rem;
+     }
+ }
+
+ .bmd-layout-content {
+     padding-top: .5rem;
+     background-color: #f5f5f5;
+ }
+
+ .bmd-layout-drawer {
+     background-color: #37474f;
+     color: #eceff1;
+ }
+
+ .bmd-layout-drawer>header {
+     background-color: #263238;
+     height: 151px;
+ }
+
+ .bmd-layout-drawer>header .avatar {
+     width: 48px;
+     height: 48px;
+     border-radius: 24px;
+     margin-bottom: 1rem;
+ }
+
+ .bmd-layout-drawer>header .account {
+     display: flex;
+     position: relative;
+     flex-direction: row;
+     align-items: center;
+     width: 100%;
+ }
+
+ .bmd-layout-drawer>header .account .dropdown {
+     margin-left: auto;
+ }
+
+ .bmd-layout-drawer>header .account .dropdown .dropdown-menu {
+     font-size: .875rem;
+ }
+
+ .bmd-layout-drawer>header .account .dropdown .dropdown-menu .dropdown-item {
+     flex-wrap: nowrap;
+ }
+
+ .bmd-layout-drawer>.list-group .list-group-item {
+     color: rgba(255, 255, 255, 0.56);
+ }
+
+ .bmd-layout-drawer>.list-group .list-group-item:hover {
+     background-color: #00BCD4;
+     color: #37474F;
+ }
+
+ .bmd-layout-drawer>.list-group .list-group-item .material-icons {
+     color: #78909c;
+ }
