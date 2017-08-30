@@ -202,7 +202,7 @@ def weather_station():
 def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
-    try:        
+    try:
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/c/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
@@ -263,6 +263,7 @@ def get_next_active_rule(line_id):
 
 
 def get_last_start_rule(line_id):
+    """Return last compeled start irrigation rule"""
     query = QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
     if res is None:

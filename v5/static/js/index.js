@@ -353,8 +353,8 @@ function toogle_card(element_id, branch) {
         next_rule = "немає запису"
     }
 
-    $('#last-' + element_id).text(last_rule)
-    $('#next-' + element_id).text(next_rule)
+    $('#last-' + element_id).text("Останній полив: "+last_rule)
+    $('#next-' + element_id).text("<br>Наступний полив: "+next_rule)
 
 }
 
