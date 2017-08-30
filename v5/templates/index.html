@@ -62,15 +62,15 @@
 {% block container %}
 <div id="card-holder">
     <div class="row">
-        {% for n in range(0,16) %} 
+        {% for n in range(1,16) %} 
         
         {% if n is divisibleby(2) %}
         </div>
         <div class="row">
         {% endif %}
 
-        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-            <div class="card" id="card-{{n}}">
+        <!-- <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4"> -->
+            <div class="card col-xs-12 col-sm-5 col-md-6 col-lg-4" id="card-{{n}}">
                 <div class="card-block">
                     <h4 class="card-title" id="title-{{n}}">Назва</h4>
                     <p class="card-text text-muted">
@@ -85,7 +85,7 @@
                     <span class="status-span">В системі помилка</span>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
         {% endfor %}
     </div>
 
