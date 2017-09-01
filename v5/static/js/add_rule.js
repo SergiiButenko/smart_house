@@ -20,10 +20,7 @@ $(document).ready(function() {
                     "<button class=\"dropdown-item\" type=\"button\" data-id="+item['id']+">"+item['name']+"</button>"
                     );
             }
-        }
-    });
-
-    $(".dropdown-item").click(function() {
+                $(".dropdown-item").click(function() {
         id = $(this).data('id')
         
         default_time = branch[id]['default_time'] 
@@ -45,6 +42,10 @@ console.log($(this).text());
         card.find('#irrigation_intervals').val(1);
         card.find('#irrigation_time_wait').val(1);
 });
+        }
+    });
+
+
 
 
     $("#add_rule_block").click(function() {
