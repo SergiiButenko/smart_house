@@ -47,7 +47,7 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("connected to arduino");
 
-                update_branches();
+                update_branches(data);
                 
                 set_status_ok();
                 setTimeout(worker, arduino_check_connect_sec * 1000);
