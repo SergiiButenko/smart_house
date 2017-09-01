@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.standalone.css"> {% endblock %} {% block modals %}
+{% endblock %} {% block modals %}
 <div class="card_to_copy">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
         <div class="card" data-id=0>
@@ -62,11 +62,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-  <label for="example-time-input" class="col-2 col-form-label">Час</label>
-  <div class="col-10">
-    <input class="form-control" type="time" value="13:45:00" id="example-time-input">
-  </div>
-</div>
+                        <label for="example-time-input" class="col-2 col-form-label">Час</label>
+                        <div class="col-10">
+                            <input class="form-control" type="time" value="13:45:00" id="example-time-input">
+                        </div>
+                    </div>
                     <div class="form-group" id="irrigation_minutes_group">
                         <label class="control-label" for="irrigation_minutes">Тривалість полива</label>
                         <input input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
