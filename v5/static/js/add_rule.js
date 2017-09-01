@@ -43,11 +43,11 @@ $(document).ready(function() {
         element = $(".card_to_copy").children();
         $(".card-group").append(element.clone().show());
         $(".remove_card").click(function() {
-            $(this).closest(".to_remove").remove();
+            $(this).closest(".card").remove();
         });
     });
 
     $(".remove_card").click(function() {
-        $(this).closest(".to_remove").remove();
+        $(this).closest(".card").remove();
     });
 });
