@@ -2,6 +2,18 @@ var server = location.protocol + '//' + location.hostname + (location.port ? ':'
 var branch = [];
 
 $(document).ready(function() {
+
+     $('.irrigation_intervals').on('input', function(e) {
+        var input = parseInt($(this).val());
+        group = $(this).parent()
+        console.log(group)
+        if (input <= 1 || isNaN(input)) {
+            group.hide();
+        } else {
+            group.show();
+        }
+    });
+
     //Rename branches
     $.ajax({
         url: server + '/branches_names',
@@ -32,9 +44,9 @@ $(document).ready(function() {
 
                 card = $(".dropdown-item").closest(".card")
                 card.data('id', id);
-                card.find('#irrigation_minutes').val(default_time);
-                card.find('#irrigation_intervals').val(default_interval);
-                card.find('#irrigation_time_wait').val(default_time_wait);
+                card.find('.irrigation_minutes').val(default_time);
+                card.find('.irrigation_intervals').val(default_interval);
+                card.find('.irrigation_time_wait').val(default_time_wait);
             });
         }
     });
