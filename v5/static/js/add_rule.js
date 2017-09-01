@@ -32,7 +32,7 @@ $(document).ready(function() {
                     'start_time': new Date(item['start_time'])
                 }
 
-                $(".dropdown-menu").append(
+                $(".dropdown-menu-card").append(
                     "<button class=\"dropdown-item\" data-id=" + item['id'] + ">" + item['name'] + "</button>"
                 );
 
