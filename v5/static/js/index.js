@@ -50,13 +50,13 @@ $(document).ready(function() {
                 update_branches(data);
                 
                 set_status_ok();
-                setTimeout(worker, arduino_check_connect_sec * 1000);
+                setTimeout(worker2, arduino_check_connect_sec * 1000);
             },
             error: function() {
                 console.error("Can't connect to arduino");
 
                 set_status_error();
-                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+                setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
             }
         });
     })();
