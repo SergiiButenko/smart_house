@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block modals %}
+{% extends 'base.html' %} {% block custom_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> {% endblock %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block modals %}
 <div class="card_to_copy">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
         <div class="card">
@@ -93,13 +94,7 @@
                     <button type="button" class="close remove_card" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <div class="dropdown">                        
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Виберіть лінію полива
-                        </button>
-                        <div class="dropdown-menu">                            
-                        </div>
-                    </div>
+                    <select class="selectpicker" title="Виберіть лінію полива"></select>
                 </div>
                 <p class="card-text">
                     <span id="last-{{n}}">Дата</span>
@@ -127,4 +122,5 @@
 </form>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 {% endblock %}

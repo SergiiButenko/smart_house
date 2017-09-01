@@ -109,4 +109,9 @@
      color: #78909c;
  }
 
- 
+ .bootstrap-select>.dropdown-toggle.bs-placeholder,
+ .bootstrap-select>.dropdown-toggle.bs-placeholder:active,
+ .bootstrap-select>.dropdown-toggle.bs-placeholder:focus,
+ .bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
+     color: black;
+ }
