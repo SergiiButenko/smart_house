@@ -198,3 +198,30 @@ function setDrawerPosition(position) {
     clearDrawerClasses($container)
     $container.addClass(position)
 }
+
+function convert_date_to_time(date_str){
+    date = new Date(date_str);
+    hours = date.getHours();
+    minutest = date.getMinutes();
+
+    return hours+":"+minutest;
+}
+
+function convert_date_to_local_date(add_to_date){
+    date = new Date();
+    date.setDate(date.getDate() + add_to_date);
+    month = date.getMonth()+1;
+    day = date.getDate();
+
+    return month+"/"+day;
+}
+
+function get_parameter_by_name(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}

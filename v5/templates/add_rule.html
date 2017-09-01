@@ -1,11 +1,10 @@
-{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %}
-{% endblock %} {% block modals %}
+{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}
 <div class="card_to_copy">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
-        <div class="card" data-id=0>
+        <div class="card">
             <div class="card-block">
                 <div class="card-title">
-                    <div class="dropdown open">
+                    <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Виберіть що поливати
                             <span class="caret"></span>
@@ -16,28 +15,24 @@
                 </div>
                 <p class="card-text">
                     <div class="form-group">
-                        <label for="example-date-input" class="col-2 col-form-label">Дата</label>
-                        <div class="col-10">
-                            <input class="form-control" type="date" id="irrigation_date">
-                        </div>
+                        <label>Дата</label>
+                        <input class="form-control irrigation_date" type="date">
                     </div>
                     <div class="form-group">
-                        <label for="example-time-input" class="col-2 col-form-label">Час</label>
-                        <div class="col-10">
-                            <input class="form-control" type="time" id="irrigation_time">
-                        </div>
+                        <label>Час</label>
+                        <input type="time" class="form-control irrigation_time">
                     </div>
                     <div class="form-group" id="irrigation_minutes_group">
-                        <label class="control-label" for="irrigation_minutes">Тривалість полива</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
+                        <label>Тривалість полива</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
                     </div>
                     <div class="form-group" id="irrigation_intervals_group">
-                        <label for="irrigation_minutes">Кількість повторів</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_intervals">
+                        <label>Кількість повторів</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_intervals">
                     </div>
                     <div class="form-group" id="irrigation_time_wait_group" style="display:none">
-                        <label for="irrigation_minutes">Час між поливами</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
+                        <label>Час між поливами</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
                     </div>
                 </p>
             </div>
@@ -51,12 +46,12 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div class="card-group">
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+    <!-- <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
         <div class="card" data-id=0>
             <div class="card-block">
                 <div class="card-title">
                     <div class="dropdown">
-                        <button class="btn btn-secondary  btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Виберіть що поливати
                             <span class="caret"></span>
                         </button>
@@ -65,29 +60,25 @@
                     </div>
                 </div>
                 <p class="card-text">
-                    <div class="form-group">
-                        <label for="example-date-input" class="col-2 col-form-label">Дата</label>
-                        <div class="col-10">
-                            <input class="form-control" type="date" id="irrigation_date">
-                        </div>
+                   <div class="form-group">
+                        <label>Дата</label>
+                        <input type="date" class="form-control irrigation_date">
                     </div>
                     <div class="form-group">
-                        <label for="example-time-input" class="col-2 col-form-label">Час</label>
-                        <div class="col-10">
-                            <input class="form-control" type="time" id="irrigation_time">
-                        </div>
+                        <label>Час</label>
+                        <input type="time" class="form-control irrigation_time">
                     </div>
                     <div class="form-group" id="irrigation_minutes_group">
-                        <label class="control-label" for="irrigation_minutes">Тривалість полива</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
+                        <label>Тривалість полива</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
                     </div>
                     <div class="form-group" id="irrigation_intervals_group">
-                        <label for="irrigation_minutes">Кількість повторів</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_intervals">
+                        <label>Кількість повторів</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_intervals">
                     </div>
                     <div class="form-group" id="irrigation_time_wait_group" style="display:none">
-                        <label for="irrigation_minutes">Час між поливами</label>
-                        <input input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
+                        <label>Час між поливами</label>
+                        <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
                     </div>
                 </p>
             </div>
@@ -95,7 +86,7 @@
                 <a href="#" class="btn btn-secondary btn-block remove_card">Видалити</a>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 <form>
     <button type="button" class="btn btn-secondary" id="add_rule_block">Додати ще один полив...</button>

@@ -21,26 +21,6 @@
 <body>
     {% block modals %}{% endblock %}
     <!-- Small modal -->
-    <div id="confirm_modal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-date='0'>
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title">Підтвердження</h4>
-                </div>
-                <div class="modal-body" id="confirm_modal-body">
-                    Полити сьогодні?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
-                    <button type="button" class="btn btn-primary irrigate-all">Полити</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="bmd-layout-container bmd-drawer-f-l bmd-drawer-overlay-md-down bmd-drawer-in-lg-up">
         <header class="bmd-layout-header">
             <div class="navbar navbar-light bg-faded">
@@ -60,8 +40,8 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="more-menu">
                                 <a href="/add_rule" class="dropdown-item" id="add_rule">Додати правило</a>
-                                <a class="dropdown-item" id="irrigate_today">Запланувати полив на сьогодні</a>
-                                <a class="dropdown-item" id="irrigate_tommorow">Запланувати полив на завтра</a>
+                                <a href="/add_rule?add_to_date=0" class="dropdown-item" id="irrigate_today">Запланувати полив на сьогодні</a>
+                                <a href="/add_rule?add_to_date=1" class="dropdown-item" id="irrigate_tommorow">Запланувати полив на завтра</a>
                             </div>
                         </div>
                     </li>

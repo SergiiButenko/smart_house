@@ -27,9 +27,9 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-ARDUINO_IP = 'http://192.168.1.10'
+#ARDUINO_IP = 'http://192.168.1.10'
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
-#ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP='http://185.20.216.94:5555'
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
@@ -48,7 +48,7 @@ QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \
 QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait from lines order by number"
+QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
 QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
 QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
 QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
@@ -204,7 +204,7 @@ def execute_request(query, method='fetchall'):
     conn = None
     try:
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/c/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
@@ -231,7 +231,7 @@ def update_db_request(query):
     lastrowid = 0
     try:
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/c/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -300,7 +300,8 @@ def branches_names():
         abort(500)
 
     for row in res:
-        branch_list.append({'id': row[0], 'name': row[1], 'default_time': row[2], 'default_interval': row[3], 'default_time_wait': row[4]})
+        branch_list.append({'id': row[0], 'name': row[1], 'default_time': row[2], 'default_interval': row[3], 'default_time_wait': row[4], 
+            'start_time': row[5]})
 
     return jsonify(list=branch_list)
 
