@@ -15,8 +15,18 @@
                     </div>
                 </div>
                 <p class="card-text">
-                    <span id="last-{{n}}">Дата</span>
-                    <span id="next-{{n}}">Час</span>
+                    <div class="form-group">
+                        <label for="example-date-input" class="col-2 col-form-label">Дата</label>
+                        <div class="col-10">
+                            <input class="form-control" type="date" id="irrigation_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="example-time-input" class="col-2 col-form-label">Час</label>
+                        <div class="col-10">
+                            <input class="form-control" type="time" id="irrigation_time">
+                        </div>
+                    </div>
                     <div class="form-group" id="irrigation_minutes_group">
                         <label class="control-label" for="irrigation_minutes">Тривалість полива</label>
                         <input input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
@@ -58,13 +68,13 @@
                     <div class="form-group">
                         <label for="example-date-input" class="col-2 col-form-label">Дата</label>
                         <div class="col-10">
-                            <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+                            <input class="form-control" type="date" id="irrigation_date">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="example-time-input" class="col-2 col-form-label">Час</label>
                         <div class="col-10">
-                            <input class="form-control" type="time" value="13:45:00" id="example-time-input">
+                            <input class="form-control" type="time" id="irrigation_time">
                         </div>
                     </div>
                     <div class="form-group" id="irrigation_minutes_group">
