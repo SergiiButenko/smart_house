@@ -11,7 +11,7 @@ $(document).ready(function() {
         // $(this).addClass("active");
         $('.navbar-toggler').click();
     });
-    
+
     $('#irrigate_tommorow').on('click', function() {
         $('#confirm_modal-body').html("Почати полив завтра?");
         $('#irrigate_modal').data('date', 1);
@@ -199,21 +199,24 @@ function setDrawerPosition(position) {
     $container.addClass(position)
 }
 
-function convert_date_to_time(date_str){
+function convert_date_to_time(date_str) {
     date = new Date(date_str);
     hours = date.getHours();
     minutest = date.getMinutes();
 
-    return hours+":"+minutest;
+    return hours + ":" + minutest;
 }
 
-function convert_date_to_local_date(add_to_date){
-    date = new Date();
-    date.setDate(date.getDate() + add_to_date);
-    month = date.getMonth()+1;
-    day = date.getDate();
+function convert_date_to_local_date(add_to_date) {
+    now = new Date();
+    now.setDate(now.getDate() + add_to_date);
 
-    return month+"/"+day;
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+    var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+    return today;
 }
 
 function get_parameter_by_name(name, url) {
