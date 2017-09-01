@@ -44,7 +44,7 @@ $(document).ready(function() {
         $(".card-group").append(element.clone().show());
 
         $(".remove_card").click(function() {
-            $(this).parent().parent().remove();
+            $(this).parent().parent().parent().remove();
         });
 
         $(".dropdown-item").click(function() {
@@ -53,7 +53,7 @@ $(document).ready(function() {
     });
 
     $(".remove_card").click(function() {
-        $(this).parent().parent().remove();
+        $(this).parent().parent().parent().remove();
     });
 
     function drop_down_click(el) {
