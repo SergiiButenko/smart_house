@@ -34,6 +34,33 @@ $(document).ready(function() {
     });
 
 
+    (function worker2() {
+        $.ajax({
+            url: server + '/arduino_status',
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
+
+                if ($('#irrigate_modal').hasClass('in')) {
+                    xhr.abort();
+                }
+            },
+            success: function(data) {
+                console.log("connected to arduino");
+
+                update_branches();
+                
+                set_status_ok();
+                setTimeout(worker, arduino_check_connect_sec * 1000);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
+
+                set_status_error();
+                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+            }
+        });
+    })();
+
     $('#irrigation_intervals').on('input', function(e) {
         var input = parseInt($(this).val());
         if (input <= 1 || isNaN(input)) {

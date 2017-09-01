@@ -11,7 +11,7 @@ $(document).ready(function() {
         // $(this).addClass("active");
         $('.navbar-toggler').click();
     });
-
+    
     $('#irrigate_tommorow').on('click', function() {
         $('#confirm_modal-body').html("Почати полив завтра?");
         $('#irrigate_modal').data('date', 1);
@@ -70,8 +70,6 @@ $(document).ready(function() {
                 console.log("connected to arduino");
 
                 set_status_ok();
-
-                update_branches(data);
                 setTimeout(worker, arduino_check_connect_sec * 1000);
             },
             error: function() {
@@ -117,24 +115,23 @@ $(document).ready(function() {
 });
 
 
-function touch_arduino() {
-    $.ajax({
-        url: server + '/arduino_status',
-        beforeSend: function(xhr, opts) {
-            $("#arduino_status").text(class_spin.msg);
-            $("#button_gif").removeClass().addClass(class_spin.class);
-        },
-        success: function(data) {
-            console.log("connected to arduino");
-            set_status_ok();
-            update_branches(data);
-        },
-        error: function() {
-            console.error("Can't connect to arduino");
-            set_status_error();
-        }
-    });
-}
+// function touch_arduino() {
+//     $.ajax({
+//         url: server + '/arduino_status',
+//         beforeSend: function(xhr, opts) {
+//             $("#arduino_status").text(class_spin.msg);
+//             $("#button_gif").removeClass().addClass(class_spin.class);
+//         },
+//         success: function(data) {
+//             console.log("connected to arduino");
+//             set_status_ok();
+//         },
+//         error: function() {
+//             console.error("Can't connect to arduino");
+//             set_status_error();
+//         }
+//     });
+// }
 
 function touch_analog_sensor() {
     $.ajax({
