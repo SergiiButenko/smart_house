@@ -15,11 +15,9 @@ $(document).ready(function() {
                     'default_interval': parseInt(item['default_interval']) || 2,
                     'default_time_wait': parseInt(item['default_time_wait']) || 15
                 }
+
                 $(".dropdown-menu").append(
-                    $('<button> type="button" data-id=0 </button>')
-                    .data('id', item['id'])
-                    .html(item['name'])
-                    .addClass("dropdown-item")                    
+                    "<button class=\"dropdown-item\" data-id="+item['id']+">"+item['name']+"</button>"
                     );
             }
         }
