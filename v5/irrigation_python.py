@@ -311,6 +311,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route("/add_rule")
+def add_rule_page():
+    """add rule page."""
+    return render_template('add_rule.html')
+
+
 def get_table_body_only(query=None):
     """If no query is passed returns all entries from life table."""
     if (query is None):

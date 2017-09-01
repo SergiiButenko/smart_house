@@ -356,10 +356,6 @@ function toogle_card(element_id, branch) {
         $('#next-' + element_id).text("Наступний полив: немає запису");
         $('#next-' + element_id).hide();
     }
-
-    
-    
-
 }
 
 function touch_arduino() {
@@ -396,7 +392,7 @@ var class_ok = {
     class: 'fa fa-refresh'
 }
 var class_spin = {
-    msg: ' Перевірка статуса системи...',
+    msg: ' Перевірка статусу системи...',
     class: 'fa fa-refresh fa-spin'
 }
 var class_err = {
