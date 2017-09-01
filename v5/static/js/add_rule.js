@@ -41,7 +41,6 @@ $(document).ready(function() {
 
     $("#add_rule_block").click(function() {
         element = $(".card_to_copy").children();
-        element.removeClass('card_copied');
         $(".card-group").append(element.clone().show());
 
         $(".remove_card").click(function() {
@@ -85,9 +84,9 @@ $(document).ready(function() {
        json = {'list':{}}
 
         $(".card").each(function() {
-            // if ($(this).hasClass('card_copied')){
-            //     return false;
-            // }
+            if ($(this).data('id') == 0){
+                return false;
+            }
 
             id = $(this).data('id');
             time = $(this).find('.irrigation_minutes').val();
