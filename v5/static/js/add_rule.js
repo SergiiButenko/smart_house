@@ -30,13 +30,20 @@ $(document).ready(function() {
         default_interval = branch[id]['default_interval'] 
         default_time_wait = branch[id]['default_time_wait']
 
+
+        console.log(id);
+console.log(default_time);
+console.log(default_interval);
+console.log(default_time_wait);
+console.log($(this).text());
+
         $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
 
         card=$(".dropdown-item").closest(".card")
         card.data('id', id);
-        card.find('#irrigation_minutes').val(default_time);
-        card.find('#irrigation_intervals').val(default_interval);
-        card.find('#irrigation_time_wait').val(default_time_wait);
+        card.find('#irrigation_minutes').val(1);
+        card.find('#irrigation_intervals').val(1);
+        card.find('#irrigation_time_wait').val(1);
 });
 
 
