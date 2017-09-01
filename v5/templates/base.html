@@ -20,6 +20,27 @@
 
 <body>
     {% block modals %}{% endblock %}
+    <!-- Small modal -->
+    <div id="confirm_modal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-date='0'>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Підтвердження</h4>
+                </div>
+                <div class="modal-body" id="confirm_modal-body">
+                    Полити сьогодні?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary irrigate-all">Полити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="bmd-layout-container bmd-drawer-f-l bmd-drawer-overlay-md-down bmd-drawer-in-lg-up">
         <header class="bmd-layout-header">
             <div class="navbar navbar-light bg-faded">
@@ -38,7 +59,7 @@
                                 <i class="material-icons">more_vert</i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="more-menu">
-                                <button class="dropdown-item" type="button" id="add_rule">Додати правило</button>
+                                <button href="/add_rule" class="dropdown-item" type="button" id="add_rule">Додати правило</button>
                                 <button class="dropdown-item" type="button" id="irrigate_today">Запланувати полив на сьогодні</button>
                                 <button class="dropdown-item" type="button" id="irrigate_tommorow">Запланувати полив на завтра</button>
                             </div>
@@ -57,7 +78,7 @@
                 <span id="system_status">Система активна</span>
             </header>
             <ul class="list-group">
-                <a class="list-group-item"><i class="material-icons" role="presentation" href='/#' >home</i>Полив</a>
+                <a class="list-group-item"><i class="material-icons" role="presentation" href='/'>home</i>Полив</a>
                 <a class="list-group-item"><i class="material-icons" role="presentation">inbox</i>Розклад</a>
                 <a class="list-group-item"><i class="material-icons" role="presentation">delete</i>Історія</a>
                 <a class="list-group-item"><i class="material-icons" role="presentation">report</i>Правила</a>
@@ -79,6 +100,7 @@
     $('body').bootstrapMaterialDesign();
     </script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="static/js/base.js"></script>
     {% block custom_scripts %}
     {% endblock %}
 </body>
