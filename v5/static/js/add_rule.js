@@ -15,7 +15,7 @@ $(document).ready(function() {
                     'default_interval': parseInt(item['default_interval']) || 2,
                     'default_time_wait': parseInt(item['default_time_wait']) || 15
                 }
-                 $(".dropdown-menu").append( $('<a></a>').val('id', item['id']).html(item['name'])).addClass("dropdown-item")
+                 $(".dropdown-menu").append($('<a></a>').val('id', item['id']).html(item['name']).addClass("dropdown-item"));
             }
         }
     });
