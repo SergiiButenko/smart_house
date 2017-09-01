@@ -16,7 +16,10 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']) || 15
                 }
                 $(".dropdown-menu").append(
-                    $('<button></button>').data('id', item['id']).html(item['name']).addClass("dropdown-item")
+                    $('<button> type="button" data-id=0 </button>')
+                    .data('id', item['id'])
+                    .html(item['name'])
+                    .addClass("dropdown-item")                    
                     );
             }
         }
