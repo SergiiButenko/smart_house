@@ -42,7 +42,7 @@ $(document).ready(function() {
 
                 $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
 
-                card = $(".dropdown-item").closest(".card")
+                card = $(this).closest(".card")
                 card.data('id', id);
                 card.find('.irrigation_minutes').val(default_time);
                 card.find('.irrigation_intervals').val(default_interval);
@@ -52,7 +52,7 @@ $(document).ready(function() {
                 } else {
                     group.show();
                 }
-        
+
                 card.find('.irrigation_time_wait').val(default_time_wait);
             });
         }
