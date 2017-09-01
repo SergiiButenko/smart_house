@@ -17,46 +17,37 @@ $(document).ready(function() {
                 }
 
                 $(".dropdown-menu").append(
-                    "<button class=\"dropdown-item\" type=\"button\" data-id="+item['id']+">"+item['name']+"</button>"
-                    );
+                    "<button class=\"dropdown-item\" data-id=" + item['id'] + ">" + item['name'] + "</button>"
+                );
             }
-                $(".dropdown-item").click(function() {
-        id = $(this).data('id')
-        
-        default_time = branch[id]['default_time'] 
-        default_interval = branch[id]['default_interval'] 
-        default_time_wait = branch[id]['default_time_wait']
 
+            $(".dropdown-item").click(function() {
+                id = $(this).data('id')
 
-        console.log(id);
-console.log(default_time);
-console.log(default_interval);
-console.log(default_time_wait);
-console.log($(this).text());
+                default_time = branch[id]['default_time']
+                default_interval = branch[id]['default_interval']
+                default_time_wait = branch[id]['default_time_wait']
 
-        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+                $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
 
-        card=$(".dropdown-item").closest(".card")
-        card.data('id', id);
-        card.find('#irrigation_minutes').val(1);
-        card.find('#irrigation_intervals').val(1);
-        card.find('#irrigation_time_wait').val(1);
-});
+                card = $(".dropdown-item").closest(".card")
+                card.data('id', id);
+                card.find('#irrigation_minutes').val(default_time);
+                card.find('#irrigation_intervals').val(default_interval);
+                card.find('#irrigation_time_wait').val(default_time_wait);
+            });
         }
     });
-
-
-
 
     $("#add_rule_block").click(function() {
         element = $(".card_to_copy").children();
         $(".card-group").append(element.clone().show());
         $(".remove_card").click(function() {
-            $(this).parent().parent().remove();
+            $(this).closest(".to_remove").remove();
         });
     });
 
     $(".remove_card").click(function() {
-        $(this).parent().parent().remove();
+        $(this).closest(".to_remove").remove();
     });
 });
