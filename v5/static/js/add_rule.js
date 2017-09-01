@@ -14,17 +14,6 @@ $(document).ready(function() {
         }
     });
 
-     $('.irrigation_intervals').change(function(e) {
-        var input = parseInt($(this).val());
-        card = $(this).closest(".card")
-        group = card.find('#irrigation_time_wait_group')        
-        if (input <= 1 || isNaN(input)) {
-            group.hide();
-        } else {
-            group.show();
-        }
-    });
-
     //Rename branches
     $.ajax({
         url: server + '/branches_names',
@@ -57,6 +46,13 @@ $(document).ready(function() {
                 card.data('id', id);
                 card.find('.irrigation_minutes').val(default_time);
                 card.find('.irrigation_intervals').val(default_interval);
+                group = card.find('#irrigation_time_wait_group')        
+                if (default_interval <= 1 || isNaN(default_interval)) {
+                    group.hide();
+                } else {
+                    group.show();
+                }
+        
                 card.find('.irrigation_time_wait').val(default_time_wait);
             });
         }
