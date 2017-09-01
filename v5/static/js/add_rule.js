@@ -80,11 +80,11 @@ $(document).ready(function() {
     }
 
     $("#go_plan").click(function() {
-      
-       json = {'list':{}}
+
+        json = { 'list': {} }
 
         $(".card").each(function() {
-            if ($(this).data('id') == 0){
+            if ($(this).data('id') == 0) {
                 return;
             }
 
@@ -92,10 +92,18 @@ $(document).ready(function() {
             time = $(this).find('.irrigation_minutes').val();
             interval = $(this).find('.irrigation_intervals').val();
             time_wait = $(this).find('.irrigation_time_wait').val();
-            json.list[id]={"time": time, "interval": interval, "time_wait": time_wait}
+            date_start = $(this).find('#irrigation_date').val();
+            time_start = $(this).find('#irrigation_time').val();
+            json.list[id] = {
+                "time": time,
+                "interval": interval,
+                "time_wait": time_wait,
+                "date_start": date_start,
+                "time_start": time_start
+            }
         });
-       
-       console.log(json);
+
+        console.log(json);
 
     });
 
