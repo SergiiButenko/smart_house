@@ -15,7 +15,7 @@ $(document).ready(function() {
                     'default_interval': parseInt(item['default_interval']) || 2,
                     'default_time_wait': parseInt(item['default_time_wait']) || 15
                 }
-                 $(".branch_dropdown").append( $('<li></li>').val('id', item['id']).html(item['name']))                
+                 $(".dropdown-menu").append( $('<li></li>').val('id', item['id']).html(item['name']))                
             }
         }
     });
