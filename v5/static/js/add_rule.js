@@ -5,19 +5,8 @@ $(document).ready(function() {
 
      $('.irrigation_intervals').on('input', function(e) {
         var input = parseInt($(this).val());
-        group = $(this).parent()
-        console.log(group)
-        if (input <= 1 || isNaN(input)) {
-            group.hide();
-        } else {
-            group.show();
-        }
-    });
-
-          $('.irrigation_intervals').on('change', function(e) {
-        var input = parseInt($(this).val());
-        group = $(this).parent()
-        console.log(group)
+        card = $(this).closest(".card")
+        group = card.find('#irrigation_time_wait_group')        
         if (input <= 1 || isNaN(input)) {
             group.hide();
         } else {
