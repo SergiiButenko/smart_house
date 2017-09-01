@@ -14,7 +14,7 @@ $(document).ready(function() {
         }
     });
 
-     $('.irrigation_intervals').on('change', function(e) {
+     $('.irrigation_intervals').change(function(e) {
         var input = parseInt($(this).val());
         card = $(this).closest(".card")
         group = card.find('#irrigation_time_wait_group')        
