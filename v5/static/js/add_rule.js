@@ -39,6 +39,24 @@ $(document).ready(function() {
         }
     });
 
+    $("#add_rule_block").click(function() {
+        element = $(".card_to_copy").children();
+        element.removeClass('card_copied');
+        $(".card-group").append(element.clone().show());
+
+        $(".remove_card").click(function() {
+            $(this).parent().parent().remove();
+        });
+
+        $(".dropdown-item").click(function() {
+            drop_down_click(this);
+        });
+    });
+
+    $(".remove_card").click(function() {
+        $(this).parent().parent().remove();
+    });
+
     function drop_down_click(el) {
         id = $(el).data('id')
 
@@ -62,20 +80,26 @@ $(document).ready(function() {
         card.find('.irrigation_time_wait').val(default_time_wait);
     }
 
-    $("#add_rule_block").click(function() {
-        element = $(".card_to_copy").children();
-        $(".card-group").append(element.clone().show());
+    $("#go_plan").click(function() {
+      
+       json = {'list':{}}
 
-        $(".remove_card").click(function() {
-            $(this).parent().parent().remove();
-        });
+        $(".card").each(function() {
+            if ($(this).hasClass('card_copied')){
+                return false;
+            }
 
-        $(".dropdown-item").click(function() {
-            drop_down_click(this);
+            id = $(this).data('id');
+            time = $(this).find('.irrigation_minutes').val();
+            interval = $(this).find('.irrigation_intervals').val();
+            time_wait = $(this).find('.irrigation_time_wait').val();
+            json.list[id]={"time": time, "interval": interval, "time_wait": time_wait}
         });
+       
+       console.log(json);
+
     });
 
-    $(".remove_card").click(function() {
-        $(this).parent().parent().remove();
-    });
+
+
 });
