@@ -1,20 +1,27 @@
 {% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block modals %}
 <div class="card_to_copy">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
-        <div class="card">
+        <div class="card" id="card-0" data-id=16>
             <div class="card-block">
                 <div class="card-title">
                     <button type="button" class="close remove_card" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4>Назва</h4>
+                    <div class="dropdown open">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Виберіть що поливати
+                            <span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        </div>
+                    </div>
                 </div>
                 <p class="card-text">
                     <span id="last-{{n}}">Дата</span>
                     <span id="next-{{n}}">Час</span>
                     <div class="form-group" id="irrigation_minutes_group">
                         <label class="control-label" for="irrigation_minutes">Тривалість полива</label>
-                        <input input type="number" pattern="\d*" class="form-control" id="irrigation_minutes" required value=10>
+                        <input iinput type="number" pattern="\d*" class="form-control" id="irrigation_minutes" required value=10>
                     </div>
                     <div class="form-group" id="irrigation_intervals_group">
                         <label for="irrigation_minutes">Кількість повторів</label>
@@ -86,7 +93,7 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div class="card-group">
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4 to_remove">
+    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
         <div class="card" id="card-0" data-id=16>
             <div class="card-block">
                 <div class="card-title">

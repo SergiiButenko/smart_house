@@ -42,6 +42,7 @@ $(document).ready(function() {
     $("#add_rule_block").click(function() {
         element = $(".card_to_copy").children();
         $(".card-group").append(element.clone().show());
+        
         $(".remove_card").click(function() {
             $(this).parent().parent().remove();
         });
