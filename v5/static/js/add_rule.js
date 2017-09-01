@@ -14,6 +14,17 @@ $(document).ready(function() {
         }
     });
 
+          $('.irrigation_intervals').on('change', function(e) {
+        var input = parseInt($(this).val());
+        group = $(this).parent()
+        console.log(group)
+        if (input <= 1 || isNaN(input)) {
+            group.hide();
+        } else {
+            group.show();
+        }
+    });
+
     //Rename branches
     $.ajax({
         url: server + '/branches_names',
