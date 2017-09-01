@@ -85,9 +85,9 @@ $(document).ready(function() {
        json = {'list':{}}
 
         $(".card").each(function() {
-            if ($(this).hasClass('card_copied')){
-                return false;
-            }
+            // if ($(this).hasClass('card_copied')){
+            //     return false;
+            // }
 
             id = $(this).data('id');
             time = $(this).find('.irrigation_minutes').val();
