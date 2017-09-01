@@ -17,7 +17,7 @@ $(document).ready(function() {
                 }
 
                 $(".dropdown-menu").append(
-                    "<button class=\"dropdown-item\" data-id="+item['id']+">"+item['name']+"</button>"
+                    "<button class=\"dropdown-item\" type=\"button\" data-id="+item['id']+">"+item['name']+"</button>"
                     );
             }
         }
