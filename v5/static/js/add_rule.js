@@ -85,7 +85,7 @@ $(document).ready(function() {
 
         $(".card").each(function() {
             if ($(this).data('id') == 0){
-                return false;
+                return;
             }
 
             id = $(this).data('id');
