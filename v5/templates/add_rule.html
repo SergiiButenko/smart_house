@@ -1,5 +1,4 @@
-{% extends 'base.html' %} {% block custom_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> {% endblock %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block modals %}
+{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block modals %}
 <div class="card_to_copy">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
         <div class="card">
@@ -88,13 +87,23 @@
 {% block container %}
 <div class="card-group">
     <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-        <div class="card">
+        <div class="card" id="card-0" data-id=16>
             <div class="card-block">
                 <div class="card-title">
                     <button type="button" class="close remove_card" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <select class="selectpicker" title="Виберіть лінію полива"></select>
+                    <div class="dropdown open">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                            <span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button class="dropdown-item" type="button" data-id=1>Action</button>
+                            <button class="dropdown-item" type="button">Another action</button>
+                            <button class="dropdown-item" type="button">Something else here</button>
+                        </div>
+                    </div>
                 </div>
                 <p class="card-text">
                     <span id="last-{{n}}">Дата</span>
@@ -122,5 +131,4 @@
 </form>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 {% endblock %}
