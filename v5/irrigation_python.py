@@ -401,7 +401,7 @@ def history():
 
 
 @app.route("/add_rule")
-def add_rule():
+def add_rule_endpoint():
     """Used in add rule modal window."""
     is_interval = request.args.get('is_interval')
     if (is_interval is None):
