@@ -1,53 +1,7 @@
 {% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}
 <div class="card_to_copy">
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
+    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5 mt-0" style="display:none">
         <div class="card">
-            <div class="card-block">
-                <div class="card-title">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Виберіть що поливати
-                            <span class="caret"></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-card" aria-labelledby="dropdownMenu2">
-                        </div>
-                    </div>
-                </div>
-                <p class="card-text">
-                    <div class="form-group">
-                        <label>Дата</label>
-                        <input class="form-control irrigation_date" type="date">
-                    </div>
-                    <div class="form-group">
-                        <label>Час</label>
-                        <input type="time" class="form-control irrigation_time">
-                    </div>
-                    <div class="form-group" id="irrigation_minutes_group">
-                        <label>Тривалість полива</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
-                    </div>
-                    <div class="form-group" id="irrigation_intervals_group">
-                        <label>Кількість повторів</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_intervals">
-                    </div>
-                    <div class="form-group" id="irrigation_time_wait_group" style="display:none">
-                        <label>Час між поливами</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
-                    </div>
-                </p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-secondary btn-block remove_card">Видалити</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-<!-- Custom styles for this template -->
-{% block container %}
-<div class="card-group">
-    <!-- <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-        <div class="card" data-id=0>
             <div class="card-block">
                 <div class="card-title">
                     <div class="dropdown">
@@ -55,43 +9,74 @@
                             Виберіть що поливати
                             <span class="caret"></span>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenu2">
+                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-card" aria-labelledby="dropdownMenu2">
                         </div>
+                        <button type="button" class="close remove_card" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 </div>
                 <p class="card-text">
-                   <div class="form-group">
-                        <label>Дата</label>
-                        <input type="date" class="form-control irrigation_date">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label>Дата</label>
+                                <input class="form-control irrigation_date" type="date">
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label>Час</label>
+                                <input type="time" class="form-control irrigation_time">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Час</label>
-                        <input type="time" class="form-control irrigation_time">
-                    </div>
-                    <div class="form-group" id="irrigation_minutes_group">
-                        <label>Тривалість полива</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
-                    </div>
-                    <div class="form-group" id="irrigation_intervals_group">
-                        <label>Кількість повторів</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_intervals">
-                    </div>
-                    <div class="form-group" id="irrigation_time_wait_group" style="display:none">
-                        <label>Час між поливами</label>
-                        <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="form-group" id="irrigation_minutes_group">
+                                <label>Тривалість</label>
+                                <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="form-group" id="irrigation_intervals_group">
+                                <label>Повтори</label>
+                                <input type="number" pattern="\d*" class="form-control irrigation_intervals">
+                            </div>
+                        </div>
+                        <div class="col-xs-5">
+                            <div class="form-group" id="irrigation_time_wait_group" style="display:none">
+                                <label>Час між поливами</label>
+                                <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
+                            </div>
+                        </div>
                     </div>
                 </p>
             </div>
-            <div class="card-footer">
+            <!-- <div class="card-footer">
                 <a href="#" class="btn btn-secondary btn-block remove_card">Видалити</a>
-            </div>
+            </div> -->
         </div>
-    </div> -->
+    </div>
 </div>
-<form>
-    <button type="button" class="btn btn-secondary" id="add_rule_block">Додати ще один полив...</button>
-    <button type="button" class="btn btn-primary" id="go_plan">Запланувати</button>
-</form>
+{% endblock %}
+<!-- Custom styles for this template -->
+{% block container %}
+<div class="card-group">
+</div>
+<div class="col-xs-12 col-sm-5 col-md-6 col-lg-5 mt-0">
+    <div class="card">
+        <div class="card-block">
+            <button type="button" class="btn btn-secondary" id="add_rule_block">
+                Додати ще один полив...
+            </button>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" id="go_plan">
+    Запланувати
+</button>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
 {% endblock %}

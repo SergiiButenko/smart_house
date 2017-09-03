@@ -209,7 +209,7 @@ function convert_date_to_time(date_str) {
 
 function convert_date_to_local_date(add_to_date) {
     now = new Date();
-    now.setDate(now.getDate() + add_to_date);
+    now.setDate(now.getDate() + parseInt(add_to_date));
 
     var day = ("0" + now.getDate()).slice(-2);
     var month = ("0" + (now.getMonth() + 1)).slice(-2);

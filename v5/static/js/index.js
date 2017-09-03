@@ -16,9 +16,10 @@ $(document).ready(function() {
                 item = list[j]
                 branch[item['id']] = {
                     'name': item['name'],
-                    'default_time': parseInt(item['default_time']) || 10,
-                    'default_interval': parseInt(item['default_interval']) || 2,
-                    'default_time_wait': parseInt(item['default_time_wait']) || 15
+                    'default_time': parseInt(item['default_time']),
+                    'default_interval': parseInt(item['default_interval']),
+                    'default_time_wait': parseInt(item['default_time_wait']),
+                    'start_time': new Date(item['start_time'])
                 }
 
                 for (var i = 1; i < branch.length; i++) {

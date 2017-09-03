@@ -5,17 +5,6 @@ $(document).ready(function() {
     add_to_date = get_parameter_by_name('add_to_date');
     add_cards = (add_to_date != null)
 
-    $('.irrigation_intervals').on('input', function(e) {
-        var input = parseInt($(this).val());
-        card = $(this).closest(".card")
-        group = card.find('#irrigation_time_wait_group')
-        if (input <= 1 || isNaN(input)) {
-            group.hide();
-        } else {
-            group.show();
-        }
-    });
-
     //Rename branches
     $.ajax({
         url: server + '/branches_names',
@@ -48,7 +37,7 @@ $(document).ready(function() {
                     default_date_start = convert_date_to_local_date(add_to_date);
 
                     card = clone_card();
-                    
+
                     card.find('.card').data('id', item['id']);
                     card.find("#dropdownMenu2").html(branch[item['id']]['name'] + ' <span class="caret"></span>');
                     card.find('.irrigation_minutes').val(default_time);
@@ -72,6 +61,22 @@ $(document).ready(function() {
             $(".dropdown-item").click(function() {
                 drop_down_click(this);
             });
+
+            $('.irrigation_intervals').on('input', function(e) {
+                var input = parseInt($(this).val());
+                card = $(this).closest(".card")
+                group = card.find('#irrigation_time_wait_group')
+                if (input <= 1 || isNaN(input)) {
+                    group.hide();
+                } else {
+                    group.show();
+                }
+            });
+
+            $(".remove_card").click(function() {
+                $(this).parent().parent().parent().remove();
+            });
+
         }
 
     });
@@ -96,9 +101,6 @@ $(document).ready(function() {
         return clone;
     }
 
-    $(".remove_card").click(function() {
-        $(this).parent().parent().parent().remove();
-    });
 
     function drop_down_click(el) {
         id = $(el).data('id')
@@ -131,7 +133,7 @@ $(document).ready(function() {
 
         json = { 'list': {} }
 
-        $(".card").each(function() {            
+        $(".card").each(function() {
             if ($(this).data('id') == 0) {
                 return;
             }
