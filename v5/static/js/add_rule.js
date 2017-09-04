@@ -7,12 +7,12 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: server + '/branches_names',
+        url: '/branches_names',
         success: function(data) {
-            list = data['list']            
-            list = list.sort((function (a, b) { 
-                              return new Date(a.start_time) - new Date(b.start_time)
-                            }));
+            list = data['list']
+            list = list.sort((function(a, b) {
+                return new Date(a.start_time) - new Date(b.start_time)
+            }));
             for (j in list) {
                 item = list[j]
 
@@ -77,7 +77,7 @@ $(document).ready(function() {
             });
 
             $(".remove_card").click(function() {
-                $(this).parent().parent().parent().remove();
+                $(this).closest(".card").parent().remove();
             });
 
         }
@@ -94,7 +94,7 @@ $(document).ready(function() {
         $(".card-group").append(clone.show());
 
         $(".remove_card").click(function() {
-            $(this).parent().parent().parent().remove();
+            $(this).closest(".card").parent().remove();
         });
 
         $(".dropdown-item").click(function() {
@@ -113,7 +113,7 @@ $(document).ready(function() {
         default_time_wait = branch[id]['default_time_wait']
         default_time_start = branch[id]['start_time']
 
-        $(el).parents(".dropdown").find('.btn').html($(el).text() + ' <span class="caret" style="font-size: 1.5rem; font-weight:300;"></span>');
+        $(el).parents(".dropdown").find('.btn').html($(el).text() + ' <span class="caret"></span>');
 
         card = $(el).closest(".card")
         card.data('id', id);
@@ -151,21 +151,31 @@ $(document).ready(function() {
                 "branch_id": id,
                 "time": time,
                 "interval": interval,
-                "time_wait": time_wait,                
-                "datetime_start": date_start +" "+ time_start
+                "time_wait": time_wait,
+                "datetime_start": date_start + " " + time_start
             }
         });
 
         console.log(json);
         $.ajax({
-            url: server+'/v2/add_rule',
+            url: '/v2/add_rule',
             type: "post",
-            data: json,
-            success: function(data) {
-                console.log(date)
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function(xhr, opts) {
+                $('#go_plan').addClass("disabled");
+            },
+            success: function() {
+                $('#go_plan').removeClass("disabled");
+                 window.location.replace("/#");
+            },
+            error: function() {
+               alert("error");
+               $('#go_plan').removeClass("disabled");
             }
         });
-        
+
 
     });
 

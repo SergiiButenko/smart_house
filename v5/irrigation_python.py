@@ -44,21 +44,22 @@ SENSORS = {'time': datetime.datetime.now(), 'data': {'temperature': 0, 'humidity
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
+QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
-QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
-QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
-QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
+QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
+QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
+QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
-QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
-QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
+QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
+QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
+QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
+QUERY['add_rule_endpoint_v2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
-QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
-QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id FROM life where id = {0}"
+QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
+QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id, time FROM life where id = {0}"
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}'"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
@@ -203,8 +204,9 @@ def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
@@ -230,8 +232,9 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -259,7 +262,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def get_last_start_rule(line_id):
@@ -400,16 +403,18 @@ def history():
     return template
 
 
-@app.route("/v2/add_rule", methods=['GET', 'POST'])
+@app.route("/v2/add_rule", methods=['POST'])
 def add_rule_endpoint_v2():
     """Used in add rule modal window."""
     content = request.json['list']
 
     for rule in content:
+        rule = content[rule]
+        print(rule)
         branch_id = int(rule['branch_id'])
         time_min = int(rule['time'])
         start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
-        time_wait = int(rule'time_wait'])
+        time_wait = int(rule['time_wait'])
         num_of_intervals = int(rule['interval'])
 
         interval_id = str(uuid.uuid4())
@@ -417,21 +422,20 @@ def add_rule_endpoint_v2():
         now = datetime.datetime.now()
         stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
-        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
         # first interval is executed
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
-            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
-    # template = get_table_body_only()
-    # send_message('list_update', {'data': template})
-    return "OK"
+    return json.dumps({'status':'OK'});
+
 
 @app.route("/add_rule")
 def add_rule_endpoint():
@@ -464,15 +468,15 @@ def add_rule_endpoint():
     now = datetime.datetime.now()
     stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
-    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
     # first interval is executed
     for x in range(2, num_of_intervals + 1):
         start_time = stop_time + datetime.timedelta(minutes=time_wait)
         stop_time = start_time + datetime.timedelta(minutes=time_min)
-        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
-        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
@@ -677,7 +681,7 @@ def form_responce_for_branches(payload):
             next_rule = get_next_active_rule(branch_id)
 
             res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
-        return jsonify(branches = res)
+        return jsonify(branches=res)
     except Exception as e:
         logging.error(e)
         logging.error("Can't form responce. Exception occured")
@@ -720,8 +724,7 @@ def activate_branch():
         num_of_intervals = int(request.args.get('quantity'))
     elif (mode == 'auto'):
         id = int(request.args.get('id'))
-        # time_min = int(request.args.get('time_min')) || 25
-        time_min = 25
+        time_min = int(request.args.get('time_min'))
     else:
         logging.error("incorrect mode parameter passed: {0}".format(mode))
         abort(500)
@@ -735,24 +738,20 @@ def activate_branch():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    response_json = form_responce_for_branches(response_on.text)
-    response_status = response_on.status_code
-    send_message('branch_status', {'data': response_json})
-
     # needs to be executed in both cases single and interval, but in in auto
     if (mode != 'auto'):
         interval_id = str(uuid.uuid4())
         now = datetime.datetime.now()
         stop_time = now + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id))
-        lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
+        update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id, time_min))
+        lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id, 0))
         logging.debug("lastid:{0}".format(lastid))
 
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
-        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]})
+        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
         logging.info("Rule '{0}' added".format(str(get_next_active_rule(id))))
 
     if (mode == 'interval'):
@@ -760,8 +759,8 @@ def activate_branch():
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id))
-            update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id))
+            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id, time_min))
+            update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     if (mode == 'auto'):
@@ -769,7 +768,10 @@ def activate_branch():
     else:
         logging.info("Branch '{0}' activated manually".format(id))
 
-    return (response_json, response_status)
+    response_json = form_responce_for_branches(response_on.text)
+    send_message('branch_status', response_json.response)
+
+    return response_json
 
 
 @app.route('/deactivate_branch', methods=['GET'])
@@ -791,10 +793,6 @@ def deactivate_branch():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    response_json = form_responce_for_branches(response_off.text)
-    response_status = response_off.status_code
-    send_message('branch_status', {'data': response_json})
-
     if (mode == 'manually'):
         now = datetime.datetime.now()
         if get_next_rule_from_redis(id) is not None:
@@ -809,7 +807,10 @@ def deactivate_branch():
     else:
         logging.info('No new entries is added to database.')
 
-    return (response_json, response_status)
+    response_json = form_responce_for_branches(response_off.text)
+    send_message('branch_status', response_json.response)
+
+    return response_json
 
 
 @app.route("/weather")

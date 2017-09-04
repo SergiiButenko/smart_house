@@ -6,7 +6,7 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
-  
+
     //Rename branches
     $.ajax({
         url: server + '/branches_names',
@@ -49,7 +49,7 @@ $(document).ready(function() {
                 console.log("connected to arduino");
 
                 update_branches(data);
-                
+
                 set_status_ok();
                 setTimeout(worker2, arduino_check_connect_sec * 1000);
             },
@@ -83,7 +83,7 @@ $(document).ready(function() {
         update_branches(msg.data);
     });
 
-   
+
 
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
@@ -255,7 +255,8 @@ function toogle_card(element_id, branch) {
         month: "short",
         day: "numeric",
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
+        timeZone: 'UTC'
     };
 
     if (branch['last_rule']) {
@@ -264,20 +265,19 @@ function toogle_card(element_id, branch) {
     } else {
         last_rule = "немає запису"
     }
-    $('#last-' + element_id).text("Останній полив: "+last_rule)
+    $('#last-' + element_id).text("Останній полив: " + last_rule)
 
     if (branch['next_rule']) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
         $('#next-' + element_id).show();
-        $('#next-' + element_id).text("Наступний полив: "+next_rule);
+        $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
-        if (branch_state == 1) {
-            $('#btn-cancel-' + element_id).css('display', 'inline-block');
-        }
+        $('#btn-cancel-' + element_id).css('display', 'inline-block');
 
     } else {
-        $('#next-' + element_id).text("Наступний полив: немає запису");
+        $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide();
+        $('#btn-cancel-' + element_id).hide();
     }
 }

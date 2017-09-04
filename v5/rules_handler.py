@@ -25,7 +25,7 @@ RULES_ENABLED = True
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
+QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['enable_rule'] = "UPDATE life SET state={1} WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
@@ -78,10 +78,10 @@ def get_next_rule_from_redis(branch_id):
     return json_to_data
 
 
-def branch_on(line_id, alert_time=25):
+def branch_on(line_id, alert_time):
     """Blablbal."""
     try:
-        response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'mode': 'auto'})
+        response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'time_min': alert_time, 'mode': 'auto'})
         response.raise_for_status()
 
         logging.debug('response {0}'.format(response.text))
@@ -179,7 +179,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def update_all_rules():
@@ -264,7 +264,7 @@ def enable_rule():
                         if rule['rule_id'] == 1:
                             logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
 
-                            response = branch_on(rule['line_id'])
+                            response = branch_on(rule['line_id'], rule['time'])
                             if response is None:
                                 raise Exception("Can't turn on {0} branch".format(rule['line_id']))
                             else:
