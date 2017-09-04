@@ -10,12 +10,12 @@ $(document).ready(function() {
         url: server + '/branches_names',
         success: function(data) {
             list = data['list']
-            // console.log(list)
+            console.log(list)
             
-            // list = list.sort((function (a, b) { 
-            //                   return new Date(b.date) - new Date(a.date) 
-            //                 }));
-            // console.log(list)
+            list = list.sort((function (a, b) { 
+                              return new Date(b.start_time) - new Date(a.start_time) 
+                            }));
+            console.log(list)
 
             for (j in list) {
                 item = list[j]
