@@ -113,7 +113,7 @@ $(document).ready(function() {
         default_time_wait = branch[id]['default_time_wait']
         default_time_start = branch[id]['start_time']
 
-        $(el).parents(".dropdown").find('.btn').html($(el).text() + ' <span class="caret"></span>');
+        $(el).parents(".dropdown").find('.btn').html($(el).text() + ' <span class="caret" style="font-size: 1.5rem; font-weight:300;"></span>');
 
         card = $(el).closest(".card")
         card.data('id', id);
