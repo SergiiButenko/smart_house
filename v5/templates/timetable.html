@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block nav_item_title %}Розклад полива{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %} {% block container %}
+<div class="table-responsive">
 <table id="rules_table" class="table table-condensed table-striped ">
     <thead>
         <tr>
@@ -44,4 +45,5 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}
