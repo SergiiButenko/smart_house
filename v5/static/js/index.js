@@ -24,10 +24,10 @@ $(document).ready(function() {
 
                 for (var i = 1; i < branch.length; i++) {
                     if (branch[i] != undefined) {
-                        $('#card-' + i).show();
+                        $('#card-' + i).parent().show();
                         $('#title-' + i).text(branch[i]['name']);
                     } else {
-                        $('#card-' + i).hide();
+                        $('#card-' + i).parent().remove();
                     }
                 }
             }
