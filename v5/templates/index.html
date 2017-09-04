@@ -42,14 +42,10 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
-    <div class="row">
+    
         {% for n in range(1,17) %} 
         
-        {% if n is divisibleby(2) %}
-        </div>
-        <div class="row">
-        {% endif %}
-
+        
         <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
             <div class="card" id="card-{{n}}" style="display:none">
                 <div class="card-block">
@@ -68,10 +64,10 @@
             </div>
         </div>
         {% endfor %}
-    </div>
+    
 
         <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-        <div class="row">
+    
             <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
                 <div class="card" id="card-17">
                     <div class="card-block">
@@ -84,7 +80,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+    
     </div>
 {% endblock %}
 
