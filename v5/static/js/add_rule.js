@@ -137,7 +137,7 @@ $(document).ready(function() {
         json = { 'list': {} }
 
         $(".card").each(function() {
-            if ($(this).data('id') == 0) {
+            if ($(this).data('id') == undefined || $(this).data('id') == 0) {
                 return;
             }
 
@@ -148,11 +148,11 @@ $(document).ready(function() {
             date_start = $(this).find('.irrigation_date').val();
             time_start = $(this).find('.irrigation_time').val();
             json.list[id] = {
+                "id": id,
                 "time": time,
                 "interval": interval,
-                "time_wait": time_wait,
-                "date_start": date_start,
-                "time_start": time_start
+                "time_wait": time_wait,                
+                "time_start": date_start +" "+ time_start
             }
         });
 
