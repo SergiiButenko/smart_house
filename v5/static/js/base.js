@@ -201,9 +201,8 @@ function setDrawerPosition(position) {
 
 function convert_date_to_time(date_str) {
     date = new Date(date_str);
-    hours = date.getHours();
-    minutest = date.getMinutes();
-
+    hours = ("0" + (now.getHours())).slice(-2);
+    minutest = ("0" + (now.getMinutes())).slice(-2);
     return hours + ":" + minutest;
 }
 
