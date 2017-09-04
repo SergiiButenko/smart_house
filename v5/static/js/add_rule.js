@@ -148,15 +148,24 @@ $(document).ready(function() {
             date_start = $(this).find('.irrigation_date').val();
             time_start = $(this).find('.irrigation_time').val();
             json.list[id] = {
-                "id": id,
+                "branch_id": id,
                 "time": time,
                 "interval": interval,
                 "time_wait": time_wait,                
-                "time_start": date_start +" "+ time_start
+                "datetime_start": date_start +" "+ time_start
             }
         });
 
         console.log(json);
+        $.ajax({
+            url: server+'/v2/add_rule',
+            type: "post",
+            data: json,
+            success: function(data) {
+                console.log(date)
+            }
+        });
+        
 
     });
 

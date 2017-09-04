@@ -400,6 +400,39 @@ def history():
     return template
 
 
+@app.route("/v2/add_rule", methods=['GET', 'POST'])
+def add_rule_endpoint_v2():
+    """Used in add rule modal window."""
+    content = request.json['list']
+
+    for rule in content:
+        branch_id = int(rule['branch_id'])
+        time_min = int(rule['time'])
+        start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
+        time_wait = int(rule'time_wait'])
+        num_of_intervals = int(rule['interval'])
+
+        interval_id = str(uuid.uuid4())
+
+        now = datetime.datetime.now()
+        stop_time = start_time + datetime.timedelta(minutes=time_min)
+
+        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
+        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+
+        # first interval is executed
+        for x in range(2, num_of_intervals + 1):
+            start_time = stop_time + datetime.timedelta(minutes=time_wait)
+            stop_time = start_time + datetime.timedelta(minutes=time_min)
+            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id))
+            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id))
+            logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
+
+    update_all_rules()
+    # template = get_table_body_only()
+    # send_message('list_update', {'data': template})
+    return "OK"
+
 @app.route("/add_rule")
 def add_rule_endpoint():
     """Used in add rule modal window."""
