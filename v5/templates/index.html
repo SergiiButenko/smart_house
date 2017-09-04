@@ -1,8 +1,4 @@
-{% extends 'base.html' %} 
-
-{% block nav_item_title %}Стан полива{% endblock %} 
-
-{% block modals %}
+{% extends 'base.html' %} {% block nav_item_title %}Стан полива{% endblock %} {% block modals %}
 <div id="irrigate_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="irrigate_modal-label" aria-hidden="true" data-id='0'>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -36,16 +32,12 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 {% endblock %}
-
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
-        <div class="row">
-        {% for n in range(1,17) %} 
-        
-        
+    <div class="row">
+        {% for n in range(1,17) %}
         <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
             <div class="card" id="card-{{n}}" style="display:none">
                 <div class="card-block">
@@ -65,25 +57,20 @@
         </div>
         {% endfor %}
     </div>
-
-        <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-    
-            <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
-                <div class="card" id="card-17">
-                    <div class="card-block">
-                        <h4 class="card-title" id="title-17">Насос</h4>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Ввімкнути</a>
-                        <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Вимкнути</a>
-                        <span class="status-span">В системі помилка</span>
-                    </div>
-                </div>
+    <hr style="margin-top: 2rem; margin-bottom: 2rem" />
+    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+        <div class="card" id="card-17">
+            <div class="card-block">
+                <h4 class="card-title" id="title-17">Насос</h4>
             </div>
-        
+            <div class="card-footer">
+                <a href="#" class="btn btn-primary btn-block btn-open-modal" data-id="17" id="btn-start-17">Ввімкнути</a>
+                <a href="#" class="btn btn-primary btn-block stop-irrigation" data-id="17" id="btn-stop-17">Вимкнути</a>
+                <span class="status-span">В системі помилка</span>
+            </div>
+        </div>
     </div>
-{% endblock %}
-
-{% block custom_scripts %}
+</div>
+{% endblock %} {% block custom_scripts %}
 <script src="static/js/index.js"></script>
 {% endblock %}
