@@ -107,6 +107,9 @@ $(document).ready(function() {
 
     function drop_down_click(el) {
         id = $(el).data('id')
+        
+        if(id == undefined)
+            return;
 
         default_time = branch[id]['default_time']
         default_interval = branch[id]['default_interval']

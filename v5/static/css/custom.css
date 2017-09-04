@@ -34,6 +34,12 @@
  }
 
 
+.table,
+.table tr,
+.table td {
+    background-color: white !important;
+}
+
  a,
  a:hover {
      color: rgba(255, 255, 255, 0.56);
