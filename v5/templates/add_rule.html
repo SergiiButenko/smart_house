@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}
 <div class="card_to_copy">
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5 mt-0" style="display:none">
+    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5" style="display:none">
         <div class="card">
             <div class="card-block">
                 <div class="card-title">
@@ -64,18 +64,26 @@
 {% block container %}
 <div class="card-group">
 </div>
-<div class="col-xs-12 col-sm-5 col-md-6 col-lg-5 mt-0">
-    <div class="card">
-        <div class="card-block">
-            <button type="button" class="btn btn-secondary" id="add_rule_block">
-                Додати ще один полив...
-            </button>
+<div class="row">
+    <div class="col-xs-5 col-sm-5 col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-block">
+                <button type="button" class="btn btn-secondary" id="add_rule_block">
+                    Додати ще один полив...
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-block">
+                <button type="button" class="btn btn-primary" id="go_plan">
+                    Запланувати
+                </button>
+            </div>
         </div>
     </div>
 </div>
-<button type="button" class="btn btn-primary" id="go_plan">
-    Запланувати
-</button>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
 {% endblock %}
