@@ -399,9 +399,6 @@ def history():
             rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
                 'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
-    
-
-
     template = render_template('history.html', my_list=rows)
     return template
 
