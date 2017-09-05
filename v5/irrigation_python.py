@@ -15,6 +15,8 @@ import sqlite3
 import logging
 import uuid
 import redis
+from flask_paginate import Pagination, get_page_parameter
+
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -204,8 +206,8 @@ def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
@@ -232,8 +234,8 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
@@ -399,7 +401,10 @@ def history():
             rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
                 'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
-    template = render_template('history.html', my_list=rows)
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    pagination = Pagination(page=page, total=len(rows),per_page=50)
+
+    template = render_template('history.html', my_list=rows, pagination=pagination)
     return template
 
 

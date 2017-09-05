@@ -1,10 +1,6 @@
 {% extends 'base.html' %} {% block nav_item_title %}Історія полива{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %}
 {% block container %}
-         <button type="button" class="btn btn-primary btn-refresh-history" data-value=1>24 години</button>
-         <button type="button" class="btn btn-primary btn-refresh-history" data-value=7>Тиждень</button>
-         <button type="button" class="btn btn-primary btn-refresh-history" data-value=31>Місяць</button>
-         <div class="table-responsive">
-         <table id="rules_table" class="table table-condensed table-striped table-sm">
+         <table id="rules_table" class="table table-condensed table-striped">
          <thead>
           <tr>
             <th>Лінія</th>
@@ -32,9 +28,9 @@
                   {% elif n['active'] == 0 %}
                      <td>Неактивно</td>
                      <td><button type="button" class="btn btn-secondary" data-id={{n['id']}} onclick="activate_rule(this)">Активувати</button></td>
-                  {% elif 'Відмінено' in n['rule_state'] %}          
+                  {% elif 'Скасовано' in n['rule_state'] %}          
                      <td>{{n['rule_state']}}</td>
-                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">Відмінено</button></td>
+                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">Скасовано</button></td>
                   {% else %}
                      <td>{{n['rule_state']}}</td>
                      <td><button type="button" class="btn btn-secondary" data-id={{n['id']}} onclick="deactivate_rule(this)">Не виконувати</button></td>
@@ -43,5 +39,5 @@
                {% endfor %}
             </tbody>
          </table>
-         </div>
+         {{ pagination.links }}
       {% endblock %}
