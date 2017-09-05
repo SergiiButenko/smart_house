@@ -1,3 +1,10 @@
+.dropdown-label {
+     font-size: 1.5rem; 
+     font-weight:300;
+     text-transform: capitalize;
+}
+
+
  .card-irrigate-active {
      border-top: 10px solid green;
  }
