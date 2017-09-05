@@ -42,7 +42,7 @@ $(document).ready(function() {
                     card = clone_card();
 
                     card.find('.card').data('id', item['id']);
-                    card.find("#dropdownMenu2").html(branch[item['id']]['name'] + ' <span class="caret"></span>');
+                    card.find("#dropdownMenu2").html('<span class="dropdown-label">' + branch[item['id']]['name'] + ' <span class="caret"></span>');
                     card.find('.irrigation_minutes').val(default_time);
                     card.find('.irrigation_intervals').val(default_interval);
                     card.find('.irrigation_time').val(convert_date_to_time(default_time_start));
