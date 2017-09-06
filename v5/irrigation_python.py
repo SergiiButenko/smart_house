@@ -15,6 +15,7 @@ import sqlite3
 import logging
 import uuid
 import redis
+import pytemperature
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -816,12 +817,14 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+    #url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+    url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
         response = requests.get(url=url)
         response.raise_for_status()
         json_data = json.loads(response.text)
-        return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
+        return jsonify(temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
+            humidity=str(round(json_data['main']['humidity'], 2)))
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
