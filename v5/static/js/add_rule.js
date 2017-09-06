@@ -91,8 +91,8 @@ $(document).ready(function() {
     function clone_card() {
         element = $(".card_to_copy").children();
         clone = element.clone();
-        clone.show().insertBefore();
-        // $(".card-group").insertBefore();
+        before_el = $("#add_rule_block").closest(".card").parent();
+        clone.show().insertBefore(before_el);
 
         $(".remove_card").click(function() {
             $(this).closest(".card").parent().remove();
