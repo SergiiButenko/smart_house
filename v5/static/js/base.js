@@ -46,8 +46,8 @@ $(document).ready(function() {
         $.ajax({
             url: server + '/weather',
             success: function(data) {
-                $("#temp").text("Температура повітря: " + data['temperature'] + " C*");
-                $("#hum").text("Вологість: " + data['humidity'] + " %");
+                $("#temp").html("Температура повітря: " + data['temperature'] + " &#8451;");
+                $("#hum").html("Вологість: " + data['humidity'] + " %");
                 setTimeout(update_weather, 60 * 1000 * 30);
             }
         });
