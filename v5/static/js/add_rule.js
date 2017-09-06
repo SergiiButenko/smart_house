@@ -91,7 +91,8 @@ $(document).ready(function() {
     function clone_card() {
         element = $(".card_to_copy").children();
         clone = element.clone();
-        $(".card-group").append(clone.show());
+        clone.show().insertBefore();
+        // $(".card-group").insertBefore();
 
         $(".remove_card").click(function() {
             $(this).closest(".card").parent().remove();

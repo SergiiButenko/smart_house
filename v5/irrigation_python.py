@@ -27,9 +27,9 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-#ARDUINO_IP = 'http://192.168.1.10'
+ARDUINO_IP = 'http://192.168.1.10'
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
-ARDUINO_IP='http://185.20.216.94:5555'
+#ARDUINO_IP='http://185.20.216.94:5555'
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
@@ -51,7 +51,7 @@ QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \
 QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
 QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
 QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
-QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer <= datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
+QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
 QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
@@ -816,17 +816,16 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    return jsonify(temperature="0")
-    # url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
-    # try:
-    #     response = requests.get(url=url)
-    #     response.raise_for_status()
-    #     json_data = json.loads(response.text)
-    #     return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
-    # except requests.exceptions.RequestException as e:
-    #     logging.error(e)
-    #     logging.error("Can't get weather info Exception occured")
-    #     return jsonify(temperature="0")
+    url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+    try:
+        response = requests.get(url=url)
+        response.raise_for_status()
+        json_data = json.loads(response.text)
+        return jsonify(temperature=str(json_data[0]['Temperature']['Metric']['Value']))
+    except requests.exceptions.RequestException as e:
+        logging.error(e)
+        logging.error("Can't get weather info Exception occured")
+        return jsonify(temperature="0")
 
 
 @app.route("/sensors")
@@ -845,4 +844,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7542, debug=True)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=False)
