@@ -50,7 +50,7 @@ QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
-QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
+# QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
 QUERY['history_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.timer <=datetime('now', 'localtime') and l.state = rule_state.id order by l.timer desc"
 QUERY['history_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
@@ -267,7 +267,7 @@ def get_next_active_rule(line_id):
 
 
 def get_last_start_rule(line_id):
-    """Return last compeled start irrigation rule"""
+    """Return last compeled start irrigation rule."""
     query = QUERY[mn()].format(line_id)
     res = execute_request(query, 'fetchone')
     if res is None:
@@ -304,7 +304,7 @@ def branches_names():
         abort(500)
 
     for row in res:
-        branch_list.append({'id': row[0], 'name': row[1], 'default_time': row[2], 'default_interval': row[3], 'default_time_wait': row[4], 
+        branch_list.append({'id': row[0], 'name': row[1], 'default_time': row[2], 'default_interval': row[3], 'default_time_wait': row[4],
             'start_time': row[5]})
 
     return jsonify(list=branch_list)
@@ -339,39 +339,15 @@ def get_table_body_only(query=None):
             timer = row[5]
             active = row[6]
             rule_state = row[7]
+            time = row[8]
             outdated = 0
             if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
                 outdated = 1
 
-            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
+            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state, 'time': time,
                 'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
     template = render_template('timetable_table_only.html', my_list=rows)
-    return template
-
-
-@app.route("/timetable")
-def timetable():
-    """Blablbal."""
-    list_arr = execute_request(QUERY[mn()].format(1, 24), 'fetchall')
-    rows = []
-    if (list_arr is not None):
-        for row in list_arr:
-            id = row[0]
-            branch_name = row[1]
-            rule_name = row[2]
-            state = row[3]
-            timer = row[5]
-            active = row[6]
-            rule_state = row[7]
-            outdated = 0
-            if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
-                outdated = 1
-
-            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
-                'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
-
-    template = render_template('timetable.html', my_list=rows)
     return template
 
 
@@ -393,11 +369,12 @@ def history():
             timer = row[5]
             active = row[6]
             rule_state = row[7]
+            time = row[8]
             outdated = 0
             if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
                 outdated = 1
 
-            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state,
+            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state, 'time': time,
                 'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
 
     template = render_template('history.html', my_list=rows)
@@ -435,55 +412,54 @@ def add_rule_endpoint_v2():
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
-    return json.dumps({'status':'OK'});
+    return json.dumps({'status': 'OK'})
 
+# @app.route("/add_rule")
+# def add_rule_endpoint():
+#     """Used in add rule modal window."""
+#     is_interval = request.args.get('is_interval')
+#     if (is_interval is None):
+#         logging.error("no interval parameter passed")
+#         abort(404)
+#     is_interval = str(is_interval)
 
-@app.route("/add_rule")
-def add_rule_endpoint():
-    """Used in add rule modal window."""
-    is_interval = request.args.get('is_interval')
-    if (is_interval is None):
-        logging.error("no interval parameter passed")
-        abort(404)
-    is_interval = str(is_interval)
+#     if (is_interval == 'false'):
+#         branch_id = int(request.args.get('branch_id'))
+#         time_min = int(request.args.get('time_min'))
+#         start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
 
-    if (is_interval == 'false'):
-        branch_id = int(request.args.get('branch_id'))
-        time_min = int(request.args.get('time_min'))
-        start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+#         time_wait = 0
+#         num_of_intervals = 0
+#     elif (is_interval == 'true'):
+#         branch_id = int(request.args.get('branch_id'))
+#         time_min = int(request.args.get('time_min'))
+#         start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
 
-        time_wait = 0
-        num_of_intervals = 0
-    elif (is_interval == 'true'):
-        branch_id = int(request.args.get('branch_id'))
-        time_min = int(request.args.get('time_min'))
-        start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
+#         time_wait = int(request.args.get('time_wait'))
+#         num_of_intervals = int(request.args.get('quantity'))
+#     else:
+#         logging.error("incorrect interval parameter passed: {0}".format(is_interval))
+#         abort(404)
 
-        time_wait = int(request.args.get('time_wait'))
-        num_of_intervals = int(request.args.get('quantity'))
-    else:
-        logging.error("incorrect interval parameter passed: {0}".format(is_interval))
-        abort(404)
+#     interval_id = str(uuid.uuid4())
+#     now = datetime.datetime.now()
+#     stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-    interval_id = str(uuid.uuid4())
-    now = datetime.datetime.now()
-    stop_time = start_time + datetime.timedelta(minutes=time_min)
+#     update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+#     update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
-    update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-    update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+#     # first interval is executed
+#     for x in range(2, num_of_intervals + 1):
+#         start_time = stop_time + datetime.timedelta(minutes=time_wait)
+#         stop_time = start_time + datetime.timedelta(minutes=time_min)
+#         update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+#         update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+#         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
-    # first interval is executed
-    for x in range(2, num_of_intervals + 1):
-        start_time = stop_time + datetime.timedelta(minutes=time_wait)
-        stop_time = start_time + datetime.timedelta(minutes=time_min)
-        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-        logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
-
-    update_all_rules()
-    template = get_table_body_only()
-    send_message('list_update', {'data': template})
-    return template
+#     update_all_rules()
+#     template = get_table_body_only()
+#     send_message('list_update', {'data': template})
+#     return template
 
 
 @app.route("/remove_rule")

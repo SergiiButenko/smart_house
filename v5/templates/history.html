@@ -6,6 +6,7 @@
             <th>Лінія</th>
             <th>Дія</th>
             <th>Час</th>
+            <th>Тривалість</th>
             <th>Статус</th>
             <th></th>
           </tr>
@@ -16,21 +17,22 @@
                <td class="text-center">{{n['branch_name']}}</td>
                <td>{{n['rule_name']}}</td>
                <td>{{n['timer']}}</td>
+               <td>{{n['time']}}</td>
                   {% if n['state'] == 2 %}
                      <td>{{n['rule_state']}}</td>
-                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">Полито</button></td>
+                     <td></td>
                   {% elif n['state'] == 3 %}
                      <td>{{n['rule_state']}}</td>
-                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">{{n['rule_state']}}</button></td>
+                     <td></td>
                   {% elif n['outdated'] == 1 %}
                      <td>Застаріло</td>
-                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">Застаріло</button></td>
-                  {% elif n['active'] == 0 %}
-                     <td>Неактивно</td>
-                     <td><button type="button" class="btn btn-secondary" data-id={{n['id']}} onclick="activate_rule(this)">Активувати</button></td>
+                     <td></td>
                   {% elif 'Скасовано' in n['rule_state'] %}          
                      <td>{{n['rule_state']}}</td>
-                     <td><button type="button" class="btn btn-secondary disabled" data-id={{n['id']}}">Скасовано</button></td>
+                     <td></td>
+                  {% elif n['active'] == 0 %}
+                     <td>Неактивно</td>
+                     <td><button type="button" class="btn btn-secondary" data-id={{n['id']}} onclick="activate_rule(this)">Активувати</button></td>                
                   {% else %}
                      <td>{{n['rule_state']}}</td>
                      <td><button type="button" class="btn btn-secondary" data-id={{n['id']}} onclick="deactivate_rule(this)">Не виконувати</button></td>
