@@ -6,11 +6,11 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
-    $(".list-group-item").click(function() {
-        // $(this).parent().children().removeClass("active");
-        // $(this).addClass("active");
-        $('.navbar-toggler').click();
-    });
+    // $("#my-drawer .list-group-item").click(function() {
+    //     // $(this).parent().children().removeClass("active");
+    //     // $(this).addClass("active");
+    //     $('.navbar-toggler').click();
+    // });
 
     $('#irrigate_tommorow').on('click', function() {
         $('#confirm_modal-body').html("Почати полив завтра?");
