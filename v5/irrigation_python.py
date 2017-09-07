@@ -28,9 +28,10 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-ARDUINO_IP = 'http://192.168.1.10'
+DEBUG = False
+
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
-#ARDUINO_IP='http://185.20.216.94:5555'
+ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
@@ -823,4 +824,4 @@ def after_request(response):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=7542, debug=False)
+    socketio.run(app, host='0.0.0.0', port=7542, debug=DEBUG)

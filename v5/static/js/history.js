@@ -1,37 +1,40 @@
-var server = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+var server = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 
 $(document).ready(function() {
-    var $loading = $('#loader').hide();
-    $(document)
-        .ajaxStart(function() {
-            $loading.show();
-        })
-        .ajaxStop(function() {
-            $loading.hide();
-    });
-    
     //Add arduino touch script to determine if connection is alive
-    (function update_weather() {
-        $.ajax({
-            url: server+'/weather',
-            success: function(data) {
-                $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
-                setTimeout(update_weather, 60 * 1000 * 30);
-            },
-            global:false
+
+    (function() {
+        state = $("#all_rules").is(":checked")
+        $('#rules_table tr td:nth-child(2)').each(function() {
+            if (($(this).text().indexOf("Остановить") != -1 || $(this).text().indexOf("Зупинити") != -1) & !state)
+                $(this).closest("tr").hide();
+
+            if (($(this).text().indexOf("Остановить") != -1 || $(this).text().indexOf("Зупинити") != -1) & state)
+                $(this).closest("tr").show();
         });
     })();
 
-    $(".btn-refresh-history").click(function(){
+    $(".btn-refresh-history").click(function() {
         $.ajax({
-                             url: server + '/list_all',
-                             type: "get",
-                             data: {
-                                 'days': $(this).data('value'),
-                             },
-                             success: function(data) {
-                                 $('#rules_table').html(data);
-                             }
-                             });
+            url: server + '/list_all',
+            type: "get",
+            data: {
+                'days': $(this).data('value'),
+            },
+            success: function(data) {
+                $('#rules_table').html(data);
+            }
+        });
+    });
+
+    $("#all_rules").change(function() {
+        state = $("#all_rules").is(":checked")
+        $('#rules_table tr td:nth-child(2)').each(function() {
+            if (($(this).text().indexOf("Остановить") != -1 || $(this).text().indexOf("Зупинити") != -1) & !state)
+                $(this).closest("tr").hide();
+
+            if (($(this).text().indexOf("Остановить") != -1 || $(this).text().indexOf("Зупинити") != -1) & state)
+                $(this).closest("tr").show();
+        });
     });
 });
