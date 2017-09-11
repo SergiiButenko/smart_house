@@ -27,6 +27,7 @@ mn = lambda: inspect.stack()[1][3]
 QUERY = {}
 QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['enable_rule'] = "UPDATE life SET state={1} WHERE id={0}"
+QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE interval_id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
 
@@ -50,7 +51,7 @@ def date_hook(json_dict):
             json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
         except:
             pass
-    return json_dict
+    return json_dict    
 
 
 def set_next_rule_to_redis(branch_id, data):
@@ -81,43 +82,77 @@ def get_next_rule_from_redis(branch_id):
 def branch_on(line_id, alert_time):
     """Blablbal."""
     try:
-        response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'time_min': alert_time, 'mode': 'auto'})
-        response.raise_for_status()
+        for attempt in range(5):
+            try:
+                response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'time_min': alert_time, 'mode': 'auto'})
+                response.raise_for_status()
+                logging.debug('response {0}'.format(response.text))
 
-        logging.debug('response {0}'.format(response.text))
+            except requests.exceptions.Timeout as e:
+                logging.error(e)
+                logging.error("Can't turn on {0} branch by rule. Timeout Exception occured  {1} try out of 5".format(line_id, attempt))
+                continue
+            except Exception as e:
+                logging.error(e)
+                logging.error("Can't turn on {0} branch by rule. Exception occured. {1} try out of 5".format(line_id, attempt))
+                continue
+            else:
+                resp = json.loads(response.text)
+                
+                if (line_id == 17):
+                    arduino_branch_name = 'pump'
+                else:
+                    arduino_branch_name = line_id
 
-        logging.info('Branch {0} is turned on by rule'.format(line_id))
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't turn on {0} branch by rule. Timeout Exception occured".format(line_id))
+                if (resp[str(arduino_branch_name)] != "1"):
+                    continue
+                else:
+                    logging.info('Branch {0} is turned on by rule'.format(line_id))
+                    return response
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on {0} branch by rule. Exception occured".format(line_id))
         return None
-
-    logging.debug('return status')
-    return response
+    else:
+        raise Exception("Can't turn on {0} branch".format(line_id))
 
 
 def branch_off(line_id):
     """Blablbal."""
     try:
-        logging.debug('Branch {0} is turning off by rule'.format(line_id))
-        response = requests.get(url=BACKEND_IP + '/deactivate_branch', params={"id": line_id, 'mode': 'auto'})
-        response.raise_for_status()
+        for attempt in range(5):
+            try:
+                response = requests.get(url=BACKEND_IP + '/deactivate_branch', params={"id": line_id, 'mode': 'auto'})
+                response.raise_for_status()
+                logging.debug('response {0}'.format(response.text))
 
-        logging.debug('response {0}'.format(response.text))
-        logging.info('Branch {0} is turned off by rule'.format(line_id))
-    except requests.exceptions.Timeout as e:
-        logging.error(e)
-        logging.error("Can't turn off {0} branch by rule.Timeout Exception occured".format(line_id))
+            except requests.exceptions.Timeout as e:
+                logging.error(e)
+                logging.error("Can't turn off {0} branch by rule. Timeout Exception occured  {1} try out of 5".format(line_id, attempt))
+                continue
+            except Exception as e:
+                logging.error(e)
+                logging.error("Can't turn off {0} branch by rule. Exception occured. {1} try out of 5".format(line_id, attempt))
+                continue
+            else:
+                resp = json.loads(response.text)
+                
+                if (line_id == 17):
+                    arduino_branch_name = 'pump'
+                else:
+                    arduino_branch_name = line_id
+
+                if (resp[str(arduino_branch_name)] != "0"):
+                    continue
+                else:
+                    logging.info('Branch {0} is turned off by rule'.format(line_id))
+                    return response
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
         return None
-
-    logging.debug('return status')
-    return response
+    else:
+        raise Exception("Can't turn off {0} branch".format(line_id))
 
 
 # executes query and returns fetch* result
@@ -150,7 +185,6 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        # conn = psycopg2.connect("dbname='test' user='sprinkler' host='185.20.216.94' port='35432' password='drop#'")
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
@@ -262,11 +296,9 @@ def enable_rule():
 
                     try:
                         if rule['rule_id'] == 1:
-                            logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
-
                             response = branch_on(rule['line_id'], rule['time'])
                             if response is None:
-                                raise Exception("Can't turn on {0} branch".format(rule['line_id']))
+                                raise Exception("Can't turn on {0} branch. Response is NONE".format(rule['line_id']))
                             else:
                                 json_data = json.loads(response.text)
                                 if (json_data[arduino_branch_name] == '0'):
@@ -291,6 +323,7 @@ def enable_rule():
                     except Exception as e:
                         logging.error("Rule '{0}' can't be executed. Exception occured. {1}".format(str(rule), e))
                         # Set failed state
+                        update_db_request(QUERY[mn()+'_cancel_interval'].format(rule['interval_id'], 3))
                         update_db_request(QUERY[mn()].format(rule['id'], 3))
                     else:
                         logging.info("Rule '{0}' is done.".format(str(rule)))
