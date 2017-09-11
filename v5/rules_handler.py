@@ -91,10 +91,12 @@ def branch_on(line_id, alert_time):
             except requests.exceptions.Timeout as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch by rule. Timeout Exception occured  {1} try out of 5".format(line_id, attempt))
+                time.sleep(10)
                 continue
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch by rule. Exception occured. {1} try out of 5".format(line_id, attempt))
+                time.sleep(10)
                 continue
             else:
                 resp = json.loads(response.text)
@@ -105,6 +107,8 @@ def branch_on(line_id, alert_time):
                     arduino_branch_name = line_id
 
                 if (resp[str(arduino_branch_name)] != "1"):
+                    logging.error('Branch {0} cant be turned on by rule. response {1}'.format(line_id, response.text))
+                    time.sleep(10)
                     continue
                 else:
                     logging.info('Branch {0} is turned on by rule'.format(line_id))
@@ -129,10 +133,12 @@ def branch_off(line_id):
             except requests.exceptions.Timeout as e:
                 logging.error(e)
                 logging.error("Can't turn off {0} branch by rule. Timeout Exception occured  {1} try out of 5".format(line_id, attempt))
+                time.sleep(10)
                 continue
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn off {0} branch by rule. Exception occured. {1} try out of 5".format(line_id, attempt))
+                time.sleep(10)
                 continue
             else:
                 resp = json.loads(response.text)
@@ -143,6 +149,8 @@ def branch_off(line_id):
                     arduino_branch_name = line_id
 
                 if (resp[str(arduino_branch_name)] != "0"):
+                    logging.error('Branch {0} cant be turned off by rule. response {1}'.format(line_id, response.text))
+                    time.sleep(10)
                     continue
                 else:
                     logging.info('Branch {0} is turned off by rule'.format(line_id))
