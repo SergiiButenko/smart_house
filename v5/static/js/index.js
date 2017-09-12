@@ -80,8 +80,10 @@ $(document).ready(function() {
 
     socket.on('branch_status', function(msg) {
         console.log('Message received. New brach status: ' + msg.data);
-        console.log("fsdf "+msg.data)
-        update_branches(msg.data);
+        var decodedString = String.fromCharCode.apply(null, new Uint8Array(msg.data));
+        var obj = JSON.parse(decodedString);
+        console.log(obj);
+        update_branches(obj);
     });
 
 
