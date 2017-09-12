@@ -147,7 +147,6 @@ def send_message(channel, data):
     try:
         socketio.emit(channel, data)
         logging.info('Message was sent.')
-        logging.info(json.dumps(data))
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
@@ -789,7 +788,7 @@ def activate_branch():
         logging.info("Branch '{0}' activated manually".format(id))
 
     response_json = form_responce_for_branches(response_on.text)
-    send_message('branch_status', response_json.response)
+    send_message('branch_status', {'data': response_json.response})
 
     return response_json
 
@@ -868,7 +867,7 @@ def deactivate_branch():
         logging.info('No new entries is added to database.')
 
     response_json = form_responce_for_branches(response_off.text)
-    send_message('branch_status', response_json.response)
+    send_message('branch_status', {'data': response_json.response})
 
     return response_json
 
