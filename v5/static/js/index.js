@@ -79,11 +79,9 @@ $(document).ready(function() {
     });
 
     socket.on('branch_status', function(msg) {
-        console.log('Message received. New brach status: ' + msg.data);
-        var decodedString = String.fromCharCode.apply(null, new Uint8Array(msg.data));
-        var obj = JSON.parse(decodedString);
-        console.log(obj);
-        update_branches(obj);
+        console.log('Message received. New brach status: ');
+        data = JSON.parse(msg.data[0])
+        update_branches(data);
     });
 
 
