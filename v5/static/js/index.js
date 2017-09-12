@@ -242,12 +242,12 @@ function toogle_card(element_id, branch) {
     branch_state = branch['status']
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
-        $('#btn-start-' + element_id).addClass("hidden");
-        $('#btn-stop-' + element_id).removeClass("hidden");
+        $('#btn-start-' + element_id).hide().addClass("hidden");
+        $('#btn-stop-' + element_id).show().removeClass("hidden");
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
-        $('#btn-stop-' + element_id).addClass("hidden");
-        $('#btn-start-' + element_id).removeClass("hidden");
+        $('#btn-stop-' + element_id).hide().addClass("hidden");
+        $('#btn-start-' + element_id).show().removeClass("hidden");
     }
 
     options = {
@@ -270,20 +270,20 @@ function toogle_card(element_id, branch) {
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
-        $('#next-' + element_id).removeClass("hidden");
+        $('#next-' + element_id).show().removeClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).css('display', 'inline-block');
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
-        $('#next-' + element_id).removeClass("hidden");
+        $('#next-' + element_id).show().removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
 
         $('#btn-cancel-' + element_id).hide();
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
-        $('#next-' + element_id).addClass("hidden");
-        $('#btn-cancel-' + element_id).addClass("hidden");
+        $('#next-' + element_id).hide().addClass("hidden");
+        $('#btn-cancel-' + element_id).hide().addClass("hidden");
     }
 }
