@@ -15,7 +15,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['weather'] = "insert into weather(datetime, temperature, humidity) VALUES ({0}, {1}, {2})"
+QUERY['weather'] = "insert into weather(datetime, temperature, humidity) VALUES ('{0}', {1}, {2})"
 
 
 # executes query and returns fetch* result
@@ -79,16 +79,20 @@ def weather():
     try:
         response = requests.get(url=url, timeout=(3, 3))
         response.raise_for_status()
+        logging.info("response: " + response.text)
+
         json_data = json.loads(response.text)
         temperature = str(round(pytemperature.k2c(json_data['main']['temp']), 2))
+        logging.info("temperature: " + temperature)
         humidity = str(round(json_data['main']['humidity'], 2))
+        logging.info("humidity: " + humidity)
 
         now = datetime.datetime.now()
+        logging.info("now: " + str(now))
 
         update_db_request(QUERY[mn()].format(now, temperature, humidity))
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logging.error(e)
-        logging.error("Can't get weather info Exception occured")
 
 if __name__ == "__main__":
     weather()
