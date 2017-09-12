@@ -16,6 +16,7 @@ import logging
 import uuid
 import redis
 import pytemperature
+import time
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -157,7 +158,7 @@ def get_weather(force_update='false', ignore_sensors='false'):
     if (force_update == 'true' or datetime.datetime.now() > (datetime.datetime.now() + datetime.timedelta(minutes=60))):
         json_data = ''
         try:
-            response = requests.get(url=ARDUINO_WEATHER_IP + "/weather")
+            response = requests.get(url=ARDUINO_WEATHER_IP + "/weather", timeout=(3, 3))
             json_data = json.loads(response.text)
         except Exception as e:
             logging.error(e)
@@ -670,7 +671,7 @@ def form_responce_for_branches(payload):
 def arduino_status():
     """Return status of arduino relay."""
     try:
-        response_status = requests.get(url=ARDUINO_IP + '/branch_status')
+        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(3, 3))
         response_status.raise_for_status()
 
         response_json = form_responce_for_branches(response_status.text)
@@ -682,6 +683,47 @@ def arduino_status():
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
         abort(404)
+
+
+def retry_branch_on(id, time_min):
+    """Use to retry turn on branch in case of any error."""
+    try:
+        for attempt in range(2):
+            try:
+                payload = (('branch_id', id), ('branch_alert', time_min + 2))
+                response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=(3, 3))
+                response_on.raise_for_status()
+                logging.debug('response {0}'.format(response_on.text))
+
+                if (id == 17):
+                    arduino_branch_name = 'pump'
+                else:
+                    arduino_branch_name = id
+
+                resp = json.loads(response_on.text)
+                if (resp[str(arduino_branch_name)] != "1"):
+                    logging.error('Branch {0} cant be turned on. response {1}'.format(id, response_on.text))
+                    time.sleep(2)
+                    continue
+                else:
+                    logging.info('Branch {0} is turned on by rule'.format(id))
+                    return response_on
+            except requests.exceptions.Timeout as e:
+                logging.error(e)
+                logging.error("Can't turn on {0} branch. Timeout Exception occured  {1} try out of 2".format(id, attempt))
+                time.sleep(2)
+                continue
+            except Exception as e:
+                logging.error(e)
+                logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
+                time.sleep(2)
+                continue
+
+        raise Exception("Can't turn on {0} branch".format(id))
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        raise Exception("Can't turn on {0} branch".format(id))
 
 
 @app.route('/activate_branch', methods=['GET'])
@@ -708,8 +750,7 @@ def activate_branch():
         abort(500)
 
     try:
-        payload = (('branch_id', id), ('branch_alert', time_min + 2))
-        response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload)
+        response_on = retry_branch_on(id, time_min)
         response_on.raise_for_status()
     except Exception as e:
         logging.error(e)
@@ -752,6 +793,47 @@ def activate_branch():
     return response_json
 
 
+def retry_branch_off(id):
+    """Use to retry turn off branch in case of any error."""
+    try:
+        for attempt in range(2):
+            try:
+                payload = (('branch_id', id))
+                response_off = requests.get(url=ARDUINO_IP + '/branch_off', params=payload, timeout=(3, 3))
+                response_off.raise_for_status()
+                logging.debug('response {0}'.format(response_off.text))
+
+                if (id == 17):
+                    arduino_branch_name = 'pump'
+                else:
+                    arduino_branch_name = id
+
+                resp = json.loads(response_off.text)
+                if (resp[str(arduino_branch_name)] != "0"):
+                    logging.error('Branch {0} cant be turned off. response {1}'.format(id, response_off.text))
+                    time.sleep(2)
+                    continue
+                else:
+                    logging.info('Branch {0} is turned off by rule'.format(id))
+                    return response_off
+            except requests.exceptions.Timeout as e:
+                logging.error(e)
+                logging.error("Can't turn off {0} branch. Timeout Exception occured  {1} try out of 2".format(id, attempt))
+                time.sleep(2)
+                continue
+            except Exception as e:
+                logging.error(e)
+                logging.error("Can't turn off {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
+                time.sleep(2)
+                continue
+
+        raise Exception("Can't turn off {0} branch".format(id))
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
+        raise Exception("Can't turn off {0} branch".format(id))
+
+
 @app.route('/deactivate_branch', methods=['GET'])
 def deactivate_branch():
     """Route is used to disable branch."""
@@ -764,7 +846,7 @@ def deactivate_branch():
         abort(500)
 
     try:
-        response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id})
+        response_off = retry_branch_off(id)
         response_off.raise_for_status()
     except requests.exceptions.RequestException as e:
         logging.error(e)
@@ -797,11 +879,10 @@ def weather():
     #url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
-        response = requests.get(url=url)
+        response = requests.get(url=url, timeout=(3, 3))
         response.raise_for_status()
         json_data = json.loads(response.text)
-        return jsonify(temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
-            humidity=str(round(json_data['main']['humidity'], 2)))
+        return jsonify(temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)), humidity=str(round(json_data['main']['humidity'], 2)))
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
