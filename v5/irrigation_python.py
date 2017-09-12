@@ -788,7 +788,7 @@ def activate_branch():
         logging.info("Branch '{0}' activated manually".format(id))
 
     response_json = form_responce_for_branches(response_on.text)
-    send_message('branch_status', {'data': response_json.response})
+    send_message('branch_status', {'data': json.dumps(response_json.response) })
 
     return response_json
 
@@ -867,7 +867,7 @@ def deactivate_branch():
         logging.info('No new entries is added to database.')
 
     response_json = form_responce_for_branches(response_off.text)
-    send_message('branch_status', {'data': response_json.response})
+    send_message('branch_status', {'data': json.dumps(response_json.response)})
 
     return response_json
 
