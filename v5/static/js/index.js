@@ -85,7 +85,6 @@ $(document).ready(function() {
     });
 
 
-
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
     $('#irrigate_modal').on('hidden.bs.modal', function() {
@@ -243,12 +242,12 @@ function toogle_card(element_id, branch) {
     branch_state = branch['status']
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
-        $('#btn-start-' + element_id).css('display', 'none').hide();
-        $('#btn-stop-' + element_id).css('display', 'inline-block');
+        $('#btn-start-' + element_id).addClass("hidden");
+        $('#btn-stop-' + element_id).removeClass("hidden");
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
-        $('#btn-stop-' + element_id).css('display', 'none').hide();
-        $('#btn-start-' + element_id).css('display', 'inline-block');
+        $('#btn-stop-' + element_id).addClass("hidden");
+        $('#btn-start-' + element_id).removeClass("hidden");
     }
 
     options = {

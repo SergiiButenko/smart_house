@@ -40,6 +40,10 @@
     pointer-events: none;
 }
 
+.hidden {
+    display: none!important;
+}
+
 
 .table,
 .table tr,
