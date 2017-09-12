@@ -20,7 +20,7 @@ import time
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
+                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 logging.getLogger('socketio').setLevel(logging.ERROR)
 logging.getLogger('engineio').setLevel(logging.ERROR)
@@ -147,7 +147,7 @@ def send_message(channel, data):
     """Enclose emit method into try except block."""
     try:
         socketio.emit(channel, data)
-        logging.debug('Message was sent')
+        logging.info('Message was sent. data:' + data)
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
@@ -693,7 +693,7 @@ def retry_branch_on(id, time_min):
                 payload = (('branch_id', id), ('branch_alert', time_min + 2))
                 response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=(3, 3))
                 response_on.raise_for_status()
-                logging.debug('response {0}'.format(response_on.text))
+                logging.info('response {0}'.format(response_on.text))
 
                 if (id == 17):
                     arduino_branch_name = 'pump'
@@ -801,7 +801,7 @@ def retry_branch_off(id):
                 payload = (('branch_id', id))
                 response_off = requests.get(url=ARDUINO_IP + '/branch_off', params=payload, timeout=(3, 3))
                 response_off.raise_for_status()
-                logging.debug('response {0}'.format(response_off.text))
+                logging.info('response {0}'.format(response_off.text))
 
                 if (id == 17):
                     arduino_branch_name = 'pump'
