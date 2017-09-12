@@ -24,7 +24,7 @@ $(document).ready(function() {
 
                 for (var i = 1; i < branch.length; i++) {
                     if (branch[i] != undefined) {
-                        $('#card-' + i).parent().show();
+                        $('#card-' + i).parent().css('display', 'inline-block');
                         $('#title-' + i).text(branch[i]['name']);
                     } else {
                         $('#card-' + i).parent().remove();
@@ -67,7 +67,7 @@ $(document).ready(function() {
         if (input <= 1 || isNaN(input)) {
             $('#irrigation_time_wait_group').hide();
         } else {
-            $('#irrigation_time_wait_group').show();
+            $('#irrigation_time_wait_group').css('display', 'inline-block');
         }
     });
 
@@ -106,7 +106,7 @@ $(document).ready(function() {
         if (interval <= 1) {
             $('#irrigation_time_wait_group').hide();
         } else {
-            $('#irrigation_time_wait_group').show();
+            $('#irrigation_time_wait_group').css('display', 'inline-block');
         }
 
         $('.modal-title').html(name);
@@ -243,11 +243,11 @@ function toogle_card(element_id, branch) {
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
         $('#btn-start-' + element_id).hide().addClass("hidden");
-        $('#btn-stop-' + element_id).show().removeClass("hidden");
+        $('#btn-stop-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
         $('#btn-stop-' + element_id).hide().addClass("hidden");
-        $('#btn-start-' + element_id).show().removeClass("hidden");
+        $('#btn-start-' + element_id).css('display', 'inline-block').removeClass("hidden");
     }
 
     options = {
@@ -270,14 +270,14 @@ function toogle_card(element_id, branch) {
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
-        $('#next-' + element_id).show().removeClass("hidden");
+        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).css('display', 'inline-block');
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
-        $('#next-' + element_id).show().removeClass("hidden");
+        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
 
         $('#btn-cancel-' + element_id).hide();
