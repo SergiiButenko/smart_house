@@ -146,7 +146,8 @@ def send_message(channel, data):
     """Enclose emit method into try except block."""
     try:
         socketio.emit(channel, data)
-        logging.info('Message was sent. data:' + data)
+        logging.info('Message was sent.')
+        logging.info(json.dumps(data))
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
@@ -847,7 +848,7 @@ def deactivate_branch():
     try:
         response_off = retry_branch_off(id)
         response_off.raise_for_status()
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
@@ -875,7 +876,7 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    #url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
+    # url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
         response = requests.get(url=url, timeout=(3, 3))
