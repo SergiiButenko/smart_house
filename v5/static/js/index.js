@@ -269,14 +269,20 @@ function toogle_card(element_id, branch) {
     }
     $('#last-' + element_id).text("Останній полив: " + last_rule)
 
-    if (branch['next_rule']) {
+    if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
         $('#next-' + element_id).show();
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).css('display', 'inline-block');
+    } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
+        next_rule = branch['next_rule']['timer']
+        next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+        $('#next-' + element_id).show();
+        $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
 
+        $('#btn-cancel-' + element_id).css('display', 'inline-block');
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide();
