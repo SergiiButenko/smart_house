@@ -358,7 +358,7 @@ def history():
     if 'days' in request.args:
         days = int(request.args.get('days'))
     else:
-        days = 366
+        days = 60
 
     list_arr = execute_request(QUERY[mn()].format(days), 'fetchall')
     rows = []
