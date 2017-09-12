@@ -242,7 +242,9 @@ function toogle_card(element_id, branch) {
     branch_state = branch['status']
     if (branch_state == 1) {
         $('#card-' + element_id).addClass("card-irrigate-active");
+        console.log($('#btn-start-' + element_id))
         $('#btn-start-' + element_id).css('display', 'none');
+        console.log($('#btn-stop-' + element_id))
         $('#btn-stop-' + element_id).css('display', 'inline-block');
     } else {
         $('#card-' + element_id).removeClass("card-irrigate-active");
