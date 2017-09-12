@@ -274,7 +274,7 @@ def get_last_start_rule(line_id):
     if res is None:
         return None
 
-    logging.info("Last completed rule retrieved for line id {0}".format(line_id))
+    logging.debug("Last completed rule retrieved for line id {0}".format(line_id))
     return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
 
 
@@ -719,7 +719,7 @@ def retry_branch_on(id, time_min):
                 time.sleep(2)
                 continue
 
-        raise Exception("Can't turn on {0} branch".format(id))
+        raise Exception("Can't turn on {0} branch. Retries limit reached".format(id))
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -798,8 +798,7 @@ def retry_branch_off(id):
     try:
         for attempt in range(2):
             try:
-                payload = (('branch_id', id))
-                response_off = requests.get(url=ARDUINO_IP + '/branch_off', params=payload, timeout=(3, 3))
+                response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id}, timeout=(3, 3))
                 response_off.raise_for_status()
                 logging.info('response {0}'.format(response_off.text))
 
@@ -827,7 +826,7 @@ def retry_branch_off(id):
                 time.sleep(2)
                 continue
 
-        raise Exception("Can't turn off {0} branch".format(id))
+        raise Exception("Can't turn off {0} branch. Retries limit reached".format(id))
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn off branch id={0}. Exception occured".format(id))
