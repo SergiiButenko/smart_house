@@ -29,7 +29,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-DEBUG = False
+DEBUG = True
 
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
@@ -145,9 +145,9 @@ def get_next_rule_from_redis(branch_id):
 def send_message(channel, data):
     """Enclose emit method into try except block."""
     try:
-        json_to_data = json.loads(data, object_hook=date_hook)
-        socketio.emit(channel, json_to_data)
+        socketio.emit(channel, data)
         logging.info('Message was sent.')
+        logging.debug(data)
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
@@ -207,9 +207,9 @@ def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
@@ -235,9 +235,9 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -676,7 +676,7 @@ def arduino_status():
         response_status.raise_for_status()
 
         arr = form_responce_for_branches(response_status.text)
-        send_message('branch_status', {'data': {'branches': arr}})
+        send_message('branch_status', {'data': json.dumps({'branches':arr}, default=date_handler)})
 
         return jsonify(branches=arr)
 
@@ -789,7 +789,7 @@ def activate_branch():
         logging.info("Branch '{0}' activated manually".format(id))
 
     arr = form_responce_for_branches(response_on.text)
-    send_message('branch_status', {'data': {'branches': arr}})
+    send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
     return jsonify(branches=arr)
 
@@ -868,7 +868,7 @@ def deactivate_branch():
         logging.info('No new entries is added to database.')
 
     arr = form_responce_for_branches(response_off.text)
-    send_message('branch_status', {'data': {'branches': arr}})
+    send_message('branch_status', {'data': json.dumps({'branches':arr}, default=date_handler)})
 
     return jsonify(branches=arr)
 
