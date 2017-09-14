@@ -145,7 +145,8 @@ def get_next_rule_from_redis(branch_id):
 def send_message(channel, data):
     """Enclose emit method into try except block."""
     try:
-        socketio.emit(channel, data)
+        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
+        socketio.emit(channel, json_to_data)
         logging.info('Message was sent.')
     except Exception as e:
         logging.error(e)
