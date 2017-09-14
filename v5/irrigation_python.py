@@ -660,7 +660,7 @@ def form_responce_for_branches(payload):
             next_rule = get_next_active_rule(branch_id)
 
             res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
-        return jsonify(branches=res)
+        return res
     except Exception as e:
         logging.error(e)
         logging.error("Can't form responce. Exception occured")
@@ -674,15 +674,15 @@ def arduino_status():
         response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(3, 3))
         response_status.raise_for_status()
 
-        response_json = form_responce_for_branches(response_status.text)
-        response_status = response_status.status_code
+        arr = form_responce_for_branches(response_status.text)
+        send_message('branch_status', {'data': {'branches': arr}})
 
-        return (response_json, response_status)
+        return jsonify(branches=arr)
 
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get arduino status. Exception occured")
-        abort(404)
+        abort(500)
 
 
 def retry_branch_on(id, time_min):
@@ -787,10 +787,10 @@ def activate_branch():
     else:
         logging.info("Branch '{0}' activated manually".format(id))
 
-    response_json = form_responce_for_branches(response_on.text)
-    send_message('branch_status', {'data': response_json.response})
+    arr = form_responce_for_branches(response_on.text)
+    send_message('branch_status', {'data': {'branches': arr}})
 
-    return response_json
+    return jsonify(branches=arr)
 
 
 def retry_branch_off(id):
@@ -866,10 +866,10 @@ def deactivate_branch():
     else:
         logging.info('No new entries is added to database.')
 
-    response_json = form_responce_for_branches(response_off.text)
-    send_message('branch_status', {'data': response_json.response})
+    arr = form_responce_for_branches(response_off.text)
+    send_message('branch_status', {'data': {'branches': arr}})
 
-    return response_json
+    return jsonify(branches=arr)
 
 
 @app.route("/weather")
