@@ -280,7 +280,7 @@ function toogle_card(element_id, branch) {
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
 
-        $('#btn-cancel-' + element_id).hide();
+        $('#btn-cancel-' + element_id).hide().addClass("hidden");
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide().addClass("hidden");

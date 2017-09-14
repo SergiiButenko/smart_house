@@ -160,7 +160,6 @@ $(document).ready(function() {
             }
         });
 
-        console.log(json);
         $.ajax({
             url: '/v2/add_rule',
             type: "post",

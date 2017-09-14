@@ -42,19 +42,9 @@ $(document).ready(function() {
         form_text();
     });
 
-    function set_branch(index) {
-        name = branch[index]['name'];
-        time = branch[index]['default_time'];
-        interval = branch[index]['default_interval'];
-        time_wait = branch[index]['default_time_wait'];
-
-
-        $('#irrigation_minutes').val(time);
-        $('#irrigation_intervals').val(interval);
-        $('#irrigation_time_wait').val(time_wait);
-
-        toogle_time_wait(index);
-    }
+    $('.irrigation_time').on('input', function(e) {
+        form_text();
+    });
 
     $('#branch_select').on('change', function(e) {
         index = parseInt($(this).val());
@@ -65,32 +55,6 @@ $(document).ready(function() {
         toogle_week_schedule($(this).val());
     });
 
-    function toogle_week_schedule(val) {
-        val = parseInt(val);
-
-        if (val != 8 || isNaN(val)) {
-            $('#week_schedule').hide();
-            form_text();
-        } else {
-            $('#week_schedule').show();
-        }
-    }
-
-    function toogle_time_wait(val) {
-        var input = parseInt(val)
-        if (input <= 1 || isNaN(input)) {
-            $('#irrigation_time_wait_group').hide();
-        } else {
-            $('#irrigation_time_wait_group').show();
-        }
-    }
-
-    $(".radio_input").focus(function() {
-        $(this).closest('.radio').find(":radio").click();
-        form_text();
-    });
-
-
     $(".btn-open-modal2").click(function() {
         index = parseInt($("#branch_select").val());
         set_branch(index);
@@ -100,8 +64,28 @@ $(document).ready(function() {
     });
 
 
-    $("input[name='optionsRadios']").change(form_text);
+    $("input[name='optionsRadios']").change(function() {
+        radio = $(".form-group input:checked")
+        if (radio.val() == 3) {
+            $("#date").val(convert_date_to_local_date(1));
+        } else {
+            $("#date").val('');
+        }
+
+        if (radio.val() == 2) {
+            $("#quantity").val(1);
+        } else {
+            $("#quantity").val('');
+        }
+
+        form_text();
+    });
     $("#checkboxes :checkbox").click(form_text);
+
+    $(".radio_input").focus(function() {
+        $(this).closest('.radio').find(":radio").click();
+        form_text();
+    });
 
 });
 
@@ -149,9 +133,6 @@ function remove_rule(that) {
 }
 
 function form_text() {
-
-
-
     schedule_text = $('#schedule_select option:selected').attr('title');
     schedule_val = $('#schedule_select option:selected').val();
     weekdays = []
@@ -164,21 +145,8 @@ function form_text() {
         schedule_text = schedule_text + ": " + weekdays.join(',')
     }
 
-    radio = $(".form-group input:checked")
-    if (radio.val() == 3) {
-        $("#date").val(convert_date_to_local_date(1));
-    } else {
-        $("#date").val('');
-    }
 
-    if (radio.val() == 2) {
-        $("#quantity").val(1);
-    } else {
-        $("#quantity").val('');
-    }
-
-    radio_text = ''
-
+    time = $('.irrigation_time').val();
 
     var options = {
         weekday: "long",
@@ -187,6 +155,8 @@ function form_text() {
         timeZone: 'UTC'
     };
 
+    radio = $(".form-group input:checked")
+    radio_text = ''
     date_new = $('.irrigation_date').val();
     if (radio.val() == 1) {
         now = new Date(date_new);
@@ -205,5 +175,42 @@ function form_text() {
         radio_text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
     }
 
-    $("#summary").text(schedule_text + ', ' + radio_text);
+    $("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
+}
+
+function toogle_week_schedule(val) {
+    val = parseInt(val);
+
+    if (val != 8 || isNaN(val)) {
+        $('#week_schedule').hide();
+    } else {
+        $('#week_schedule').show();
+    }
+
+    form_text();
+}
+
+function toogle_time_wait(val) {
+    var input = parseInt(val)
+    if (input <= 1 || isNaN(input)) {
+        $('#irrigation_time_wait_group').hide();
+    } else {
+        $('#irrigation_time_wait_group').show();
+    }
+}
+
+function set_branch(index) {
+    name = branch[index]['name'];
+    time = branch[index]['default_time'];
+    interval = branch[index]['default_interval'];
+    time_wait = branch[index]['default_time_wait'];
+    default_time_start = branch[index]['start_time']
+
+
+    $('#irrigation_minutes').val(time);
+    $('#irrigation_intervals').val(interval);
+    $('#irrigation_time_wait').val(time_wait);
+    $('.irrigation_time').val(convert_date_to_time(default_time_start));
+
+    toogle_time_wait(index);
 }
