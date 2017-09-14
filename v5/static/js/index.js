@@ -81,12 +81,12 @@ $(document).ready(function() {
     socket.on('branch_status', function(msg) {
         console.log('Message received. New brach status: ');
 
-        console.log('0');
-        console.log(JSON.parse(msg.data[0]));
-        console.log('1');
-        console.log(JSON.parse(msg.data[1]));
-        console.log('json data');
-        console.log(JSON.parse(msg.data));
+        // console.log('0');
+        // console.log(JSON.parse(msg.data[0]));
+        // console.log('1');
+        // console.log(JSON.parse(msg.data[1]));
+        // console.log('json data');
+        // console.log(JSON.parse(msg.data));
         console.log('data');
         console.log(msg.data);
 
