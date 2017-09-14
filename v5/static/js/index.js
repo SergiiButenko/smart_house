@@ -79,7 +79,7 @@ $(document).ready(function() {
     });
 
     socket.on('branch_status', function(msg) {
-        console.debug('Message received. New brach status: ' + msg.data);        
+        console.log('Message received. New brach status: ' + msg.data);        
         update_branches(JSON.parse(msg.data));
     });
 
