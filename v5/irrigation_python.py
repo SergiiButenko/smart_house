@@ -135,7 +135,7 @@ def get_next_rule_from_redis(branch_id):
         if data is None:
             return None
 
-        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
+        json_to_data = json.loads(data, object_hook=date_hook)
     except Exception as e:
         logging.error("Can't get data from redis. Exception occured {0}".format(e))
 
