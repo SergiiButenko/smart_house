@@ -49,6 +49,7 @@ $(document).ready(function() {
     $('#branch_select').on('change', function(e) {
         index = parseInt($(this).val());
         set_branch(index);
+        form_text();
     });
 
     $('#schedule_select').on('change', function(e) {
