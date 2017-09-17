@@ -178,10 +178,5 @@ $(document).ready(function() {
                $('#go_plan').removeClass("disabled");
             }
         });
-
-
     });
-
-
-
 });

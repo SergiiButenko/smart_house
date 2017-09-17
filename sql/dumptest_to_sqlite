@@ -51,6 +51,21 @@ CREATE TABLE week_schedule (
     FOREIGN KEY(line_id) REFERENCES lines(number)
 );
 
+CREATE TABLE ongoing_rules (
+    id INTEGER PRIMARY KEY,
+    line_id integer NOT NULL,
+    time integer default 0 NOT NULL,
+    interval_id TEXT,
+    time_wait integer NOT NULL,
+    repeat_value integer NOT NULL,
+    weekdays TEXT, 
+    date_start timestamp without time zone NOT NULL,
+    time_schedule timestamp without time zone NOT NULL,
+    end_value integer NOT NULL,
+    active integer DEFAULT 1 NOT NULL,
+    FOREIGN KEY(line_id) REFERENCES lines(number)
+)
+
 CREATE TABLE life (
     id INTEGER PRIMARY KEY,
     line_id integer NOT NULL,
