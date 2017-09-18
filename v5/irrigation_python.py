@@ -895,6 +895,12 @@ def sensors():
     return app.send_static_file('sensors.html')
 
 
+@app.route("/.well-known/acme-challenge/caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk")
+def sensors2():
+    """Blablbal."""
+    return app.send_static_file('caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk')
+
+
 @app.after_request
 def after_request(response):
     """Blablbal."""
