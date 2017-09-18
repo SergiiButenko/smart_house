@@ -18,6 +18,8 @@ viber = Api(BotConfiguration(
     auth_token='46a517b9f870fcf1-799a9ca308bbd873-7745aee775fec7a7'
 ))
 
+viber.set_webhook('https://185.20.216.94:443/')
+
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
