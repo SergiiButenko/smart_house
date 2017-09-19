@@ -52,7 +52,7 @@ def incoming():
 
 
 def set_webhook(viber):
-    viber.set_webhook('https://mozart.hopto.org:443/')
+    viber.set_webhook('https://mozart.hopto.org/')
 
 if __name__ == "__main__":
     scheduler = sched.scheduler(time.time, time.sleep)
@@ -61,4 +61,4 @@ if __name__ == "__main__":
     t.start()
 
     context = ('crt.crt', 'key.key')
-    app.run(host='0.0.0.0', port=7443, debug=True, ssl_context=context)
+    app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
