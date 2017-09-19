@@ -42,7 +42,7 @@ def get_response(incom_message):
 
         SAMPLE_ALT_TEXT = "upgrade now!"
 
-        return RichMediaMessage(rich_media=SAMPLE_RICH_MEDIA, alt_text=SAMPLE_ALT_TEXT)
+        return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT)
 
 
 @app.route('/', methods=['POST'])
