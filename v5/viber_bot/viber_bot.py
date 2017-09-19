@@ -38,23 +38,18 @@ def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
         return TextMessage(text='начать')
     elif (incom_message.text.lower() == 'тест'):
-        obj = {
-        "BgColor": "#69C48A", "Buttons":
-        [
-        {"Columns": 6, "Rows": 1, "BgColor": "#454545", "BgMediaType": "gif", "BgMedia": "http://www.url.by/test.gif", "BgLoop": 'true',
+        SAMPLE_RICH_MEDIA = """{
+          "BgColor": "#69C48A",
+          "Buttons": [
+            {
+              "Columns": 6,
+              "Rows": 1,
               "ActionType": "open-url",
-              "Silent": 'true',
               "ActionBody": "www.tut.by",
-              "Image": "www.tut.by/img.jpg",
-              "TextVAlign": "middle",
-              "TextHAlign": "left",
-              "Text": "<b>example</b> button",
-              "TextOpacity": 10,
-              "TextSize": "regular"
-        }
-        ]
-        }
-        SAMPLE_RICH_MEDIA = json.dumps(obj)
+              "Image": "www.tut.by/img.jpg"
+            }
+          ]
+        }"""
 
         SAMPLE_ALT_TEXT = "upgrade now!"
 
