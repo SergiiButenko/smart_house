@@ -7,6 +7,8 @@ from viberbot.api.viber_requests import ViberFailedRequest
 from viberbot.api.viber_requests import ViberMessageRequest
 from viberbot.api.viber_requests import ViberSubscribedRequest
 from viberbot.api.viber_requests import ViberUnsubscribedRequest
+from viberbot.api.viber_requests import ViberDeliveredRequest
+
 
 import time
 import logging
@@ -42,10 +44,9 @@ def incoming():
 
     viber_request = viber.parse_request(request.get_data().decode())
 
-    if isinstance(viber_request, ViberMessageRequest):
+    if (isinstance(viber_request, ViberMessageRequest) and isinstance(viber_request, ViberDeliveredRequest)):
         message = viber_request.message
         response = get_response(message)
-        print(response)
 
         viber.send_messages(viber_request.sender.id, [
             TextMessage(text=response)
