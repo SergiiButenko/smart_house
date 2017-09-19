@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages.text_message import TextMessage
-from viberbot.api.messages.url_message import URLMessage
+from viberbot.api.messages.rich_media_message import RichMediaMessage
 # from viberbot.api.viber_requests import ViberConversationStartedRequest
 from viberbot.api.viber_requests import ViberFailedRequest
 from viberbot.api.viber_requests import ViberMessageRequest
@@ -38,7 +38,11 @@ def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
         return TextMessage(text='начать')
     elif (incom_message.text.lower() == 'тест'):
-        return URLMessage(media="http://google.com.ua")
+        SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
+
+        SAMPLE_ALT_TEXT = "upgrade now!"
+
+        return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
 
 
 @app.route('/', methods=['POST'])
