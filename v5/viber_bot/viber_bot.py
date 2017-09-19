@@ -32,11 +32,10 @@ viber = Api(BotConfiguration(
 def incoming():
     logger.debug("received request. post data: {0}".format(request.get_data()))
 
-    viber_request = viber.parse_request(request.get_data())
+    viber_request = viber.parse_request(request.get_data().decode())
 
     if isinstance(viber_request, ViberMessageRequest):
         message = viber_request.message
-        print(message)
         viber.send_messages(viber_request.sender.id, [
             message
         ])
@@ -52,8 +51,14 @@ def incoming():
     return Response(status=200)
 
 
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
+
+
 def set_webhook(viber):
     viber.set_webhook('https://mozart.hopto.org:7443/')
+
 
 if __name__ == "__main__":
     scheduler = sched.scheduler(time.time, time.sleep)
