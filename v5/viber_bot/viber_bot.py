@@ -37,14 +37,14 @@ USERS = [{'Sergii': 'cHxBN+Zz1Ldd/60xd62U/w=='}, {'Oleg': ''}, {'Irina': ''}]
 
 def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
-        return TextMessage(text='начать')
+        return [TextMessage(text='Огірки будут политі 2 раз(а) по 10хв з інтервалом в 15хв\nНаберіть "відмінити 910" або перейдіть за адресою з наступного повідолення'), URLMessage(media="http://mozart.hopto.org:7542/history")]
+
     elif (incom_message.text.lower() == 'тест'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
-        return URLMessage(media="http://mozart.hopto.org:7542/history")
-
+        return [URLMessage(media="http://mozart.hopto.org:7542/history")]
 
 
 @app.route('/', methods=['POST'])
@@ -58,9 +58,7 @@ def incoming():
     if (isinstance(viber_request, ViberMessageRequest)):
         message = get_response(viber_request.message)
         logger.warn("Sending message")
-        viber.send_messages(viber_request.sender.id, [
-            message
-        ])
+        viber.send_messages(viber_request.sender.id, message)
     elif isinstance(viber_request, ViberSubscribedRequest):
         viber.send_messages(viber_request.get_user.id, [
             TextMessage(text="thanks for subscribing!")
