@@ -61,5 +61,5 @@ if __name__ == "__main__":
     t = threading.Thread(target=scheduler.run)
     t.start()
 
-    context = ('concat.crt', 'private.key')
+    context = ('/var/www/v5/viber_bot/concat.crt', '/var/www/v5/viber_bot/private.key')
     app.run(host='0.0.0.0', port=7443, debug=False, ssl_context=context)
