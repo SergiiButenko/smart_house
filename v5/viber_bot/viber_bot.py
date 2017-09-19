@@ -31,8 +31,8 @@ viber = Api(BotConfiguration(
 USERS = [{'Sergii': 'cHxBN+Zz1Ldd/60xd62U/w=='}, {'Oleg': ''}, {'Irina': ''}]
 
 
-def get_responce(incom_message):
-    if (incom_message.lower() == 'полив'):
+def get_response(incom_message):
+    if (incom_message.text.lower() == 'полив'):
         return 'начать'
 
 
@@ -44,11 +44,11 @@ def incoming():
 
     if isinstance(viber_request, ViberMessageRequest):
         message = viber_request.message
-        responce = get_responce(message)
-        print(responce)
+        response = get_response(message)
+        print(response)
 
         viber.send_messages(viber_request.sender.id, [
-            TextMessage(responce)
+            TextMessage(response)
         ])
     elif isinstance(viber_request, ViberConversationStartedRequest) \
             or isinstance(viber_request, ViberSubscribedRequest) \
