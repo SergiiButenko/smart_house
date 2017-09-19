@@ -35,7 +35,7 @@ def incoming():
     viber_request = viber.parse_request(request.get_data())
 
     if isinstance(viber_request, ViberMessageRequest):
-        message = viber_request.message['text']
+        message = viber_request.message
         print(message)
         viber.send_messages(viber_request.sender.id, [
             message
@@ -62,4 +62,4 @@ if __name__ == "__main__":
     t.start()
 
     context = ('concat.crt', 'private.key')
-    app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+    app.run(host='0.0.0.0', port=443, debug=False, ssl_context=context)
