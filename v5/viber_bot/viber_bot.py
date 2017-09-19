@@ -60,5 +60,5 @@ if __name__ == "__main__":
     t = threading.Thread(target=scheduler.run)
     t.start()
 
-    context = ('crt.crt', 'key.key')
+    context = ('certificate.crt', 'private.key')
     app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
