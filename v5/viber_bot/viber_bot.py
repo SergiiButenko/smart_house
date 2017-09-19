@@ -35,15 +35,15 @@ def incoming():
     viber_request = viber.parse_request(request.get_data())
 
     if isinstance(viber_request, ViberMessageRequest):
-        message = viber_request.message()['text']
+        message = viber_request.message['text']
         print(message)
-        viber.send_messages(viber_request.sender().id(), [
+        viber.send_messages(viber_request.sender.id, [
             message
         ])
     elif isinstance(viber_request, ViberConversationStartedRequest) \
             or isinstance(viber_request, ViberSubscribedRequest) \
             or isinstance(viber_request, ViberUnsubscribedRequest):
-        viber.send_messages(viber_request.user().id(), [
+        viber.send_messages(viber_request.user.id, [
             TextMessage(None, None, viber_request.event_type())
         ])
     elif isinstance(viber_request, ViberFailedRequest):
