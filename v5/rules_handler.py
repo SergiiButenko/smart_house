@@ -15,11 +15,20 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 BACKEND_IP = 'http://127.0.0.1:7542'
+VIBER_BOT_IP = 'http://127.0.0.1:7443'
 
 HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 19
 
 RULES_ENABLED = True
+REDIS_KEY_FOR_VIBER = 'viber_sent_intervals'
+VIBER_SENT_TIMEOUT = 10
+
+USERS = [
+{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+]
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
@@ -261,6 +270,36 @@ def inspect_conditions(rule):
     return True
 
 
+def send_to_viber_bot(rule):
+    try:
+        rule_id = rule['id']
+        line_id = rule['line_id']
+        time = rule['time']
+        interval_id = rule['interval_id']
+
+        arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)
+        logging.debug("{0} arr was get from redis".format(arr))
+        if (arr is not None and interval_id in arr):
+            logging.info('interval_id {0} is already send'.format(interval_id))
+            return
+
+        try:
+            payload = {'rule_id': rule_id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT}
+            response = requests.post(VIBER_BOT_IP+'/notify_users', payload=payload)
+            response.raise_for_status()
+        except Exception as e:
+            logging.error(e)
+            logging.error("Can't send rule to viber. Ecxeption occured")
+        else:
+            redis_db.rpush(REDIS_KEY_FOR_VIBER, interval_id)
+            logging.debug("interval_id: {0} is added to redis".format(interval_id))
+            time = 1000 * 60 * 60 * 60 * 12
+            redis_db.expire(REDIS_KEY_FOR_VIBER, time)
+            logging.debug("REDIS_KEY_FOR_VIBER: {0} expires in 12 hours".format(REDIS_KEY_FOR_VIBER))
+    except Exception as e:
+        raise e
+
+
 def enable_rule():
     """Synch with redis each 10 seconds. Execute rules if any."""
     try:
@@ -282,16 +321,21 @@ def enable_rule():
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
+                if (datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT >=rule['timer'])):
+                    try:
+                        send_to_viber_bot(rule)
+                    except Exception as e:
+                        logging.error("Can't send rule {0} to viber. Exception occured. {1}".format(str(rule), e))
+
+
                 if (datetime.datetime.now() >= rule['timer']):
                     logging.info("Rule '{0}' execution started".format(str(rule)))
 
                     try:
                         if rule['rule_id'] == 1:
-                            logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
                             branch_on(rule['line_id'], rule['time'])
 
                         if rule['rule_id'] == 2:
-                            logging.debug("rule['rule_id'] : {0}".format(rule['rule_id']))
                             branch_off(rule['line_id'])
 
                     except Exception as e:
