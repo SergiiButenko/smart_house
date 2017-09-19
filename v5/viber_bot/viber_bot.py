@@ -24,7 +24,7 @@ logger.addHandler(handler)
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='test_bot',
+    name='Автоматичний запуск',
     avatar='http://viber.com/avatar.jpg',
     auth_token='46a517b9f870fcf1-799a9ca308bbd873-7745aee775fec7a7'
 ))
@@ -44,10 +44,10 @@ def incoming():
 
     viber_request = viber.parse_request(request.get_data().decode())
 
-    if (isinstance(viber_request, ViberMessageRequest) and isinstance(viber_request, ViberDeliveredRequest)):
+    if (isinstance(viber_request, ViberMessageRequest)):
         message = viber_request.message
         response = get_response(message)
-
+        logger.warn("Sending message")
         viber.send_messages(viber_request.sender.id, [
             TextMessage(text=response)
         ])
