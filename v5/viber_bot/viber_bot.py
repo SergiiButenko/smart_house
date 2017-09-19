@@ -48,7 +48,7 @@ def incoming():
         print(response)
 
         viber.send_messages(viber_request.sender.id, [
-            TextMessage(response)
+            TextMessage(None, None, response)
         ])
     elif isinstance(viber_request, ViberConversationStartedRequest) \
             or isinstance(viber_request, ViberSubscribedRequest) \
