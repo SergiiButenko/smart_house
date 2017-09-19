@@ -38,30 +38,11 @@ def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
         return TextMessage(text='начать')
     elif (incom_message.text.lower() == 'тест'):
-        SAMPLE_RICH_MEDIA = {"ButtonsGroupColumns": 6,"ButtonsGroupRows": 2,"BgColor": "#FFFFFF",
-            "Buttons": [{
-            "ActionBody": "http://www.website.com/go_here",
-            "ActionType": "open-url",
-            "BgMediaType": "picture",
-            "Image": "http://www.images.com/img.jpg",
-            "BgColor": "#000000",
-            "TextOpacity": 60,
-            "Rows": 4,
-            "Columns": 6
-        }, {
-            "ActionBody": "http://www.website.com/go_here",
-            "ActionType": "open-url",
-            "BgColor": "#85bb65",
-            "Text": "Buy",
-            "TextOpacity": 60,
-            "Rows": 1,
-            "Columns": 6
-        }]
-        }
+        SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
 
         SAMPLE_ALT_TEXT = "upgrade now!"
 
-        return RichMediaMessage(rich_media=json.dumps(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT)
+        return RichMediaMessage(rich_media=SAMPLE_RICH_MEDIA, alt_text=SAMPLE_ALT_TEXT)
 
 
 @app.route('/', methods=['POST'])
