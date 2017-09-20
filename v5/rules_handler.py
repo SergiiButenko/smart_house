@@ -279,7 +279,7 @@ def send_to_viber_bot(rule):
 
         arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)
         logging.debug("{0} arr was get from redis".format(arr))
-        if (arr is not None and interval_id in arr):
+        if (interval_id.encode() in arr):
             logging.info('interval_id {0} is already send'.format(interval_id))
             return
 
@@ -293,7 +293,7 @@ def send_to_viber_bot(rule):
         else:
             redis_db.rpush(REDIS_KEY_FOR_VIBER, interval_id)
             logging.debug("interval_id: {0} is added to redis".format(interval_id))
-            time = 1000 * 60 * 60 * 60 * 12
+            time = 60 * 60 * 60 * 12
             redis_db.expire(REDIS_KEY_FOR_VIBER, time)
             logging.debug("REDIS_KEY_FOR_VIBER: {0} expires in 12 hours".format(REDIS_KEY_FOR_VIBER))
     except Exception as e:

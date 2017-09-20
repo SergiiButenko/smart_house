@@ -37,7 +37,8 @@ USERS = [{'Sergii': 'cHxBN+Zz1Ldd/60xd62U/w=='}, {'Oleg': ''}, {'Irina': ''}]
 
 def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
-        return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'), URLMessage(media="http://mozart.hopto.org:7542/history")]
+        return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'), 
+        URLMessage(media="http://mozart.hopto.org:7542/history")]
 
     elif (incom_message.text.lower() == 'тест'):
         # this is not supoprted yet
