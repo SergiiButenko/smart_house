@@ -15,7 +15,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 BACKEND_IP = 'http://127.0.0.1:7542'
-VIBER_BOT_IP = 'https://127.0.0.1:7443'
+VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
 HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 19
@@ -91,7 +91,7 @@ def get_next_rule_from_redis(branch_id):
 def branch_on(line_id, alert_time):
     """Blablbal."""
     try:
-        for attempt in range(5):
+        for attempt in range(2):
             try:
                 response = requests.get(url=BACKEND_IP + '/activate_branch', params={"id": line_id, 'time_min': alert_time, 'mode': 'auto'}, timeout=(3, 3))
                 response.raise_for_status()
@@ -108,12 +108,12 @@ def branch_on(line_id, alert_time):
 
             except requests.exceptions.Timeout as e:
                 logging.error(e)
-                logging.error("Can't turn on {0} branch by rule. Timeout Exception occured  {1} try out of 5".format(line_id, attempt))
+                logging.error("Can't turn on {0} branch by rule. Timeout Exception occured  {1} try out of 2".format(line_id, attempt))
                 time.sleep(2)
                 continue
             except Exception as e:
                 logging.error(e)
-                logging.error("Can't turn on {0} branch by rule. Exception occured. {1} try out of 5".format(line_id, attempt))
+                logging.error("Can't turn on {0} branch by rule. Exception occured. {1} try out of 2".format(line_id, attempt))
                 time.sleep(2)
                 continue
         raise Exception("Can't turn on {0} branch".format(line_id))
@@ -320,9 +320,6 @@ def enable_rule():
                     continue
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
-                logging.info(rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))
-                logging.info((datetime.datetime.now() >= (rule['timer'])  - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT)))
-
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):
                     try:
