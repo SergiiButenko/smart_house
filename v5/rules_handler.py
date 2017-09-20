@@ -285,7 +285,7 @@ def send_to_viber_bot(rule):
 
         try:
             payload = {'rule_id': rule_id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT}
-            response = requests.post(VIBER_BOT_IP+'/notify_users', data=payload)
+            response = requests.post(VIBER_BOT_IP+'/notify_users', data=payload, timeout=(3, 3))
             response.raise_for_status()
         except Exception as e:
             logging.error(e)
