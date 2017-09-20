@@ -95,6 +95,13 @@ def send_message():
 def set_webhook(viber):
     viber.set_webhook('https://mozart.hopto.org:7443/')
 
+@app.after_request
+def after_request(response):
+    """Blablbal."""
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 if __name__ == "__main__":
     scheduler = sched.scheduler(time.time, time.sleep)
