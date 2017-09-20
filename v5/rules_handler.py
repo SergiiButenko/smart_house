@@ -321,7 +321,7 @@ def enable_rule():
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
-                if (datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT >=rule['timer'])):
+                if ((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT) >=rule['timer'])):
                     try:
                         send_to_viber_bot(rule)
                     except Exception as e:
