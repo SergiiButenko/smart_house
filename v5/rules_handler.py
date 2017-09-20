@@ -15,7 +15,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 BACKEND_IP = 'http://127.0.0.1:7542'
-VIBER_BOT_IP = 'http://127.0.0.1:7443'
+VIBER_BOT_IP = 'https://127.0.0.1:7443'
 
 HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 19
