@@ -320,8 +320,8 @@ def enable_rule():
                     continue
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
-                print((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT)))
-                print((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT) >=rule['timer']))
+                logging.info((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT)))
+                logging.info((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT) >= rule['timer']))
 
 
                 if ((datetime.datetime.now() - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT) >=rule['timer'])):
