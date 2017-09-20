@@ -70,7 +70,7 @@ def incoming():
     return Response(status=200)
 
 
-@app.route('/notify_users', methods=['POST'])
+@app.route('/notify_users', methods=['POST', 'GET'])
 def send_message():
     logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
     data = json.loads(request.get_data())
