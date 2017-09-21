@@ -55,13 +55,13 @@ def get_response(viber_request):
 
     if ('відмінити' in text):
         res = re.findall(r'\d+', text)
-        if (res is None):
+        if not res:
             return [TextMessage(text='Перевірте правильність данних')]
 
         logger.info("Rule {0} will be canceled".format(res[0]))
         try:
             payload = {'id': res[0], 'sender': sender_name}
-            response_status = requests.get(url='http://mozart.hopto.org:7542/cancel_rule', params=payload, timeout=(3, 3))
+            response_status = requests.get(url='http://mozart.hopto.org:7542/cancel_rule', params=payload, timeout=(10, 10))
             response_status.raise_for_status()
         except requests.exceptions.RequestException as e:
             logging.error(e)
