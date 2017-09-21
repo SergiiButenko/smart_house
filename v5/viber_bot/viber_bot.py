@@ -42,10 +42,21 @@ USERS = [
 BACKEND_IP = 'http://127.0.0.1:7542'
 
 
+def check_user_is_valid(user_id):
+    for user in USERS:
+        if user_id == user['id']
+            return True
+
+    return False
+
 def send_response(viber_request):
     text = viber_request.message.text.lower()
     sender_id = viber_request.sender.id
     sender_name = viber_request.sender.name
+
+    if check_user_is_valid(sender_id) == False:
+        logger.watn('User is not registered in system or this is bot')
+        return
 
     if (text == 'тест'):
         # this is not supoprted yet
