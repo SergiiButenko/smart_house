@@ -35,6 +35,12 @@ ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
+USERS = [
+{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+]
+
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
 
@@ -76,6 +82,9 @@ QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+
+QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE id = {0} AND l.line_id = li.number"
+QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 
 
 @socketio.on_error_default
@@ -427,14 +436,15 @@ def cancel_rule():
         abort(500)
 
     id = int(request.args.get('id'))
-    # select interval_id from life where id = {0}
-    interval_id = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
-    if (interval_id in None):
+    # select l.interval_id, li.name from life as l. lines as li where id = {0} and l.line_id = li.number
+    res = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
+    if (res in None):
         logging.error("No {0} rule id in database".format(id))
 
-    interval_id = interval_id[0]
+    interval_id = res[0]
+    branch_name = res[1]
     # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
-    update_db_request(QUERY[mn() + '_2'].format())
+    update_db_request(QUERY[mn() + '_2'].format(interval_id))
     update_all_rules()
 
     try:
@@ -453,7 +463,7 @@ def cancel_rule():
     else:
         sender = request.args.get('sender')
         try:
-            payload = {'user_name': sender}
+            payload = {'user_name': sender, 'branch_name': branch_name, 'users': USERS}
             response = requests.post(VIBER_BOT_IP + '/notify_users', json=payload, timeout=(3, 3))
             response.raise_for_status()
         except Exception as e:

@@ -99,11 +99,12 @@ def notify_users_cancel_rule():
     data = json.loads(request.get_data().decode())
     users = data['users']
     user_name = data['user_name']
+    branch_name = data['branch_name']
 
     for user in users:
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
-            TextMessage(text='Коричтувач {0} відмінив полив'.format(user_name))
+            TextMessage(text='Коричтувач {0} відмінив полив для {1}'.format(user_name, branch_name))
         ])
     logger.info("Done")
     return Response(status=200)
