@@ -279,6 +279,10 @@ def send_to_viber_bot(rule):
         interval_id = rule['interval_id']
         user_friendly_name = rule['user_friendly_name']
 
+        
+        logging.debug(int(rule_id) == 2)
+        logging.debug(rule_id)
+
         if (int(rule_id) == 2):
             logging.info("Turn off rule won't be send to viber")
             return
