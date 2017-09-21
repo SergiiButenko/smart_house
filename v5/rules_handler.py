@@ -273,17 +273,14 @@ def inspect_conditions(rule):
 
 def send_to_viber_bot(rule):
     try:
-        rule_id = rule['id']
+        id = rule['id']
+        rule_id = rule['rule_id']
         line_id = rule['line_id']
         time = rule['time']
         interval_id = rule['interval_id']
         user_friendly_name = rule['user_friendly_name']
 
-        
-        logging.debug(int(rule_id) == 2)
-        logging.debug(rule_id)
-
-        if (int(rule_id) == 2):
+        if (rule_id == 2):
             logging.info("Turn off rule won't be send to viber")
             return
 
@@ -294,7 +291,7 @@ def send_to_viber_bot(rule):
             return
 
         try:
-            payload = {'rule_id': rule_id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT, 'user_friendly_name': user_friendly_name}
+            payload = {'rule_id': id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT, 'user_friendly_name': user_friendly_name}
             response = requests.post(VIBER_BOT_IP + '/notify_users', json=payload, timeout=(3, 3))
             response.raise_for_status()
         except Exception as e:
