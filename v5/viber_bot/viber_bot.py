@@ -9,13 +9,13 @@ from viberbot.api.viber_requests import ViberFailedRequest
 from viberbot.api.viber_requests import ViberMessageRequest
 from viberbot.api.viber_requests import ViberSubscribedRequest
 
-
-
 import time
 import logging
 import sched
 import threading
 import json
+import re
+
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -37,15 +37,22 @@ USERS = [{'Sergii': 'cHxBN+Zz1Ldd/60xd62U/w=='}, {'Oleg': ''}, {'Irina': ''}]
 
 def get_response(incom_message):
     if (incom_message.text.lower() == 'полив'):
-        return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'), 
+        return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'),
         URLMessage(media="http://mozart.hopto.org:7542/history")]
 
-    elif (incom_message.text.lower() == 'тест'):
+    if (incom_message.text.lower() == 'тест'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
         return [URLMessage(media="http://mozart.hopto.org:7542/history")]
+
+    if ('відмінити' in incom_message.text.lower()):
+        res = re.findall(r'\d+', incom_message.text.lower())
+        return [TextMessage(text='Правило {0}'.format(res[0])),
+        URLMessage(media="http://mozart.hopto.org:7542/history")]
+
+
 
 
 @app.route('/', methods=['POST'])
@@ -76,9 +83,7 @@ def notify_users():
     data = json.loads(request.get_data().decode())
     users = data['users']
     rule_id = data['rule_id']
-    line_id = data['line_id']
     time = data['time']
-    interval_id = data['interval_id']
     timeout = data['timeout']
     user_friendly_name = data['user_friendly_name']
 
