@@ -38,6 +38,7 @@ USERS = [
 # {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
 # {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
 ]
+
 BACKEND_IP = 'http://127.0.0.1:7542'
 
 
@@ -69,7 +70,7 @@ def send_response(viber_request):
             logging.error("Can't cancel rule")
             viber.send_messages(sender_id, [TextMessage(text='Не вдалося відмінити правило. Передіть за посиланням або спробуйте ще раз.')])
         else:
-            for user in users:
+            for user in USERS:
                 # here is good place to cancel sms for current uset
                 logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
                 viber.send_messages(user['id'], [TextMessage(text='Користувач {0} відмінив цей полив').format(sender_name)])
@@ -116,21 +117,21 @@ def notify_users():
     return Response(status=200)
 
 
-@app.route('/notify_users_cancel_rule', methods=['POST'])
-def notify_users_cancel_rule():
-    logger.debug("received request for send_message. notify_users_cancel_rule. post data: {0}".format(request.get_data()))
-    data = json.loads(request.get_data().decode())
-    users = data['users']
-    user_name = data['user_name']
-    branch_name = data['branch_name']
+# @app.route('/notify_users_cancel_rule', methods=['POST'])
+# def notify_users_cancel_rule():
+#     logger.debug("received request for send_message. notify_users_cancel_rule. post data: {0}".format(request.get_data()))
+#     data = json.loads(request.get_data().decode())
+#     users = data['users']
+#     user_name = data['user_name']
+#     branch_name = data['branch_name']
 
-    for user in users:
-        logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
-        viber.send_messages(user['id'], [
-            TextMessage(text='Коричтувач {0} відмінив полив для {1}'.format(user_name, branch_name))
-        ])
-    logger.info("Done")
-    return Response(status=200)
+#     for user in USERS:
+#         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
+#         viber.send_messages(user['id'], [
+#             TextMessage(text='Коричтувач {0} відмінив полив для {1}'.format(user_name, branch_name))
+#         ])
+#     logger.info("Done")
+#     return Response(status=200)
 
 
 def set_webhook(viber):
