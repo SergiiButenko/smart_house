@@ -277,6 +277,10 @@ def send_to_viber_bot(rule):
         time = rule['time']
         interval_id = rule['interval_id']
 
+        if (rule_id == 2):
+            logging.info("Turn off rule won't be send to viber")
+            return
+
         arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)
         logging.debug("{0} arr was get from redis".format(arr))
         if (interval_id.encode() in arr):
@@ -326,7 +330,6 @@ def enable_rule():
                         send_to_viber_bot(rule)
                     except Exception as e:
                         logging.error("Can't send rule {0} to viber. Exception occured. {1}".format(str(rule), e))
-
 
                 if (datetime.datetime.now() >= rule['timer']):
                     logging.info("Rule '{0}' execution started".format(str(rule)))
