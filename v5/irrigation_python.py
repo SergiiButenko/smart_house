@@ -458,17 +458,17 @@ def cancel_rule():
         logging.error("Can't get arduino status. Exception occured")
         abort(500)
 
-    if ('sender' not in request.args):
-        logging.info("No sender param in request. No message will be send")
-    else:
-        sender = request.args.get('sender')
-        try:
-            payload = {'user_name': sender, 'branch_name': branch_name, 'users': USERS}
-            response = requests.post(VIBER_BOT_IP + '/notify_users_cancel_rule', json=payload, timeout=(5, 5))
-            response.raise_for_status()
-        except Exception as e:
-            logging.error(e)
-            logging.error("Can't send rule to viber. Ecxeption occured")
+    # if ('sender' not in request.args):
+    #     logging.info("No sender param in request. No message will be send")
+    # else:
+    #     sender = request.args.get('sender')
+    #     try:
+    #         payload = {'user_name': sender, 'branch_name': branch_name, 'users': USERS}
+    #         response = requests.post(VIBER_BOT_IP + '/notify_users_cancel_rule', json=payload, timeout=(5, 5))
+    #         response.raise_for_status()
+    #     except Exception as e:
+    #         logging.error(e)
+    #         logging.error("Can't send rule to viber. Ecxeption occured")
 
     return render_template('index.html')
 

@@ -41,7 +41,7 @@ USERS = [
 BACKEND_IP = 'http://127.0.0.1:7542'
 
 
-def get_response(viber_request):
+def send_response(viber_request):
     text = viber_request.message.text.lower()
     sender_id = viber_request.sender.id
     sender_name = viber_request.sender.name
@@ -51,12 +51,13 @@ def get_response(viber_request):
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
-        return [TextMessage(text='Все ок')]
+        viber.send_messages(sender_id, [TextMessage(text='Все ок')])
 
     if ('відмінити' in text):
         res = re.findall(r'\d+', text)
         if not res:
-            return [TextMessage(text='Перевірте правильність данних')]
+            viber.send_messages(sender_id, [TextMessage(text='Перевірте правильність данних')])
+            return
 
         logger.info("Rule {0} will be canceled".format(res[0]))
         try:
@@ -66,7 +67,12 @@ def get_response(viber_request):
         except requests.exceptions.RequestException as e:
             logging.error(e)
             logging.error("Can't cancel rule")
-            return [TextMessage(text='Не вдалося відмінити правило. Передіть за посиланням або спробуйте ще раз.')]
+            viber.send_messages(sender_id, [TextMessage(text='Не вдалося відмінити правило. Передіть за посиланням або спробуйте ще раз.')])
+        else:
+            for user in users:
+                # here is good place to cancel sms for current uset
+                logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
+                viber.send_messages(user['id'], [TextMessage(text='Користувач {0} відмінив цей полив').format(sender_name)])
 
 
 @app.route('/', methods=['POST'])
@@ -78,9 +84,7 @@ def incoming():
     viber_request = viber.parse_request(request.get_data().decode())
 
     if (isinstance(viber_request, ViberMessageRequest)):
-        message = get_response(viber_request)
-        logger.warn("Sending message")
-        viber.send_messages(viber_request.sender.id, message)
+        send_response(viber_request)
     elif isinstance(viber_request, ViberSubscribedRequest):
         viber.send_messages(viber_request.get_user.id, [
             TextMessage(text="thanks for subscribing!")
