@@ -80,11 +80,12 @@ def send_message():
     time = data['time']
     interval_id = data['interval_id']
     timeout = data['timeout']
+    user_friendly_name = data['user_friendly_name']
 
     for user in users:
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
-            TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, line_id, time, rule_id)),
+            TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id)),
             URLMessage(media="http://mozart.hopto.org:7542/history")
         ])
 
