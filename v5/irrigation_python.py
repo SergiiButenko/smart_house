@@ -464,7 +464,7 @@ def cancel_rule():
         sender = request.args.get('sender')
         try:
             payload = {'user_name': sender, 'branch_name': branch_name, 'users': USERS}
-            response = requests.post(VIBER_BOT_IP + '/notify_users_cancel_rule', json=payload, timeout=(3, 3))
+            response = requests.post(VIBER_BOT_IP + '/notify_users_cancel_rule', json=payload, timeout=(5, 5))
             response.raise_for_status()
         except Exception as e:
             logging.error(e)

@@ -114,7 +114,7 @@ def notify_users():
 
 @app.route('/notify_users_cancel_rule', methods=['POST'])
 def notify_users_cancel_rule():
-    logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
+    logger.debug("received request for send_message. notify_users_cancel_rule. post data: {0}".format(request.get_data()))
     data = json.loads(request.get_data().decode())
     users = data['users']
     user_name = data['user_name']
