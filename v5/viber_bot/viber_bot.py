@@ -73,7 +73,7 @@ def send_response(viber_request):
             for user in USERS:
                 # here is good place to cancel sms for current uset
                 logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
-                viber.send_messages(user['id'], [TextMessage(text='Користувач {0} відмінив цей полив').format(sender_name)])
+                viber.send_messages(user['id'], [TextMessage(text='Користувач {0} відмінив цей полив'.format(sender_name))])
 
 
 @app.route('/', methods=['POST'])

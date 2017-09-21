@@ -469,7 +469,7 @@ def cancel_rule():
     #     except Exception as e:
     #         logging.error(e)
     #         logging.error("Can't send rule to viber. Ecxeption occured")
-
+    logging.info("Rule {0} canceled".format(id))
     return render_template('index.html')
 
 
