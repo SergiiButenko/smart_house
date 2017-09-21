@@ -50,7 +50,7 @@ def check_user_is_valid(user_id):
     return False
 
 def send_response(viber_request):
-    text = viber_request.message.text.lower()
+    text = viber_request.message.text.lower().strip()
     sender_id = viber_request.sender.id
     sender_name = viber_request.sender.name
 
@@ -65,7 +65,7 @@ def send_response(viber_request):
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
         viber.send_messages(sender_id, [TextMessage(text='Все ок')])
 
-    if ('відмінити' in text):
+    if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
         if not res:
             viber.send_messages(sender_id, [TextMessage(text='Перевірте чи Ви все правильно надіслали')])
