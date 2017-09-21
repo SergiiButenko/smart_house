@@ -281,7 +281,7 @@ def send_to_viber_bot(rule):
         user_friendly_name = rule['user_friendly_name']
 
         if (rule_id == 2):
-            logging.info("Turn off rule won't be send to viber")
+            logging.debug("Turn off rule won't be send to viber")
             return
 
         arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)

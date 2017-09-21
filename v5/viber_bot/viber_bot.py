@@ -70,8 +70,8 @@ def incoming():
     return Response(status=200)
 
 
-@app.route('/notify_users', methods=['POST', 'GET'])
-def send_message():
+@app.route('/notify_users', methods=['POST'])
+def notify_users():
     logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
     data = json.loads(request.get_data().decode())
     users = data['users']
@@ -93,16 +93,25 @@ def send_message():
     return Response(status=200)
 
 
+@app.route('/notify_users_cancel_rule', methods=['POST'])
+def notify_users_cancel_rule():
+    logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
+    data = json.loads(request.get_data().decode())
+    users = data['users']
+    user_name = data['user_name']
+
+    for user in users:
+        logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
+        viber.send_messages(user['id'], [
+            TextMessage(text='Коричтувач {0} відмінив полив'.format(user_name))
+        ])
+    logger.info("Done")
+    return Response(status=200)
+
+
 def set_webhook(viber):
     viber.set_webhook('https://mozart.hopto.org:7443/')
 
-@app.after_request
-def after_request(response):
-    """Blablbal."""
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
 
 if __name__ == "__main__":
     scheduler = sched.scheduler(time.time, time.sleep)

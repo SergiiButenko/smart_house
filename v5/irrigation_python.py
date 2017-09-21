@@ -33,6 +33,7 @@ DEBUG = False
 
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
+VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
@@ -265,7 +266,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_freindly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def get_last_start_rule(line_id):
@@ -417,115 +418,49 @@ def add_rule_endpoint_v2():
     update_all_rules()
     return json.dumps({'status': 'OK'})
 
-# @app.route("/add_rule")
-# def add_rule_endpoint():
-#     """Used in add rule modal window."""
-#     is_interval = request.args.get('is_interval')
-#     if (is_interval is None):
-#         logging.error("no interval parameter passed")
-#         abort(404)
-#     is_interval = str(is_interval)
 
-#     if (is_interval == 'false'):
-#         branch_id = int(request.args.get('branch_id'))
-#         time_min = int(request.args.get('time_min'))
-#         start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
-
-#         time_wait = 0
-#         num_of_intervals = 0
-#     elif (is_interval == 'true'):
-#         branch_id = int(request.args.get('branch_id'))
-#         time_min = int(request.args.get('time_min'))
-#         start_time = datetime.datetime.strptime(request.args.get('datetime_start'), "%Y-%m-%d %H:%M")
-
-#         time_wait = int(request.args.get('time_wait'))
-#         num_of_intervals = int(request.args.get('quantity'))
-#     else:
-#         logging.error("incorrect interval parameter passed: {0}".format(is_interval))
-#         abort(404)
-
-#     interval_id = str(uuid.uuid4())
-#     now = datetime.datetime.now()
-#     stop_time = start_time + datetime.timedelta(minutes=time_min)
-
-#     update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-#     update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-
-#     # first interval is executed
-#     for x in range(2, num_of_intervals + 1):
-#         start_time = stop_time + datetime.timedelta(minutes=time_wait)
-#         stop_time = start_time + datetime.timedelta(minutes=time_min)
-#         update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-#         update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-#         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
-
-#     update_all_rules()
-#     template = get_table_body_only()
-#     send_message('list_update', {'data': template})
-#     return template
-
-
-@app.route("/remove_rule")
-def remove_rule():
+@app.route("/cancel_rule")
+def cancel_rule():
     """User can remove rule from ongoing rules table."""
+    if ('id' not in request.args):
+        logging.error("No id param in request")
+        abort(500)
+
     id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
+    # select interval_id from life where id = {0}
+    interval_id = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
+    if (interval_id in None):
+        logging.error("No {0} rule id in database".format(id))
+
+    interval_id = interval_id[0]
+    # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
+    update_db_request(QUERY[mn() + '_2'].format())
     update_all_rules()
-    template = get_table_body_only()
-    send_message('list_update', {'data': template})
-    return template
 
+    try:
+        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(3, 3))
+        response_status.raise_for_status()
 
-# @app.route("/modify_rule")
-# def modify_rule():
+        arr = form_responce_for_branches(response_status.text)
+        send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't get arduino status. Exception occured")
+        abort(500)
 
+    if ('sender' not in request.args):
+        logging.info("No sender param in request. No message will be send")
+    else:
+        sender = request.args.get('sender')
+        try:
+            payload = {'user_name': sender}
+            response = requests.post(VIBER_BOT_IP + '/notify_users', json=payload, timeout=(3, 3))
+            response.raise_for_status()
+        except Exception as e:
+            logging.error(e)
+            logging.error("Can't send rule to viber. Ecxeption occured")
 
-@app.route("/activate_rule")
-def activate_rule():
-    """Rule can be activated from timetable and hostory pages."""
-    id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
-    update_all_rules()
-    template = get_table_body_only()
-    send_message('list_update', {'data': template})
-    return template
-
-
-@app.route("/deactivate_rule")
-def deactivate_rule():
-    """Rule can be deactivated from timetable and hostory pages."""
-    id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
-    update_all_rules()
-    template = get_table_body_only()
-    send_message('list_update', {'data': template})
-    return template
-
-
-@app.route("/deactivate_all_rules")
-def deactivate_all_rules():
-    """User can deactivate all rules for one day and a week."""
-    id = int(request.args.get('id'))
-    # 1-24h;2-7d;3-on demand
-    if (id == 1):
-        update_db_request(QUERY[mn() + '_1'])
-        update_all_rules()
-        template = get_table_body_only()
-        send_message('list_update', {'data': template})
-        return template
-
-    if (id == 2):
-        update_db_request(QUERY[mn() + '_2'])
-        update_all_rules()
-        template = get_table_body_only()
-        send_message('list_update', {'data': template})
-        return template
-
-    if (id == 3):
-        logging.warn("Is not implemented yet")
-        # RULES_ENABLED=False
-
-    return 'OK'
+    return render_template('index.html')
 
 
 def ongoing_rules_table():
@@ -771,7 +706,7 @@ def activate_branch():
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
-        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_freindly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
+        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
         logging.info("Rule '{0}' added".format(str(get_next_active_rule(id))))
 
     if (mode == 'interval'):
