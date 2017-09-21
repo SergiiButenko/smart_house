@@ -73,7 +73,7 @@ def incoming():
 @app.route('/notify_users', methods=['POST', 'GET'])
 def send_message():
     logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
-    data = json.loads(request.get_data())
+    data = json.loads(request.get_data().decode())
     users = data['users']
     rule_id = data['rule_id']
     line_id = data['line_id']
