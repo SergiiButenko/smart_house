@@ -61,7 +61,7 @@ def get_response(viber_request):
         logger.info("Rule {0} will be canceled".format(res[0]))
         try:
             payload = {'id': res[0], 'sender': sender_name}
-            response_status = requests.get(url='http://185.20.216.94/cancel_rule', params=payload, timeout=(3, 3))
+            response_status = requests.get(url=BACKEND_IP + '/cancel_rule', params=payload, timeout=(3, 3))
             response_status.raise_for_status()
         except requests.exceptions.RequestException as e:
             logging.error(e)
@@ -105,7 +105,7 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id)),
-            URLMessage(media="http://mozart.hopto.org/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
+            URLMessage(media="http://mozart.hopto.org:7542/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
         ])
 
     logger.info("Done")
