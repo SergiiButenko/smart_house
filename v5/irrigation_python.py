@@ -35,11 +35,6 @@ ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
-USERS = [
-{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
-]
 
 # ARDUINO_IP = 'http://192.168.1.144'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
