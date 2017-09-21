@@ -438,7 +438,7 @@ def cancel_rule():
     id = int(request.args.get('id'))
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
     res = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
-    if (res in None):
+    if (res is None):
         logging.error("No {0} rule id in database".format(id))
 
     interval_id = res[0]
