@@ -1,4 +1,5 @@
 from flask import Flask, request, Response
+import requests
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages.text_message import TextMessage
@@ -32,27 +33,44 @@ viber = Api(BotConfiguration(
 ))
 
 
-USERS = [{'Sergii': 'cHxBN+Zz1Ldd/60xd62U/w=='}, {'Oleg': ''}, {'Irina': ''}]
+USERS = [
+{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
+# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+]
+BACKEND_IP = 'http://127.0.0.1:7542'
 
 
-def get_response(incom_message):
-    if (incom_message.text.lower() == 'полив'):
+def get_response(viber_request):
+    text = viber_request.message.text.lower()
+    sender_id = viber_request.sender.id
+    sender_name = viber_request.sender.name
+
+    if (text == 'полив'):
         return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'),
         URLMessage(media="http://mozart.hopto.org:7542/history")]
 
-    if (incom_message.text.lower() == 'тест'):
+    if (text == 'тест'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
         return [URLMessage(media="http://mozart.hopto.org:7542/history")]
 
-    if ('відмінити' in incom_message.text.lower()):
-        res = re.findall(r'\d+', incom_message.text.lower())
-        return [TextMessage(text='Правило {0}'.format(res[0])),
-        URLMessage(media="http://mozart.hopto.org:7542/history")]
+    if ('відмінити' in text):
+        res = re.findall(r'\d+', text)
+        if (res is None):
+            return [TextMessage(text='Перевірте правильність данних')]
 
-
+        logger.info("Rule {0} will be canceled".format(res[0]))
+        try:
+            payload = {'id': res[0], 'sender': sender_name}
+            response_status = requests.get(url=BACKEND_IP + '/cancel_rule', data=payload, timeout=(3, 3))
+            response_status.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            logging.error(e)
+            logging.error("Can't cancel rule")
+            return [TextMessage(text='Не вдалося відмінити правило. Передіть за посиланням або спробуйте ще раз.')]
 
 
 @app.route('/', methods=['POST'])
@@ -64,7 +82,7 @@ def incoming():
     viber_request = viber.parse_request(request.get_data().decode())
 
     if (isinstance(viber_request, ViberMessageRequest)):
-        message = get_response(viber_request.message)
+        message = get_response(viber_request)
         logger.warn("Sending message")
         viber.send_messages(viber_request.sender.id, message)
     elif isinstance(viber_request, ViberSubscribedRequest):
@@ -77,7 +95,7 @@ def incoming():
     return Response(status=200)
 
 
-@app.route('/notify_users', methods=['POST'])
+@app.route('/notify_users_irrigation_started', methods=['POST'])
 def notify_users():
     logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
     data = json.loads(request.get_data().decode())
@@ -91,7 +109,7 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id)),
-            URLMessage(media="http://mozart.hopto.org:7542/history")
+            URLMessage(media=BACKEND_IP + "/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
         ])
 
     logger.info("Done")
