@@ -83,7 +83,7 @@ QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE id = {0} AND l.line_id = li.number"
+QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
 QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 
 
@@ -436,7 +436,7 @@ def cancel_rule():
         abort(500)
 
     id = int(request.args.get('id'))
-    # select l.interval_id, li.name from life as l. lines as li where id = {0} and l.line_id = li.number
+    # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
     res = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
     if (res in None):
         logging.error("No {0} rule id in database".format(id))
