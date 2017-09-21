@@ -57,7 +57,7 @@ def send_response(viber_request):
     if ('відмінити' in text):
         res = re.findall(r'\d+', text)
         if not res:
-            viber.send_messages(sender_id, [TextMessage(text='Перевірте правильність данних')])
+            viber.send_messages(sender_id, [TextMessage(text='Перевірте чи Ви все правильно надіслали')])
             return
 
         logger.info("Rule {0} will be canceled".format(res[0]))
@@ -110,28 +110,11 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id)),
-            URLMessage(media="http://mozart.hopto.org:7542/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
+            URLMessage(media="http://185.20.216.94:7542/cancel_rule?id={0}".format(rule_id))
         ])
 
     logger.info("Done")
     return Response(status=200)
-
-
-# @app.route('/notify_users_cancel_rule', methods=['POST'])
-# def notify_users_cancel_rule():
-#     logger.debug("received request for send_message. notify_users_cancel_rule. post data: {0}".format(request.get_data()))
-#     data = json.loads(request.get_data().decode())
-#     users = data['users']
-#     user_name = data['user_name']
-#     branch_name = data['branch_name']
-
-#     for user in USERS:
-#         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
-#         viber.send_messages(user['id'], [
-#             TextMessage(text='Коричтувач {0} відмінив полив для {1}'.format(user_name, branch_name))
-#         ])
-#     logger.info("Done")
-#     return Response(status=200)
 
 
 def set_webhook(viber):
