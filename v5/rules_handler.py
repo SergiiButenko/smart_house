@@ -34,7 +34,8 @@ USERS = [
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
+# QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
+QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time, li.name FROM life AS l, lines as li WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND li.number = l.line_id AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['enable_rule'] = "UPDATE life SET state={1} WHERE id={0}"
 QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 and interval_id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
@@ -218,7 +219,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def update_all_rules():
@@ -276,6 +277,7 @@ def send_to_viber_bot(rule):
         line_id = rule['line_id']
         time = rule['time']
         interval_id = rule['interval_id']
+        user_friendly_name = rule['user_friendly_name']
 
         if (rule_id == 2):
             logging.info("Turn off rule won't be send to viber")
@@ -288,7 +290,7 @@ def send_to_viber_bot(rule):
             return
 
         try:
-            payload = {'rule_id': rule_id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT}
+            payload = {'rule_id': rule_id, 'line_id': line_id, 'time': time, 'interval_id': interval_id, 'users': USERS, 'timeout': VIBER_SENT_TIMEOUT, 'user_friendly_name': user_friendly_name}
             response = requests.post(VIBER_BOT_IP + '/notify_users', json=payload, timeout=(3, 3))
             response.raise_for_status()
         except Exception as e:

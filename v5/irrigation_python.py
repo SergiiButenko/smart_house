@@ -47,7 +47,7 @@ SENSORS = {'time': datetime.datetime.now(), 'data': {'temperature': 0, 'humidity
 mn = lambda: inspect.stack()[1][3]
 
 QUERY = {}
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time  FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
+QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time, li.name  FROM life AS l, lines as li WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND li.number = l.line_id AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.rule_id = 1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
@@ -61,7 +61,7 @@ QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, inte
 QUERY['add_rule_endpoint_v2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
-QUERY['activate_branch_2'] = "SELECT id, line_id, rule_id, timer, interval_id, time FROM life where id = {0}"
+QUERY['activate_branch_2'] = "SELECT l.id, l.line_id, l.rule_id, l.timer, l.interval_id, l.time, li.name FROM life as l, lines as li where id = {0} and li.number = l.line_id"
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
@@ -265,7 +265,7 @@ def get_next_active_rule(line_id):
         return None
 
     logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
+    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_freindly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def get_last_start_rule(line_id):
@@ -771,7 +771,7 @@ def activate_branch():
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
-        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
+        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_freindly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
         logging.info("Rule '{0}' added".format(str(get_next_active_rule(id))))
 
     if (mode == 'interval'):
