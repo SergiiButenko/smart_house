@@ -61,7 +61,7 @@ def get_response(viber_request):
         logger.info("Rule {0} will be canceled".format(res[0]))
         try:
             payload = {'id': res[0], 'sender': sender_name}
-            response_status = requests.get(url='http://mozart.hopto.org/cancel_rule', params=payload, timeout=(3, 3))
+            response_status = requests.get(url='http://185.20.216.94/cancel_rule', params=payload, timeout=(3, 3))
             response_status.raise_for_status()
         except requests.exceptions.RequestException as e:
             logging.error(e)
