@@ -46,16 +46,12 @@ def get_response(viber_request):
     sender_id = viber_request.sender.id
     sender_name = viber_request.sender.name
 
-    if (text == 'полив'):
-        return [TextMessage(text='Через 10 хвилин огірки будут поливатися 10хв.\nНаберіть \'Відмінити 910\' або перейдіть за адресою з наступного повідолення'),
-        URLMessage(media="http://mozart.hopto.org:7542/history")]
-
     if (text == 'тест'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
-        return [URLMessage(media="http://mozart.hopto.org:7542/history")]
+        return [TextMessage(text='Все ок')]
 
     if ('відмінити' in text):
         res = re.findall(r'\d+', text)
@@ -65,7 +61,7 @@ def get_response(viber_request):
         logger.info("Rule {0} will be canceled".format(res[0]))
         try:
             payload = {'id': res[0], 'sender': sender_name}
-            response_status = requests.get(url=BACKEND_IP + '/cancel_rule', data=payload, timeout=(3, 3))
+            response_status = requests.get(url='http://mozart.hopto.org/cancel_rule', params=payload, timeout=(3, 3))
             response_status.raise_for_status()
         except requests.exceptions.RequestException as e:
             logging.error(e)
@@ -109,7 +105,7 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nНаберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id)),
-            URLMessage(media=BACKEND_IP + "/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
+            URLMessage(media="http://mozart.hopto.org/cancel_rule?id={0}&sender={1}".format(rule_id, user['name']))
         ])
 
     logger.info("Done")
