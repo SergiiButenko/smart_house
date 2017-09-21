@@ -159,21 +159,21 @@ $(document).ready(function() {
         index = $(this).data('id');
         console.log(branch[index]['name'] + " irrigation schedule will be canceled");
 
-        $.ajax({
-            url: server + '/cancel_rule',
-            type: "get",
-            data: {
-                'id': index
-            },
-            success: function(data) {
-                console.log('Line ' + branch[index]['name'] + ' wont be started');
-                update_branches(data);
-            },
-            error: function() {
-                console.error("Can't cancel next rule for " + branch[index]['name']);
-                toogle_card(index, 0);
-            }
-        });
+        // $.ajax({
+        //     url: server + '/cancel_rule',
+        //     type: "get",
+        //     data: {
+        //         'id': index
+        //     },
+        //     success: function(data) {
+        //         console.log('Line ' + branch[index]['name'] + ' wont be started');
+        //         update_branches(data);
+        //     },
+        //     error: function() {
+        //         console.error("Can't cancel next rule for " + branch[index]['name']);
+        //         toogle_card(index, 0);
+        //     }
+        // });
     });
 
 });
