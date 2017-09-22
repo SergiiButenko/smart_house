@@ -34,9 +34,9 @@ viber = Api(BotConfiguration(
 
 
 USERS = [
-{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
-{'name':'"Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
+    {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
+    {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
 
 BACKEND_IP = 'http://127.0.0.1:7542'

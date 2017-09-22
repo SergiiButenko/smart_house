@@ -26,9 +26,9 @@ VIBER_SENT_TIMEOUT = 10
 
 
 USERS = [
-{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
-{'name':'"Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
+    {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
+    {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
