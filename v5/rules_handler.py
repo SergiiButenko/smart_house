@@ -24,9 +24,10 @@ RULES_ENABLED = True
 REDIS_KEY_FOR_VIBER = 'viber_sent_intervals'
 VIBER_SENT_TIMEOUT = 10
 
+
 USERS = [
-{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
+{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
+{'name':'"Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
 # {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
 ]
 
