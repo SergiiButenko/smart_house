@@ -269,8 +269,8 @@ function toogle_card(element_id, branch) {
         month: "short",
         day: "numeric",
         hour: "2-digit",
-        minute: "2-digit",
-        timeZone: 'UTC'
+        minute: "2-digit"
+        // timeZone: 'UTC'
     };
 
     if (branch['last_rule']) {
@@ -284,6 +284,7 @@ function toogle_card(element_id, branch) {
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
@@ -292,9 +293,9 @@ function toogle_card(element_id, branch) {
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+        
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
-
         $('#btn-cancel-' + element_id).hide().addClass("hidden");
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");

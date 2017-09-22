@@ -1,1 +1,0 @@
-select number, name from lines order by number
