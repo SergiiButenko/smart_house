@@ -152,8 +152,8 @@ function form_text() {
     var options = {
         weekday: "long",
         month: "short",
-        day: "numeric",
-        timeZone: 'UTC'
+        day: "numeric"
+        // timeZone: 'UTC'
     };
 
     radio = $(".form-group input:checked")
