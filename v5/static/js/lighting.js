@@ -65,7 +65,7 @@ $(document).ready(function() {
 
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
-    $('#irrigate_modal').on('hidden.bs.modal', function() {
+    $('#lighting_modal').on('hidden.bs.modal', function() {
         update_branches_request();
     })
 
@@ -75,15 +75,15 @@ $(document).ready(function() {
         time = branch[index]['default_time'];
 
         $('#lighting_minutes').val(time);
-        $('#irrigate_modal').data('id', index);
+        $('#lighting_modal').data('id', index);
 
         $('.modal-title').html(name);
-        $('#irrigate_modal').modal('show');
+        $('#lighting_modal').modal('show');
     });
 
     //Function to start lighting
     $(".start-lighting").click(function() {
-        index = $('#irrigate_modal').data('id');
+        index = $('#lighting_modal').data('id');
         time = parseInt($("#lighting_minutes").val());
         if (time == 0 || isNaN(time)) {
             $('#lighting_minutes_group').addClass("has-danger");
@@ -97,7 +97,7 @@ $(document).ready(function() {
         } else {
             console.log(branch[index]['name'] + " will be activated on " + time + " minutes ");
             branch_on(index, time);
-            $('#irrigate_modal').modal('hide');
+            $('#lighting_modal').modal('hide');
         }
     });
 
