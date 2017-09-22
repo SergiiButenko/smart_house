@@ -6,8 +6,8 @@ CREATE TABLE current_lines_state (
 
 CREATE TABLE lines (
     id INTEGER PRIMARY KEY,
-    number integer NOT NULL,
-    name text NOT NULL,
+        number integer NOT NULL,
+        name text NOT NULL,
     time integer NOT NULL DEFAULT 10,
     intervals integer NOT NULL DEFAULT 2,
     time_wait integer NOT NULL DEFAULT 15,

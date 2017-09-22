@@ -232,7 +232,10 @@ void on(byte branch, int alert_time){
   }
 
   digitalWrite(pin,HIGH);
-  digitalWrite(pump, HIGH);
+
+  if !(branch == 1 or branch == 2 or branch == 3){
+      digitalWrite(pump, HIGH);
+  }
 }
 
 void off(byte branch){
@@ -245,7 +248,7 @@ void off(byte branch){
   if (pin!=0){
     digitalWrite(pin,LOW);
   }  
-  if ( if_no_branch_active() ){
+  if ( !(branch == 1 or branch == 2 or branch == 3) and if_no_branch_active() ){
     digitalWrite(pump, LOW);
   }
 }
@@ -400,11 +403,6 @@ void check_all_branches_timer(){
       continue;
     } else {
       if ( int(timers[i] - millis() / 60000) < 0  ){
-        Serial.print(i);
-        Serial.print(" ");
-        Serial.print(timers[i]);
-        Serial.print(" ");
-        Serial.println("OFF");
         off(i); 
       }
     }
