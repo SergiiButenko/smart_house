@@ -126,11 +126,6 @@ def notify_users():
             # URLMessage(media="http://185.20.216.94:7542/cancel_rule?id={0}".format(rule_id))
         ])
 
-        try:
-            viber.get_user_details(user_id=user['id'])
-        except Exception as e:
-            logger.error("Can't get user details. {0}".format(e))
-
     logger.info("Done")
     return Response(status=200)
 
