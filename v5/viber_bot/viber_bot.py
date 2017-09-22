@@ -80,7 +80,7 @@ def send_response(viber_request):
         except requests.exceptions.RequestException as e:
             logging.error(e)
             logging.error("Can't cancel rule")
-            viber.send_messages(sender_id, [TextMessage(text='Не вдалося відмінити правило. Передіть за посиланням або спробуйте ще раз.')])
+            viber.send_messages(sender_id, [TextMessage(text='Не вдалося відмінити правило. Передіть на сайт або спробуйте ще раз.')])
         else:
             for user in USERS:
                 # here is good place to cancel sms for current uset
@@ -122,7 +122,7 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             # TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nДля того, щоб відмнінити правило, наберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id))
-            TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nДля того, щоб відмнінити правило, наберіть \'Відмінити {3}\''.format(timeout, user_friendly_name, time, rule_id))
+            TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nДля того, щоб відмнінити цей полив, наберіть \'Відмінити {3}\''.format(timeout, user_friendly_name, time, rule_id))
             # URLMessage(media="http://185.20.216.94:7542/cancel_rule?id={0}".format(rule_id))
         ])
 
