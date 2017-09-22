@@ -150,14 +150,14 @@ $(document).ready(function() {
     //Function to stop irrigation
     $(".stop-irrigation").click(function() {
         index = $(this).data('id');
-        console.log(branch[index]['name'] + " will be deactivated on");
+        console.log(branch[index]['name'] + " will be deactivated now");
         branch_off(index);
     });
 
     //Function to stop irrigation
     $(".cancel-irrigation").click(function() {
         index = $(this).data('id');
-        console.log(branch[index]['name'] + " irrigation schedule will be canceled");
+        console.log(index + " irrigation schedule will be canceled");
 
         $.ajax({
             url: server + '/cancel_rule',
