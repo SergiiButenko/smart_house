@@ -34,8 +34,8 @@ viber = Api(BotConfiguration(
 
 
 USERS = [
-{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
-# {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}, 
+{'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
+{'name':'"Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
 # {'name':'Сергей', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
 ]
 
@@ -49,13 +49,14 @@ def check_user_is_valid(user_id):
 
     return False
 
+
 def send_response(viber_request):
     text = viber_request.message.text.lower().strip()
     sender_id = viber_request.sender.id
     sender_name = viber_request.sender.name
 
     if (check_user_is_valid(sender_id) is False):
-        logger.watn('User is not registered in system or this is bot')
+        logger.warn('User is not registered in system or this is bot')
         return
 
     if (text == 'тест'):
