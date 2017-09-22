@@ -29,7 +29,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-DEBUG = False
+DEBUG = True
 
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
@@ -54,7 +54,8 @@ QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
-# QUERY['timetable'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hours') AND l.timer<=datetime('now', 'localtime', '+{0} hours') and l.state = rule_state.id order by l.timer desc"
+QUERY['lighting'] = "SELECT number, name, time from lighting order by number"
+QUERY['lighting_names'] = "SELECT number, name, time from lighting order by number"
 QUERY['history'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') and l.state = rule_state.id order by l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
@@ -212,9 +213,9 @@ def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
     conn = None
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         conn.row_factory = sqlite3.Row
@@ -240,9 +241,9 @@ def update_db_request(query):
     conn = None
     lastrowid = 0
     try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        # conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -315,6 +316,36 @@ def branches_names():
             'start_time': row[5]})
 
     return jsonify(list=branch_list)
+
+
+@app.route("/lighting")
+def lighting():
+    """Return branch names."""
+    light_list = []
+    res = execute_request(QUERY[mn()], 'fetchall')
+    if res is None:
+        logging.error("Can't get light names from database")
+        abort(500)
+
+    for row in res:
+        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+
+    return render_template('lighting.html', my_list=light_list)
+
+
+@app.route("/lighting_names")
+def lighting_names():
+    """Return branch names."""
+    light_list = []
+    res = execute_request(QUERY[mn()], 'fetchall')
+    if res is None:
+        logging.error("Can't get light names from database")
+        abort(500)
+
+    for row in res:
+        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+
+    return jsonify(list=light_list)
 
 
 @app.route("/")
@@ -605,7 +636,7 @@ def arduino_status():
         response_status.raise_for_status()
 
         arr = form_responce_for_branches(response_status.text)
-        send_message('branch_status', {'data': json.dumps({'branches':arr}, default=date_handler)})
+        send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
         return jsonify(branches=arr)
 
@@ -723,6 +754,26 @@ def activate_branch():
     return jsonify(branches=arr)
 
 
+@app.route('/lighting_on')
+def lighting_on():
+    """Blablbal."""
+    id = int(request.args.get('id'))
+    time_min = int(request.args.get('time_min'))
+
+    try:
+        response_on = retry_branch_on(id, time_min)
+        response_on.raise_for_status()
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(500)
+
+    arr = form_responce_for_branches(response_on.text)
+    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+
+    return jsonify(branches=arr)
+
+
 def retry_branch_off(id):
     """Use to retry turn off branch in case of any error."""
     try:
@@ -797,7 +848,26 @@ def deactivate_branch():
         logging.info('No new entries is added to database.')
 
     arr = form_responce_for_branches(response_off.text)
-    send_message('branch_status', {'data': json.dumps({'branches':arr}, default=date_handler)})
+    send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+
+    return jsonify(branches=arr)
+
+
+@app.route('/lighting_off')
+def lighting_off():
+    """Blablbal."""
+    id = int(request.args.get('id'))
+
+    try:
+        response_off = retry_branch_off(id)
+        response_off.raise_for_status()
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(500)
+
+    arr = form_responce_for_branches(response_off.text)
+    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
     return jsonify(branches=arr)
 
