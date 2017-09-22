@@ -122,9 +122,14 @@ def notify_users():
         logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
         viber.send_messages(user['id'], [
             # TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nДля того, щоб відмнінити правило, наберіть \'Відмінити {3}\' або перейдіть за посиланням з наступного повідомлення'.format(timeout, user_friendly_name, time, rule_id))
-            TextMessage(text='Через {0} хвилин {1} будут поливатися {2}хв.\nДля того, щоб відмнінити цей полив, наберіть \'Відмінити {3}\''.format(timeout, user_friendly_name, time, rule_id))
+            TextMessage(text="Через {0} хвилин почнеться полив гілки '{1}'. Триватиме {2} хвилин.\nДля того, щоб відмнінити цей полив, відправте мені повідомлення \n'Відмінити {3}'".format(timeout, user_friendly_name, time, rule_id))
             # URLMessage(media="http://185.20.216.94:7542/cancel_rule?id={0}".format(rule_id))
         ])
+
+        try:
+            viber.get_user_details(user_id=user['id'])
+        except Exception as e:
+            logger.error("Can't get user details. {0}".format(e))
 
     logger.info("Done")
     return Response(status=200)
