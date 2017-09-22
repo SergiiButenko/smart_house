@@ -157,6 +157,19 @@ function branch_off(index) {
     });
 }
 
+function update_branches_request() {
+    $.ajax({
+        url: server + '/arduino_status',
+        success: function(data) {
+            update_branches(data);
+        },
+        error: function() {
+            console.error("Branches statuses are out-of-date");
+            set_status_error();
+        }
+    });
+}
+
 function update_branches(json) {
     arr = json['branches']
 
