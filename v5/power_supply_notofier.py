@@ -74,11 +74,12 @@ def update_db_request(query):
 def worker():
     """Blablbal."""
     try:
-        data = int(redis_db.get('power_state').decode())
+        data = redis_db.get('power_state')
         if data is None:
             logging.info("Seems like Rapberry just started")
             redis_db.set('power_state', 1)
             return
+        data = int(data.decode())
 
         if (data == 1):
             logging.info("Power - online")
