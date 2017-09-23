@@ -298,7 +298,7 @@ def send_to_viber_bot(rule):
         except Exception as e:
             logging.error(e)
             logging.error("Can't send rule to viber. Ecxeption occured")
-        else:
+        finally:
             redis_db.rpush(REDIS_KEY_FOR_VIBER, interval_id)
             logging.debug("interval_id: {0} is added to redis".format(interval_id))
             time = 60 * 60 * 60 * 12
