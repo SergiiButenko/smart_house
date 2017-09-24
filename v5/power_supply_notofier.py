@@ -12,8 +12,16 @@ mn = lambda: inspect.stack()[1][3]
 
 redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
+VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
+
+USERS = [
+    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
+    # {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='}
+]
+
+
 QUERY = {}
-QUERY['weather'] = "insert into weather(datetime, temperature, humidity) VALUES ('{0}', {1}, {2})"
+QUERY['worker'] = "insert into power_statistics(state) VALUES ({0})"
 
 
 # executes query and returns fetch* result
@@ -71,21 +79,56 @@ def update_db_request(query):
             return None
 
 
+STATE_BAT = 0
+STATE_POWER = 1
+REDIS_KEY = 'power_state'
+
+def send_message(msg_text):
+    """Send message to viber"""
+    try:
+        payload = {'users': USERS, 'msg_text': msg_text}
+        response = requests.post(VIBER_BOT_IP + '/send_message', json=payload, timeout=(10, 3))
+        response.raise_for_status()
+    except Exception as e:
+        logging.error("Can't send rule to viber. Ecxeption occured")
+        raise e
+
+
+def get_power_current_state():
+    try:
+        return STATE_POWER
+    except Exception as e:
+        logging.error("Can't check power supply state. Ecxeption occured")
+        raise e
+
+
 def worker():
     """Blablbal."""
     try:
-        data = redis_db.get('power_state')
-        if data is None:
+        previous_state = redis_db.get(REDIS_KEY)
+        current_state = get_power_current_state()
+        if (current_state == STATE_POWER):
+                text = 'Напруга подається із мережі.'
+            else:
+                text = 'Напруга подається з батареї.'
+
+        if previous_state is None:
             logging.info("Seems like Rapberry just started")
-            redis_db.set('power_state', 1)
+            redis_db.set(REDIS_KEY, current_state)
+            update_db_request(QUERY[mn()].format(current_state))
+            send_message(msg_text='Сервер був перезавантажен. \n {0}'.format(text))
             return
-        data = int(data.decode())
 
-        if (data == 1):
-            logging.info("Power - online")
+        previous_state = int(previous_state.decode())
 
-        if (data == 0):
-            logging.info("Power - battery")
+        if (get_power_current_state() == previous_state):
+            logging.info("Power - no change")
+            return
+        
+        redis_db.set(REDIS_KEY, STATE_BAT)
+        logging.info("Power - changed. Current state {0}: {1}".format(current_state, text))
+        update_db_request(QUERY[mn()].format(current_state))
+        send_message(msg_text='Зміна стану напруги. \n {0}'.format(text))
 
     except Exception as e:
         logging.error(e)

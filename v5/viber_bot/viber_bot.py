@@ -130,6 +130,24 @@ def notify_users():
     return Response(status=200)
 
 
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    """Send prefomatted message to viber."""
+    logger.debug("received request for send_message. post data: {0}".format(request.get_data()))
+    data = json.loads(request.get_data().decode())
+    users = data['users']
+    msg_text = data['msg_text']
+
+    for user in users:
+        logger.info("Sending message to {0}. id: {1}".format(user['name'], user['id']))
+        viber.send_messages(user['id'], [
+            TextMessage(text=msg_text)
+        ])
+
+    logger.info("Done")
+    return Response(status=200)
+
+
 def set_webhook(viber):
     viber.set_webhook('https://mozart.hopto.org:7443/')
 
