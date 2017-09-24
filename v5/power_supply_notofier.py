@@ -118,7 +118,7 @@ def worker():
             logging.info("Seems like Rapberry just started")
             redis_db.set(REDIS_KEY, current_state)
             update_db_request(QUERY[mn()].format(current_state))
-            send_message(msg_text='Сервер був перезавантажен. \n{0}'.format(text))
+            send_message(msg_text='Зміна стану напруги. \nСервер був перезавантажен. \n{0}'.format(text))
             return
 
         previous_state = int(previous_state.decode())
