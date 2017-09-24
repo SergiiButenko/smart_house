@@ -108,9 +108,9 @@ def worker():
         previous_state = redis_db.get(REDIS_KEY)
         current_state = get_power_current_state()
         if (current_state == STATE_POWER):
-                text = 'Напруга подається із мережі.'
-            else:
-                text = 'Напруга подається з батареї.'
+            text = 'Напруга подається із мережі.'
+        else:
+            text = 'Напруга подається з батареї.'
 
         if previous_state is None:
             logging.info("Seems like Rapberry just started")
