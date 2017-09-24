@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import sqlite3
+import inspect
 import logging
 import redis
 
