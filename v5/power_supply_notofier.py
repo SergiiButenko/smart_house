@@ -118,7 +118,7 @@ def worker():
             logging.info("Seems like Rapberry just started")
             redis_db.set(REDIS_KEY, current_state)
             update_db_request(QUERY[mn()].format(current_state))
-            send_message(msg_text='Сервер був перезавантажен. \n {0}'.format(text))
+            send_message(msg_text='Сервер був перезавантажен. \n{0}'.format(text))
             return
 
         previous_state = int(previous_state.decode())
@@ -126,11 +126,11 @@ def worker():
         if (get_power_current_state() == previous_state):
             logging.info("Power - no change")
             return
-        
-        redis_db.set(REDIS_KEY, STATE_BAT)
+
+        redis_db.set(REDIS_KEY, current_state)
         logging.info("Power - changed. Current state {0}: {1}".format(current_state, text))
         update_db_request(QUERY[mn()].format(current_state))
-        send_message(msg_text='Зміна стану напруги. \n {0}'.format(text))
+        send_message(msg_text='Зміна стану напруги. \n{0}'.format(text))
 
     except Exception as e:
         logging.error(e)
