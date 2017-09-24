@@ -17,8 +17,8 @@ redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
 USERS = [
-    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='}
-    # {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='}
+    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
+    {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='}
 ]
 
 
@@ -85,11 +85,12 @@ STATE_BAT = 0
 STATE_POWER = 1
 REDIS_KEY = 'power_state'
 
+
 def send_message(msg_text):
-    """Send message to viber"""
+    """Send message to viber."""
     try:
         payload = {'users': USERS, 'msg_text': msg_text}
-        response = requests.post(VIBER_BOT_IP + '/send_message', json=payload, timeout=(10, 3))
+        response = requests.post(VIBER_BOT_IP + '/send_message', json=payload, timeout=(10, 10))
         response.raise_for_status()
     except Exception as e:
         logging.error("Can't send rule to viber. Ecxeption occured")
