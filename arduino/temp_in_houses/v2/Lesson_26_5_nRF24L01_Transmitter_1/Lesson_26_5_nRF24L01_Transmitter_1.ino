@@ -13,35 +13,50 @@
 
 RF24           radio(7, 8);                                   // Создаём объект radio для работы с библиотекой RF24, указывая номера выводов nRF24L01+ (CE, CSN)
 int            data[2];                                        // Создаём массив для передачи данных (так как мы будем передавать только одно двухбайтное число, то достаточно одного элемента массива типа int)
-                                                               // Для данного примера, можно использовать не массив data из одного элемента, а переменную data типа int
+int            wake_up[1];
+uint8_t        pipe;                                           // Создаём переменную     для хранения номера трубы, по которой пришли данные
+
+// Для данного примера, можно использовать не массив data из одного элемента, а переменную data типа int
 #define DHTPIN 4     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup(){
+  delay(1000);
   Serial.begin(9600);
-    dht.begin();
-    radio.begin();                                             // Инициируем работу nRF24L01+
-    radio.setChannel(5);                                       // Указываем канал передачи данных (от 0 до 127), 5 - значит передача данных осуществляется на частоте 2,405 ГГц (на одном канале может быть только 1 приёмник и до 6 передатчиков)
-    radio.setDataRate     (RF24_250KBPS);                        // Указываем скорость передачи данных (RF24_250KBPS, RF24_1MBPS, RF24_2MBPS), RF24_1MBPS - 1Мбит/сек
-    radio.setPALevel      (RF24_PA_HIGH);                      // Указываем мощность передатчика (RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_HIGH=-6dBm, RF24_PA_MAX=0dBm)
-    radio.openWritingPipe (0xAABBCCDD11LL);                    // Открываем трубу с идентификатором 0xAABBCCDD11 для передачи данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
+  radio.begin();                                             // Инициируем работу nRF24L01+
+  radio.setChannel(5);                                       // Указываем канал приёма данных (от 0 до 127), 5 - значит приём данных осуществляется на частоте 2,405 ГГц (на одном канале может быть только 1 приёмник и до 6 передатчиков)
+  radio.setDataRate     (RF24_250KBPS);                        // Указываем скорость передачи данных (RF24_250KBPS, RF24_1MBPS, RF24_2MBPS), RF24_1MBPS - 1Мбит/сек
+  radio.setPALevel      (RF24_PA_HIGH);                      // Указываем мощность передатчика (RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_HIGH=-6dBm, RF24_PA_MAX=0dBm)
+  radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+  radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
 }
 
 void loop(){
-  
-    float hum = dht.readHumidity();
-    float temp= dht.readTemperature(); 
-    Serial.print("Temp ");
-    Serial.println(temp);
-    
-    Serial.print("hum ");
-    Serial.println(hum);
-  
-    data[0] = temp*100 + 1000; 
-    data[1] = hum*100 + 1000;
-    radio.write(&data, sizeof(data));                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
-    Serial.println(data[0]);
-    Serial.println(data[1]);
-    delay(1000);                                                 // устанавливаем задержку на 50 мс, за это время приемник успеет принять и обработать данные этого и другого передатчика.
+  if(radio.available(&pipe)){                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
+    radio.read(&wake_up, sizeof(wake_up));                       // Читаем данные в массив data и указываем сколько байт читать    
+    if (wake_up[0] == 1){
+      radio.stopListening();
+      radio.openWritingPipe (0xAABBCCDD11LL);                    // Открываем трубу с идентификатором 0xAABBCCDD11 для передачи данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
+      float hum = dht.readHumidity();
+      float temp= dht.readTemperature(); 
+      data[0] = temp*100 + 1000; 
+      data[1] = hum*100 + 1000;
+
+      for (int i = 0; i < 5; i++) { 
+        if (radio.write(&data, sizeof(data))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
+          delay(1000);
+          break;
+        }
+      }
+      Serial.println(data[0]);
+      Serial.println(data[1]);
+
+      radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+      radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
+    }
+  }
 }
+
+
+

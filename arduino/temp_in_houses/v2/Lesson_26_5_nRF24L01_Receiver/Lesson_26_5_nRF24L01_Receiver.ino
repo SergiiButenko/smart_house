@@ -11,8 +11,9 @@
 #include <RF24.h>                                              // Подключаем библиотеку  для работы с nRF24L01+
 RF24           radio(7, 8);                                   // Создаём объект radio   для работы с библиотекой RF24, указывая номера выводов nRF24L01+ (CE, CSN)
 
-int            data[1];                                        // Создаём массив         для приёма данных (так как мы будем принимать от каждого передатчика только одно двухбайтное число, то достаточно одного элемента массива типа int)
+int            data[2];                                        // Создаём массив         для приёма данных (так как мы будем принимать от каждого передатчика только одно двухбайтное число, то достаточно одного элемента массива типа int)
 uint8_t        pipe;                                           // Создаём переменную     для хранения номера трубы, по которой пришли данные
+int            wake_up[1];
 // Для данного примера, можно использовать не массив data из одного элемента, а переменную data типа int
 void setup(){
   delay(1000);
@@ -24,23 +25,59 @@ void setup(){
   radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
   radio.openReadingPipe (2, 0xAABBCCDD22LL);                 // Открываем 2 трубу с идентификатором 2 передатчика 0xAABBCCDD22, для приема данных
   radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
-  //  radio.stopListening   ();                                  // Выключаем приёмник, если потребуется передать данные
 }
 
+
+
 void loop(){
+  if (digitalRead(2) == 1){
+    Serial.println("start");
+    radio.stopListening();
+    radio.openWritingPipe (0xAABBCCDD11LL);
+    //radio.openWritingPipe (0xAABBCCDD22LL);
+
+    wake_up[0] = 1;
+    for (int i = 0; i < 5; i++) { 
+      if (radio.write(&wake_up, sizeof(wake_up))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
+        delay(1000);
+        Serial.println("OK");
+        radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+        radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
+        break;
+      } 
+      else {
+        Serial.println("Failed");
+        delay(1000);
+      }
+    }
+  }
+
   if(radio.available(&pipe)){                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
     radio.read(&data, sizeof(data));                       // Читаем данные в массив data и указываем сколько байт читать
     if(pipe==1){
       Serial.print("Temp ");
       Serial.println((data[0] - 1000)/100);
+      Serial.println(data[0]);
 
       Serial.print("hum ");
       Serial.println((data[1] - 1000)/100);
+      Serial.println(data[1]);
 
     } 
+
     if(pipe==2){
       Serial.println(data[0]);
     }                   // Если данные пришли от 2 передатчика, то выводим показания Trema слайдера на индикатор
   }
 }
+
+
+
+
+
+
+
+
+
+
 
