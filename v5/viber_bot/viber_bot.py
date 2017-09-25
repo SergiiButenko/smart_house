@@ -68,66 +68,15 @@ def send_response(viber_request):
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
         viber.send_messages(sender_id, [TextMessage(text='Все ок')])
 
-    if (text == 'тест2' or text == 'test2'):
-        # this is not supoprted yet
-        # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
-        # SAMPLE_ALT_TEXT = "upgrade now!"
-        # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
-
-        r = dict(DefaultHeight=True, BgColor= "#FFFFFF", 
-            Buttons= [dict(
-            Columns= 6,
-            Rows= 1,
-            BgColor= "#2db9b9",
-            BgMediaType= "gif",
-            BgMedia= "http://www.url.by/test.gif",
-            BgLoop= True,
-            ActionType= "open-url",
-            ActionBody= "www.tut.by",
-            Image= "www.tut.by/img.jpg",
-            Text= "Key text",
-            TextVAlign= "middle",
-            TextHAlign= "center",
-            TextOpacity= 60,
-            TextSize= "regular"
-        )])
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])
-
     if (text == 'тест3' or text == 'test3'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
 
-        r = '{"DefaultHeight": True,"BgColor": "#FFFFFF", "Buttons": [{"Columns": 6,"Rows": 1,"BgColor": "#2db9b9",            "BgMediaType": "gif",            "BgMedia": "http://www.url.by/test.gif",            "BgLoop": True,            "ActionType": "open-url",            "ActionBody": "www.tut.by",            "Image": "www.tut.by/img.jpg",            "Text": "Key text",            "TextVAlign": "middle",            "TextHAlign": "center",            "TextOpacity": 60,            "TextSize": "regular" }]}'
+        r = '{"DefaultHeight": "true", "BgColor": "#FFFFFF", "Buttons": [{"ActionType": "open-url", "Text": "Key text", "TextOpacity": 60, "BgMediaType": "gif", "BgColor": "#2db9b9", "BgLoop": "true", "BgMedia": "http://www.url.by/test.gif", "TextVAlign": "middle", "TextHAlign": "center", "Image": "www.tut.by/img.jpg", "Columns": 6, "ActionBody": "www.tut.by", "TextSize": "regular", "Rows": 1}]}'
 
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage(message_data=json.loads(r))) ])    
-
-    if (text == 'тест4' or text == 'test4'):
-        # this is not supoprted yet
-        # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
-        # SAMPLE_ALT_TEXT = "upgrade now!"
-        # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
-
-        r = dict(keyboard={"DefaultHeight": True, "BgColor": "#FFFFFF",
-            "Buttons": [{
-            "Columns": 6,
-            "Rows": 1,
-            "BgColor": "#2db9b9",
-            "BgMediaType": "gif",
-            "BgMedia": "http://www.url.by/test.gif",
-            "BgLoop": True,
-            "ActionType": "open-url",
-            "ActionBody": "www.tut.by",
-            "Image": "www.tut.by/img.jpg",
-            "Text": "Key text",
-            "TextVAlign": "middle",
-            "TextHAlign": "center",
-            "TextOpacity": 60,
-            "TextSize": "regular"
-        }]})
-        
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])    
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage(message_data=json.loads(r)))])
 
     if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
