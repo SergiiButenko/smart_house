@@ -76,7 +76,7 @@ def send_response(viber_request):
 
         r = '{"DefaultHeight": "true", "BgColor": "#FFFFFF", "Buttons": [{"ActionType": "open-url", "Text": "Key text", "TextOpacity": 60, "BgMediaType": "gif", "BgColor": "#2db9b9", "BgLoop": "true", "BgMedia": "http://www.url.by/test.gif", "TextVAlign": "middle", "TextHAlign": "center", "Image": "www.tut.by/img.jpg", "Columns": 6, "ActionBody": "www.tut.by", "TextSize": "regular", "Rows": 1}]}'
 
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=r)])
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=json.loads(r))])
 
     if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
