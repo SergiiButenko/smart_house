@@ -4,6 +4,8 @@ from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages.text_message import TextMessage
 from viberbot.api.messages.rich_media_message import RichMediaMessage
+from viberbot.api.messages.keyboard_message import KeyboardMessage
+
 from viberbot.api.messages.url_message import URLMessage
 
 from viberbot.api.viber_requests import ViberFailedRequest
@@ -59,12 +61,38 @@ def send_response(viber_request):
         logger.warn('User is not registered in system or this is bot')
         return
 
-    if (text == 'тест'):
+    if (text == 'тест' or text == 'test'):
         # this is not supoprted yet
         # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
         viber.send_messages(sender_id, [TextMessage(text='Все ок')])
+
+    if (text == 'тест2' or text == 'test2'):
+        # this is not supoprted yet
+        # SAMPLE_RICH_MEDIA = '{"ButtonsGroupColumns": 6, "Buttons": [{"ActionType": "open-url", "BgColor": "#000000", "Rows": 4, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "Image": "http://www.images.com/img.jpg", "BgMediaType": "picture", "TextOpacity": 60}, {"ActionType": "open-url", "Text": "Buy", "Rows": 1, "ActionBody": "http://www.website.com/go_here", "Columns": 6, "BgColor": "#85bb65", "TextOpacity": 60}], "BgColor": "#FFFFFF", "ButtonsGroupRows": 2}'
+        # SAMPLE_ALT_TEXT = "upgrade now!"
+        # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
+
+        r = {"DefaultHeight": True,
+        "BgColor": "#FFFFFF",
+        "Buttons": [{
+            "Columns": 6,
+            "Rows": 1,
+            "BgColor": "#2db9b9",
+            "BgMediaType": "gif",
+            "BgMedia": "http://www.url.by/test.gif",
+            "BgLoop": True,
+            "ActionType": "open-url",
+            "ActionBody": "www.tut.by",
+            "Image": "www.tut.by/img.jpg",
+            "Text": "Key text",
+            "TextVAlign": "middle",
+            "TextHAlign": "center",
+            "TextOpacity": 60,
+            "TextSize": "regular"
+        }]}
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(r))])
 
     if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
