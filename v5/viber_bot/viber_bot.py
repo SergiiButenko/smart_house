@@ -141,10 +141,9 @@ def send_response(viber_request):
             "TextHAlign": "center",
             "TextOpacity": 60,
             "TextSize": "regular"
-        }]}
+        }]})
         
         viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(r))])    
-
 
     if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
