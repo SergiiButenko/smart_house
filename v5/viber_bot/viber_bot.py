@@ -99,25 +99,9 @@ def send_response(viber_request):
         # SAMPLE_ALT_TEXT = "upgrade now!"
         # return RichMediaMessage(rich_media=json.loads(SAMPLE_RICH_MEDIA), alt_text=SAMPLE_ALT_TEXT, min_api_version=1)
 
-        r = {"DefaultHeight": True, "BgColor": "#FFFFFF",
-            "Buttons": [{
-            "Columns": 6,
-            "Rows": 1,
-            "BgColor": "#2db9b9",
-            "BgMediaType": "gif",
-            "BgMedia": "http://www.url.by/test.gif",
-            "BgLoop": True,
-            "ActionType": "open-url",
-            "ActionBody": "www.tut.by",
-            "Image": "www.tut.by/img.jpg",
-            "Text": "Key text",
-            "TextVAlign": "middle",
-            "TextHAlign": "center",
-            "TextOpacity": 60,
-            "TextSize": "regular"
-        }]}
+        r = '{"DefaultHeight": True, "BgColor": "#FFFFFF", "Buttons": [{"Columns": 6,"Rows": 1,"BgColor": "#2db9b9",            "BgMediaType": "gif",            "BgMedia": "http://www.url.by/test.gif",            "BgLoop": True,            "ActionType": "open-url",            "ActionBody": "www.tut.by",            "Image": "www.tut.by/img.jpg",            "Text": "Key text",            "TextVAlign": "middle",            "TextHAlign": "center",            "TextOpacity": 60,            "TextSize": "regular" }]}'
 
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])    
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage(message_data=json.loads(r)) ])    
 
     if (text == 'тест4' or text == 'test4'):
         # this is not supoprted yet
