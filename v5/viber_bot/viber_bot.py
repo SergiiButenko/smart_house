@@ -91,7 +91,7 @@ def send_response(viber_request):
             TextOpacity= 60,
             TextSize= "regular"
         )])
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(r))])
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])
 
     if (text == 'тест3' or text == 'test3'):
         # this is not supoprted yet
@@ -117,7 +117,7 @@ def send_response(viber_request):
             "TextSize": "regular"
         }]}
 
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(r))])    
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])    
 
     if (text == 'тест4' or text == 'test4'):
         # this is not supoprted yet
@@ -143,7 +143,7 @@ def send_response(viber_request):
             "TextSize": "regular"
         }]})
         
-        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(r))])    
+        viber.send_messages(sender_id, [TextMessage(text='Все ок', keyboard=KeyboardMessage.from_dict(message_data=r))])    
 
     if (text.startswith('відмінити')):
         res = re.findall(r'\d+', text)
