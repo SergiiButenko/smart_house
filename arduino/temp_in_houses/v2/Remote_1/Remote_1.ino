@@ -26,45 +26,62 @@ void setup(){
   radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
 }
 
+boolean r = false;
+boolean w = false;
+
 void loop(){
   if(radio.available(&pipe)){                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
     radio.read(&input_data, sizeof(input_data));                       // Читаем данные в массив data и указываем сколько байт читать    
     if (input_data[19] == 1){
-      delay(50);
-      radio.stopListening();
-      radio.openWritingPipe (0xAABBCCDD11LL);                    // Открываем трубу с идентификатором 0xAABBCCDD11 для передачи данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
-
-      for (int j = 0; j < sizeof(input_data) - 1 ; j++) {
-        digitalWrite(input_data[j]);
-        out_data[j] = digitalRead(j);
-        Serial.println("pin: "+String(j) + " set to " + String(out_data[0]));
-      }
-
-      float hum = dht.readHumidity();
-      float temp= dht.readTemperature(); 
-      out_data[19] = temp*100 + 1000; 
-      out_data[20] = hum*100 + 1000;
-
-      for (int i = 0; i < 5; i++) { 
-        if (radio.write(&out_data, sizeof(out_data))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
-          Serial.println("data was sent");
-          delay(1000);
-          break;
-        } else {
-          Serial.println("data wasn't sent");
-        }
-      }
-      
-      Serial.println(out_data);      
-      radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
-      radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
-    } else {
+      w = true;     
+      r = false;
+    } 
+    else if (input_data[19] == 2){
+      r = true; 
+      w = false;    
+    } 
+    else {
       // in case input_data[19] !== 1
       Serial.print("Responce won't be sent. Data reseived:");
       Serial.println(input_data);
+      return;
     }
+
+    delay(50);
+    radio.stopListening();
+    radio.openWritingPipe (0xAABBCCDD11LL);                    // Открываем трубу с идентификатором 0xAABBCCDD11 для передачи данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
+
+    for (int j = 0; j < sizeof(input_data) - 1 ; j++) {
+      if (w == true){
+        digitalWrite(input_data[j]);
+      }
+      out_data[j] = digitalRead(j);
+      Serial.println("pin: "+String(j) + " set to " + String(out_data[0]));
+    }
+
+    float hum = dht.readHumidity();
+    float temp= dht.readTemperature(); 
+    out_data[19] = temp*100 + 1000; 
+    out_data[20] = hum*100 + 1000;
+
+    for (int i = 0; i < 5; i++) { 
+      if (radio.write(&out_data, sizeof(out_data))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
+        Serial.println("data was sent");
+        delay(1000);
+        break;
+      } 
+      else {
+        Serial.println("data wasn't sent");
+      }
+    }
+
+    Serial.println(out_data);      
+    radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+    radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
   }
 }
+
+
 
 
 
