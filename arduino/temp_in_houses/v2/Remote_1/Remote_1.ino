@@ -35,10 +35,14 @@ void loop(){
     if (input_data[19] == 1){
       w = true;     
       r = false;
+      Serial.println(w);
+      Serial.println(input_data);
     } 
     else if (input_data[19] == 2){
-      r = true; 
-      w = false;    
+      w = false;     
+      r = true;
+      Serial.println(w);
+      Serial.println(input_data);
     } 
     else {
       // in case input_data[19] !== 1

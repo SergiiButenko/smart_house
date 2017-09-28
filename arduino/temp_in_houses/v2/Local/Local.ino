@@ -388,12 +388,13 @@ void branch_on(byte branch_id, int alert_time){
   on(pin, alert_time);
 }
 
-// turn on off logic
 void on(byte pin, int alert_time){
   // Add timers rule
   timers[pin] = long(millis() / 60000 + alert_time);
   digitalWrite(pin,HIGH);
 }
+
+
 
 void branch_off(byte branch_id){
   byte pin = get_branch_pin(branch_id);
@@ -404,12 +405,13 @@ void branch_off(byte branch_id){
   off(pin);
 }
 
-
 void off(byte pin){
   // Remove timers rule
   timers[pin]=0;
   digitalWrite(pin,LOW);
 }
+
+
 
 
 byte get_branch_pin(byte branch_id){
@@ -470,6 +472,7 @@ byte get_remote_branch_pin(byte branch_id){
 }
 
 
+
 void check_all_branches_timer(){
   for (byte i = 0; i < timers_count; i++) {
     if (timers[i]==0){
@@ -481,6 +484,8 @@ void check_all_branches_timer(){
     }
   }
 }
+
+
 
 String get_all_data(){
   Serial.println("get temperature from 1");
