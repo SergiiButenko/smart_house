@@ -9,11 +9,19 @@ int            out_data[20];
 // matrix with expected pin state + start fingerprint
 int            input_data[19];                                        // Создаём массив для передачи данных (так как мы будем передавать только одно двухбайтное число, то достаточно одного элемента массива типа int)
 uint8_t        pipe;                                           // Создаём переменную     для хранения номера трубы, по которой пришли данные
+boolean r = false;
+boolean w = false;
 
 
 #define DHTPIN 4     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 DHT dht(DHTPIN, DHTTYPE);
+
+// timers only for current board
+const byte timers_count = 18;
+unsigned long int timers[18];
+
+int alert_time = 300;
 
 void setup(){
   delay(1000);
@@ -24,12 +32,16 @@ void setup(){
   radio.setPALevel      (RF24_PA_MAX);                      // Указываем мощность передатчика (RF24_PA_MIN=-18dBm, RF24_PA_LOW=-12dBm, RF24_PA_HIGH=-6dBm, RF24_PA_MAX=0dBm)
   radio.openReadingPipe (1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
   radio.startListening  ();                                  // Включаем приемник, начинаем прослушивать открытые трубы
+
+   for (byte i = 0; i > timers_count; i++) {
+    timers[i]=0;
+  }
+
 }
 
-boolean r = false;
-boolean w = false;
-
 void loop(){
+  check_all_branches_timer();
+
   if(radio.available(&pipe)){                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
     radio.read(&input_data, sizeof(input_data));                       // Читаем данные в массив data и указываем сколько байт читать    
     if (input_data[19] == 1){
@@ -85,7 +97,28 @@ void loop(){
   }
 }
 
+void check_all_branches_timer(){
+  for (byte i = 0; i < timers_count; i++) {
+    if (timers[i]==0){
+      continue;
+    } 
+
+    if ( int(timers[i] - millis() / 60000) < 0  ){        
+      off(i); 
+    }
+  }
+}
 
 
+void on(byte pin){
+  // Add timers rule
+  timers[pin] = long(millis() / 60000 + alert_time);
+  digitalWrite(pin,HIGH);
+}
 
 
+void off(byte pin){
+  // Remove timers rule
+  timers[pin]=0;
+  digitalWrite(pin,LOW);
+}
