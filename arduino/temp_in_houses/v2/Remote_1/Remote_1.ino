@@ -52,7 +52,7 @@ void loop(){
     radio.openWritingPipe (0xAABBCCDD11LL);                    // Открываем трубу с идентификатором 0xAABBCCDD11 для передачи данных (на ожном канале может быть открыто до 6 разных труб, которые должны отличаться только последним байтом идентификатора)
 
     for (int j = 0; j < sizeof(input_data) - 1 ; j++) {
-      if (w == true){
+      if (w == true and input_data[j] != -1){
         digitalWrite(input_data[j]);
       }
       out_data[j] = digitalRead(j);
