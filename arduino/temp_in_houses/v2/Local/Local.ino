@@ -204,27 +204,50 @@ void process_request(EthernetClient cl) {
 
 void remote_branch_on(byte branch_id, int alert_time){
   byte pin = get_remote_branch_pin(branch_id);
-  if (pin==0){
-    return false;
+  if (pin == 0){
+    return;
   }
   
   byte id = get_remote_branch_pin(branch_id);
-  if (pin==0){
-    return false;
+  if (pin == 0){
+    return;
   }
   
+  byte remote_id = get_remote_id(branch_id);
+  if (remote_id == 0 ){
+    return;
+  }
   
 
-  Serial.println("get temperature from 1");
+  if (remote_id == 1){
+    int address = 0xAABBCCDD11LL;
+    int expected_pipe = 1;
+  }
+
+  if (remote_id == 2){
+    int address = 0xAABBCCDD22LL;
+    int expected_pipe = 2;
+  }
+
+
+  for (int i = 0; i < sizeof(remote_data_1_in) - 1; ++i)
+  {
+    if (i == pin){
+      remote_data_1_in[i] = 1
+    } else {
+      remote_data_1_in[i] = -1
+    }
+  }
+
+  Serial.println("set temperature from 1");
   radio.stopListening();
-  remote_data_1_in[19] = 2;
-  radio.openWritingPipe (0xAABBCCDD11LL);
-  //radio.openWritingPipe (0xAABBCCDD22LL);
+  remote_data_1_in[19] = 1;  
+  radio.openWritingPipe (address);
   for (int i = 0; i < 5; i++) { 
     if (radio.write(&remote_data_1_in, sizeof(remote_data_1_in))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
       delay(1000);
       Serial.println("OK");
-      radio.openReadingPipe(1, 0xAABBCCDD11LL);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+      radio.openReadingPipe(1, address);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
       radio.startListening();                                  // Включаем приемник, начинаем прослушивать открытые трубы
 
 
@@ -235,7 +258,7 @@ void remote_branch_on(byte branch_id, int alert_time){
       do{
         now  = millis();
         data_retrived = radio.available(&pipe);
-        if(pipe == 1) {                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
+        if(pipe == expected_pipe) {                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
           radio.read(&remote_data_1_out, sizeof(remote_data_1_out));                       // Читаем данные в массив data и указываем сколько байт читать
 
           Serial.print("Temp ");
@@ -255,7 +278,88 @@ void remote_branch_on(byte branch_id, int alert_time){
       } 
     }      
 
-    Serial.println("Failed to get data from 1");
+    Serial.println("Failed to set and get data from 1");
+    delay(1000);
+
+  }
+}
+
+void remote_branch_off(byte branch_id){
+  byte pin = get_remote_branch_pin(branch_id);
+  if (pin == 0){
+    return;
+  }
+  
+  byte id = get_remote_branch_pin(branch_id);
+  if (pin == 0){
+    return;
+  }
+  
+  byte remote_id = get_remote_id(branch_id);
+  if (remote_id == 0 ){
+    return;
+  }
+  
+
+  if (remote_id == 1){
+    int address = 0xAABBCCDD11LL;
+    int expected_pipe = 1;
+  }
+
+  if (remote_id == 2){
+    int address = 0xAABBCCDD22LL;
+    int expected_pipe = 2;
+  }
+
+  for (int i = 0; i < sizeof(remote_data_1_in) - 1; ++i)
+  {
+    if (i == pin){
+      remote_data_1_in[i] = 0
+    } else {
+      remote_data_1_in[i] = -1
+    }
+  }
+
+  Serial.println("set temperature from 1");
+  radio.stopListening();
+  remote_data_1_in[19] = 1;
+  radio.openWritingPipe (address);
+  for (int i = 0; i < 5; i++) { 
+    if (radio.write(&remote_data_1_in, sizeof(remote_data_1_in))){                          // отправляем данные из массива data указывая сколько байт массива мы хотим отправить
+      delay(1000);
+      Serial.println("OK");
+      radio.openReadingPipe(1, address);                 // Открываем 1 трубу с идентификатором 1 передатчика 0xAABBCCDD11, для приема данных
+      radio.startListening();                                  // Включаем приемник, начинаем прослушивать открытые трубы
+
+
+      int interval = 10 * 1000;
+      unsigned long start_time = millis();
+      unsigned long now;
+      boolean data_retrived;
+      do{
+        now  = millis();
+        data_retrived = radio.available(&pipe);
+        if(pipe == expected_pipe) {                                // Если в буфере имеются принятые данные, то получаем номер трубы, по которой они пришли, по ссылке на переменную pipe
+          radio.read(&remote_data_1_out, sizeof(remote_data_1_out));                       // Читаем данные в массив data и указываем сколько байт читать
+
+          Serial.print("Temp ");
+          remote_data_1_out[19] = (remote_data_1_out[19]- 1000)/100;
+          Serial.println(remote_data_1_out[19]);
+
+          Serial.print("hum ");
+          remote_data_1_out[20] = (remote_data_1_out[20]- 1000)/100;
+          Serial.println(remote_data_1_out[20]);
+          break;
+        }
+      }       
+      while(now - start_time <= interval);
+
+      if (data_retrived == true){
+        break;
+      } 
+    }      
+
+    Serial.println("Failed to set and get data from 1");
     delay(1000);
 
   }
@@ -284,12 +388,13 @@ void branch_on(byte branch_id, int alert_time){
   on(pin, alert_time);
 }
 
-// turn on off logic
 void on(byte pin, int alert_time){
   // Add timers rule
   timers[pin] = long(millis() / 60000 + alert_time);
   digitalWrite(pin,HIGH);
 }
+
+
 
 void branch_off(byte branch_id){
   byte pin = get_branch_pin(branch_id);
@@ -300,12 +405,13 @@ void branch_off(byte branch_id){
   off(pin);
 }
 
-
 void off(byte pin){
   // Remove timers rule
   timers[pin]=0;
   digitalWrite(pin,LOW);
 }
+
+
 
 
 byte get_branch_pin(byte branch_id){
@@ -366,6 +472,7 @@ byte get_remote_branch_pin(byte branch_id){
 }
 
 
+
 void check_all_branches_timer(){
   for (byte i = 0; i < timers_count; i++) {
     if (timers[i]==0){
@@ -377,6 +484,8 @@ void check_all_branches_timer(){
     }
   }
 }
+
+
 
 String get_all_data(){
   Serial.println("get temperature from 1");
