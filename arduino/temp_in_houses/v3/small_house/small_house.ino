@@ -39,11 +39,11 @@ byte branch_4_status=0;
 byte branch_5_status=0;
 
 //quantity of branches = branches + 1 since branch id starts from 1
-const byte timers_count=8;
+const byte timers_count=30;
 unsigned long int timers[timers_count];
 
 void setup() {
-  //  delay(60 * 1000);
+  delay(60 * 1000);
 
   // Start Serial
   Serial.begin(115200);
