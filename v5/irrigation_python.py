@@ -689,9 +689,10 @@ def arduino_small_house_status():
         response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(3, 3))
         response_status.raise_for_status()
 
-        send_message('power_outlet_status', {'data': response_status.text})
+        arr = form_responce_for_branches(response_status.text)
+        send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
-        return jsonify(branches=json.loads(response_status.text))
+        return jsonify(branches=arr)        
 
     except Exception as e:
         logging.error(e)
@@ -821,9 +822,10 @@ def lighting_on():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    send_message('lighting_status', {'data': response_on.text})
+    arr = form_responce_for_branches(response_on.text)
+    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
-    return jsonify(branches=json.loads(response_on.text))
+    return jsonify(branches=arr)        
 
 
 @app.route('/power_outlet_on')
@@ -840,9 +842,10 @@ def power_outlet_on():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    send_message('power_outlet_status', {'data': response_on.text})
-
-    return jsonify(branches=json.loads(response_on.text))
+    arr = form_responce_for_branches(response_on.text)
+    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    
+    return jsonify(branches=arr)        
 
 
 def retry_branch_off(id, base_url=ARDUINO_IP):
@@ -937,16 +940,17 @@ def lighting_off():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    send_message('lighting_status', {'data': response_on.text})
-
-    return jsonify(branches=json.loads(response_on.text))
+    arr = form_responce_for_branches(response_off.text)
+    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    
+    return jsonify(branches=arr)
 
 
 @app.route('/power_outlet_off')
 def power_outlet_off():
     """Blablbal."""
     id = int(request.args.get('id'))
-    
+        
     try:
         response_off = retry_branch_on(id, base_url=ARDUINO_SMALL_H_IP)
         response_off.raise_for_status()
@@ -955,9 +959,10 @@ def power_outlet_off():
         logging.error("Can't turn off branch id={0}. Exception occured".format(id))
         abort(500)
 
-    send_message('power_outlet_status', {'data': response_off.text})
-
-    return jsonify(branches=json.loads(response_off.text))
+    arr = form_responce_for_branches(response_off.text)
+    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    
+    return jsonify(branches=arr)
 
 
 @app.route("/weather")
