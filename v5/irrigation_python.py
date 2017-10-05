@@ -646,7 +646,7 @@ def get_timetable_list():
 def form_responce_for_branches(payload):
     """Return responce with rules."""
     try:
-        res = [None] * 18
+        res = [None] * 40
         payload = json.loads(payload)
         for branch_id in payload:
             status = payload[branch_id]
