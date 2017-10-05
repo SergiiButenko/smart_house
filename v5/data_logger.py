@@ -97,8 +97,8 @@ def weather():
             response = requests.get(url=url, timeout=(3, 3))
             response.raise_for_status()
             json_data = json.loads(response.text)
-            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)), 
-            humidity_street = str(round(json_data['main']['humidity'], 2))
+            temperature_street = pytemperature.k2c(json_data['main']['temp']), 
+            humidity_street = str(round(json_data['main']['humidity'], 1))
         except requests.exceptions.RequestException as e:
             logging.error(e)
             logging.error("Can't get weather info Exception occured")
@@ -132,7 +132,7 @@ def weather():
             temperature_small_h_2_fl, humidity_small_h_2_fl,
             temperature_big_h_1_fl, humidity_big_h_1_fl,
             temperature_big_h_2_fl, humidity_big_h_2_fl))
-        
+
         update_db_request(QUERY[mn()].format(
             temperature_street, humidity_street,
             temperature_small_h_1_fl, humidity_small_h_1_fl,
