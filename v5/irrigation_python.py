@@ -950,9 +950,9 @@ def lighting_off():
 def power_outlet_off():
     """Blablbal."""
     id = int(request.args.get('id'))
-        
+
     try:
-        response_off = retry_branch_on(id, base_url=ARDUINO_SMALL_H_IP)
+        response_off = retry_branch_off(id, base_url=ARDUINO_SMALL_H_IP)
         response_off.raise_for_status()
     except Exception as e:
         logging.error(e)
