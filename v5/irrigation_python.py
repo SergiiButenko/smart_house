@@ -370,7 +370,7 @@ def power_outlets():
 
 
 @app.route("/power_outlets_names")
-def power_outlets():
+def power_outlets_names():
     """Return branch names."""
     light_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
