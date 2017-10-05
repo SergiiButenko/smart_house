@@ -683,7 +683,7 @@ def arduino_status():
 
 
 @app.route('/arduino_small_house_status', methods=['GET'])
-def arduino_status():
+def arduino_small_house_status():
     """Return status of arduino relay."""
     try:
         response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(3, 3))
