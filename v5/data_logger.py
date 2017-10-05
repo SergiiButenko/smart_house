@@ -97,7 +97,8 @@ def weather():
             response = requests.get(url=url, timeout=(3, 3))
             response.raise_for_status()
             json_data = json.loads(response.text)
-            temperature_street = pytemperature.k2c(json_data['main']['temp']), 
+            # temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 1)), 
+            temperature_street = str(round(json_data['main']['temp'], 1)), 
             humidity_street = str(round(json_data['main']['humidity'], 1))
         except requests.exceptions.RequestException as e:
             logging.error(e)
