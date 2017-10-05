@@ -43,10 +43,12 @@ const byte timers_count=30;
 unsigned long int timers[timers_count];
 
 void setup() {
-  delay(60 * 1000);
-
   // Start Serial
   Serial.begin(115200);
+
+  // disable SD card
+  pinMode(4, OUTPUT);
+  digitalWrite(4, HIGH);
 
   dht_first.begin();
   dht_second.begin();
@@ -305,8 +307,3 @@ void fill_up_timers_array(){
     timers[i]=0;
   }
 }
-
-
-
-
-
