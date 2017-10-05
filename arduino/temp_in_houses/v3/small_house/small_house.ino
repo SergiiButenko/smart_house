@@ -172,7 +172,7 @@ void process_request(EthernetClient cl) {
     // open JSON
     cl.print("{");
     // temperature
-    cl.print(",\"1_floor_temperature\":\"");
+    cl.print("\"1_floor_temperature\":\"");
     cl.print(dht_first.readTemperature(),1);
     cl.print("\"");
     // humidity
