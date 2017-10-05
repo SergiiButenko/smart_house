@@ -65,7 +65,7 @@ CREATE TABLE lines (
     start_time time without time zone NOT NULL DEFAULT '2017-06-29 18:34:00'
 );
 
-CREATE TABLE temp_statisitics (
+CREATE TABLE temperature_statistics (
     id INTEGER PRIMARY KEY, 
     
     datetime time without time zone NOT NULL DEFAULT (datetime('now','localtime')),
@@ -105,6 +105,14 @@ CREATE TABLE lighting (
     name text NOT NULL,
     time integer NOT NULL
 );
+
+CREATE TABLE power_outlets (
+    id INTEGER PRIMARY KEY, 
+    number integer NOT NULL, 
+    name text NOT NULL,
+    time integer NOT NULL
+);
+
 
 CREATE TABLE power_statistics (
     id INTEGER PRIMARY KEY, 
