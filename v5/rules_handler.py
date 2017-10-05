@@ -18,7 +18,7 @@ BACKEND_IP = 'http://127.0.0.1:7542'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 
 HUMIDITY_MAX = 1000
-RULES_FOR_BRANCHES = [None] * 19
+RULES_FOR_BRANCHES = [None] * 40
 
 RULES_ENABLED = True
 REDIS_KEY_FOR_VIBER = 'viber_sent_intervals'

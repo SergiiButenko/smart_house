@@ -274,11 +274,11 @@ String form_branch_status_json(){
   //update branch status
   branches_status();
   String res = "{";
-  res = res + "\"1\":"+"\""+String(branch_1_status)+"\", ";
-  res = res + "\"2\":"+"\""+String(branch_2_status)+"\", ";
-  res = res + "\"3\":"+"\""+String(branch_3_status)+"\", ";
-  res = res + "\"4\":"+"\""+String(branch_4_status)+"\", ";
-  res = res + "\"5\":"+"\""+String(branch_5_status)+"\"} ";
+  res = res + "\"20\":"+"\""+String(branch_1_status)+"\", ";
+  res = res + "\"21\":"+"\""+String(branch_2_status)+"\", ";
+  res = res + "\"22\":"+"\""+String(branch_3_status)+"\", ";
+  res = res + "\"23\":"+"\""+String(branch_4_status)+"\", ";
+  res = res + "\"24\":"+"\""+String(branch_5_status)+"\"} ";
 
   return res;
 }

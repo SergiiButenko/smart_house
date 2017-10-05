@@ -41,7 +41,7 @@ ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 # ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
 
 HUMIDITY_MAX = 1000
-RULES_FOR_BRANCHES = [None] * 18
+RULES_FOR_BRANCHES = [None] * 40
 SENSORS = {'time': datetime.datetime.now(), 'data': {'temperature': 0, 'humidity': 0, 'rain': False, 'daylight': False},
 'user_message': '', 'allow_irrigation': False, 'rule_status': 0}
 
