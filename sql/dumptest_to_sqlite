@@ -4,32 +4,10 @@ CREATE TABLE current_lines_state (
     state_id integer NOT NULL
 );
 
-CREATE TABLE lines (
-    id INTEGER PRIMARY KEY,
-        number integer NOT NULL,
-        name text NOT NULL,
-    time integer NOT NULL DEFAULT 10,
-    intervals integer NOT NULL DEFAULT 2,
-    time_wait integer NOT NULL DEFAULT 15,
-    start_time time without time zone NOT NULL DEFAULT '2017-06-29 18:34:00';
-
-);
-
 CREATE TABLE state_of_line (
     id INTEGER PRIMARY KEY,
     short_name text NOT NULL,
     full_name text NOT NULL
-);
-
-CREATE TABLE state_of_rule (
-    id INTEGER PRIMARY KEY,
-    short_name text NOT NULL,
-    full_name text NOT NULL
-);
-
-CREATE TABLE type_of_rule (
-    id INTEGER PRIMARY KEY,
-    name text NOT NULL
 );
 
 CREATE TABLE day_of_week (
@@ -44,11 +22,67 @@ CREATE TABLE week_schedule (
     line_id integer NOT NULL,
     rule_id integer NOT NULL,
     "time" time without time zone NOT NULL,
-    "interval" integer NOT NULL,
+    "interval" integer NOT NULL, 
     active integer DEFAULT 1 NOT NULL,
     FOREIGN KEY(day_number) REFERENCES day_of_week(num),
     FOREIGN KEY(rule_id) REFERENCES type_of_rule(id),
     FOREIGN KEY(line_id) REFERENCES lines(number)
+);
+
+CREATE TABLE life (
+    id INTEGER PRIMARY KEY,
+    line_id integer NOT NULL,
+    rule_id integer NOT NULL,
+    state integer DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    timer timestamp without time zone NOT NULL,
+    active integer DEFAULT 1 NOT NULL, 
+    interval_id text, 
+    time integer default 0 NOT NULL,
+    FOREIGN KEY(line_id) REFERENCES lines(number),
+    FOREIGN KEY(state) REFERENCES state_of_rule(id),
+    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id)
+);
+
+CREATE TABLE state_of_rule (
+    id INTEGER PRIMARY KEY,
+    short_name text NOT NULL,
+    full_name text NOT NULL
+);
+
+CREATE TABLE type_of_rule (
+    id INTEGER PRIMARY KEY,
+    name text NOT NULL
+);
+
+CREATE TABLE lines (
+    id INTEGER PRIMARY KEY,
+    number integer NOT NULL,
+    name text NOT NULL,
+    time integer NOT NULL DEFAULT 10,
+    intervals integer NOT NULL DEFAULT 2,
+    time_wait integer NOT NULL DEFAULT 15,
+    start_time time without time zone NOT NULL DEFAULT '2017-06-29 18:34:00'
+);
+
+CREATE TABLE temp_statisitics (
+    id INTEGER PRIMARY KEY, 
+    
+    datetime time without time zone NOT NULL DEFAULT (datetime('now','localtime')),
+    temperature_street REAL DEFAULT 0, 
+    humidity_street REAL DEFAULT 0,
+
+    temperature_small_h_1_fl REAL DEFAULT 0, 
+    humidity_small_h_1_fl REAL DEFAULT 0,
+
+    temperature_small_h_2_fl REAL DEFAULT 0, 
+    humidity_small_h_2_fl REAL DEFAULT 0,
+
+    temperature_big_h_1_fl REAL DEFAULT 0, 
+    humidity_big_h_1_fl REAL DEFAULT 0,
+
+    temperature_big_h_2_fl REAL DEFAULT 0, 
+    humidity_big_h_2_fl REAL DEFAULT 0
 );
 
 CREATE TABLE ongoing_rules (
@@ -58,28 +92,26 @@ CREATE TABLE ongoing_rules (
     interval_id TEXT,
     time_wait integer NOT NULL,
     repeat_value integer NOT NULL,
-    weekdays TEXT, 
     date_start timestamp without time zone NOT NULL,
     time_schedule timestamp without time zone NOT NULL,
     end_value integer NOT NULL,
-    active integer DEFAULT 1 NOT NULL,
+    active integer DEFAULT 1 NOT NULL, weekdays TEXT,
     FOREIGN KEY(line_id) REFERENCES lines(number)
-)
+);
 
-CREATE TABLE life (
-    id INTEGER PRIMARY KEY,
-    line_id integer NOT NULL,
-    rule_id integer NOT NULL,
-    state integer DEFAULT 0 NOT NULL,
-    date date NOT NULL,
-    timer timestamp without time zone NOT NULL,
-    time integer default 0 NOT NULL,    
-    active integer DEFAULT 1 NOT NULL,
-    interval_id TEXT, 
-    FOREIGN KEY(line_id) REFERENCES lines(number),
-    FOREIGN KEY(state) REFERENCES state_of_rule(id),
-    FOREIGN KEY(rule_id) REFERENCES type_of_rule(id)
-);  
+CREATE TABLE lighting (
+    id INTEGER PRIMARY KEY, 
+    number integer NOT NULL, 
+    name text NOT NULL,
+    time integer NOT NULL
+);
+
+CREATE TABLE power_statistics (
+    id INTEGER PRIMARY KEY, 
+    state integer NOT NULL, 
+    datetime time without time zone NOT NULL DEFAULT (datetime('now','localtime'))
+);
+
 
 INSERT INTO day_of_week (num, name) VALUES (0,'Воскресенье');
 INSERT INTO day_of_week (num, name) VALUES (1,'Понедельник');

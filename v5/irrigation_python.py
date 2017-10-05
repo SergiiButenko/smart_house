@@ -34,6 +34,7 @@ DEBUG = False
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
+ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
 
 # ARDUINO_IP = 'http://192.168.1.144'
@@ -82,6 +83,11 @@ QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
 QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 
+QUERY['temperature_1'] = "SELECT * FROM temp_statisitics limit 1"
+QUERY['temperature_2'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
+
+QUERY['power_outlets'] = "SELECT number, name, time from power_outlets order by number"
+QUERY['power_outlets_names'] = "SELECT number, name, time from power_outlets order by number"
 
 @socketio.on_error_default
 def error_handler(e):
@@ -335,6 +341,36 @@ def lighting():
 
 @app.route("/lighting_names")
 def lighting_names():
+    """Return branch names."""
+    light_list = []
+    res = execute_request(QUERY[mn()], 'fetchall')
+    if res is None:
+        logging.error("Can't get light names from database")
+        abort(500)
+
+    for row in res:
+        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+
+    return jsonify(list=light_list)
+
+
+@app.route("/power_outlets")
+def power_outlets():
+    """Return branch names."""
+    light_list = []
+    res = execute_request(QUERY[mn()], 'fetchall')
+    if res is None:
+        logging.error("Can't get light names from database")
+        abort(500)
+
+    for row in res:
+        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+
+    return render_template('power_outlets.html', my_list=light_list)
+
+
+@app.route("/power_outlets_names")
+def power_outlets():
     """Return branch names."""
     light_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
@@ -646,13 +682,30 @@ def arduino_status():
         abort(500)
 
 
-def retry_branch_on(id, time_min):
+@app.route('/arduino_small_house_status', methods=['GET'])
+def arduino_status():
+    """Return status of arduino relay."""
+    try:
+        response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(3, 3))
+        response_status.raise_for_status()
+
+        send_message('power_outlet_status', {'data': response_status.text})
+
+        return jsonify(branches=json.loads(response_status.text))
+
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't get arduino status. Exception occured")
+        abort(500)
+
+
+def retry_branch_on(id, time_min, base_url=ARDUINO_IP):
     """Use to retry turn on branch in case of any error."""
     try:
         for attempt in range(2):
             try:
                 payload = (('branch_id', id), ('branch_alert', time_min + 2))
-                response_on = requests.get(url=ARDUINO_IP + '/branch_on', params=payload, timeout=(3, 3))
+                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(3, 3))
                 response_on.raise_for_status()
                 logging.info('response {0}'.format(response_on.text))
 
@@ -768,18 +821,36 @@ def lighting_on():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    arr = form_responce_for_branches(response_on.text)
-    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    send_message('lighting_status', {'data': response_on.text})
 
-    return jsonify(branches=arr)
+    return jsonify(branches=json.loads(response_on.text))
 
 
-def retry_branch_off(id):
+@app.route('/power_outlet_on')
+def power_outlet_on():
+    """Blablbal."""
+    id = int(request.args.get('id'))
+    time_min = int(request.args.get('time_min'))
+
+    try:
+        response_on = retry_branch_on(id, time_min, base_url=ARDUINO_SMALL_H_IP)
+        response_on.raise_for_status()
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        abort(500)
+
+    send_message('power_outlet_status', {'data': response_on.text})
+
+    return jsonify(branches=json.loads(response_on.text))
+
+
+def retry_branch_off(id, base_url=ARDUINO_IP):
     """Use to retry turn off branch in case of any error."""
     try:
         for attempt in range(2):
             try:
-                response_off = requests.get(url=ARDUINO_IP + '/branch_off', params={"branch_id": id}, timeout=(3, 3))
+                response_off = requests.get(url=base_url + '/branch_off', params={"branch_id": id}, timeout=(3, 3))
                 response_off.raise_for_status()
                 logging.info('response {0}'.format(response_off.text))
 
@@ -866,10 +937,27 @@ def lighting_off():
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    arr = form_responce_for_branches(response_off.text)
-    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    send_message('lighting_status', {'data': response_on.text})
 
-    return jsonify(branches=arr)
+    return jsonify(branches=json.loads(response_on.text))
+
+
+@app.route('/power_outlet_off')
+def power_outlet_off():
+    """Blablbal."""
+    id = int(request.args.get('id'))
+    
+    try:
+        response_off = retry_branch_on(id, base_url=ARDUINO_SMALL_H_IP)
+        response_off.raise_for_status()
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
+        abort(500)
+
+    send_message('power_outlet_status', {'data': response_off.text})
+
+    return jsonify(branches=json.loads(response_off.text))
 
 
 @app.route("/weather")
@@ -886,6 +974,86 @@ def weather():
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
         return jsonify(temperature="0")
+
+
+@app.route("/temperature")
+def temperature():
+    mode = request.args.get('force')
+    if (mode is not None):
+        temperature_street = 0
+        humidity_street = 0
+
+        temperature_small_h_1_fl = 0
+        humidity_small_h_1_fl = 0
+
+        temperature_small_h_2_fl = 0
+        humidity_small_h_2_fl = 0
+
+        temperature_big_h_1_fl = 0
+        humidity_big_h_1_fl = 0
+
+        temperature_big_h_2_fl = 0
+        humidity_big_h_2_fl = 0
+
+        url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
+        try:
+            response = requests.get(url=url, timeout=(3, 3))
+            response.raise_for_status()
+            json_data = json.loads(response.text)
+            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)), 
+            humidity_street = str(round(json_data['main']['humidity'], 2))
+        except requests.exceptions.RequestException as e:
+            logging.error(e)
+            logging.error("Can't get weather info Exception occured")
+            humidity_street = 0
+            temperature_street = 0
+
+        try:
+            response = requests.get(url=ARDUINO_SMALL_H_IP + '/temperature', timeout=(3, 3))
+            response.raise_for_status()
+            json_data = json.loads(response.text)
+
+            temperature_small_h_1_fl = json_data['1_floor_temperature']
+            humidity_small_h_1_fl = json_data['1_floor_humidity']
+
+            temperature_small_h_2_fl = json_data['2_floor_temperature']
+            humidity_small_h_2_fl = json_data['2_floor_humidity']
+        except requests.exceptions.RequestException as e:
+            logging.error(e)
+            logging.error("Can't get temp info Exception occured")
+
+            temperature_small_h_1_fl = 0
+            humidity_small_h_1_fl = 0
+
+            temperature_small_h_2_fl = 0
+            humidity_small_h_2_fl = 0
+
+        update_db_request(QUERY[mn() + '_2'].format(
+            temperature_street, humidity_street,
+            temperature_small_h_1_fl, humidity_small_h_1_fl,
+            temperature_small_h_2_fl, humidity_small_h_2_fl,
+            temperature_big_h_1_fl, humidity_big_h_1_fl,
+            temperature_big_h_2_fl, humidity_big_h_2_fl)
+        )
+
+    res = execute_request(QUERY[mn() + '_1'], 'fetchone')
+    return jsonify( 
+        datetime=res[0],
+        temperature_street=res[1],
+        humidity_street=res[2],
+
+        temperature_small_h_1_fl=res[3],
+        humidity_small_h_1_fl=res[4],
+
+        temperature_small_h_2_fl=res[5],
+        humidity_small_h_2_fl=res[6],
+
+        temperature_big_h_1_fl=res[7],
+        humidity_big_h_1_fl=res[8],
+
+        temperature_big_h_2_fl=res[9],
+        humidity_big_h_2_fl=res[10]
+    )
 
 
 @app.route("/sensors")

@@ -13,9 +13,10 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
+ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
 QUERY = {}
-QUERY['weather'] = "insert into weather(datetime, temperature, humidity) VALUES ('{0}', {1}, {2})"
+QUERY['weather'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
 
 
 # executes query and returns fetch* result
@@ -75,22 +76,63 @@ def update_db_request(query):
 
 def weather():
     """Blablbal."""
-    url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
-        response = requests.get(url=url, timeout=(3, 3))
-        response.raise_for_status()
-        logging.info("response: " + response.text)
+        temperature_street = 0
+        humidity_street = 0
 
-        json_data = json.loads(response.text)
-        temperature = str(round(pytemperature.k2c(json_data['main']['temp']), 2))
-        logging.info("temperature: " + temperature)
-        humidity = str(round(json_data['main']['humidity'], 2))
-        logging.info("humidity: " + humidity)
+        temperature_small_h_1_fl = 0
+        humidity_small_h_1_fl = 0
 
-        now = datetime.datetime.now()
-        logging.info("now: " + str(now))
+        temperature_small_h_2_fl = 0
+        humidity_small_h_2_fl = 0
 
-        update_db_request(QUERY[mn()].format(now, temperature, humidity))
+        temperature_big_h_1_fl = 0
+        humidity_big_h_1_fl = 0
+
+        temperature_big_h_2_fl = 0
+        humidity_big_h_2_fl = 0
+
+        url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
+        try:
+            response = requests.get(url=url, timeout=(3, 3))
+            response.raise_for_status()
+            json_data = json.loads(response.text)
+            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)), 
+            humidity_street = str(round(json_data['main']['humidity'], 2))
+        except requests.exceptions.RequestException as e:
+            logging.error(e)
+            logging.error("Can't get weather info Exception occured")
+            humidity_street = 0
+            temperature_street = 0
+
+        try:
+            response = requests.get(url=ARDUINO_SMALL_H_IP + '/temperature', timeout=(3, 3))
+            response.raise_for_status()
+            json_data = json.loads(response.text)
+
+            temperature_small_h_1_fl = json_data['1_floor_temperature']
+            humidity_small_h_1_fl = json_data['1_floor_humidity']
+
+            temperature_small_h_2_fl = json_data['2_floor_temperature']
+            humidity_small_h_2_fl = json_data['2_floor_humidity']
+            logging.info(response.text)
+        except requests.exceptions.RequestException as e:
+            logging.error(e)
+            logging.error("Can't get temp info Exception occured")
+
+            temperature_small_h_1_fl = 0
+            humidity_small_h_1_fl = 0
+
+            temperature_small_h_2_fl = 0
+            humidity_small_h_2_fl = 0
+
+        update_db_request(QUERY[mn()].format(
+            temperature_street, humidity_street,
+            temperature_small_h_1_fl, humidity_small_h_1_fl,
+            temperature_small_h_2_fl, humidity_small_h_2_fl,
+            temperature_big_h_1_fl, humidity_big_h_1_fl,
+            temperature_big_h_2_fl, humidity_big_h_2_fl)
+        )
     except Exception as e:
         logging.error(e)
 
