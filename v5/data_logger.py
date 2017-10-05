@@ -126,13 +126,13 @@ def weather():
             temperature_small_h_2_fl = 0
             humidity_small_h_2_fl = 0
 
-        logging.info(QUERY[mn()].format(temperature_street, humidity_street,
+        logging.info(QUERY[mn()].format(0, humidity_street,
             temperature_small_h_1_fl, humidity_small_h_1_fl,
             temperature_small_h_2_fl, humidity_small_h_2_fl,
             temperature_big_h_1_fl, humidity_big_h_1_fl,
             temperature_big_h_2_fl, humidity_big_h_2_fl))
 
-        update_db_request(QUERY[mn()].format(temperature_street, humidity_street,
+        update_db_request(QUERY[mn()].format(0, humidity_street,
             temperature_small_h_1_fl, humidity_small_h_1_fl,
             temperature_small_h_2_fl, humidity_small_h_2_fl,
             temperature_big_h_1_fl, humidity_big_h_1_fl,
