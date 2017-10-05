@@ -84,7 +84,7 @@ QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS
 QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 
 QUERY['temperature_1'] = "SELECT * FROM temp_statisitics limit 1"
-QUERY['temperature_2'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
+QUERY['temperature_2'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
 
 QUERY['power_outlets'] = "SELECT number, name, time from power_outlets order by number"
 QUERY['power_outlets_names'] = "SELECT number, name, time from power_outlets order by number"

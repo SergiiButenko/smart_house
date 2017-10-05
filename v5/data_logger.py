@@ -16,7 +16,7 @@ mn = lambda: inspect.stack()[1][3]
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
 QUERY = {}
-QUERY['weather'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
+QUERY['weather'] = "INSERT INTO temp_statisitics(temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})"
 
 
 # executes query and returns fetch* result
