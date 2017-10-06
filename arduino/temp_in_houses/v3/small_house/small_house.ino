@@ -62,6 +62,10 @@ void setup() {
   pinMode(branch_4, OUTPUT);
   pinMode(branch_5, OUTPUT);
 
+  // Disable SD SPI
+  pinMode(4,OUTPUT);
+  digitalWrite(4,HIGH);
+
   // Start the Ethernet connection and the server
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
