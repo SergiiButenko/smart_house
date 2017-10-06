@@ -686,7 +686,7 @@ def arduino_status():
 def arduino_small_house_status():
     """Return status of arduino relay."""
     try:
-        response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(3, 3))
+        response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(7, 5))
         response_status.raise_for_status()
 
         arr = form_responce_for_branches(response_status.text)
@@ -706,7 +706,7 @@ def retry_branch_on(id, time_min, base_url=ARDUINO_IP):
         for attempt in range(2):
             try:
                 payload = (('branch_id', id), ('branch_alert', time_min + 2))
-                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(3, 3))
+                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(7, 5))
                 response_on.raise_for_status()
                 logging.info('response {0}'.format(response_on.text))
 
@@ -853,7 +853,7 @@ def retry_branch_off(id, base_url=ARDUINO_IP):
     try:
         for attempt in range(2):
             try:
-                response_off = requests.get(url=base_url + '/branch_off', params={"branch_id": id}, timeout=(3, 3))
+                response_off = requests.get(url=base_url + '/branch_off', params={"branch_id": id}, timeout=(7, 5))
                 response_off.raise_for_status()
                 logging.info('response {0}'.format(response_off.text))
 
