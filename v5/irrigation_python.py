@@ -34,7 +34,7 @@ DEBUG = False
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
-ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
+ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555/'
 
 
 # ARDUINO_IP = 'http://192.168.1.144'
@@ -668,7 +668,7 @@ def form_responce_for_branches(payload):
 def arduino_status():
     """Return status of arduino relay."""
     try:
-        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(3, 3))
+        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(5, 5))
         response_status.raise_for_status()
 
         arr = form_responce_for_branches(response_status.text)
@@ -686,7 +686,7 @@ def arduino_status():
 def arduino_small_house_status():
     """Return status of arduino relay."""
     try:
-        response_status = requests.get(url=ARDUINO_SMALL_H_IP + '/branch_status', timeout=(7, 5))
+        response_status = requests.get(url='http://butenko.asuscomm.com:5555/branch_status', timeout=(5, 5))
         response_status.raise_for_status()
 
         arr = form_responce_for_branches(response_status.text)
@@ -696,7 +696,7 @@ def arduino_small_house_status():
 
     except Exception as e:
         logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
+        logging.error("Can't get arduino small_house status. Exception occured")
         abort(500)
 
 
@@ -706,7 +706,7 @@ def retry_branch_on(id, time_min, base_url=ARDUINO_IP):
         for attempt in range(2):
             try:
                 payload = (('branch_id', id), ('branch_alert', time_min + 2))
-                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(7, 5))
+                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(5, 5))
                 response_on.raise_for_status()
                 logging.info('response {0}'.format(response_on.text))
 

@@ -1,11 +1,19 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <DHT.h>
+#include <ICMPPing.h>
 
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
 
 byte mac[] = { 
   0x90, 0xA2, 0x40, 0x0E, 0xFE, 0xDA};
 IPAddress ip(192, 168, 1, 11);
+
+IPAddress pingAddr(192,168,1,1); // ip address to ping
+SOCKET pingSocket = 0;
+char buffer [256];
+ICMPPing ping(pingSocket, (uint16_t)random(0, 255));
+
 EthernetServer server(80);  
 
 String HTTP_req;          // stores the HTTP request
@@ -41,6 +49,9 @@ byte branch_5_status=0;
 //quantity of branches = branches + 1 since branch id starts from 1
 const byte timers_count=30;
 unsigned long int timers[timers_count];
+
+unsigned long previousMillis_ping = 0;
+long interval_ping = 60000;
 
 void setup() {
   // Start Serial
@@ -84,6 +95,7 @@ void loop() {
   EthernetClient client = server.available();  // try to get client
   process_incoming_client(client);        
   check_all_branches_timer();
+  ping_60_sec();
 }
 //END MAIN
 
@@ -124,15 +136,48 @@ void process_incoming_client(EthernetClient client){
 void process_request(EthernetClient cl) {
   String host = get_host_from_request(HTTP_req);
   String data="";
-
+  
+Serial.println(HTTP_req);
+  
+  
   if (HTTP_req.indexOf("/favicon.ico") > -1) { 
     return;
   }
 
   if (HTTP_req.indexOf("/branch_status") > -1) { 
-    data = form_branch_status_json();
-    send_data_to_client(cl, host, data);
+    // response header
+    cl.println("HTTP/1.1 200 OK");
+    cl.println("Content-Type: application/json");  // JSON response type
+    cl.println("Connection: close");               // close connection after response
+    cl.println();
+    // open JSON
+    cl.print("{");
+    // 20
+    cl.print("\"20\":\"");
+    cl.print(digitalRead(branch_1));
+    cl.print("\"");
+    // 21
+    cl.print(",\"21\":\"");
+    cl.print(digitalRead(branch_2));
+    cl.print("\"");
+    // 22
+    cl.print(",\"22\":\"");
+    cl.print(digitalRead(branch_3));
+    cl.print("\"");
+    // 23
+    cl.print(",\"23\":\"");
+    cl.print(digitalRead(branch_4));
+    cl.print("\"");
+    // 24
+    cl.print(",\"24\":\"");
+    cl.print(digitalRead(branch_5));
+    cl.print("\"");
+    // close json
+    cl.println("}");
     return;
+    //data = form_branch_status_json();
+    //send_data_to_client(cl, host, data);
+    //return;
   }
 
   if (HTTP_req.indexOf("/branch_on") > -1) { 
@@ -148,9 +193,40 @@ void process_request(EthernetClient cl) {
 
     on(branch_id, alert_time);
     delay(1);
-    data = form_branch_status_json();
-    send_data_to_client(cl, host, data);
+    // response header
+    cl.println("HTTP/1.1 200 OK");
+    cl.println("Content-Type: application/json");  // JSON response type
+    cl.println("Connection: close");               // close connection after response
+    cl.println();
+    // open JSON
+    cl.print("{");
+    // 20
+    cl.print("\"20\":\"");
+    cl.print(digitalRead(branch_1));
+    cl.print("\"");
+    // 21
+    cl.print(",\"21\":\"");
+    cl.print(digitalRead(branch_2));
+    cl.print("\"");
+    // 22
+    cl.print(",\"22\":\"");
+    cl.print(digitalRead(branch_3));
+    cl.print("\"");
+    // 23
+    cl.print(",\"23\":\"");
+    cl.print(digitalRead(branch_4));
+    cl.print("\"");
+    // 24
+    cl.print(",\"24\":\"");
+    cl.print(digitalRead(branch_5));
+    cl.print("\"");
+    // close json
+    cl.println("}");
     return;
+
+    //    data = form_branch_status_json();
+    //    send_data_to_client(cl, host, data);
+    //    return;
   }
 
   if (HTTP_req.indexOf("/branch_off") > -1) { 
@@ -161,12 +237,45 @@ void process_request(EthernetClient cl) {
 
     off(branch_id);
     delay(1);
-    data = form_branch_status_json();
-    send_data_to_client(cl, host, data);
+
+    // response header
+    cl.println("HTTP/1.1 200 OK");
+    cl.println("Content-Type: application/json");  // JSON response type
+    cl.println("Connection: close");               // close connection after response
+    cl.println();
+    // open JSON
+    cl.print("{");
+    // 20
+    cl.print("\"20\":\"");
+    cl.print(digitalRead(branch_1));
+    cl.print("\"");
+    // 21
+    cl.print(",\"21\":\"");
+    cl.print(digitalRead(branch_2));
+    cl.print("\"");
+    // 22
+    cl.print(",\"22\":\"");
+    cl.print(digitalRead(branch_3));
+    cl.print("\"");
+    // 23
+    cl.print(",\"23\":\"");
+    cl.print(digitalRead(branch_4));
+    cl.print("\"");
+    // 24
+    cl.print(",\"24\":\"");
+    cl.print(digitalRead(branch_5));
+    cl.print("\"");
+    // close json
+    cl.println("}");
     return;
+
+    //    data = form_branch_status_json();
+    //    send_data_to_client(cl, host, data);
+    //    return;
   }
 
   if (HTTP_req.indexOf("/temperature") > -1) { 
+    delay(2000);
     // start sensor reading
     // response header
     cl.println("HTTP/1.1 200 OK");
@@ -192,12 +301,105 @@ void process_request(EthernetClient cl) {
     cl.print("\"");
     // close json
     cl.println("}");
+
+    Serial.println("HTTP/1.1 200 OK");
+    Serial.println("Content-Type: application/json");  // JSON response type
+    Serial.println("Connection: close");               // close connection after response
+    Serial.println();
+    // open JSON
+    Serial.print("{");
+    // 20
+    Serial.print("\"20\":\"");
+    Serial.print(digitalRead(branch_1));
+    Serial.print("\"");
+    // 21
+    Serial.print(",\"21\":\"");
+    Serial.print(digitalRead(branch_2));
+    Serial.print("\"");
+    // 22
+    Serial.print(",\"22\":\"");
+    Serial.print(digitalRead(branch_3));
+    Serial.print("\"");
+    // 23
+    Serial.print(",\"23\":\"");
+    Serial.print(digitalRead(branch_4));
+    Serial.print("\"");
+    // 24
+    Serial.print(",\"24\":\"");
+    Serial.print(digitalRead(branch_5));
+    Serial.print("\"");
+    // close json
+    Serial.println("}");
+
+
+
     return;
   }
 
-  data = form_branch_status_json();
-  send_data_to_client(cl, host, data);
+  // response header
+  cl.println("HTTP/1.1 200 OK");
+  cl.println("Content-Type: application/json");  // JSON response type
+  cl.println("Connection: close");               // close connection after response
+  cl.println();
+  // open JSON
+  cl.print("{");
+  // 20
+  cl.print("\"20\":\"");
+  cl.print(digitalRead(branch_1));
+  cl.print("\"");
+  // 21
+  cl.print(",\"21\":\"");
+  cl.print(digitalRead(branch_2));
+  cl.print("\"");
+  // 22
+  cl.print(",\"22\":\"");
+  cl.print(digitalRead(branch_3));
+  cl.print("\"");
+  // 23
+  cl.print(",\"23\":\"");
+  cl.print(digitalRead(branch_4));
+  cl.print("\"");
+  // 24
+  cl.print(",\"24\":\"");
+  cl.print(digitalRead(branch_5));
+  cl.print("\"");
+  // close json
+  cl.println("}");
+
+  Serial.println("HTTP/1.1 200 OK");
+  Serial.println("Content-Type: application/json");  // JSON response type
+  Serial.println("Connection: close");               // close connection after response
+  Serial.println();
+  // open JSON
+  Serial.print("{");
+  // 20
+  Serial.print("\"20\":\"");
+  Serial.print(digitalRead(branch_1));
+  Serial.print("\"");
+  // 21
+  Serial.print(",\"21\":\"");
+  Serial.print(digitalRead(branch_2));
+  Serial.print("\"");
+  // 22
+  Serial.print(",\"22\":\"");
+  Serial.print(digitalRead(branch_3));
+  Serial.print("\"");
+  // 23
+  Serial.print(",\"23\":\"");
+  Serial.print(digitalRead(branch_4));
+  Serial.print("\"");
+  // 24
+  Serial.print(",\"24\":\"");
+  Serial.print(digitalRead(branch_5));
+  Serial.print("\"");
+  // close json
+  Serial.println("}");
+
+
   return;
+  //data = form_branch_status_json();
+  //send_data_to_client(cl, host, data);
+  //return;
 }
 
 void send_data_to_client(EthernetClient client, String host, String data){
@@ -311,3 +513,48 @@ void fill_up_timers_array(){
     timers[i]=0;
   }
 }
+
+void ping_60_sec(){
+  unsigned long currentMillis_ping = millis();
+
+  if(currentMillis_ping - previousMillis_ping > interval_ping) {
+    // save the last time you blinked the LED 
+    previousMillis_ping = currentMillis_ping;
+    ICMPEchoReply echoReply = ping(pingAddr, 4);
+    if (echoReply.status == SUCCESS)
+    {
+      sprintf(buffer,
+      "Reply[%d] from: %d.%d.%d.%d: bytes=%d time=%ldms TTL=%d",
+      echoReply.data.seq,
+      echoReply.addr[0],
+      echoReply.addr[1],
+      echoReply.addr[2],
+      echoReply.addr[3],
+      REQ_DATASIZE,
+      millis() - echoReply.data.time,
+      echoReply.ttl);
+      Serial.println(buffer);
+    }
+    else
+    {
+      sprintf(buffer, "Echo request failed; %d", echoReply.status);
+      Serial.println(buffer);
+      //resetFunc();  //call reset
+      Serial.println("Reset doens't work");
+      // Start the Ethernet connection and the server
+      if (Ethernet.begin(mac) == 0) {
+        Serial.println("Failed to configure Ethernet using DHCP");
+        // no point in carrying on, so do nothing forevermore:
+        // try to congifure using IP address instead of DHCP:
+        Ethernet.begin(mac, ip);
+      } 
+
+      server.begin();
+      Serial.print("server is at ");
+      Serial.println(Ethernet.localIP());
+
+    }
+  }
+
+}
+
