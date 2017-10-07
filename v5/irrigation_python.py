@@ -34,7 +34,7 @@ DEBUG = False
 ARDUINO_WEATHER_IP = 'http://192.168.1.10'
 ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
-ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555/'
+ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
 
 # ARDUINO_IP = 'http://192.168.1.144'
@@ -1073,13 +1073,13 @@ def sensors2():
     return app.send_static_file('caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk')
 
 
-@app.after_request
-def after_request(response):
-    """Blablbal."""
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
+# @app.after_request
+# def after_request(response):
+#     """Blablbal."""
+#     response.headers.add('Access-Control-Allow-Origin', '*')
+#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+#     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+#     return response
 
 
 if __name__ == "__main__":
