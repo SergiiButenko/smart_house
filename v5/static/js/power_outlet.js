@@ -210,10 +210,10 @@ var class_err = {
 
 function set_status_error() {
     $(".card-power").addClass(class_err.class);
-    
+
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
-    $(".btn-stop").addClass('disabled');
+    $(".stop-power_outlet").addClass('disabled');
 
     $(".status-span").css('display', 'inline-block');
 }
@@ -223,7 +223,7 @@ function set_status_ok() {
 
     $(".btn-open-modal").removeClass('disabled');
     $(".btn-start").removeClass('disabled');
-    $(".btn-stop").removeClass('disabled');
+    $(".stop-power_outlet").removeClass('disabled');
 
     $(".status-span").hide();
     $(".btn-open-modal").show();
