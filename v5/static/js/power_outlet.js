@@ -195,3 +195,33 @@ function toogle_card(element_id, branch) {
         $('#btn-start-with-options-' + element_id).css('display', 'inline-block').removeClass("hidden");
     }
 }
+
+// this is for status button
+var class_ok = {
+    msg: ' Система активна',
+    class: 'fa fa-refresh'
+}
+var class_spin = {
+    msg: ' Перевірка статусу системи...',
+    class: 'fa fa-refresh fa-spin'
+}
+var class_err = {
+    msg: ' В системі помилка',
+    class: 'status-error'
+}
+
+function set_status_error() {
+    $(".card-power").addClass(class_err.class);
+    $(".btn-open-modal").addClass('disabled');
+    $(".btn-start").addClass('disabled');
+    $(".status-span").css('display', 'inline-block');
+}
+
+function set_status_ok() {
+    $(".card-power").removeClass(class_err.class);
+
+    $(".btn-open-modal").removeClass('disabled');
+    $(".btn-start").removeClass('disabled');
+    $(".status-span").hide();
+    $(".btn-open-modal").show();
+}

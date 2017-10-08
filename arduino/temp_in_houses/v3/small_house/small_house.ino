@@ -133,51 +133,19 @@ void process_incoming_client(EthernetClient client){
 }
 
 
-void process_request(EthernetClient cl) {
-  String host = get_host_from_request(HTTP_req);
-  String data="";
-  
-Serial.println(HTTP_req);
-  
-  
+void process_request(EthernetClient cl_renamed) {
+  Serial.println(HTTP_req);
+
+
   if (HTTP_req.indexOf("/favicon.ico") > -1) { 
     return;
   }
 
   if (HTTP_req.indexOf("/branch_status") > -1) { 
     // response header
-    cl.println("HTTP/1.1 200 OK");
-    cl.println("Content-Type: application/json");  // JSON response type
-    cl.println("Connection: close");               // close connection after response
-    cl.println();
-    // open JSON
-    cl.print("{");
-    // 20
-    cl.print("\"20\":\"");
-    cl.print(digitalRead(branch_1));
-    cl.print("\"");
-    // 21
-    cl.print(",\"21\":\"");
-    cl.print(digitalRead(branch_2));
-    cl.print("\"");
-    // 22
-    cl.print(",\"22\":\"");
-    cl.print(digitalRead(branch_3));
-    cl.print("\"");
-    // 23
-    cl.print(",\"23\":\"");
-    cl.print(digitalRead(branch_4));
-    cl.print("\"");
-    // 24
-    cl.print(",\"24\":\"");
-    cl.print(digitalRead(branch_5));
-    cl.print("\"");
-    // close json
-    cl.println("}");
+    data = form_branch_status_json();
+    send_data_to_client(cl_renamed, host, data);
     return;
-    //data = form_branch_status_json();
-    //send_data_to_client(cl, host, data);
-    //return;
   }
 
   if (HTTP_req.indexOf("/branch_on") > -1) { 
@@ -193,40 +161,8 @@ Serial.println(HTTP_req);
 
     on(branch_id, alert_time);
     delay(1);
-    // response header
-    cl.println("HTTP/1.1 200 OK");
-    cl.println("Content-Type: application/json");  // JSON response type
-    cl.println("Connection: close");               // close connection after response
-    cl.println();
-    // open JSON
-    cl.print("{");
-    // 20
-    cl.print("\"20\":\"");
-    cl.print(digitalRead(branch_1));
-    cl.print("\"");
-    // 21
-    cl.print(",\"21\":\"");
-    cl.print(digitalRead(branch_2));
-    cl.print("\"");
-    // 22
-    cl.print(",\"22\":\"");
-    cl.print(digitalRead(branch_3));
-    cl.print("\"");
-    // 23
-    cl.print(",\"23\":\"");
-    cl.print(digitalRead(branch_4));
-    cl.print("\"");
-    // 24
-    cl.print(",\"24\":\"");
-    cl.print(digitalRead(branch_5));
-    cl.print("\"");
-    // close json
-    cl.println("}");
+    send_data_to_client(cl_renamed);
     return;
-
-    //    data = form_branch_status_json();
-    //    send_data_to_client(cl, host, data);
-    //    return;
   }
 
   if (HTTP_req.indexOf("/branch_off") > -1) { 
@@ -236,184 +172,78 @@ Serial.println(HTTP_req);
     byte branch_id=id_str.toInt();
 
     off(branch_id);
-    delay(1);
-
-    // response header
-    cl.println("HTTP/1.1 200 OK");
-    cl.println("Content-Type: application/json");  // JSON response type
-    cl.println("Connection: close");               // close connection after response
-    cl.println();
-    // open JSON
-    cl.print("{");
-    // 20
-    cl.print("\"20\":\"");
-    cl.print(digitalRead(branch_1));
-    cl.print("\"");
-    // 21
-    cl.print(",\"21\":\"");
-    cl.print(digitalRead(branch_2));
-    cl.print("\"");
-    // 22
-    cl.print(",\"22\":\"");
-    cl.print(digitalRead(branch_3));
-    cl.print("\"");
-    // 23
-    cl.print(",\"23\":\"");
-    cl.print(digitalRead(branch_4));
-    cl.print("\"");
-    // 24
-    cl.print(",\"24\":\"");
-    cl.print(digitalRead(branch_5));
-    cl.print("\"");
-    // close json
-    cl.println("}");
+    send_data_to_client(cl_renamed);
     return;
-
-    //    data = form_branch_status_json();
-    //    send_data_to_client(cl, host, data);
-    //    return;
   }
 
   if (HTTP_req.indexOf("/temperature") > -1) { 
-    delay(2000);
     // start sensor reading
     // response header
-    cl.println("HTTP/1.1 200 OK");
-    cl.println("Content-Type: application/json");  // JSON response type
-    cl.println("Connection: close");               // close connection after response
-    cl.println();
+    cl_renamed.println("HTTP/1.1 200 OK");
+    cl_renamed.println("Content-Type: application/json");  // JSON response type
+    cl_renamed.println("Connection: close");               // close connection after response
+    cl_renamed.println();
     // open JSON
-    cl.print("{");
+    cl_renamed.print("{");
     // temperature
-    cl.print("\"1_floor_temperature\":\"");
-    cl.print(dht_first.readTemperature(),1);
-    cl.print("\"");
+    cl_renamed.print("\"1_floor_temperature\":\"");
+    //    cl_renamed.print(dht_first.readTemperature());
+    cl_renamed.print("22.00");
+    cl_renamed.print("\"");
     // humidity
-    cl.print(",\"1_floor_humidity\":\"");
-    cl.print(dht_first.readHumidity(),1);
-    cl.print("\"");
-    cl.print(",\"2_floor_temperature\":\"");
-    cl.print(dht_second.readTemperature(),1);
-    cl.print("\"");
+    cl_renamed.print(",\"1_floor_humidity\":\"");
+    //    cl_renamed.print(dht_first.readHumidity());
+    cl_renamed.print("22.00");
+    cl_renamed.print("\"");
+    cl_renamed.print(",\"2_floor_temperature\":\"");
+    //    cl_renamed.print(dht_second.readTemperature());
+    cl_renamed.print("22.00");
+    cl_renamed.print("\"");
     // humidity
-    cl.print(",\"2_floor_humidity\":\"");
-    cl.print(dht_second.readHumidity(),1);
-    cl.print("\"");
+    cl_renamed.print(",\"2_floor_humidity\":\"");
+    //    cl_renamed.print(dht_second.readHumidity());
+    cl_renamed.print("22.00");
+    cl_renamed.print("\"");
     // close json
-    cl.println("}");
-
-    Serial.println("HTTP/1.1 200 OK");
-    Serial.println("Content-Type: application/json");  // JSON response type
-    Serial.println("Connection: close");               // close connection after response
-    Serial.println();
-    // open JSON
-    Serial.print("{");
-    // 20
-    Serial.print("\"20\":\"");
-    Serial.print(digitalRead(branch_1));
-    Serial.print("\"");
-    // 21
-    Serial.print(",\"21\":\"");
-    Serial.print(digitalRead(branch_2));
-    Serial.print("\"");
-    // 22
-    Serial.print(",\"22\":\"");
-    Serial.print(digitalRead(branch_3));
-    Serial.print("\"");
-    // 23
-    Serial.print(",\"23\":\"");
-    Serial.print(digitalRead(branch_4));
-    Serial.print("\"");
-    // 24
-    Serial.print(",\"24\":\"");
-    Serial.print(digitalRead(branch_5));
-    Serial.print("\"");
-    // close json
-    Serial.println("}");
-
-
-
+    cl_renamed.println("}");    
     return;
   }
 
-  // response header
-  cl.println("HTTP/1.1 200 OK");
-  cl.println("Content-Type: application/json");  // JSON response type
-  cl.println("Connection: close");               // close connection after response
-  cl.println();
-  // open JSON
-  cl.print("{");
-  // 20
-  cl.print("\"20\":\"");
-  cl.print(digitalRead(branch_1));
-  cl.print("\"");
-  // 21
-  cl.print(",\"21\":\"");
-  cl.print(digitalRead(branch_2));
-  cl.print("\"");
-  // 22
-  cl.print(",\"22\":\"");
-  cl.print(digitalRead(branch_3));
-  cl.print("\"");
-  // 23
-  cl.print(",\"23\":\"");
-  cl.print(digitalRead(branch_4));
-  cl.print("\"");
-  // 24
-  cl.print(",\"24\":\"");
-  cl.print(digitalRead(branch_5));
-  cl.print("\"");
-  // close json
-  cl.println("}");
-
-  Serial.println("HTTP/1.1 200 OK");
-  Serial.println("Content-Type: application/json");  // JSON response type
-  Serial.println("Connection: close");               // close connection after response
-  Serial.println();
-  // open JSON
-  Serial.print("{");
-  // 20
-  Serial.print("\"20\":\"");
-  Serial.print(digitalRead(branch_1));
-  Serial.print("\"");
-  // 21
-  Serial.print(",\"21\":\"");
-  Serial.print(digitalRead(branch_2));
-  Serial.print("\"");
-  // 22
-  Serial.print(",\"22\":\"");
-  Serial.print(digitalRead(branch_3));
-  Serial.print("\"");
-  // 23
-  Serial.print(",\"23\":\"");
-  Serial.print(digitalRead(branch_4));
-  Serial.print("\"");
-  // 24
-  Serial.print(",\"24\":\"");
-  Serial.print(digitalRead(branch_5));
-  Serial.print("\"");
-  // close json
-  Serial.println("}");
-
-
+  send_data_to_client(cl_renamed);
   return;
-  //data = form_branch_status_json();
-  //send_data_to_client(cl, host, data);
-  //return;
 }
 
-void send_data_to_client(EthernetClient client, String host, String data){
+void send_data_to_client(EthernetClient cl_renamed){
   // Send request
-  Serial.println("Send data" + data);
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: application/json");
-  client.println("Host: " + host);
-  client.println("Connection: close");
-  client.print("Content-Length: ");
-  client.println(data.length());
-  client.println();
-  client.print(data);
-  Serial.println("done");
+  cl_renamed.println("HTTP/1.1 200 OK");
+  cl_renamed.println("Content-Type: application/json");  // JSON response type
+  cl_renamed.println("Connection: close");               // close connection after response
+  cl_renamed.println();
+  // open JSON
+  cl_renamed.print("{");
+
+  cl_renamed.print("\"20\":\"");
+  cl_renamed.print(digitalRead(branch_1));
+  cl_renamed.print("\"");
+
+  cl_renamed.print(",\"21\":\"");
+  cl_renamed.print(digitalRead(branch_2));
+  cl_renamed.print("\"");
+
+  cl_renamed.print(",\"22\":\"");
+  cl_renamed.print(digitalRead(branch_3));
+  cl_renamed.print("\"");
+
+  cl_renamed.print(",\"23\":\"");
+  cl_renamed.print(digitalRead(branch_4));
+  cl_renamed.print("\"");
+
+  cl_renamed.print(",\"24\":\"");
+  cl_renamed.print(digitalRead(branch_5));
+  cl_renamed.print("\"");  
+
+  // close json
+  cl_renamed.println("}");
 }
 
 // turn on off logic
@@ -444,14 +274,6 @@ void off(byte branch){
   }
 }
 
-void branches_status(){
-  branch_1_status = digitalRead(branch_1);
-  branch_2_status = digitalRead(branch_2);
-  branch_3_status = digitalRead(branch_3);
-  branch_4_status = digitalRead(branch_4);
-  branch_5_status = digitalRead(branch_5);
-}
-
 byte get_branch_pin(byte i){
   if (i==20){
     return branch_1;
@@ -475,25 +297,6 @@ byte get_branch_pin(byte i){
 
   return 0;
 }
-
-String form_branch_status_json(){
-  //update branch status
-  branches_status();
-  String res = "{";
-  res = res + "\"20\":"+"\""+String(branch_1_status)+"\", ";
-  res = res + "\"21\":"+"\""+String(branch_2_status)+"\", ";
-  res = res + "\"22\":"+"\""+String(branch_3_status)+"\", ";
-  res = res + "\"23\":"+"\""+String(branch_4_status)+"\", ";
-  res = res + "\"24\":"+"\""+String(branch_5_status)+"\"} ";
-
-  return res;
-}
-
-
-String get_host_from_request(String request){
-  return "192.168.1.143";
-}
-
 
 void check_all_branches_timer(){
   for (byte i = 0; i < timers_count; i++) {
@@ -557,4 +360,6 @@ void ping_60_sec(){
   }
 
 }
+
+
 
