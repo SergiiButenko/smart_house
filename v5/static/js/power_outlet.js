@@ -84,7 +84,7 @@ $(document).ready(function() {
     //Function to start lighting
     $(".start-power_outlet").click(function() {
         index = $('#power_outlet_modal').data('id');
-        time = parseInt($("#lpower_outlet_minutes").val());
+        time = parseInt($("#power_outlet_minutes").val());
         if (time == 0 || isNaN(time)) {
             $('#power_outlet_minutes_group').addClass("has-danger");
         } else {
