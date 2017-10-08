@@ -27,8 +27,6 @@ $(document).ready(function() {
         $.ajax({
             url: server + '/arduino_small_house_status',
             beforeSend: function(xhr, opts) {
-                set_status_spinner();
-
                 if ($('#power_outle_modal').hasClass('in')) {
                     xhr.abort();
                 }
@@ -212,8 +210,11 @@ var class_err = {
 
 function set_status_error() {
     $(".card-power").addClass(class_err.class);
+    
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
+    $(".btn-stop").addClass('disabled');
+
     $(".status-span").css('display', 'inline-block');
 }
 
@@ -222,6 +223,8 @@ function set_status_ok() {
 
     $(".btn-open-modal").removeClass('disabled');
     $(".btn-start").removeClass('disabled');
+    $(".btn-stop").removeClass('disabled');
+
     $(".status-span").hide();
     $(".btn-open-modal").show();
 }
