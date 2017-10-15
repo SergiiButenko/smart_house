@@ -17,6 +17,7 @@ import uuid
 import redis
 import pytemperature
 import time
+from controllers import relay_controller as garden_controller
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -31,20 +32,10 @@ redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 DEBUG = False
 
-ARDUINO_WEATHER_IP = 'http://192.168.1.10'
-ARDUINO_IP = 'http://185.20.216.94:5555' if DEBUG else 'http://192.168.1.10'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
-
-# ARDUINO_IP = 'http://192.168.1.144'
-# ARDUINO_IP = 'http://butenko.asuscomm.com:5555'
-
-HUMIDITY_MAX = 1000
 RULES_FOR_BRANCHES = [None] * 40
-SENSORS = {'time': datetime.datetime.now(), 'data': {'temperature': 0, 'humidity': 0, 'rain': False, 'daylight': False},
-'user_message': '', 'allow_irrigation': False, 'rule_status': 0}
-
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
@@ -89,9 +80,10 @@ QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street
 QUERY['power_outlets'] = "SELECT number, name, time from power_outlets order by number"
 QUERY['power_outlets_names'] = "SELECT number, name, time from power_outlets order by number"
 
+
 @socketio.on_error_default
 def error_handler(e):
-    """Used to handle error for websockets."""
+    """Handle error for websockets."""
     logging.error('error_handler for socketio. An error has occurred: ' + str(e))
 
 
@@ -165,55 +157,6 @@ def send_message(channel, data):
         logging.error("Can't send message. Exeption occured")
 
 
-def get_weather(force_update='false', ignore_sensors='false'):
-    """Use data from weather station. Refresh data per hour."""
-    if (force_update == 'true' or datetime.datetime.now() > (datetime.datetime.now() + datetime.timedelta(minutes=60))):
-        json_data = ''
-        try:
-            response = requests.get(url=ARDUINO_WEATHER_IP + "/weather", timeout=(3, 3))
-            json_data = json.loads(response.text)
-        except Exception as e:
-            logging.error(e)
-            logging.error("Can't get weather status. Exeption occured")
-            return None
-
-        SENSORS['time'] = datetime.datetime.now()
-        SENSORS['data']['temperature'] = json_data['temperature']
-        SENSORS['data']['humidity'] = json_data['humidity']
-        SENSORS['data']['rain'] = json_data['rain']
-        SENSORS['data']['daylight'] = json_data['daylight']
-
-    SENSORS['data']['allow_irrigation'] = True
-    SENSORS['data']['user_message'] = 'Автоматический полив разрешен.'
-
-    if (ignore_sensors == 'false' and SENSORS['data']['rain'] is True):
-        SENSORS['data']['allow_irrigation'] = False
-        SENSORS['data']['user_message'] = 'Автоматический полив запрещен из-за дождя.'
-        SENSORS['data']['rule_status'] = 5
-
-    if (ignore_sensors == 'false' and SENSORS['data']['humidity'] > HUMIDITY_MAX):
-        SENSORS['data']['allow_irrigation'] = False
-        SENSORS['data']['user_message'] = 'Автоматический полив запрещен датчиком влажности.'
-        SENSORS['data']['rule_status'] = 6
-
-    return SENSORS
-
-
-@app.route("/weather2")
-def weather_station():
-    """Synchronize with weather station."""
-    force_update = request.args.get('force_update')
-    if (force_update is None):
-        force_update = 'false'
-
-    ignore_sensors = request.args.get('ignore_sensors')
-    if (ignore_sensors is None):
-        ignore_sensors = 'false'
-
-    get_weather(force_update, ignore_sensors)
-    return str(SENSORS)
-
-
 # executes query and returns fetch* result
 def execute_request(query, method='fetchall'):
     """Use this method in case you need to get info from database."""
@@ -245,11 +188,12 @@ def execute_request(query, method='fetchall'):
 def update_db_request(query):
     """Doesn't have fetch* methods. Returns lastrowid after database insert command."""
     conn = None
-    lastrowid = 0
+    lastrowid = -1
     try:
         conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+
         # conn.cursor will return a cursor object, you can use this cursor to perform queries
         cursor = conn.cursor()
         # execute our Query
@@ -384,6 +328,7 @@ def power_outlets_names():
     return jsonify(list=light_list)
 
 
+
 @app.route("/")
 def index():
     """Index page."""
@@ -510,14 +455,13 @@ def cancel_rule():
     update_all_rules()
 
     try:
-        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(3, 3))
-        response_status.raise_for_status()
+        response_status = garden_controller.branch_status()
 
-        arr = form_responce_for_branches(response_status.text)
+        arr = form_responce_for_branches(response_status)
         send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
     except Exception as e:
         logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
+        logging.error("Can't get Raspberri Pi pin status. Exception occured")
         abort(500)
 
     logging.info("Rule {0} canceled".format(id))
@@ -649,9 +593,7 @@ def form_responce_for_branches(payload):
         res = [None] * 40
         payload = json.loads(payload)
         for branch_id in payload:
-            status = payload[branch_id]
-            if branch_id == 'pump':
-                branch_id = 17
+            status = payload[branch_id]['state']
 
             last_rule = get_last_start_rule(branch_id)
             next_rule = get_next_active_rule(branch_id)
@@ -664,21 +606,18 @@ def form_responce_for_branches(payload):
         raise e
 
 
-@app.route('/arduino_status', methods=['GET'])
-def arduino_status():
-    """Return status of arduino relay."""
+@app.route('/raspberry_pi_status', methods=['GET'])
+def raspberry_pi_status():
+    """Return status of raspberry_pi relay."""
     try:
-        response_status = requests.get(url=ARDUINO_IP + '/branch_status', timeout=(5, 5))
-        response_status.raise_for_status()
+        response_status = garden_controller.branch_status()
 
-        arr = form_responce_for_branches(response_status.text)
+        arr = form_responce_for_branches(response_status)
         send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
-
         return jsonify(branches=arr)
-
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
+        logging.error("Can't get Raspberri Pi pin status. Exception occured")
         abort(500)
 
 
@@ -700,40 +639,25 @@ def arduino_small_house_status():
         abort(500)
 
 
-def retry_branch_on(id, time_min, base_url=ARDUINO_IP):
+def retry_branch_on(branch_id, time_min, base_url):
     """Use to retry turn on branch in case of any error."""
     try:
         for attempt in range(2):
             try:
-                payload = (('branch_id', id), ('branch_alert', time_min + 2))
-                response_on = requests.get(url=base_url + '/branch_on', params=payload, timeout=(5, 5))
-                response_on.raise_for_status()
-                logging.info('response {0}'.format(response_on.text))
+                response_on = garden_controller.on(branch_id=branch_id, branch_alert=time_min)
 
-                if (id == 17):
-                    arduino_branch_name = 'pump'
-                else:
-                    arduino_branch_name = id
-
-                resp = json.loads(response_on.text)
-                if (resp[str(arduino_branch_name)] != "1"):
-                    logging.error('Branch {0} cant be turned on. response {1}'.format(id, response_on.text))
+                if (response_on[branch_id]['state'] != 1):
+                    logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, str(response_on)))
                     time.sleep(2)
                     continue
                 else:
                     logging.info('Branch {0} is turned on by rule'.format(id))
                     return response_on
-            except requests.exceptions.Timeout as e:
-                logging.error(e)
-                logging.error("Can't turn on {0} branch. Timeout Exception occured  {1} try out of 2".format(id, attempt))
-                time.sleep(2)
-                continue
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
                 time.sleep(2)
                 continue
-
         raise Exception("Can't turn on {0} branch. Retries limit reached".format(id))
     except Exception as e:
         logging.error(e)
@@ -744,6 +668,7 @@ def retry_branch_on(id, time_min, base_url=ARDUINO_IP):
 @app.route('/activate_branch', methods=['GET'])
 def activate_branch():
     """Blablbal."""
+    # ============ check input params =======================
     mode = request.args.get('mode')
     if (mode is None):
         logging.error("no 'mode' parameter passed")
@@ -763,10 +688,10 @@ def activate_branch():
     else:
         logging.error("incorrect mode parameter passed: {0}".format(mode))
         abort(500)
+    # ============ check input params =======================
 
     try:
-        response_on = retry_branch_on(id, time_min)
-        response_on.raise_for_status()
+        response_arr = garden_controller.on(branch_id=id, branch_alert=time_min)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -802,7 +727,7 @@ def activate_branch():
     else:
         logging.info("Branch '{0}' activated manually".format(id))
 
-    arr = form_responce_for_branches(response_on.text)
+    arr = form_responce_for_branches(response_arr)
     send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
     return jsonify(branches=arr)
@@ -815,14 +740,13 @@ def lighting_on():
     time_min = int(request.args.get('time_min'))
 
     try:
-        response_on = retry_branch_on(id, time_min)
-        response_on.raise_for_status()
+        response_arr = garden_controller.on(branch_id=id, branch_alert=time_min)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    arr = form_responce_for_branches(response_on.text)
+    arr = form_responce_for_branches(response_arr)
     send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
     return jsonify(branches=arr)        
@@ -848,33 +772,21 @@ def power_outlet_on():
     return jsonify(branches=arr)        
 
 
-def retry_branch_off(id, base_url=ARDUINO_IP):
+def retry_branch_off(branch_id, base_url):
     """Use to retry turn off branch in case of any error."""
     try:
         for attempt in range(2):
             try:
-                response_off = requests.get(url=base_url + '/branch_off', params={"branch_id": id}, timeout=(7, 5))
-                response_off.raise_for_status()
-                logging.info('response {0}'.format(response_off.text))
+                response_off = garden_controller.off(branch_id=branch_id)
+                logging.info('response {0}'.format(response_off))
 
-                if (id == 17):
-                    arduino_branch_name = 'pump'
-                else:
-                    arduino_branch_name = id
-
-                resp = json.loads(response_off.text)
-                if (resp[str(arduino_branch_name)] != "0"):
-                    logging.error('Branch {0} cant be turned off. response {1}'.format(id, response_off.text))
+                if (response_off[branch_id] != 0):
+                    logging.error('Branch {0} cant be turned off. response {1}'.format(branch_id, response_off))
                     time.sleep(2)
                     continue
                 else:
                     logging.info('Branch {0} is turned off by rule'.format(id))
                     return response_off
-            except requests.exceptions.Timeout as e:
-                logging.error(e)
-                logging.error("Can't turn off {0} branch. Timeout Exception occured  {1} try out of 2".format(id, attempt))
-                time.sleep(2)
-                continue
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn off {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
@@ -900,8 +812,7 @@ def deactivate_branch():
         abort(500)
 
     try:
-        response_off = retry_branch_off(id)
-        response_off.raise_for_status()
+        response_off = garden_controller.off(branch_id=id)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -921,7 +832,7 @@ def deactivate_branch():
     else:
         logging.info('No new entries is added to database.')
 
-    arr = form_responce_for_branches(response_off.text)
+    arr = form_responce_for_branches(response_off)
     send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
     return jsonify(branches=arr)
@@ -933,14 +844,13 @@ def lighting_off():
     id = int(request.args.get('id'))
 
     try:
-        response_off = retry_branch_off(id)
-        response_off.raise_for_status()
+        response_off = garden_controller.off(branch_id=id)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
         abort(500)
 
-    arr = form_responce_for_branches(response_off.text)
+    arr = form_responce_for_branches(response_off)
     send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
     
     return jsonify(branches=arr)
@@ -968,7 +878,6 @@ def power_outlet_off():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    # url = 'http://apidev.accuweather.com/currentconditions/v1/360247.json?language=en&apikey=hoArfRosT1215'
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
         response = requests.get(url=url, timeout=(3, 3))
@@ -1071,15 +980,6 @@ def sensors():
 def sensors2():
     """Blablbal."""
     return app.send_static_file('caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk')
-
-
-# @app.after_request
-# def after_request(response):
-#     """Blablbal."""
-#     response.headers.add('Access-Control-Allow-Origin', '*')
-#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-#     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-#     return response
 
 
 if __name__ == "__main__":

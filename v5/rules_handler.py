@@ -100,7 +100,7 @@ def branch_on(line_id, alert_time):
                 logging.debug('response {0}'.format(response.text))
 
                 resp = json.loads(response.text)['branches']
-                if (resp[line_id]['status'] != "1"):
+                if (resp[line_id]['status'] != 1):
                     logging.error('Branch {0} cant be turned on by rule. response {1}'.format(line_id, response.text))
                     time.sleep(2)
                     continue
@@ -136,7 +136,7 @@ def branch_off(line_id):
                 logging.debug('response {0}'.format(response.text))
 
                 resp = json.loads(response.text)['branches']
-                if (resp[line_id]['status'] != "0"):
+                if (resp[line_id]['status'] != 0):
                     logging.error('Branch {0} cant be turned off by rule. response {1}. {2} try out of 2'.format(line_id, response.text, attempt))
                     time.sleep(2)
                     continue
