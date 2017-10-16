@@ -45,9 +45,9 @@ QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \
 QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.rule_id = 1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-QUERY['branches_names'] = "SELECT number, name, time, intervals, time_wait, start_time from lines order by number"
-QUERY['lighting'] = "SELECT number, name, time from lighting order by number"
-QUERY['lighting_names'] = "SELECT number, name, time from lighting order by number"
+QUERY['branch_settings'] = "SELECT number, name, time, intervals, time_wait, start_time from lines where line_type='irrigation' order by number"
+QUERY['lighting'] = "SELECT number, name, time from lines where line_type='lighting' order by number"
+QUERY['lighting_settings'] = QUERY['lighting']
 QUERY['history'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') and l.state = rule_state.id order by l.timer desc"
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
@@ -77,8 +77,8 @@ QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and 
 QUERY['temperature_1'] = "SELECT * FROM temperature_statistics limit 1"
 QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')"
 
-QUERY['power_outlets'] = "SELECT number, name, time from power_outlets order by number"
-QUERY['power_outlets_names'] = "SELECT number, name, time from power_outlets order by number"
+QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type ='power_outlet' order by number"
+QUERY['power_outlets_settings'] = QUERY['power_outlets']
 
 
 @socketio.on_error_default
@@ -123,6 +123,7 @@ def date_hook(json_dict):
 
 def set_next_rule_to_redis(branch_id, data):
     """Set next rule in redis."""
+    res = False
     try:
         data = json.dumps(data, default=date_handler)
         res = redis_db.set(branch_id, data)
@@ -134,6 +135,7 @@ def set_next_rule_to_redis(branch_id, data):
 
 def get_next_rule_from_redis(branch_id):
     """Get next rule from redis."""
+    json_to_data = None
     try:
         data = redis_db.get(branch_id)
         if data is None:
@@ -252,13 +254,13 @@ def update_rules():
     return "OK"
 
 
-@app.route("/branches_names")
-def branches_names():
+@app.route("/branch_settings")
+def branch_settings():
     """Return branch names."""
     branch_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
     if res is None:
-        logging.error("Can't get branches names from database")
+        logging.error("Can't get branches settings from database")
         abort(500)
 
     for row in res:
@@ -283,13 +285,13 @@ def lighting():
     return render_template('lighting.html', my_list=light_list)
 
 
-@app.route("/lighting_names")
-def lighting_names():
+@app.route("/lighting_settings")
+def lighting_settings():
     """Return branch names."""
     light_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
     if res is None:
-        logging.error("Can't get light names from database")
+        logging.error("Can't get light settings from database")
         abort(500)
 
     for row in res:
@@ -313,13 +315,13 @@ def power_outlets():
     return render_template('power_outlets.html', my_list=light_list)
 
 
-@app.route("/power_outlets_names")
-def power_outlets_names():
+@app.route("/power_outlets_settings")
+def power_outlets_settings():
     """Return branch names."""
     light_list = []
     res = execute_request(QUERY[mn()], 'fetchall')
     if res is None:
-        logging.error("Can't get light names from database")
+        logging.error("Can't get light settings from database")
         abort(500)
 
     for row in res:
@@ -639,20 +641,23 @@ def arduino_small_house_status():
         abort(500)
 
 
-def retry_branch_on(branch_id, time_min, base_url):
+def retry_branch_on(branch_id, time_min, base_url=None):
     """Use to retry turn on branch in case of any error."""
     try:
         for attempt in range(2):
             try:
-                response_on = garden_controller.on(branch_id=branch_id, branch_alert=time_min)
+                if base_url is None:
+                    response_on = garden_controller.on(branch_id=branch_id, branch_alert=time_min)
 
-                if (response_on[branch_id]['state'] != 1):
-                    logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, str(response_on)))
-                    time.sleep(2)
-                    continue
+                    if (response_on[branch_id]['state'] != 1):
+                        logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, str(response_on)))
+                        time.sleep(2)
+                        continue
+                    else:
+                        logging.info('Branch {0} is turned on by rule'.format(id))
+                        return response_on
                 else:
-                    logging.info('Branch {0} is turned on by rule'.format(id))
-                    return response_on
+                    return 'OK'
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
@@ -691,7 +696,7 @@ def activate_branch():
     # ============ check input params =======================
 
     try:
-        response_arr = garden_controller.on(branch_id=id, branch_alert=time_min)
+        response_arr = retry_branch_on(branch_id=id, branch_alert=time_min)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -740,7 +745,7 @@ def lighting_on():
     time_min = int(request.args.get('time_min'))
 
     try:
-        response_arr = garden_controller.on(branch_id=id, branch_alert=time_min)
+        response_arr = retry_branch_on(branch_id=id, branch_alert=time_min)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))
@@ -777,16 +782,19 @@ def retry_branch_off(branch_id, base_url):
     try:
         for attempt in range(2):
             try:
-                response_off = garden_controller.off(branch_id=branch_id)
-                logging.info('response {0}'.format(response_off))
+                if base_url is None:
+                    response_off = garden_controller.off(branch_id=branch_id)
+                    logging.info('response {0}'.format(response_off))
 
-                if (response_off[branch_id] != 0):
-                    logging.error('Branch {0} cant be turned off. response {1}'.format(branch_id, response_off))
-                    time.sleep(2)
-                    continue
+                    if (response_off[branch_id] != 0):
+                        logging.error('Branch {0} cant be turned off. response {1}'.format(branch_id, response_off))
+                        time.sleep(2)
+                        continue
+                    else:
+                        logging.info('Branch {0} is turned off by rule'.format(id))
+                        return response_off
                 else:
-                    logging.info('Branch {0} is turned off by rule'.format(id))
-                    return response_off
+                    return 'OK'
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn off {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
@@ -812,10 +820,10 @@ def deactivate_branch():
         abort(500)
 
     try:
-        response_off = garden_controller.off(branch_id=id)
+        response_off = retry_branch_off(branch_id=id)
     except Exception as e:
         logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
         abort(500)
 
     if (mode == 'manually'):
@@ -844,7 +852,7 @@ def lighting_off():
     id = int(request.args.get('id'))
 
     try:
-        response_off = garden_controller.off(branch_id=id)
+        response_off = retry_branch_off.off(branch_id=id)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(id))

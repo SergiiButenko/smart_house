@@ -82,7 +82,7 @@ def form_pins_state():
         return None
 
 
-def branch_on(branch_id=None, branch_alert=None):
+def branch_on(branch_id=None, branch_alert=None, pump_enable=True):
     if (branch_id is None):
         logging.error("No branch id")
         return None
@@ -91,7 +91,11 @@ def branch_on(branch_id=None, branch_alert=None):
         logging.error("No branch alert time")
         return None
 
-    on(17)
+
+    if pump_enable is False:
+        logging.info("Pump won't be turned on for {0} branch id".format(branch_id))
+        on(17)
+        
     on(BRACHES[branch_id]['pin'])
 
     return form_pins_state()
