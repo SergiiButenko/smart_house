@@ -247,6 +247,13 @@ def update_all_rules():
         logging.error("Exeption occured while updating all rules. {0}".format(e))
 
 
+def inspect_branch_id(branch_id):
+    branch_type = 'irrigation'
+    base_url = None
+    pump_enable = True
+    return {'branch_id': branch_id, 'branch_type': branch_type, 'pump_enable': pump_enable, 'base_url': base_url }
+
+
 @app.route("/update_all_rules")
 def update_rules():
     """Synchronize rules with database."""
@@ -403,8 +410,8 @@ def history():
     return template
 
 
-@app.route("/v2/add_rule", methods=['POST'])
-def add_rule_endpoint_v2():
+@app.route("/add_rule", methods=['POST'])
+def add_rule_endpoint():
     """Used in add rule modal window."""
     content = request.json['list']
 
@@ -608,8 +615,8 @@ def form_responce_for_branches(payload):
         raise e
 
 
-@app.route('/raspberry_pi_status', methods=['GET'])
-def raspberry_pi_status():
+@app.route('/irrigation_lighting_status', methods=['GET'])
+def irrigation_status():
     """Return status of raspberry_pi relay."""
     try:
         response_status = garden_controller.branch_status()
@@ -623,17 +630,23 @@ def raspberry_pi_status():
         abort(500)
 
 
-@app.route('/arduino_small_house_status', methods=['GET'])
+@app.route('/power_outlets_status', methods=['GET'])
 def arduino_small_house_status():
     """Return status of arduino relay."""
     try:
-        response_status = requests.get(url='http://butenko.asuscomm.com:5555/branch_status', timeout=(5, 5))
-        response_status.raise_for_status()
+        response_status_small_house = requests.get(url='http://butenko.asuscomm.com:5555/branch_status', timeout=(5, 5))
+        response_status_small_house.raise_for_status()
 
-        arr = form_responce_for_branches(response_status.text)
+        arr = form_responce_for_branches(response_status_small_house.text)
         send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
-        return jsonify(branches=arr)        
+        response_status_big_house = requests.get(url='http://butenko.asuscomm.com:5555/branch_status', timeout=(5, 5))
+        response_status_big_house.raise_for_status()
+
+        arr2 = form_responce_for_branches(response_status_big_house.text)
+        send_message('power_outlet_status', {'data': json.dumps({'branches': arr2}, default=date_handler)})
+
+        return jsonify(branches=arr.contat(arr2))
 
     except Exception as e:
         logging.error(e)
@@ -641,33 +654,50 @@ def arduino_small_house_status():
         abort(500)
 
 
-def retry_branch_on(branch_id, time_min, base_url=None):
+def retry_branch_on(branch_id, time_min):
     """Use to retry turn on branch in case of any error."""
+    res = inspect_branch_id(branch_id=branch_id)
+    base_url = res['base_url']
+    pump_enable = res['pump_enable']
+    # If branch is not deactivated. It will be stoped by internal process in 2 minutes
+    time_min = time_min + 2
+
     try:
         for attempt in range(2):
             try:
                 if base_url is None:
-                    response_on = garden_controller.on(branch_id=branch_id, branch_alert=time_min)
+                    response_off = garden_controller.on(branch_id=branch_id, pump_enable=pump_enable, branch_alert=time_min)
+                    logging.info('response {0}'.format(response_off))
 
-                    if (response_on[branch_id]['state'] != 1):
-                        logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, str(response_on)))
+                    if (response_off[branch_id]['state'] != 0):
+                        logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, str(response_off)))
                         time.sleep(2)
                         continue
                     else:
-                        logging.info('Branch {0} is turned on by rule'.format(id))
-                        return response_on
+                        logging.info('Branch {0} is turned on by rule'.format(branch_id))
+                        return response_off
                 else:
-                    return 'OK'
+                    response_off = requests.get(url=base_url, params={'branch_id': branch_id, 'branch_alert': time_min})
+                    logging.info('response {0}'.format(str(response_off)))
+
+                    if (response_off[branch_id]['state'] != 0):
+                        logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, response_off))
+                        time.sleep(2)
+                        continue
+                    else:
+                        logging.info('Branch {0} is turned on by rule'.format(branch_id))
+                        return response_off
             except Exception as e:
                 logging.error(e)
-                logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
+                logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(branch_id, attempt))
                 time.sleep(2)
                 continue
-        raise Exception("Can't turn on {0} branch. Retries limit reached".format(id))
+
+        raise Exception("Can't turn on {0} branch. Retries limit reached".format(branch_id))
     except Exception as e:
         logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        raise Exception("Can't turn on {0} branch".format(id))
+        logging.error("Can't turn on branch id={0}. Exception occured".format(branch_id))
+        raise Exception("Can't turn on {0} branch".format(branch_id))
 
 
 @app.route('/activate_branch', methods=['GET'])
@@ -680,15 +710,15 @@ def activate_branch():
         abort(500)
 
     if (mode == 'single'):
-        id = int(request.args.get('id'))
+        branch_id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
     elif (mode == 'interval'):
-        id = int(request.args.get('id'))
+        branch_id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
         time_wait = int(request.args.get('time_wait'))
         num_of_intervals = int(request.args.get('quantity'))
     elif (mode == 'auto'):
-        id = int(request.args.get('id'))
+        branch_id = int(request.args.get('id'))
         time_min = int(request.args.get('time_min'))
     else:
         logging.error("incorrect mode parameter passed: {0}".format(mode))
@@ -696,10 +726,10 @@ def activate_branch():
     # ============ check input params =======================
 
     try:
-        response_arr = retry_branch_on(branch_id=id, branch_alert=time_min)
+        response_arr = retry_branch_on(branch_id=branch_id, branch_alert=time_min)
     except Exception as e:
         logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
+        logging.error("Can't turn on branch id={0}. Exception occured".format(branch_id))
         abort(500)
 
     # needs to be executed in both cases single and interval, but in in auto
@@ -708,8 +738,8 @@ def activate_branch():
         now = datetime.datetime.now()
         stop_time = now + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn() + '_1'].format(id, 1, 2, now.date(), now, interval_id, time_min))
-        lastid = update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id, 0))
+        update_db_request(QUERY[mn() + '_1'].format(branch_id, 1, 2, now.date(), now, interval_id, time_min))
+        lastid = update_db_request(QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
         logging.debug("lastid:{0}".format(lastid))
 
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
@@ -723,14 +753,14 @@ def activate_branch():
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn() + '_1'].format(id, 1, 1, now.date(), start_time, interval_id, time_min))
-            update_db_request(QUERY[mn() + '_1'].format(id, 2, 1, now.date(), stop_time, interval_id, 0))
+            update_db_request(QUERY[mn() + '_1'].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            update_db_request(QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     if (mode == 'auto'):
-        logging.info("Branch '{0}' activated from rules service".format(id))
+        logging.info("Branch '{0}' activated from rules service".format(branch_id))
     else:
-        logging.info("Branch '{0}' activated manually".format(id))
+        logging.info("Branch '{0}' activated manually".format(branch_id))
 
     arr = form_responce_for_branches(response_arr)
     send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
@@ -738,74 +768,48 @@ def activate_branch():
     return jsonify(branches=arr)
 
 
-@app.route('/lighting_on')
-def lighting_on():
-    """Blablbal."""
-    id = int(request.args.get('id'))
-    time_min = int(request.args.get('time_min'))
-
-    try:
-        response_arr = retry_branch_on(branch_id=id, branch_alert=time_min)
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        abort(500)
-
-    arr = form_responce_for_branches(response_arr)
-    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
-
-    return jsonify(branches=arr)        
-
-
-@app.route('/power_outlet_on')
-def power_outlet_on():
-    """Blablbal."""
-    id = int(request.args.get('id'))
-    time_min = int(request.args.get('time_min'))
-
-    try:
-        response_on = retry_branch_on(id, time_min, base_url=ARDUINO_SMALL_H_IP)
-        response_on.raise_for_status()
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        abort(500)
-
-    arr = form_responce_for_branches(response_on.text)
-    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
-    
-    return jsonify(branches=arr)        
-
-
-def retry_branch_off(branch_id, base_url):
+def retry_branch_off(branch_id):
     """Use to retry turn off branch in case of any error."""
+    res = inspect_branch_id(branch_id=branch_id)
+    base_url = res['base_url']
+    pump_enable = res['pump_enable']
+
     try:
         for attempt in range(2):
             try:
                 if base_url is None:
-                    response_off = garden_controller.off(branch_id=branch_id)
+                    response_off = garden_controller.off(branch_id=branch_id, pump_enable=pump_enable)
                     logging.info('response {0}'.format(response_off))
 
-                    if (response_off[branch_id] != 0):
+                    if (response_off[branch_id]['state'] != 0):
+                        logging.error('Branch {0} cant be turned off. response {1}'.format(branch_id, str(response_off)))
+                        time.sleep(2)
+                        continue
+                    else:
+                        logging.info('Branch {0} is turned off by rule'.format(branch_id))
+                        return response_off
+                else:
+                    response_off = requests.get(url=base_url, params={'branch_id': branch_id})
+                    logging.info('response {0}'.format(str(response_off)))
+
+                    if (response_off[branch_id]['state'] != 0):
                         logging.error('Branch {0} cant be turned off. response {1}'.format(branch_id, response_off))
                         time.sleep(2)
                         continue
                     else:
-                        logging.info('Branch {0} is turned off by rule'.format(id))
+                        logging.info('Branch {0} is turned off by rule'.format(branch_id))
                         return response_off
-                else:
-                    return 'OK'
             except Exception as e:
                 logging.error(e)
-                logging.error("Can't turn off {0} branch. Exception occured. {1} try out of 2".format(id, attempt))
+                logging.error("Can't turn off {0} branch. Exception occured. {1} try out of 2".format(branch_id, attempt))
                 time.sleep(2)
                 continue
 
-        raise Exception("Can't turn off {0} branch. Retries limit reached".format(id))
+        raise Exception("Can't turn off {0} branch. Retries limit reached".format(branch_id))
     except Exception as e:
         logging.error(e)
-        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
-        raise Exception("Can't turn off {0} branch".format(id))
+        logging.error("Can't turn off branch id={0}. Exception occured".format(branch_id))
+        raise Exception("Can't turn off {0} branch".format(branch_id))
 
 
 @app.route('/deactivate_branch', methods=['GET'])
@@ -813,73 +817,36 @@ def deactivate_branch():
     """Route is used to disable branch."""
     """Can be executed manaully - row will be added to database
     or with rules service - no new row will be added to database"""
-    id = int(request.args.get('id'))
+    branch_id = int(request.args.get('id'))
     mode = request.args.get('mode')
     if (mode is None):
         logging.error("no 'mode' parameter passed")
         abort(500)
 
     try:
-        response_off = retry_branch_off(branch_id=id)
+        response_off = retry_branch_off(branch_id=branch_id)
     except Exception as e:
         logging.error(e)
-        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
+        logging.error("Can't turn off branch id={0}. Exception occured".format(branch_id))
         abort(500)
 
     if (mode == 'manually'):
         now = datetime.datetime.now()
-        if get_next_rule_from_redis(id) is not None:
-            update_db_request(QUERY[mn() + '_1'].format(get_next_rule_from_redis(id)['interval_id']))
+        if get_next_rule_from_redis(branch_id) is not None:
+            update_db_request(QUERY[mn() + '_1'].format(get_next_rule_from_redis(branch_id)['interval_id']))
         else:
             update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
 
-        set_next_rule_to_redis(id, get_next_active_rule(id))
-        logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(id))))
+        set_next_rule_to_redis(branch_id, get_next_active_rule(branch_id))
+        logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(branch_id))))
 
-        logging.info("Branch '{0}' deactivated manually".format(id))
+        logging.info("Branch '{0}' deactivated manually".format(branch_id))
     else:
         logging.info('No new entries is added to database.')
 
     arr = form_responce_for_branches(response_off)
     send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
 
-    return jsonify(branches=arr)
-
-
-@app.route('/lighting_off')
-def lighting_off():
-    """Blablbal."""
-    id = int(request.args.get('id'))
-
-    try:
-        response_off = retry_branch_off.off(branch_id=id)
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn on branch id={0}. Exception occured".format(id))
-        abort(500)
-
-    arr = form_responce_for_branches(response_off)
-    send_message('lighting_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
-    
-    return jsonify(branches=arr)
-
-
-@app.route('/power_outlet_off')
-def power_outlet_off():
-    """Blablbal."""
-    id = int(request.args.get('id'))
-
-    try:
-        response_off = retry_branch_off(id, base_url=ARDUINO_SMALL_H_IP)
-        response_off.raise_for_status()
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't turn off branch id={0}. Exception occured".format(id))
-        abort(500)
-
-    arr = form_responce_for_branches(response_off.text)
-    send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
-    
     return jsonify(branches=arr)
 
 
