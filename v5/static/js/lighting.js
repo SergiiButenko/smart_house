@@ -123,7 +123,8 @@ function branch_on(index, time_minutes) {
         type: "get",
         data: {
             'id': index,
-            'time_min': time_minutes
+            'time_min': time_minutes,
+            'mode': 'single'
         },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be actived now');
@@ -143,7 +144,8 @@ function branch_off(index) {
         url: '/deactivate_branch',
         type: "get",
         data: {
-            'id': index
+            'id': index,
+            'mode': 'manually'
         },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be deactivated now');
