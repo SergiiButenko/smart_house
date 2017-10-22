@@ -726,7 +726,7 @@ def activate_branch():
     # ============ check input params =======================
 
     try:
-        response_arr = retry_branch_on(branch_id=branch_id, branch_alert=time_min)
+        response_arr = retry_branch_on(branch_id=branch_id, time_min=time_min)
     except Exception as e:
         logging.error(e)
         logging.error("Can't turn on branch id={0}. Exception occured".format(branch_id))
