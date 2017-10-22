@@ -186,7 +186,7 @@ def execute_request(query, method='fetchall'):
         logging.debug("db request '{0}' executed".format(query))
         return getattr(cursor, method)()
     except Exception as e:
-        logging.error("Error while performing operation with database: {0}".format(e))
+        logging.error("Error while performing operation with database: '{0}'. query: '{1}'".format(e, query))
         return None
     finally:
         try:
@@ -215,7 +215,7 @@ def update_db_request(query):
         lastrowid = cursor.lastrowid
         return lastrowid
     except Exception as e:
-        logging.error("Error while performing operation with database: {0}".format(e))
+        logging.error("Error while performing operation with database: '{0}'. query: '{1}'".format(e, query))
     finally:
         try:
             if conn is not None:
