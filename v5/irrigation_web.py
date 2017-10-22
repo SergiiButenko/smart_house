@@ -685,7 +685,6 @@ def retry_branch_on(branch_id, time_min):
                         time.sleep(2)
                         continue
                     else:
-                        logging.info('Branch {0} is turned on by rule'.format(branch_id))
                         return response_off
                 else:
                     response_off = requests.get(url=base_url, params={'branch_id': branch_id, 'branch_alert': time_min})
@@ -696,8 +695,8 @@ def retry_branch_on(branch_id, time_min):
                         time.sleep(2)
                         continue
                     else:
-                        logging.info('Branch {0} is turned on by rule'.format(branch_id))
                         return response_off
+                        
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch. Exception occured. {1} try out of 2".format(branch_id, attempt))
