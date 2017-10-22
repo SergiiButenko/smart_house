@@ -104,7 +104,7 @@ $(document).ready(function() {
     $(".btn-start").click(function() {
         index = $(this).data('id');
         console.log(branch[index]['name'] + " will be activated on " + branch[index]['default_time'] + " minutes ");
-        branch_off(index, branch[index]['default_time']);
+        branch_on(index, branch[index]['default_time']);
     });
 
     //Function to stop lighting
