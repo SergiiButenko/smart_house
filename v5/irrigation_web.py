@@ -101,7 +101,7 @@ QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street
 QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type='power_outlet' order by number"
 QUERY['power_outlets_settings'] = QUERY['power_outlets']
 
-QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines where line_type='power_outlet' order by number"
+QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines order by number"
 
 
 @socketio.on_error_default
