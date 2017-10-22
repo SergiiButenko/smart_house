@@ -97,8 +97,8 @@ def branch_on(branch_id=None, branch_alert=None, pump_enable=True):
     if pump_enable is False:
         logging.info("Pump won't be turned on with {0} branch id".format(branch_id))
     else:
-        logging.info("Pump turned on with {0} branch id".format(branch_id))
         on(PUMP['pin'])
+        logging.info("Pump turned on with {0} branch id".format(branch_id))
 
     on(BRANCHES[branch_id]['pin'])
 
@@ -110,8 +110,11 @@ def branch_off(branch_id=None, pump_enable=True):
         logging.error("No branch id")
         return None
 
-    if check_if_no_active():
+    if pump_enable is True and check_if_no_active():
         off(PUMP['pin'])
+        logging.info("Pump turned off with {0} branch id".format(branch_id))
+    else:
+        logging.info("Pump won't be turned off with {0} branch id".format(branch_id))
 
     off(BRANCHES[branch_id]['pin'])
 
