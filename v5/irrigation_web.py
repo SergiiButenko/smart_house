@@ -756,8 +756,8 @@ def activate_branch():
         res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
-        set_next_rule_to_redis(id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
-        logging.info("Rule '{0}' added".format(str(get_next_active_rule(id))))
+        set_next_rule_to_redis(branch_id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
+        logging.info("Rule '{0}' added".format(str(get_next_active_rule(branch_id))))
 
     if (mode == 'interval'):
         # first interval is already added
