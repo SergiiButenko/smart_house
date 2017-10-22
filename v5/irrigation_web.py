@@ -38,9 +38,9 @@ ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
 
-BRANCHES_LENGTH = 
-RULES_FOR_BRANCHES = [None] * 40
-BRANCHES_SETTINGS = [None] * 40
+BRANCHES_LENGTH = 18
+RULES_FOR_BRANCHES = [None] * BRANCHES_LENGTH
+BRANCHES_SETTINGS = [None] * BRANCHES_LENGTH
 
 
 QUERY = {}
@@ -654,7 +654,7 @@ def get_timetable_list():
 def form_responce_for_branches(payload):
     """Return responce with rules."""
     try:
-        res = [None] * 40
+        res = [None] * BRANCHES_LENGTH
         payload = convert_to_obj(payload)
         for branch in payload:            
             status = branch['state']
