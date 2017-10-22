@@ -6,14 +6,6 @@ var arduino_check_broken_connect_sec = 60;
 var branch_names = [];
 
 $(document).ready(function() {
-    var $loading = $('#loader').hide();
-    $(document)
-        .ajaxStart(function() {
-            $loading.show();
-        })
-        .ajaxStop(function() {
-            $loading.hide();
-    });
     
     var socket = io.connect(server, {'sync disconnect on unload': true });
     socket.on('connect', function() {
@@ -27,7 +19,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-      url: server+'/branches_names',
+      url: '/branches_settings',
       success: function(data) {
          list=data['list']
             for (j in list) {
@@ -74,7 +66,7 @@ $(document).ready(function() {
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
         $.ajax({
-            url: server+'/weather',
+            url: '/weather',
             success: function(data) {
                 $("#temp_header").text("Температура воздуха: " + data['temperature'] + " C*");
                 setTimeout(update_weather, 60 * 1000 * 30);
@@ -87,7 +79,7 @@ $(document).ready(function() {
     $(".deactivate_rules").click(function() {        
         id = $("#rule_selector option:selected").data("value");
         $.ajax({
-            url: server+'/deactivate_all_rules',
+            url: '/deactivate_all_rules',
             type: "get",
             data: {
                 'id': id
@@ -138,7 +130,7 @@ $(document).ready(function() {
 
 
         $.ajax({
-            url: server+'/add_rule',
+            url: '/v2/add_rule',
             type: "get",
             data: {
                 'is_interval': is_interval, 
@@ -188,7 +180,7 @@ $(document).ready(function() {
     function activate_rule(that){
         id = $(that).data('id');
         $.ajax({
-            url: server+'/activate_rule',
+            url: '/activate_rule',
             type: "get",
             data: {
                 'id': id
@@ -202,7 +194,7 @@ $(document).ready(function() {
     function deactivate_rule(that){
         id = $(that).data('id');
         $.ajax({
-            url: server+'/deactivate_rule',
+            url: '/deactivate_rule',
             type: "get",
             data: {
                 'id': id

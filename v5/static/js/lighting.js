@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: server + '/lighting_names',
+        url: '/lighting_settings',
         success: function(data) {
             list = data['list']
             for (j in list) {
@@ -25,7 +25,7 @@ $(document).ready(function() {
 
     (function worker2() {
         $.ajax({
-            url: server + '/arduino_status',
+            url: '/irrigation_lighting_status',
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
 
@@ -34,7 +34,7 @@ $(document).ready(function() {
                 }
             },
             success: function(data) {
-                console.log("connected to arduino");
+                console.log("connected to raspberry");
 
                 update_branches(data);
 
@@ -42,7 +42,7 @@ $(document).ready(function() {
                 setTimeout(worker2, arduino_check_connect_sec * 1000);
             },
             error: function() {
-                console.error("Can't connect to arduino");
+                console.error("Can't connect to raspberry");
 
                 set_status_error();
                 setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
@@ -119,7 +119,7 @@ $(document).ready(function() {
 
 function branch_on(index, time_minutes) {
     $.ajax({
-        url: server + '/lighting_on',
+        url: '/activate_branch',
         type: "get",
         data: {
             'id': index,
@@ -140,7 +140,7 @@ function branch_on(index, time_minutes) {
 
 function branch_off(index) {
     $.ajax({
-        url: server + '/lighting_off',
+        url: '/deactivate_branch',
         type: "get",
         data: {
             'id': index
@@ -159,7 +159,7 @@ function branch_off(index) {
 
 function update_branches_request() {
     $.ajax({
-        url: server + '/arduino_status',
+        url: '/irrigation_lighting_status',
         success: function(data) {
             update_branches(data);
         },

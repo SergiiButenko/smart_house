@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: server + '/branches_names',
+        url: '/branches_settings',
         success: function(data) {
             list = data['list']
             for (j in list) {
@@ -94,7 +94,7 @@ $(document).ready(function() {
 function activate_rule(that) {
     id = $(that).data('id');
     $.ajax({
-        url: server + '/activate_ongoing_rule',
+        url: '/activate_ongoing_rule',
         type: "get",
         data: {
             'id': id
@@ -108,7 +108,7 @@ function activate_rule(that) {
 function deactivate_rule(that) {
     id = $(that).data('id');
     $.ajax({
-        url: server + '/deactivate_ongoing_rule',
+        url: '/deactivate_ongoing_rule',
         type: "get",
         data: {
             'id': id
@@ -122,7 +122,7 @@ function deactivate_rule(that) {
 function remove_rule(that) {
     id = $(that).data('id');
     $.ajax({
-        url: server + '/remove_ongoing_rule',
+        url: '/remove_ongoing_rule',
         type: "get",
         data: {
             'id': id

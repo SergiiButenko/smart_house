@@ -16,7 +16,7 @@ $(document).ready(function() {
 
     $(".btn-refresh-history").click(function() {
         $.ajax({
-            url: server + '/list_all',
+            url: '/list_all',
             type: "get",
             data: {
                 'days': $(this).data('value'),

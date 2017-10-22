@@ -1,5 +1,3 @@
-var server = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-
 var arduino_check_connect_sec = 60 * 5;
 var arduino_check_broken_connect_sec = 60;
 
@@ -9,7 +7,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: server + '/power_outlets_names',
+        url: '/power_outlets_settings',
         success: function(data) {
             list = data['list']
             for (j in list) {
@@ -25,14 +23,14 @@ $(document).ready(function() {
 
     (function worker2() {
         $.ajax({
-            url: server + '/arduino_small_house_status',
+            url: '/arduino_small_house_status',
             beforeSend: function(xhr, opts) {
                 if ($('#power_outle_modal').hasClass('in')) {
                     xhr.abort();
                 }
             },
             success: function(data) {
-                console.log("connected to arduino");
+                console.log("connected to raspberry");
 
                 update_branches(data);
 
@@ -40,7 +38,7 @@ $(document).ready(function() {
                 setTimeout(worker2, arduino_check_connect_sec * 1000);
             },
             error: function() {
-                console.error("Can't connect to arduino");
+                console.error("Can't connect to raspberry");
 
                 set_status_error();
                 setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
@@ -117,7 +115,7 @@ $(document).ready(function() {
 
 function branch_on(index, time_minutes) {
     $.ajax({
-        url: server + '/power_outlet_on',
+        url: '/activate_branch',
         type: "get",
         data: {
             'id': index,
@@ -138,7 +136,7 @@ function branch_on(index, time_minutes) {
 
 function branch_off(index) {
     $.ajax({
-        url: server + '/power_outlet_off',
+        url: '/deactivate_branch',
         type: "get",
         data: {
             'id': index

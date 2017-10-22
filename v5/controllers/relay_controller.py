@@ -41,7 +41,7 @@ def on(pin):
         time.sleep(1)
         return GPIO.input(pin)
     except Exception as e:
-        logging.error("Exception occured when turning on {0} pin".format(pin))
+        logging.error("Exception occured when turning on {0} pin. {1}".format(pin, e))
         return -1
 
 
@@ -50,7 +50,7 @@ def off(pin):
         GPIO.output(pin, GPIO.LOW)
         return GPIO.input(pin)
     except Exception as e:
-        logging.error("Exception occured when turning off {0} pin".format(pin))
+        logging.error("Exception occured when turning off {0} pin. {1}".format(pin, e))
         return -1
 
 
@@ -74,7 +74,7 @@ def form_pins_state():
         for branch in BRANCHES:
             branch['state'] = GPIO.input(branch['pin'])
 
-        logging.info("Pins state is {0}".format(str(BRANCHES)))
+        logging.info("Pins state are {0}".format(str(BRANCHES)))
 
         return BRANCHES
     except Exception as e:
@@ -92,7 +92,9 @@ def branch_on(branch_id=None, branch_alert=None, pump_enable=True):
         return None
 
     if pump_enable is False:
-        logging.info("Pump won't be turned on for {0} branch id".format(branch_id))
+        logging.info("Pump won't be turned on with {0} branch id".format(branch_id))
+    else:
+        logging.info("Pump turned on with {0} branch id".format(branch_id))
         on(17)
 
     on(BRANCHES[branch_id]['pin'])
@@ -114,10 +116,10 @@ def branch_off(branch_id=None, pump_enable=True):
 
 
 def branch_status():
-    """Return status of arduino relay."""
+    """Return status of raspberryPi relay."""
     try:
         return form_pins_state()
     except Exception as e:
         logging.error(e)
-        logging.error("Can't get arduino status. Exception occured")
+        logging.error("Can't get raspberryPi status. Exception occured")
         return None
