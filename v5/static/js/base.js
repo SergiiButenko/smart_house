@@ -158,7 +158,10 @@ var class_err = {
 function set_status_error() {
     $("#system_status").text(class_err.msg);
     $(".card").addClass(class_err.class);
+    
     $(".btn-open-modal").addClass('disabled');
+    $(".btn-start").addClass('disabled');
+
     $(".status-span").css('display', 'inline-block');
 }
 
@@ -168,6 +171,10 @@ function set_status_ok() {
     $(".card").removeClass(class_err.class);
 
     $(".btn-open-modal").removeClass('disabled');
+    $(".btn-start").removeClass('disabled');
+    $(".stop-lighting").removeClass('disabled');
+    $(".stop-power_outlet").removeClass('disabled');
+
     $(".status-span").hide();
     $(".btn-open-modal").show();
 
@@ -179,6 +186,7 @@ function set_status_spinner() {
     $("#system_status").text(class_spin.msg);
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
+    
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
 }
