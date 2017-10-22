@@ -305,11 +305,9 @@ def get_settings():
                 'base_url': base_url,
                 'pump_enabled': True if pump_enabled == 1 else False
             }
-            logging.info("{0} added to settings".format(str(BRANCHES_SETTINGS[branch_id])))
+            logging.debug("{0} added to settings".format(str(BRANCHES_SETTINGS[branch_id])))
     except Exception as e:
         logging.error("Exceprion occured when trying to get settings for all branches. {0}".format(e))
-
-    logging.info("{0}".format(str(BRANCHES_SETTINGS[branch_id])))
 
 
 @app.route("/update_all_rules")
@@ -716,7 +714,7 @@ def arduino_small_house_status():
 def retry_branch_on(branch_id, time_min):
     """Use to retry turn on branch in case of any error."""    
     base_url = BRANCHES_SETTINGS[branch_id]['base_url']
-    pump_enable = BRANCHES_SETTINGS[branch_id]['pump_enable']
+    pump_enabled = BRANCHES_SETTINGS[branch_id]['pump_enabled']
     # If branch is not deactivated. It will be stoped by internal process in 2 minutes
     time_min = time_min + 2
 
@@ -724,7 +722,7 @@ def retry_branch_on(branch_id, time_min):
         for attempt in range(2):
             try:
                 if base_url is None:
-                    response_off = garden_controller.branch_on(branch_id=branch_id, pump_enable=pump_enable, branch_alert=time_min)
+                    response_off = garden_controller.branch_on(branch_id=branch_id, pump_enable=pump_enabled, branch_alert=time_min)
                     logging.info('response {0}'.format(response_off))
 
                     if (response_off[branch_id]['state'] != 1):
@@ -828,13 +826,13 @@ def activate_branch():
 def retry_branch_off(branch_id):
     """Use to retry turn off branch in case of any error."""
     base_url = BRANCHES_SETTINGS[branch_id]['base_url']
-    pump_enable = BRANCHES_SETTINGS[branch_id]['pump_enable']
+    pump_enabled = BRANCHES_SETTINGS[branch_id]['pump_enabled']
 
     try:
         for attempt in range(2):
             try:
                 if base_url is None:
-                    response_off = garden_controller.branch_off(branch_id=branch_id, pump_enable=pump_enable)
+                    response_off = garden_controller.branch_off(branch_id=branch_id, pump_enable=pump_enabled)
                     logging.info('response {0}'.format(response_off))
 
                     if (response_off[branch_id]['state'] != 0):
