@@ -29,11 +29,14 @@ BRANCHES = [
 {'id': 16, 'pin': 16, 'state': -1, 'mode': GPIO.OUT}
 ]
 
+PUMP = {'id': 17, 'pin': 17, 'state': -1, 'mode': GPIO.OUT}
+
 GPIO.setmode(GPIO.BCM)
 
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'])
 
+GPIO.setup(PUMP['pin'], PUMP['mode'])
 
 def on(pin):
     try:
@@ -64,7 +67,7 @@ def check_if_no_active():
         logging.info("No active branch")
         return True
     except Exception as e:
-        logging.error("Exception occured. {0}".format(e))
+        logging.error("Exception occured when checking active {0}".format(e))
         GPIO.cleanup()
         raise e
 
@@ -95,7 +98,7 @@ def branch_on(branch_id=None, branch_alert=None, pump_enable=True):
         logging.info("Pump won't be turned on with {0} branch id".format(branch_id))
     else:
         logging.info("Pump turned on with {0} branch id".format(branch_id))
-        on(17)
+        on(PUMP['pin'])
 
     on(BRANCHES[branch_id]['pin'])
 
@@ -108,7 +111,7 @@ def branch_off(branch_id=None, pump_enable=True):
         return None
 
     if check_if_no_active():
-        off(17)
+        off(PUMP['pin'])
 
     off(BRANCHES[branch_id]['pin'])
 

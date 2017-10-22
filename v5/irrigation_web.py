@@ -35,25 +35,36 @@ DEBUG = False
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
-RULES_FOR_BRANCHES = [None] * 40
-
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
+
+BRANCHES_LENGTH = 
+RULES_FOR_BRANCHES = [None] * 40
+BRANCHES_SETTINGS = [None] * 40
+
 
 QUERY = {}
 QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time, li.name  FROM life AS l, lines as li WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND li.number = l.line_id AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
 QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.rule_id = 1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
 QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
+
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
+
 QUERY['branch_settings'] = "SELECT number, name, time, intervals, time_wait, start_time from lines where line_type='irrigation' order by number"
+
 QUERY['lighting'] = "SELECT number, name, time from lines where line_type='lighting' order by number"
 QUERY['lighting_settings'] = QUERY['lighting']
+
 QUERY['history'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') and l.state = rule_state.id order by l.timer desc"
+
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
+
 QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
 QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
+
 QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
 QUERY['add_rule_endpoint_v2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
+
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
 
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
@@ -61,16 +72,24 @@ QUERY['activate_branch_2'] = "SELECT l.id, l.line_id, l.rule_id, l.timer, l.inte
 
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
+
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
+
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
+
 QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
 QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime') AND timer <= datetime('now', 'localtime', '+1 day')"
 QUERY['deactivate_all_rules_2'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime')  AND timer <= datetime('now', 'localtime', '+7 days')"
+
 QUERY['activate_ongoing_rule'] = "UPDATE week_schedule SET active=1 WHERE id={0}"
+
 QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={0}"
+
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
+
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+
 QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
 QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
@@ -81,6 +100,8 @@ QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street
 
 QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type='power_outlet' order by number"
 QUERY['power_outlets_settings'] = QUERY['power_outlets']
+
+QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines where line_type='power_outlet' order by number"
 
 
 @socketio.on_error_default
@@ -257,11 +278,35 @@ def update_all_rules():
         logging.error("Exeption occured while updating all rules. {0}".format(e))
 
 
-def inspect_branch_id(branch_id):
-    branch_type = 'irrigation'
-    base_url = None
-    pump_enable = True
-    return {'branch_id': branch_id, 'branch_type': branch_type, 'pump_enable': pump_enable, 'base_url': base_url }
+def get_settings():
+    """Fills up settings array to save settings for branches"""
+    try:
+        branches = execute_request(QUERY[mn()])
+        # QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines where line_type='power_outlet' order by number"
+        for row in branches:
+            branch_id = row[0]
+            name = row[1]
+            time = row[2]
+            intervals = row[3]
+            time_wait = row[4]
+            start_time = row[5]
+            line_type = row[6]
+            base_url = row[7]
+            pump_enabled = row[8]
+
+            BRANCHES_SETTINGS[branch_id] = {
+                'branch_id': branch_id,
+                'name': name,
+                'time': time,
+                'intervals': intervals,
+                'time_wait': time_wait,
+                'start_time': start_time,
+                'line_type': line_type,
+                'base_url': base_url,
+                'pump_enabled': True if pump_enabled == 1 else False
+            }
+    except Exception as e:
+        logging.error("Exceprion occured when trying to get settings for all branches. {0}".format(e))
 
 
 @app.route("/update_all_rules")
@@ -666,10 +711,9 @@ def arduino_small_house_status():
 
 
 def retry_branch_on(branch_id, time_min):
-    """Use to retry turn on branch in case of any error."""
-    res = inspect_branch_id(branch_id=branch_id)
-    base_url = res['base_url']
-    pump_enable = res['pump_enable']
+    """Use to retry turn on branch in case of any error."""    
+    base_url = BRANCHES_SETTINGS[branch_id]['base_url']
+    pump_enable = BRANCHES_SETTINGS[branch_id]['pump_enable']
     # If branch is not deactivated. It will be stoped by internal process in 2 minutes
     time_min = time_min + 2
 
@@ -968,4 +1012,5 @@ def sensors2():
 
 
 if __name__ == "__main__":
+    get_settings()
     socketio.run(app, host='0.0.0.0', port=7542, debug=DEBUG)
