@@ -55,16 +55,18 @@ QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, 
 QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
 QUERY['add_rule_endpoint_v2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
 QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
+
 QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
-QUERY['activate_branch_2'] = "SELECT l.id, l.line_id, l.rule_id, l.timer, l.interval_id, l.time, li.name FROM life as l, lines as li where id = {0} and li.number = l.line_id"
+QUERY['activate_branch_2'] = "SELECT l.id, l.line_id, l.rule_id, l.timer, l.interval_id, l.time, li.name FROM life as l, lines as li where l.id = {0} and li.number = l.line_id"
+
 QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
 QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
 QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
-QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer>= datetime('now', 'localtime') AND timer<=datetime('now', 'localtime', '+1 day')"
-QUERY['deactivate_all_rules_2'] = "UPDATE life SET active=0 WHERE timer>= datetime('now', 'localtime')  AND timer<=datetime('now', 'localtime', '+7 days')"
+QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime') AND timer <= datetime('now', 'localtime', '+1 day')"
+QUERY['deactivate_all_rules_2'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime')  AND timer <= datetime('now', 'localtime', '+7 days')"
 QUERY['activate_ongoing_rule'] = "UPDATE week_schedule SET active=1 WHERE id={0}"
 QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={0}"
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
@@ -77,7 +79,7 @@ QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and 
 QUERY['temperature_1'] = "SELECT * FROM temperature_statistics limit 1"
 QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')"
 
-QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type ='power_outlet' order by number"
+QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type='power_outlet' order by number"
 QUERY['power_outlets_settings'] = QUERY['power_outlets']
 
 
