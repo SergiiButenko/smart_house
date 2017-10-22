@@ -824,9 +824,8 @@ def activate_branch():
 
 def retry_branch_off(branch_id):
     """Use to retry turn off branch in case of any error."""
-    res = inspect_branch_id(branch_id=branch_id)
-    base_url = res['base_url']
-    pump_enable = res['pump_enable']
+    base_url = BRANCHES_SETTINGS[branch_id]['base_url']
+    pump_enable = BRANCHES_SETTINGS[branch_id]['pump_enable']
 
     try:
         for attempt in range(2):
