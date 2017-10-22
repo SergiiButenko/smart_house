@@ -107,6 +107,14 @@ def date_handler(obj):
         raise TypeError
 
 
+def convert_to_obj(data):
+    try:
+        data = json.loads(data)
+    except:
+        pass
+    return data
+
+
 def date_hook(json_dict):
     """Convert str to datatime object."""
     for (key, value) in json_dict.items():
@@ -600,7 +608,7 @@ def form_responce_for_branches(payload):
     """Return responce with rules."""
     try:
         res = [None] * 40
-        payload = json.loads(payload)
+        payload = convert_to_obj(payload)
         for branch_id in payload:
             status = payload[branch_id]['state']
 
@@ -857,7 +865,7 @@ def weather():
     try:
         response = requests.get(url=url, timeout=(3, 3))
         response.raise_for_status()
-        json_data = json.loads(response.text)
+        json_data = convert_to_obj(response.text)
         return jsonify(temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)), humidity=str(round(json_data['main']['humidity'], 2)))
     except requests.exceptions.RequestException as e:
         logging.error(e)
@@ -888,7 +896,7 @@ def temperature():
         try:
             response = requests.get(url=url, timeout=(3, 3))
             response.raise_for_status()
-            json_data = json.loads(response.text)
+            json_data = convert_to_obj(response.text)
             temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)), 
             humidity_street = str(round(json_data['main']['humidity'], 2))
         except requests.exceptions.RequestException as e:
@@ -900,7 +908,7 @@ def temperature():
         try:
             response = requests.get(url=ARDUINO_SMALL_H_IP + '/temperature', timeout=(3, 3))
             response.raise_for_status()
-            json_data = json.loads(response.text)
+            json_data = convert_to_obj(response.text)
 
             temperature_small_h_1_fl = json_data['1_floor_temperature']
             humidity_small_h_1_fl = json_data['1_floor_humidity']
