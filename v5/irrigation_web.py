@@ -609,8 +609,9 @@ def form_responce_for_branches(payload):
     try:
         res = [None] * 40
         payload = convert_to_obj(payload)
-        for branch_id in payload:
-            status = payload[branch_id]['state']
+        for branch in payload:
+            status = payload[branch]['state']
+            branch_id = payload[branch]['id']
 
             last_rule = get_last_start_rule(branch_id)
             next_rule = get_next_active_rule(branch_id)
