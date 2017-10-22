@@ -1,5 +1,3 @@
-var server = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-
 var arduino_check_connect_sec = 60 * 5;
 var arduino_check_broken_connect_sec = 60;
 
@@ -27,7 +25,7 @@ $(document).ready(function() {
     $(".irrigate-all").on('click', function() {
         data = $('#irrigate_modal').data('date');
         $.ajax({
-            url: server + '/irrigate_all',
+            url: '/irrigate_all',
             type: "get",
             data: {
                 'add_to_date': data
@@ -44,7 +42,7 @@ $(document).ready(function() {
     //Add arduino touch script to determine if connection is alive
     (function update_weather() {
         $.ajax({
-            url: server + '/weather',
+            url: '/weather',
             success: function(data) {
                 $("#temp").html("Температура повітря: " + data['temperature'] + " &#8451;");
                 $("#hum").html("Вологість: " + data['humidity'] + " %");
@@ -59,7 +57,7 @@ $(document).ready(function() {
     // Add arduino touch script to determine if connection is alive
     (function worker() {
         $.ajax({
-            url: server + '/arduino_status',
+            url: '/irrigation_lighting_status',
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
 

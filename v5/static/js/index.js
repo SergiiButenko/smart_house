@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: server + '/branches_names',
+        url: '/branch_settings',
         success: function(data) {
             list = data['list']
             for (j in list) {
@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     (function worker2() {
         $.ajax({
-            url: server + '/arduino_status',
+            url: '/irrigation_lighting_status',
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
 
@@ -186,7 +186,7 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
     }
 
     $.ajax({
-        url: server + '/activate_branch',
+        url: '/activate_branch',
         type: "get",
         data: {
             'mode': mode,
@@ -210,7 +210,7 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
 
 function branch_off(index) {
     $.ajax({
-        url: server + '/deactivate_branch',
+        url: '/deactivate_branch',
         type: "get",
         data: {
             'id': index,
@@ -230,7 +230,7 @@ function branch_off(index) {
 
 function update_branches_request() {
     $.ajax({
-        url: server + '/arduino_status',
+        url: '/irrigation_lighting_status',
         success: function(data) {
             update_branches(data);
         },
