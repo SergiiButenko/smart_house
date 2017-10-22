@@ -45,7 +45,7 @@ def on(pin):
         return -1
 
 
-def off():
+def off(pin):
     try:
         GPIO.output(pin, GPIO.LOW)
         return GPIO.input(pin)
