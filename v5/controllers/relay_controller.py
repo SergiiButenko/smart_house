@@ -10,23 +10,23 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 
 BRANCHES = [
-{'id': 0, 'pin': 17, 'state': -1, 'mode', GPIO.IN},
-{'id': 1, 'pin': 1, 'state': -1, 'mode', GPIO.OUT},
-{'id': 2, 'pin': 2, 'state': -1, 'mode', GPIO.OUT},
-{'id': 3, 'pin': 3, 'state': -1, 'mode', GPIO.OUT},
-{'id': 4, 'pin': 4, 'state': -1, 'mode', GPIO.OUT},
-{'id': 5, 'pin': 5, 'state': -1, 'mode', GPIO.OUT},
-{'id': 6, 'pin': 6, 'state': -1, 'mode', GPIO.OUT},
-{'id': 7, 'pin': 7, 'state': -1, 'mode', GPIO.OUT},
-{'id': 8, 'pin': 8, 'state': -1, 'mode', GPIO.OUT},
-{'id': 9, 'pin': 9, 'state': -1, 'mode', GPIO.OUT},
-{'id': 10, 'pin': 10, 'state': -1, 'mode', GPIO.OUT},
-{'id': 11, 'pin': 11, 'state': -1, 'mode', GPIO.OUT},
-{'id': 12, 'pin': 12, 'state': -1, 'mode', GPIO.OUT},
-{'id': 13, 'pin': 13, 'state': -1, 'mode', GPIO.OUT},
-{'id': 14, 'pin': 14, 'state': -1, 'mode', GPIO.OUT},
-{'id': 15, 'pin': 15, 'state': -1, 'mode', GPIO.OUT},
-{'id': 16, 'pin': 16, 'state': -1, 'mode', GPIO.OUT}
+{'id': 0, 'pin': 17, 'state': -1, 'mode': GPIO.IN},
+{'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
+{'id': 2, 'pin': 2, 'state': -1, 'mode': GPIO.OUT},
+{'id': 3, 'pin': 3, 'state': -1, 'mode': GPIO.OUT},
+{'id': 4, 'pin': 4, 'state': -1, 'mode': GPIO.OUT},
+{'id': 5, 'pin': 5, 'state': -1, 'mode': GPIO.OUT},
+{'id': 6, 'pin': 6, 'state': -1, 'mode': GPIO.OUT},
+{'id': 7, 'pin': 7, 'state': -1, 'mode': GPIO.OUT},
+{'id': 8, 'pin': 8, 'state': -1, 'mode': GPIO.OUT},
+{'id': 9, 'pin': 9, 'state': -1, 'mode': GPIO.OUT},
+{'id': 10, 'pin': 10, 'state': -1, 'mode': GPIO.OUT},
+{'id': 11, 'pin': 11, 'state': -1, 'mode': GPIO.OUT},
+{'id': 12, 'pin': 12, 'state': -1, 'mode': GPIO.OUT},
+{'id': 13, 'pin': 13, 'state': -1, 'mode': GPIO.OUT},
+{'id': 14, 'pin': 14, 'state': -1, 'mode': GPIO.OUT},
+{'id': 15, 'pin': 15, 'state': -1, 'mode': GPIO.OUT},
+{'id': 16, 'pin': 16, 'state': -1, 'mode': GPIO.OUT}
 ]
 
 GPIO.setmode(GPIO.BCM)
