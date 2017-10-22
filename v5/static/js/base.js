@@ -178,6 +178,9 @@ function set_status_ok() {
 function set_status_spinner() {
     $("#system_status").text(class_spin.msg);
     $(".btn-open-modal").addClass('disabled');
+    $(".btn-start").addClass('disabled');
+    $(".stop-lighting").addClass('disabled');
+    $(".stop-power_outlet").addClass('disabled');
 }
 
 
