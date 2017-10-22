@@ -305,8 +305,11 @@ def get_settings():
                 'base_url': base_url,
                 'pump_enabled': True if pump_enabled == 1 else False
             }
+            logging.info("{0} added to settings".format(str(BRANCHES_SETTINGS[branch_id])))
     except Exception as e:
         logging.error("Exceprion occured when trying to get settings for all branches. {0}".format(e))
+
+    logging.info("{0}".format(str(BRANCHES_SETTINGS[branch_id])))
 
 
 @app.route("/update_all_rules")
