@@ -41,7 +41,7 @@ $(document).ready(function() {
 
 
 function cancel_rule(that) {
-    index = that.data('id');
+    index = $(that).data('id');
     console.log(index + " irrigation schedule will be canceled");
 
     $.ajax({
