@@ -88,7 +88,7 @@ def form_pins_state():
         for branch in BRANCHES:
             branch['state'] = GPIO.input(branch['pin'])
 
-        logging.info("Pins state are {0}".format(str(BRANCHES)))
+        logging.debug("Pins state are {0}".format(str(BRANCHES)))
 
         return BRANCHES
     except Exception as e:
