@@ -51,11 +51,11 @@ function cancel_rule(that) {
             'id': index
         },
         success: function(data) {
-            console.log('Line ' + branch[index]['name'] + ' wont be started');
+            console.log('Line ' + index + ' wont be started');
             update_branches(data);
         },
         error: function() {
-            console.error("Can't cancel next rule for " + branch[index]['name']);
+            console.error("Can't cancel next rule for " + index);
             toogle_card(index, 0);
         }
     });
