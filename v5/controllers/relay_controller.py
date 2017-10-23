@@ -8,6 +8,7 @@ import RPi.GPIO as GPIO
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
+PUMP_PIN = 17
 
 BRANCHES = [
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
@@ -26,18 +27,16 @@ BRANCHES = [
     {'id': 13, 'pin': 13, 'state': -1, 'mode': GPIO.OUT},
     {'id': 14, 'pin': 14, 'state': -1, 'mode': GPIO.OUT},
     {'id': 15, 'pin': 15, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 16, 'pin': 16, 'state': -1, 'mode': GPIO.OUT}
+    {'id': 16, 'pin': 16, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT}
 ]
 
-PUMP = {'id': 17, 'pin': 17, 'state': -1, 'mode': GPIO.OUT}
 
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
-
-GPIO.setup(PUMP['pin'], PUMP['mode'], initial=GPIO.LOW)
 
 
 def on(pin):
@@ -82,18 +81,12 @@ def check_if_no_active():
 def form_pins_state():
     """Form returns arr of dicts."""
     try:
-        branches = None
-
         for branch in BRANCHES:
             branch['state'] = GPIO.input(branch['pin'])
 
-        PUMP['state'] = GPIO.input(PUMP['pin'])
-        branches = BRANCHES
-        branches.append(PUMP)
-
         logging.info("Pins state are {0}".format(str(BRANCHES)))
 
-        return branches
+        return BRANCHES
     except Exception as e:
         logging.error("Exception occured during forming of branches status. {0}".format(e))
         GPIO.cleanup()
@@ -110,13 +103,13 @@ def branch_on(branch_id=None, branch_alert=None, pump_enable=True):
         logging.error("No branch alert time")
         return None
 
+    on(BRANCHES[branch_id]['pin'])
+
     if pump_enable is False:
         logging.info("Pump won't be turned on with {0} branch id".format(branch_id))
     else:
-        on(PUMP['pin'])
+        on(PUMP_PIN)
         logging.info("Pump turned on with {0} branch id".format(branch_id))
-
-    on(BRANCHES[branch_id]['pin'])
 
     return form_pins_state()
 
@@ -127,13 +120,13 @@ def branch_off(branch_id=None, pump_enable=True):
         logging.error("No branch id")
         return None
 
+    off(BRANCHES[branch_id]['pin'])
+
     if pump_enable is True and check_if_no_active():
-        off(PUMP['pin'])
+        off(PUMP_PIN)
         logging.info("Pump turned off with {0} branch id".format(branch_id))
     else:
         logging.info("Pump won't be turned off with {0} branch id".format(branch_id))
-
-    off(BRANCHES[branch_id]['pin'])
 
     return form_pins_state()
 
