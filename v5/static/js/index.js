@@ -264,7 +264,7 @@ function toogle_card(element_id, branch) {
         $('#btn-start-' + element_id).css('display', 'inline-block').removeClass("hidden");
     }
 
-    options = {
+    var options = {
         weekday: "long",
         month: "short",
         day: "numeric",
@@ -289,7 +289,7 @@ function toogle_card(element_id, branch) {
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['id'])
-        $('#btn-cancel-' + element_id).css('display', 'inline-block');
+        $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
