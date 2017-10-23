@@ -131,6 +131,7 @@ def date_handler(obj):
 
 
 def convert_to_obj(data):
+    """Convert to dict."""
     try:
         data = json.loads(data)
     except:
@@ -188,6 +189,11 @@ def send_message(channel, data):
     except Exception as e:
         logging.error(e)
         logging.error("Can't send message. Exeption occured")
+
+
+def send_branch_status_message(channel, data):
+    """Convert data in order to send data object."""
+    send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
 
 
 # executes query and returns fetch* result
@@ -279,7 +285,7 @@ def update_all_rules():
 
 
 def get_settings():
-    """Fills up settings array to save settings for branches"""
+    """Fill up settings array to save settings for branches."""
     try:
         branches = execute_request(QUERY[mn()])
         # QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines where line_type='power_outlet' order by number"
@@ -327,7 +333,12 @@ def branch_settings():
         abort(500)
 
     for row in res:
-        branch_list.append({'id': row[0], 'name': row[1], 'default_time': row[2], 'default_interval': row[3], 'default_time_wait': row[4],
+        branch_list.append({
+            'id': row[0],
+            'name': row[1],
+            'default_time': row[2],
+            'default_interval': row[3],
+            'default_time_wait': row[4],
             'start_time': row[5]})
 
     return jsonify(list=branch_list)
@@ -393,7 +404,6 @@ def power_outlets_settings():
     return jsonify(list=light_list)
 
 
-
 @app.route("/")
 def index():
     """Index page."""
@@ -402,7 +412,7 @@ def index():
 
 @app.route("/add_rule")
 def add_rule_page():
-    """add rule page."""
+    """Add rule page."""
     return render_template('add_rule.html')
 
 
@@ -428,8 +438,16 @@ def get_table_body_only(query=None):
             if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
                 outdated = 1
 
-            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state, 'time': time,
-                'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
+            rows.append({
+                'id': id,
+                'branch_name': branch_name,
+                'rule_name': rule_name,
+                'state': state,
+                'time': time,
+                'timer': "{:%A, %d-%m-%y %R}".format(timer),
+                'outdated': outdated,
+                'active': active,
+                'rule_state': rule_state})
 
     template = render_template('timetable_table_only.html', my_list=rows)
     return template
@@ -459,8 +477,16 @@ def history():
             if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
                 outdated = 1
 
-            rows.append({'id': id, 'branch_name': branch_name, 'rule_name': rule_name, 'state': state, 'time': time,
-                'timer': "{:%A, %d-%m-%y %R}".format(timer), 'outdated': outdated, 'active': active, 'rule_state': rule_state})
+            rows.append({
+                'id': id,
+                'branch_name': branch_name,
+                'rule_name': rule_name,
+                'state': state,
+                'time': time,
+                'timer': "{:%A, %d-%m-%y %R}".format(timer),
+                'outdated': outdated,
+                'active': active,
+                'rule_state': rule_state})
 
     template = render_template('history.html', my_list=rows)
     return template
@@ -514,7 +540,7 @@ def cancel_rule():
         logging.error("No {0} rule id in database".format(id))
 
     interval_id = res[0]
-    branch_name = res[1]
+    # branch_name = res[1]
     # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
     update_db_request(QUERY[mn() + '_2'].format(interval_id))
     update_all_rules()
@@ -523,7 +549,7 @@ def cancel_rule():
         response_status = garden_controller.branch_status()
 
         arr = form_responce_for_branches(response_status)
-        send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+        send_branch_status_message('branch_status', arr)
     except Exception as e:
         logging.error(e)
         logging.error("Can't get Raspberri Pi pin status. Exception occured")
@@ -549,8 +575,15 @@ def ongoing_rules_table():
         minutes = row[5]
         active = row[6]
         rule_state = row[7]
-        rows.append({'id': id, 'branch_name': branch_name, 'dow': day_number, 'rule_name': rule_name,
-                'time': time, 'minutest': minutes, 'active': active, 'rule_state': rule_state})
+        rows.append({
+            'id': id,
+            'branch_name': branch_name,
+            'dow': day_number,
+            'rule_name': rule_name,
+            'time': time,
+            'minutest': minutes,
+            'active': active,
+            'rule_state': rule_state})
 
     template = render_template('ongoing_rules_table_only.html', my_list=rows)
     return template
@@ -609,7 +642,7 @@ def remove_ongoing_rule():
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
-    id = int(request.args.get('id'))
+    # id = int(request.args.get('id'))
     # update_db_request(QUERY[mn()].format(id))
     update_all_rules()
     template = ongoing_rules_table()
@@ -657,7 +690,7 @@ def form_responce_for_branches(payload):
     try:
         res = [None] * BRANCHES_LENGTH
         payload = convert_to_obj(payload)
-        for branch in payload:            
+        for branch in payload:
             status = branch['state']
             branch_id = branch['id']
 
@@ -679,7 +712,7 @@ def irrigation_status():
         response_status = garden_controller.branch_status()
 
         arr = form_responce_for_branches(response_status)
-        send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+        send_branch_status_message('branch_status', arr)
         return jsonify(branches=arr)
     except Exception as e:
         logging.error(e)
@@ -695,13 +728,13 @@ def arduino_small_house_status():
         response_status_small_house.raise_for_status()
 
         arr = form_responce_for_branches(response_status_small_house.text)
-        send_message('power_outlet_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+        send_branch_status_message('power_outlet_status', arr)
 
         response_status_big_house = requests.get(url='http://butenko.asuscomm.com:5555/branch_status', timeout=(5, 5))
         response_status_big_house.raise_for_status()
 
         arr2 = form_responce_for_branches(response_status_big_house.text)
-        send_message('power_outlet_status', {'data': json.dumps({'branches': arr2}, default=date_handler)})
+        send_branch_status_message('power_outlet_status', arr2)
 
         return jsonify(branches=arr.contat(arr2))
 
@@ -712,7 +745,7 @@ def arduino_small_house_status():
 
 
 def retry_branch_on(branch_id, time_min):
-    """Use to retry turn on branch in case of any error."""    
+    """Retry turn on branch in case of any error."""
     base_url = BRANCHES_SETTINGS[branch_id]['base_url']
     pump_enabled = BRANCHES_SETTINGS[branch_id]['pump_enabled']
     # If branch is not deactivated. It will be stoped by internal process in 2 minutes
@@ -732,8 +765,9 @@ def retry_branch_on(branch_id, time_min):
                     else:
                         return response_off
                 else:
-                    response_off = requests.get(url=base_url, params={'branch_id': branch_id, 'branch_alert': time_min})
-                    logging.info('response {0}'.format(str(response_off)))
+                    response_off = requests.get(url=base_url, params={'branch_id': branch_id, 'branch_alert': time_min}, timeout=(5, 5))
+                    logging.info('response {0}'.format(str(response_off.text)))
+                    response_off = json.loads(response_off.text)
 
                     if (response_off[branch_id]['state'] != 0):
                         logging.error('Branch {0} cant be turned on. response {1}'.format(branch_id, response_off))
@@ -818,7 +852,7 @@ def activate_branch():
         logging.info("Branch '{0}' activated manually".format(branch_id))
 
     arr = form_responce_for_branches(response_arr)
-    send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    send_branch_status_message('branch_status', arr)
 
     return jsonify(branches=arr)
 
@@ -899,7 +933,7 @@ def deactivate_branch():
         logging.info('No new entries is added to database.')
 
     arr = form_responce_for_branches(response_off)
-    send_message('branch_status', {'data': json.dumps({'branches': arr}, default=date_handler)})
+    send_branch_status_message('branch_status', arr)
 
     return jsonify(branches=arr)
 
@@ -943,7 +977,7 @@ def temperature():
             response = requests.get(url=url, timeout=(3, 3))
             response.raise_for_status()
             json_data = convert_to_obj(response.text)
-            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)), 
+            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
             humidity_street = str(round(json_data['main']['humidity'], 2))
         except requests.exceptions.RequestException as e:
             logging.error(e)
@@ -980,7 +1014,7 @@ def temperature():
         )
 
     res = execute_request(QUERY[mn() + '_1'], 'fetchone')
-    return jsonify( 
+    return jsonify(
         datetime=res[0],
         temperature_street=res[1],
         humidity_street=res[2],
