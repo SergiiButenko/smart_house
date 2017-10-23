@@ -35,9 +35,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 
 for branch in BRANCHES:
-    GPIO.setup(branch['pin'], branch['mode'])
+    GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
 
-GPIO.setup(PUMP['pin'], PUMP['mode'])
+GPIO.setup(PUMP['pin'], PUMP['mode'], initial=GPIO.LOW)
 
 
 def on(pin):
@@ -68,7 +68,7 @@ def check_if_no_active():
     try:
         for branch in BRANCHES:
             state = GPIO.input(branch['pin'])
-            if state == 1:
+            if state == GPIO.HIGH:
                 return False
 
         logging.info("No active branch")
