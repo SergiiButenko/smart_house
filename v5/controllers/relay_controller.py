@@ -91,7 +91,6 @@ def form_pins_state():
         logging.debug("Pins state are {0}".format(str(BRANCHES)))
 
         return BRANCHES
-    except Exception as e:
         logging.error("Exception occured during forming of branches status. {0}".format(e))
         GPIO.cleanup()
         return None
