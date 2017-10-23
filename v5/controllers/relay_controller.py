@@ -68,8 +68,8 @@ def check_if_no_active():
     try:
         for branch in BRANCHES:
             state = GPIO.input(branch['pin'])
-            if state is False:
-                return state
+            if state == 1:
+                return False
 
         logging.info("No active branch")
         return True
@@ -82,15 +82,18 @@ def check_if_no_active():
 def form_pins_state():
     """Form returns arr of dicts."""
     try:
+        branches = None
+
         for branch in BRANCHES:
             branch['state'] = GPIO.input(branch['pin'])
 
         PUMP['state'] = GPIO.input(PUMP['pin'])
-        BRANCHES.append(PUMP)
+        branches = BRANCHES
+        branches.append(PUMP)
 
         logging.info("Pins state are {0}".format(str(BRANCHES)))
 
-        return BRANCHES
+        return branches
     except Exception as e:
         logging.error("Exception occured during forming of branches status. {0}".format(e))
         GPIO.cleanup()
