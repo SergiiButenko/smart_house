@@ -4,9 +4,7 @@ After=network.target
 Requires=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /var/www/v4/irrigation_python.py >> /var/log/irrigation_backend/run_7543.log 2>&1
-ExecReload=(/bin/kill -9 $(/usr/bin/lsof -t -i:7543 -sTCP:LISTEN));(/usr/bin/python3 /var/www/v4/irrigation_python.py >> /var/log/irrigation_backend/run_7543.log 2>&1)
-ExecStop=/bin/kill -9 $(/usr/bin/lsof -t -i:7543 -sTCP:LISTEN)
+ExecStart=/usr/bin/python3 /var/www/v5/irrigation_web.py 
 
 Restart=always
 RestartSec=5
