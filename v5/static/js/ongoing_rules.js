@@ -1,5 +1,3 @@
-var branch_names = [];
-
 $(document).ready(function() {
 
     //Rename branches

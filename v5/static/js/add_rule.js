@@ -7,7 +7,7 @@ $(document).ready(function() {
 
     //Rename branches
     $.ajax({
-        url: '/branches_names',
+        url: '/branch_settings',
         success: function(data) {
             list = data['list']
             list = list.sort((function(a, b) {
