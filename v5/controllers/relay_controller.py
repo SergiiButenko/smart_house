@@ -66,6 +66,10 @@ def check_if_no_active():
     """Check if any of branches is active now."""
     try:
         for branch in BRANCHES:
+            # pump won't turn off, cause it stays on after branch off
+            if branch['pin'] == PUMP_PIN:
+                continue
+
             state = GPIO.input(branch['pin'])
             if state == GPIO.HIGH:
                 return False
