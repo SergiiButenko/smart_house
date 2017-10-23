@@ -1,0 +1,14 @@
+[Unit]
+Description=Power suuply for raspberry pi 
+After=network.target
+Requires=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /var/www/v5/power_supply_notofier.py
+
+RestartSec=5
+TimeoutSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

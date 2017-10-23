@@ -1,0 +1,15 @@
+[Unit]
+Description=Viber Bot service
+After=network.target
+Requires=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /var/www/v5/viber_bot/viber_bot.py
+
+Restart=always
+RestartSec=5
+TimeoutSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
