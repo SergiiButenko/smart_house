@@ -47,7 +47,7 @@
             {% else %}
             <td>{{n['rule_state']}}</td>
             <td>
-                <button type="button" class="btn btn-secondary" data-id={{n[ 'id']}} onclick="deactivate_rule(this)">Не виконувати</button>
+                <button type="button" class="btn btn-secondary" data-id={{n[ 'id']}} onclick="cancel_rule(this)">Скасувати</button>
             </td>
             {% endif %}
         </tr>

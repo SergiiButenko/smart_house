@@ -38,3 +38,25 @@ $(document).ready(function() {
         });
     });
 });
+
+
+function cancel_rule(that) {
+    index = that.data('id');
+    console.log(index + " irrigation schedule will be canceled");
+
+    $.ajax({
+        url: server + '/cancel_rule',
+        type: "get",
+        data: {
+            'id': index
+        },
+        success: function(data) {
+            console.log('Line ' + branch[index]['name'] + ' wont be started');
+            update_branches(data);
+        },
+        error: function() {
+            console.error("Can't cancel next rule for " + branch[index]['name']);
+            toogle_card(index, 0);
+        }
+    });
+}
