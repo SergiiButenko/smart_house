@@ -3,6 +3,20 @@ var server = location.protocol + '//' + location.hostname + (location.port ? ':'
 $(document).ready(function() {
     //Add arduino touch script to determine if connection is alive
 
+    var socket = io.connect(server, {
+        'sync disconnect on unload': true
+    });
+    socket.on('connect', function() {
+        console.log("connected to websocket");
+    });
+
+    socket.on('branch_status', function(msg) {
+        console.log('Message received. New brach status: ' + msg.data);
+        update_branches(JSON.parse(msg.data));
+    });
+
+
+
     (function() {
         state = $("#all_rules").is(":checked")
         $('#rules_table tr td:nth-child(2)').each(function() {
@@ -52,11 +66,9 @@ function cancel_rule(that) {
         },
         success: function(data) {
             console.log('Line ' + index + ' wont be started');
-            update_branches(data);
         },
         error: function() {
             console.error("Can't cancel next rule for " + index);
-            toogle_card(index, 0);
         }
     });
 }

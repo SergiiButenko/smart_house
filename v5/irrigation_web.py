@@ -76,12 +76,6 @@ QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, 
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
 
-QUERY['activate_rule'] = "UPDATE life SET active=1 WHERE id={0}"
-
-QUERY['deactivate_rule'] = "UPDATE life SET active=0 WHERE id={0}"
-QUERY['deactivate_all_rules_1'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime') AND timer <= datetime('now', 'localtime', '+1 day')"
-QUERY['deactivate_all_rules_2'] = "UPDATE life SET active=0 WHERE timer >= datetime('now', 'localtime')  AND timer <= datetime('now', 'localtime', '+7 days')"
-
 QUERY['activate_ongoing_rule'] = "UPDATE week_schedule SET active=1 WHERE id={0}"
 
 QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={0}"
@@ -534,10 +528,13 @@ def cancel_rule():
         abort(500)
 
     id = int(request.args.get('id'))
+    requester = request.args.get('requester')
+
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
     res = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
     if (res is None):
         logging.error("No {0} rule id in database".format(id))
+        abort(500)
 
     interval_id = res[0]
     # branch_name = res[1]
