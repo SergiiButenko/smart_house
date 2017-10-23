@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 
 BRANCHES = [
-    {'id': 0, 'pin': 17, 'state': -1, 'mode': GPIO.IN},
+    {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
     {'id': 2, 'pin': 2, 'state': -1, 'mode': GPIO.OUT},
     {'id': 3, 'pin': 3, 'state': -1, 'mode': GPIO.OUT},
