@@ -8,6 +8,7 @@ import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
+from pytz import timezone
 import json
 import requests
 import inspect
@@ -119,7 +120,8 @@ def disconnect():
 def date_handler(obj):
     """Convert datatime to string format."""
     if hasattr(obj, 'isoformat'):
-        return obj.isoformat()
+        datetime_obj_utc = obj.replace(tzinfo=timezone('UTC'))
+        return datetime_obj_utc.isoformat()
     else:
         raise TypeError
 
