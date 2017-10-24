@@ -157,7 +157,9 @@ var class_err = {
 
 function set_status_error() {
     $("#system_status").text(class_err.msg);
-    $(".card").addClass(class_err.class);
+    
+    $(".card-irrigation").addClass(class_err.class);
+    $(".card-lighting").addClass(class_err.class);
     
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
@@ -168,7 +170,8 @@ function set_status_error() {
 function set_status_ok() {
     $("#system_status").text(class_ok.msg);
 
-    $(".card").removeClass(class_err.class);
+    $(".card-irrigation").removeClass(class_err.class);
+    $(".card-lighting").removeClass(class_err.class);
 
     $(".btn-open-modal").removeClass('disabled');
     $(".btn-start").removeClass('disabled');

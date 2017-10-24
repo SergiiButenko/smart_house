@@ -269,8 +269,8 @@ function toogle_card(element_id, branch) {
         month: "short",
         day: "numeric",
         hour: "2-digit",
-        minute: "2-digit"
-        // timeZone: 'UTC'
+        minute: "2-digit",
+        timeZone: 'UTC'
     };
 
     if (branch['last_rule']) {
