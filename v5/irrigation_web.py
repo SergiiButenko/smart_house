@@ -762,6 +762,7 @@ def weather():
 
 @app.route("/temperature")
 def temperature():
+    """Collect temperature from each station."""
     mode = request.args.get('force')
     if (mode is not None):
         temperature_street = 0
