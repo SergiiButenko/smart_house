@@ -48,7 +48,7 @@ def update_all_rules():
     """Set next active rules for all branches."""
     try:
         for i in range(1, len(RULES_FOR_BRANCHES)):
-            set_next_rule_to_redis(i, get_next_active_rule(i))
+            set_next_rule_to_redis(i, database.get_next_active_rule(i))
         logging.info("Rules updated")
     except Exception as e:
         logging.error("Exeption occured while updating all rules. {0}".format(e))
@@ -501,8 +501,8 @@ def form_responce_for_branches(payload):
             status = branch['state']
             branch_id = branch['id']
 
-            last_rule = get_last_start_rule(branch_id)
-            next_rule = get_next_active_rule(branch_id)
+            last_rule = database.get_last_start_rule(branch_id)
+            next_rule = database.get_next_active_rule(branch_id)
 
             res[int(branch_id)] = {'id': branch_id, 'status': status, 'next_rule': next_rule, 'last_rule': last_rule}
         return res
@@ -642,7 +642,7 @@ def activate_branch():
         logging.debug("res:{0}".format(res[0]))
 
         set_next_rule_to_redis(branch_id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
-        logging.info("Rule '{0}' added".format(str(get_next_active_rule(branch_id))))
+        logging.info("Rule '{0}' added".format(str(database.get_next_active_rule(branch_id))))
 
     if (mode == 'interval'):
         # first interval is already added
@@ -732,7 +732,7 @@ def deactivate_branch():
         else:
             database.update(database.QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
 
-        set_next_rule_to_redis(branch_id, get_next_active_rule(branch_id))
+        set_next_rule_to_redis(branch_id, database.get_next_active_rule(branch_id))
         logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(branch_id))))
 
         logging.info("Branch '{0}' deactivated manually".format(branch_id))
