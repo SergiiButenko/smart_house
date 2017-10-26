@@ -4,15 +4,14 @@ import datetime
 import json
 import requests
 import time
-import inspect
-import sqlite3
 import logging
-import redis
+from helpers import sqlite_database as database
+from helpers.redis import *
+from helpers.common import *
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
-redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 BACKEND_IP = 'http://127.0.0.1:7542'
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
@@ -30,64 +29,6 @@ USERS = [
     {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
     {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
-
-# For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
-mn = lambda: inspect.stack()[1][3]
-
-QUERY = {}
-# QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time FROM life AS l WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time, li.name FROM life AS l, lines as li WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND li.number = l.line_id AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
-QUERY['enable_rule'] = "UPDATE life SET state={1} WHERE id={0}"
-QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 and interval_id={0}"
-QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
-QUERY['inspect_conditions'] = "UPDATE life SET state={0} WHERE id={1}"
-
-
-def date_handler(obj):
-    """Convert datatime to string format."""
-    if hasattr(obj, 'isoformat'):
-        return obj.isoformat()
-    else:
-        raise TypeError
-
-
-def date_hook(json_dict):
-    """Convert str to datatime object."""
-    for (key, value) in json_dict.items():
-        try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-        except:
-            pass
-        try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
-        except:
-            pass
-    return json_dict
-
-
-def set_next_rule_to_redis(branch_id, data):
-    """Set next rule in redis."""
-    try:
-        data = json.dumps(data, default=date_handler)
-        res = redis_db.set(branch_id, data)
-    except Exception as e:
-        logging.error("Can't save data to redis. Exception occured {0}".format(e))
-
-    return res
-
-
-def get_next_rule_from_redis(branch_id):
-    """Get next rule from redis."""
-    try:
-        data = redis_db.get(branch_id)
-        if data is None:
-            return None
-
-        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
-    except Exception as e:
-        logging.error("Can't get data from redis. Exception occured {0}".format(e))
-
-    return json_to_data
 
 
 def branch_on(line_id, alert_time):
@@ -108,11 +49,6 @@ def branch_on(line_id, alert_time):
                     logging.info('Branch {0} is turned on by rule'.format(line_id))
                     return response
 
-            except requests.exceptions.Timeout as e:
-                logging.error(e)
-                logging.error("Can't turn on {0} branch by rule. Timeout Exception occured  {1} try out of 2".format(line_id, attempt))
-                time.sleep(2)
-                continue
             except Exception as e:
                 logging.error(e)
                 logging.error("Can't turn on {0} branch by rule. Exception occured. {1} try out of 2".format(line_id, attempt))
@@ -160,67 +96,6 @@ def branch_off(line_id):
         logging.error(e)
         logging.error("Can't turn off {0} branch by rule. Exception occured".format(line_id))
         raise Exception("Can't turn off {0} branch".format(line_id))
-
-
-# executes query and returns fetch* result
-def execute_request(query, method='fetchall'):
-    """Blablbal."""
-    conn = None
-    try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn.cursor will return a cursor object, you can use this cursor to perform queries
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        # execute our Query
-        cursor.execute(query)
-        logging.debug("db request '{0}' executed".format(query))
-        return getattr(cursor, method)()
-    except Exception as e:
-        logging.error("Error while performing operation with database: {0}".format(e))
-        return None
-    finally:
-        try:
-            if conn is not None:
-                conn.close()
-        except Exception as e:
-            logging.error("Error while closing connection with database: {0}".format(e))
-
-
-# executes query and returns fetch* result
-def update_db_request(query):
-    """Blablbal."""
-    conn = None
-    lastrowid = 0
-    try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn.cursor will return a cursor object, you can use this cursor to perform queries
-        cursor = conn.cursor()
-        # execute our Query
-        cursor.execute(query)
-        conn.commit()
-        logging.debug("db request '{0}' executed".format(query))
-        lastrowid = cursor.lastrowid
-        return lastrowid
-    except Exception as e:
-        logging.error("Error while performing operation with database: {0}".format(e))
-    finally:
-        try:
-            if conn is not None:
-                conn.close()
-        except Exception as e:
-            logging.error("Error while closing connection with database: {0}".format(e))
-            return None
-
-
-def get_next_active_rule(line_id):
-    """Blablbal."""
-    query = QUERY[mn()].format(line_id)
-    res = execute_request(query, 'fetchone')
-    if res is None:
-        return None
-
-    logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
 
 
 def update_all_rules():
