@@ -57,10 +57,8 @@ QUERY['power_outlets_settings'] = QUERY['power_outlets']
 
 QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines order by number"
 
-
-
-
 QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 and interval_id={0}"
+
 
 # executes query and returns fetch* result
 def select(query, method='fetchall'):
