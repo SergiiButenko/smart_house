@@ -149,7 +149,7 @@ def branch_settings():
 @app.route("/lighting")
 def lighting():
     """Return branch names."""
-    light_list = []
+    branch_list = []
     for item in BRANCHES_SETTINGS:
         if item is not None and item['line_type'] == 'lighting':
             branch_list.append({
@@ -157,13 +157,13 @@ def lighting():
                 'name': item['name'],
                 'default_time': item['time']})
 
-    return render_template('lighting.html', my_list=light_list)
+    return render_template('lighting.html', my_list=branch_list)
 
 
 @app.route("/lighting_settings")
 def lighting_settings():
     """Return branch names."""
-    light_list = []
+    branch_list = []
     for item in BRANCHES_SETTINGS:
         if item is not None and item['line_type'] == 'lighting':
             branch_list.append({
@@ -171,13 +171,13 @@ def lighting_settings():
                 'name': item['name'],
                 'default_time': item['time']})
 
-    return jsonify(list=light_list)
+    return jsonify(list=branch_list)
 
 
 @app.route("/power_outlets")
 def power_outlets():
     """Return branch names."""
-    light_list = []
+    branch_list = []
     for item in BRANCHES_SETTINGS:
         if item is not None and item['line_type'] == 'power_outlet':
             branch_list.append({
@@ -185,13 +185,13 @@ def power_outlets():
                 'name': item['name'],
                 'default_time': item['time']})
 
-    return render_template('power_outlets.html', my_list=light_list)
+    return render_template('power_outlets.html', my_list=branch_list)
 
 
 @app.route("/power_outlets_settings")
 def power_outlets_settings():
     """Return branch names."""
-    light_list = []
+    branch_list = []
     for item in BRANCHES_SETTINGS:
         if item is not None and item['line_type'] == 'power_outlet':
             branch_list.append({
@@ -199,7 +199,7 @@ def power_outlets_settings():
                 'name': item['name'],
                 'default_time': item['time']})
 
-    return jsonify(list=light_list)
+    return jsonify(list=branch_list)
 
 
 @app.route("/add_rule")
