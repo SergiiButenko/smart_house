@@ -134,7 +134,7 @@ def branch_settings():
     """Return branch names."""
     branch_list = []
     for item in BRANCHES_SETTINGS:
-        if item['line_type'] == 'irrigation':
+        if item is not None and item['line_type'] == 'irrigation':
             branch_list.append({
                 'id': item['branch_id'],
                 'name': item['name'],
@@ -151,7 +151,7 @@ def lighting():
     """Return branch names."""
     light_list = []
     for item in BRANCHES_SETTINGS:
-        if item['line_type'] == 'lighting':
+        if item is not None and item['line_type'] == 'lighting':
             branch_list.append({
                 'id': item['branch_id'],
                 'name': item['name'],
@@ -165,7 +165,7 @@ def lighting_settings():
     """Return branch names."""
     light_list = []
     for item in BRANCHES_SETTINGS:
-        if item['line_type'] == 'lighting':
+        if item is not None and item['line_type'] == 'lighting':
             branch_list.append({
                 'id': item['branch_id'],
                 'name': item['name'],
@@ -179,7 +179,7 @@ def power_outlets():
     """Return branch names."""
     light_list = []
     for item in BRANCHES_SETTINGS:
-        if item['line_type'] == 'power_outlet':
+        if item is not None and item['line_type'] == 'power_outlet':
             branch_list.append({
                 'id': item['branch_id'],
                 'name': item['name'],
@@ -193,7 +193,7 @@ def power_outlets_settings():
     """Return branch names."""
     light_list = []
     for item in BRANCHES_SETTINGS:
-        if item['line_type'] == 'power_outlet':
+        if item is not None and item['line_type'] == 'power_outlet':
             branch_list.append({
                 'id': item['branch_id'],
                 'name': item['name'],
