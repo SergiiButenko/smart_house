@@ -726,7 +726,7 @@ def deactivate_branch():
         if get_next_rule_from_redis(branch_id) is not None:
             database.update(database.QUERY[mn() + '_1'].format(get_next_rule_from_redis(branch_id)['interval_id']))
         else:
-            database.update(database.QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
+            database.update(database.QUERY[mn() + '_2'].format(branch_id, 2, 4, now.date(), now, None))
 
         set_next_rule_to_redis(branch_id, database.get_next_active_rule(branch_id))
         logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(branch_id))))
