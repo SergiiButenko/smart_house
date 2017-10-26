@@ -102,7 +102,7 @@ def update_all_rules():
     """Set next active rules for all branches."""
     try:
         for i in range(1, len(RULES_FOR_BRANCHES)):
-            set_next_rule_to_redis(i, get_next_active_rule(i))
+            set_next_rule_to_redis(i, database.get_next_active_rule(i))
         logging.info("Rules updated")
     except Exception as e:
         logging.error("Exeption occured while updating all rules. {0}".format(e))
@@ -134,7 +134,7 @@ def inspect_conditions(rule):
         # json_data = json.loads(response.text)
         # if (json_data['data']['allow_irrigation'] is False):
         #     if (rule['rule_id'] == 1):
-        #         update_db_request(QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
+        #         update_db_request(database.QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
         #         logging.warn("Rule '{0}' is canceled. {1}".format(rule['id'], json_data['data']['user_message']))
         #         return False
         #     else:
@@ -223,15 +223,15 @@ def enable_rule():
                     except Exception as e:
                         logging.error("Rule '{0}' can't be executed. Exception occured. {1}".format(str(rule), e))
                         # Set failed state
-                        update_db_request(QUERY[mn() + '_cancel_interval'].format(rule['interval_id'], 3))
-                        update_db_request(QUERY[mn()].format(rule['id'], 3))
+                        update_db_request(database.QUERY[mn() + '_cancel_interval'].format(rule['interval_id'], 3))
+                        update_db_request(database.QUERY[mn()].format(rule['id'], 3))
                     else:
                         logging.info("Rule '{0}' is done.".format(str(rule)))
                         # Set ok state
-                        update_db_request(QUERY[mn()].format(rule['id'], 2))
+                        update_db_request(database.QUERY[mn()].format(rule['id'], 2))
                     finally:
                         logging.debug("get next active rule")
-                        set_next_rule_to_redis(rule['line_id'], get_next_active_rule(rule['line_id']))
+                        set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
     except Exception as e:
         logging.error("enable rule thread exception occured. {0}".format(e))
     finally:
