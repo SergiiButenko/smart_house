@@ -2,7 +2,6 @@ import redis
 import logging
 import json
 import datetime
-from dateutil import parser
 
 from pytz import timezone
 from helpers.common import *
@@ -42,7 +41,7 @@ def date_hook(json_dict):
             pass
 
         try:
-            json_dict[key] = parser.parse(value)
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f+00:00")
         except:
             pass
             # 2017-10-26T15:29:51.685474+00:00
