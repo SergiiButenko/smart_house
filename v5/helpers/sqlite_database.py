@@ -10,11 +10,6 @@ QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l
 
 QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
 
-QUERY['branch_settings'] = "SELECT number, name, time, intervals, time_wait, start_time from lines where line_type='irrigation' order by number"
-
-QUERY['lighting'] = "SELECT number, name, time from lines where line_type='lighting' order by number"
-QUERY['lighting_settings'] = QUERY['lighting']
-
 QUERY['history'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') and l.state = rule_state.id order by l.timer desc"
 
 QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
@@ -51,9 +46,6 @@ QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and 
 
 QUERY['temperature_1'] = "SELECT * FROM temperature_statistics limit 1"
 QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')"
-
-QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type='power_outlet' order by number"
-QUERY['power_outlets_settings'] = QUERY['power_outlets']
 
 QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines order by number"
 

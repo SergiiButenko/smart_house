@@ -123,23 +123,25 @@ def update_rules():
     return "OK"
 
 
+@app.route("/")
+def index():
+    """Index page."""
+    return render_template('index.html')
+
+
 @app.route("/branch_settings")
 def branch_settings():
     """Return branch names."""
     branch_list = []
-    res = database.select(database.QUERY[mn()], 'fetchall')
-    if res is None:
-        logging.error("Can't get branches settings from database")
-        abort(500)
-
-    for row in res:
-        branch_list.append({
-            'id': row[0],
-            'name': row[1],
-            'default_time': row[2],
-            'default_interval': row[3],
-            'default_time_wait': row[4],
-            'start_time': row[5]})
+    for item in BRANCHES_SETTINGS:
+        if item['line_type'] == 'irrigation':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time'],
+                'default_interval': item['intervals'],
+                'default_time_wait': item['time_wait'],
+                'start_time': item['start_time']})
 
     return jsonify(list=branch_list)
 
@@ -148,13 +150,12 @@ def branch_settings():
 def lighting():
     """Return branch names."""
     light_list = []
-    res = database.select(database.QUERY[mn()], 'fetchall')
-    if res is None:
-        logging.error("Can't get light names from database")
-        abort(500)
-
-    for row in res:
-        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+    for item in BRANCHES_SETTINGS:
+        if item['line_type'] == 'lighting':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time']})
 
     return render_template('lighting.html', my_list=light_list)
 
@@ -163,13 +164,12 @@ def lighting():
 def lighting_settings():
     """Return branch names."""
     light_list = []
-    res = database.select(database.QUERY[mn()], 'fetchall')
-    if res is None:
-        logging.error("Can't get light settings from database")
-        abort(500)
-
-    for row in res:
-        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+    for item in BRANCHES_SETTINGS:
+        if item['line_type'] == 'lighting':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time']})
 
     return jsonify(list=light_list)
 
@@ -178,13 +178,12 @@ def lighting_settings():
 def power_outlets():
     """Return branch names."""
     light_list = []
-    res = database.select(database.QUERY[mn()], 'fetchall')
-    if res is None:
-        logging.error("Can't get light names from database")
-        abort(500)
-
-    for row in res:
-        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+    for item in BRANCHES_SETTINGS:
+        if item['line_type'] == 'power_outlet':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time']})
 
     return render_template('power_outlets.html', my_list=light_list)
 
@@ -193,21 +192,14 @@ def power_outlets():
 def power_outlets_settings():
     """Return branch names."""
     light_list = []
-    res = database.select(database.QUERY[mn()], 'fetchall')
-    if res is None:
-        logging.error("Can't get power outlet settings from database")
-        abort(500)
-
-    for row in res:
-        light_list.append({'id': row[0], 'name': row[1], 'default_time': row[2]})
+    for item in BRANCHES_SETTINGS:
+        if item['line_type'] == 'power_outlet':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time']})
 
     return jsonify(list=light_list)
-
-
-@app.route("/")
-def index():
-    """Index page."""
-    return render_template('index.html')
 
 
 @app.route("/add_rule")
