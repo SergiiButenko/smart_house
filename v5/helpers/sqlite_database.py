@@ -80,7 +80,7 @@ QUERY['deactivate_branch_1'] = (
 
 QUERY['deactivate_branch_2'] = (
     "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) "
-    "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
+    "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')")
 
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
 QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
