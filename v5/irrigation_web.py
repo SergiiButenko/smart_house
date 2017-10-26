@@ -8,10 +8,8 @@ import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
-
 import json
 import requests
-import inspect
 import logging
 import uuid
 import pytemperature
@@ -19,6 +17,7 @@ import time
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
+from helpers.common import *
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -34,9 +33,6 @@ DEBUG = False
 
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
-
-# For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be database.QUERY[mn()].format(....)
-mn = lambda: inspect.stack()[1][3]
 
 
 BRANCHES_LENGTH = 18
