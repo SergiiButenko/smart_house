@@ -37,20 +37,20 @@
 {% block container %}
 <div id="card-holder">
     <div class="row">
-        {% for n in range(1,17) %}
-        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4" style="display:none">
-            <div class="card card-irrigation" id="card-{{n}}">
+        {% for n in my_list %}
+        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-4">
+            <div class="card card-irrigation" id="card-{{n['id']}}">
                 <div class="card-block">
-                    <h4 class="card-title" id="title-{{n}}">Назва</h4>
+                    <h4 class="card-title" id="title-{{n['id']}}">Назва</h4>
                     <p class="card-text text-muted">
-                        <span id="last-{{n}}"></span>
-                        <span id="next-{{n}}"></span>
+                        <span id="last-{{n['id']}}"></span>
+                        <span id="next-{{n['id']}}"></span>
                     </p>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary btn-open-modal" data-id={{n}} id="btn-start-{{n}}">Почати полив</a>
-                    <a href="#" class="btn btn-primary stop-irrigation" data-id={{n}} id="btn-stop-{{n}}">Зупинити полив</a>
-                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n}} id="btn-cancel-{{n}}">Скасувати запланований полив</a>
+                    <a href="#" class="btn btn-primary btn-open-modal" data-id={{n['id']}} id="btn-start-{{n['id']}}">Почати полив</a>
+                    <a href="#" class="btn btn-primary stop-irrigation" data-id={{n['id']}} id="btn-stop-{{n['id']}}">Зупинити полив</a>
+                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n['id']}} id="btn-cancel-{{n['id']}}">Скасувати запланований полив</a>
                     <span class="status-span">В системі помилка</span>
                 </div>
             </div>
@@ -58,7 +58,7 @@
         {% endfor %}
     </div>
     <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-4">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-4">
         <div class="card" id="card-17">
             <div class="card-block">
                 <h4 class="card-title" id="title-17">Насос</h4>

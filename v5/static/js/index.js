@@ -22,14 +22,14 @@ $(document).ready(function() {
                     'start_time': new Date(item['start_time'])
                 }
 
-                for (var i = 1; i < branch.length; i++) {
-                    if (branch[i] != undefined) {
-                        $('#card-' + i).parent().css('display', 'inline-block');
-                        $('#title-' + i).text(branch[i]['name']);
-                    } else {
-                        $('#card-' + i).parent().remove();
-                    }
-                }
+                // for (var i = 1; i < branch.length; i++) {
+                //     if (branch[i] != undefined) {
+                //         $('#card-' + i).parent().css('display', 'inline-block');
+                //         $('#title-' + i).text(branch[i]['name']);
+                //     } else {
+                //         $('#card-' + i).parent().remove();
+                //     }
+                // }
             }
         }
     });
@@ -197,6 +197,7 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
         },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be active now');
+            console.log('data' + data);
             update_branches(data);
         },
         error: function() {

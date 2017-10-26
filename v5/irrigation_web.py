@@ -34,7 +34,6 @@ DEBUG = False
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
-
 BRANCHES_LENGTH = 18
 RULES_FOR_BRANCHES = [None] * BRANCHES_LENGTH
 BRANCHES_SETTINGS = [None] * BRANCHES_LENGTH
@@ -126,7 +125,17 @@ def update_rules():
 @app.route("/")
 def index():
     """Index page."""
-    return render_template('index.html')
+    branch_list = []
+    for item in BRANCHES_SETTINGS:
+        if item is not None and item['line_type'] == 'irrigation':
+            branch_list.append({
+                'id': item['branch_id'],
+                'name': item['name'],
+                'default_time': item['time'],
+                'default_interval': item['intervals'],
+                'default_time_wait': item['time_wait'],
+                'start_time': item['start_time']})
+    return render_template('index.html', my_list=branch_list)
 
 
 @app.route("/branch_settings")
