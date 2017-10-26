@@ -33,10 +33,17 @@ def date_hook(json_dict):
             json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
         except:
             pass
+
         try:
             json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
         except:
             pass
+
+        try:
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
+        except:
+            pass
+            # 2017-10-26T15:29:51.685474+00:00
     return json_dict
 
 
