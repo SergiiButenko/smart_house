@@ -8,17 +8,17 @@ import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
 import datetime
-from pytz import timezone
+
 import json
 import requests
 import inspect
-import sqlite3
 import logging
 import uuid
-import redis
 import pytemperature
 import time
 from controllers import relay_controller as garden_controller
+from helpers import sqlite_database as database
+from helpers.redis import *
 
 eventlet.monkey_patch()
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
@@ -29,245 +29,19 @@ logging.getLogger('engineio').setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
-redis_db = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 DEBUG = False
 
 VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
 ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
 
-# For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
+# For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be database.QUERY[mn()].format(....)
 mn = lambda: inspect.stack()[1][3]
+
 
 BRANCHES_LENGTH = 18
 RULES_FOR_BRANCHES = [None] * BRANCHES_LENGTH
 BRANCHES_SETTINGS = [None] * BRANCHES_LENGTH
-
-
-QUERY = {}
-QUERY['get_next_active_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id, l.time, li.name  FROM life AS l, lines as li WHERE l.state = 1 AND l.active=1 AND l.line_id={0} AND li.number = l.line_id AND timer>=datetime('now', 'localtime') ORDER BY timer LIMIT 1"
-QUERY['get_last_start_rule'] = "SELECT l.id, l.line_id, l.rule_id, l.timer as \"[timestamp]\", l.interval_id  FROM life AS l WHERE l.state = 2 AND l.active=1 AND l.rule_id = 1 AND l.line_id={0} AND timer<=datetime('now', 'localtime') ORDER BY timer DESC LIMIT 1"
-QUERY['get_table_body_only'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.interval_id FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number and l.state = rule_state.id order by l.id, l.timer desc, l.interval_id"
-
-QUERY['ongoing_rules_table'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-
-QUERY['branch_settings'] = "SELECT number, name, time, intervals, time_wait, start_time from lines where line_type='irrigation' order by number"
-
-QUERY['lighting'] = "SELECT number, name, time from lines where line_type='lighting' order by number"
-QUERY['lighting_settings'] = QUERY['lighting']
-
-QUERY['history'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') and l.state = rule_state.id order by l.timer desc"
-
-QUERY['ongoing_rules'] = "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type WHERE  w.day_number = dw.num AND w.line_id = li.number and w.rule_id = rule_type.id ORDER BY w.day_number, w.time"
-
-QUERY['get_timetable_list_1'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer<=datetime('now', 'localtime','+{0} day') and l.state = rule_state.id  order by l.timer desc"
-QUERY['get_timetable_list_2'] = "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') and l.timer<=datetime('now', 'localtime', '+{0} hour') and l.state = rule_state.id  order by l.timer desc"
-
-QUERY['add_rule'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
-QUERY['add_rule_endpoint_v2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
-
-QUERY['add_ongoing_rule'] = "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) VALUES ({0}, {1}, {2}, '{3}', {4}, 1)"
-
-QUERY['activate_branch_1'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})"
-QUERY['activate_branch_2'] = "SELECT l.id, l.line_id, l.rule_id, l.timer, l.interval_id, l.time, li.name FROM life as l, lines as li where l.id = {0} and li.number = l.line_id"
-
-QUERY['deactivate_branch_1'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
-QUERY['deactivate_branch_2'] = "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')"
-
-QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
-QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
-
-QUERY['activate_ongoing_rule'] = "UPDATE week_schedule SET active=1 WHERE id={0}"
-
-QUERY['deactivate_ongoing_rule'] = "UPDATE week_schedule SET active=0 WHERE id={0}"
-
-QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
-
-QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
-
-QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
-
-QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
-QUERY['cancel_rule_2'] = "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
-
-QUERY['temperature_1'] = "SELECT * FROM temperature_statistics limit 1"
-QUERY['temperature_2'] = "INSERT INTO temperature_statistics (temperature_street, humidity_street, temperature_small_h_1_fl, humidity_small_h_1_fl, temperature_small_h_2_fl, humidity_small_h_2_fl, temperature_big_h_1_fl, humidity_big_h_1_fl, temperature_big_h_2_fl, humidity_big_h_2_fl) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}')"
-
-QUERY['power_outlets'] = "SELECT number, name, time from lines where line_type='power_outlet' order by number"
-QUERY['power_outlets_settings'] = QUERY['power_outlets']
-
-QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines order by number"
-
-
-@socketio.on_error_default
-def error_handler(e):
-    """Handle error for websockets."""
-    logging.error('error_handler for socketio. An error has occurred: ' + str(e))
-
-
-@socketio.on('connect')
-def connect():
-    """Log info if user is connected to websocket."""
-    logging.info('Client connected')
-
-
-@socketio.on('disconnect')
-def disconnect():
-    """Log info if user is disconnected to websocket."""
-    logging.info('Client disconnected')
-
-
-def date_handler(obj):
-    """Convert datatime to string format."""
-    if hasattr(obj, 'isoformat'):
-        datetime_obj_utc = obj.replace(tzinfo=timezone('UTC'))
-        return datetime_obj_utc.isoformat()
-    else:
-        raise TypeError
-
-
-def convert_to_obj(data):
-    """Convert to dict."""
-    try:
-        data = json.loads(data)
-    except:
-        pass
-    return data
-
-
-def date_hook(json_dict):
-    """Convert str to datatime object."""
-    for (key, value) in json_dict.items():
-        try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-        except:
-            pass
-        try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
-        except:
-            pass
-    return json_dict
-
-
-def set_next_rule_to_redis(branch_id, data):
-    """Set next rule in redis."""
-    res = False
-    try:
-        data = json.dumps(data, default=date_handler)
-        res = redis_db.set(branch_id, data)
-    except Exception as e:
-        logging.error("Can't save data to redis. Exception occured {0}".format(e))
-
-    return res
-
-
-def get_next_rule_from_redis(branch_id):
-    """Get next rule from redis."""
-    json_to_data = None
-    try:
-        data = redis_db.get(branch_id)
-        if data is None:
-            return None
-
-        json_to_data = json.loads(data.decode("utf-8"), object_hook=date_hook)
-    except Exception as e:
-        logging.error("Can't get data from redis. Exception occured {0}".format(e))
-
-    return json_to_data
-
-
-def send_message(channel, data):
-    """Enclose emit method into try except block."""
-    try:
-        socketio.emit(channel, data)
-        logging.info('Message was sent.')
-        logging.debug(data)
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't send message. Exeption occured")
-
-
-def send_branch_status_message(channel, data):
-    """Convert data in order to send data object."""
-    send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
-
-
-# executes query and returns fetch* result
-def execute_request(query, method='fetchall'):
-    """Use this method in case you need to get info from database."""
-    conn = None
-    try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-
-        # conn.cursor will return a cursor object, you can use this cursor to perform queries
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        # execute our Query
-        cursor.execute(query)
-        logging.debug("db request '{0}' executed".format(query))
-        return getattr(cursor, method)()
-    except Exception as e:
-        logging.error("Error while performing operation with database: '{0}'. query: '{1}'".format(e, query))
-        return None
-    finally:
-        try:
-            if conn is not None:
-                conn.close()
-        except Exception as e:
-            logging.error("Error while closing connection with database: {0}".format(e))
-
-
-# executes query and returns fetch* result
-def update_db_request(query):
-    """Doesn't have fetch* methods. Returns lastrowid after database insert command."""
-    conn = None
-    lastrowid = -1
-    try:
-        conn = sqlite3.connect('/var/sqlite_db/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('/home/sergey/repos/irrigation_peregonivka/test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        # conn = sqlite3.connect('C:\\repos\\irrigation_peregonivka\\test_v4', detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-
-        # conn.cursor will return a cursor object, you can use this cursor to perform queries
-        cursor = conn.cursor()
-        # execute our Query
-        cursor.execute(query)
-        conn.commit()
-        logging.debug("db request '{0}' executed".format(query))
-        lastrowid = cursor.lastrowid
-        return lastrowid
-    except Exception as e:
-        logging.error("Error while performing operation with database: '{0}'. query: '{1}'".format(e, query))
-    finally:
-        try:
-            if conn is not None:
-                conn.close()
-        except Exception as e:
-            logging.error("Error while closing connection with database: {0}".format(e))
-            return None
-
-
-def get_next_active_rule(line_id):
-    """Return nex active rule."""
-    query = QUERY[mn()].format(line_id)
-    res = execute_request(query, 'fetchone')
-    if res is None:
-        return None
-
-    logging.info("Next active rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]}
-
-
-def get_last_start_rule(line_id):
-    """Return last compeled start irrigation rule."""
-    query = QUERY[mn()].format(line_id)
-    res = execute_request(query, 'fetchone')
-    if res is None:
-        return None
-
-    logging.debug("Last completed rule retrieved for line id {0}".format(line_id))
-    return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
 
 
 def update_all_rules():
@@ -283,7 +57,7 @@ def update_all_rules():
 def get_settings():
     """Fill up settings array to save settings for branches."""
     try:
-        branches = execute_request(QUERY[mn()])
+        branches = database.select(database.QUERY[mn()])
         # QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled from lines where line_type='power_outlet' order by number"
         for row in branches:
             branch_id = row[0]
@@ -312,6 +86,40 @@ def get_settings():
         logging.error("Exceprion occured when trying to get settings for all branches. {0}".format(e))
 
 
+@socketio.on_error_default
+def error_handler(e):
+    """Handle error for websockets."""
+    logging.error('error_handler for socketio. An error has occurred: ' + str(e))
+
+
+@socketio.on('connect')
+def connect():
+    """Log info if user is connected to websocket."""
+    logging.info('Client connected')
+
+
+@socketio.on('disconnect')
+def disconnect():
+    """Log info if user is disconnected to websocket."""
+    logging.info('Client disconnected')
+
+
+def send_message(channel, data):
+    """Enclose emit method into try except block."""
+    try:
+        socketio.emit(channel, data)
+        logging.info('Message was sent.')
+        logging.debug(data)
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't send message. Exeption occured")
+
+
+def send_branch_status_message(channel, data):
+    """Convert data in order to send data object."""
+    send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
+
+
 @app.route("/update_all_rules")
 def update_rules():
     """Synchronize rules with database."""
@@ -323,7 +131,7 @@ def update_rules():
 def branch_settings():
     """Return branch names."""
     branch_list = []
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = database.select(database.QUERY[mn()], 'fetchall')
     if res is None:
         logging.error("Can't get branches settings from database")
         abort(500)
@@ -344,7 +152,7 @@ def branch_settings():
 def lighting():
     """Return branch names."""
     light_list = []
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = database.select(database.QUERY[mn()], 'fetchall')
     if res is None:
         logging.error("Can't get light names from database")
         abort(500)
@@ -359,7 +167,7 @@ def lighting():
 def lighting_settings():
     """Return branch names."""
     light_list = []
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = database.select(database.QUERY[mn()], 'fetchall')
     if res is None:
         logging.error("Can't get light settings from database")
         abort(500)
@@ -374,7 +182,7 @@ def lighting_settings():
 def power_outlets():
     """Return branch names."""
     light_list = []
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = database.select(database.QUERY[mn()], 'fetchall')
     if res is None:
         logging.error("Can't get light names from database")
         abort(500)
@@ -389,7 +197,7 @@ def power_outlets():
 def power_outlets_settings():
     """Return branch names."""
     light_list = []
-    res = execute_request(QUERY[mn()], 'fetchall')
+    res = database.select(database.QUERY[mn()], 'fetchall')
     if res is None:
         logging.error("Can't get power outlet settings from database")
         abort(500)
@@ -415,9 +223,9 @@ def add_rule_page():
 def get_table_body_only(query=None):
     """If no query is passed returns all entries from life table."""
     if (query is None):
-        query = QUERY[mn()]
+        query = database.QUERY[mn()]
 
-    list_arr = execute_request(query, 'fetchall')
+    list_arr = database.select(query, 'fetchall')
 
     rows = []
     if list_arr is not None:
@@ -457,7 +265,7 @@ def history():
     else:
         days = 60
 
-    list_arr = execute_request(QUERY[mn()].format(days), 'fetchall')
+    list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
     rows = []
     if list_arr is not None:
         for row in list_arr:
@@ -507,15 +315,15 @@ def add_rule_endpoint():
         now = datetime.datetime.now()
         stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+        database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+        database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
         # first interval is executed
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+            database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
@@ -533,7 +341,7 @@ def cancel_rule():
     requester = request.args.get('requester')
 
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
-    res = execute_request(QUERY[mn() + "_1"].format(id), 'fetchone')
+    res = database.select(database.QUERY[mn() + "_1"].format(id), 'fetchone')
     if (res is None):
         logging.error("No {0} rule id in database".format(id))
         abort(500)
@@ -541,7 +349,7 @@ def cancel_rule():
     interval_id = res[0]
     # branch_name = res[1]
     # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
-    update_db_request(QUERY[mn() + '_2'].format(interval_id))
+    database.update(database.QUERY[mn() + '_2'].format(interval_id))
     update_all_rules()
 
     try:
@@ -560,7 +368,7 @@ def cancel_rule():
 
 def ongoing_rules_table():
     """Return only table for ongoing rules page."""
-    list_arr = execute_request(QUERY[mn()], 'fetchall')
+    list_arr = database.select(database.QUERY[mn()], 'fetchall')
     if (list_arr is None):
         list_arr = []
 
@@ -591,7 +399,7 @@ def ongoing_rules_table():
 @app.route("/ongoing_rules")
 def ongoing_rules():
     """Return ongoing_rules.html."""
-    list_arr = execute_request(QUERY[mn()], 'fetchall')
+    list_arr = database.select(database.QUERY[mn()], 'fetchall')
     if (list_arr is None):
         list_arr = []
 
@@ -620,7 +428,7 @@ def add_ongoing_rule():
     time_start = request.args.get('datetime_start')
     dow = int(request.args.get('dow'))
 
-    update_db_request(QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
+    database.update(database.QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -631,7 +439,7 @@ def add_ongoing_rule():
 def remove_ongoing_rule():
     """User can remove ongoing rule from ui."""
     id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
+    database.update(database.QUERY[mn()].format(id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -642,7 +450,7 @@ def remove_ongoing_rule():
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
     # id = int(request.args.get('id'))
-    # update_db_request(QUERY[mn()].format(id))
+    # database.update(database.QUERY[mn()].format(id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -653,7 +461,7 @@ def edit_ongoing_rule():
 def activate_ongoing_rule():
     """User can activate ongoing rule from ui."""
     id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
+    database.update(database.QUERY[mn()].format(id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -664,7 +472,7 @@ def activate_ongoing_rule():
 def deactivate_ongoing_rule():
     """User can deactivate ongoing rule from ui."""
     id = int(request.args.get('id'))
-    update_db_request(QUERY[mn()].format(id))
+    database.update(database.QUERY[mn()].format(id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -676,12 +484,12 @@ def get_timetable_list():
     """Blablbal."""
     if 'days' in request.args:
         days = int(request.args.get('days'))
-        return get_table_body_only(QUERY[mn() + '_1'].format(days))
+        return get_table_body_only(database.QUERY[mn() + '_1'].format(days))
 
     if 'before' in request.args and 'after' in request.args:
         before = int(request.args.get('before'))
         after = int(request.args.get('after'))
-        return get_table_body_only(QUERY[mn() + '_2'].format(before, after))
+        return get_table_body_only(database.QUERY[mn() + '_2'].format(before, after))
 
 
 def form_responce_for_branches(payload):
@@ -826,11 +634,11 @@ def activate_branch():
         now = datetime.datetime.now()
         stop_time = now + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn() + '_1'].format(branch_id, 1, 2, now.date(), now, interval_id, time_min))
-        lastid = update_db_request(QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+        database.update(database.QUERY[mn() + '_1'].format(branch_id, 1, 2, now.date(), now, interval_id, time_min))
+        lastid = database.update(database.QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
         logging.debug("lastid:{0}".format(lastid))
 
-        res = execute_request(QUERY[mn() + '_2'].format(lastid), 'fetchone')
+        res = database.select(database.QUERY[mn() + '_2'].format(lastid), 'fetchone')
         logging.debug("res:{0}".format(res[0]))
 
         set_next_rule_to_redis(branch_id, {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'user_friendly_name': res[6], 'timer': res[3], 'interval_id': res[4], 'time': res[5]})
@@ -841,8 +649,8 @@ def activate_branch():
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn() + '_1'].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-            update_db_request(QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+            database.update(database.QUERY[mn() + '_1'].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            database.update(database.QUERY[mn() + '_1'].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     if (mode == 'auto'):
@@ -920,9 +728,9 @@ def deactivate_branch():
     if (mode == 'manually'):
         now = datetime.datetime.now()
         if get_next_rule_from_redis(branch_id) is not None:
-            update_db_request(QUERY[mn() + '_1'].format(get_next_rule_from_redis(branch_id)['interval_id']))
+            database.update(database.QUERY[mn() + '_1'].format(get_next_rule_from_redis(branch_id)['interval_id']))
         else:
-            update_db_request(QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
+            database.update(database.QUERY[mn() + '_2'].format(id, 2, 4, now.date(), now, None))
 
         set_next_rule_to_redis(branch_id, get_next_active_rule(branch_id))
         logging.info("Rule '{0}' added".format(str(get_next_rule_from_redis(branch_id))))
@@ -1004,7 +812,7 @@ def temperature():
             temperature_small_h_2_fl = 0
             humidity_small_h_2_fl = 0
 
-        update_db_request(QUERY[mn() + '_2'].format(
+        database.update(database.QUERY[mn() + '_2'].format(
             temperature_street, humidity_street,
             temperature_small_h_1_fl, humidity_small_h_1_fl,
             temperature_small_h_2_fl, humidity_small_h_2_fl,
@@ -1012,7 +820,7 @@ def temperature():
             temperature_big_h_2_fl, humidity_big_h_2_fl)
         )
 
-    res = execute_request(QUERY[mn() + '_1'], 'fetchone')
+    res = database.select(database.QUERY[mn() + '_1'], 'fetchone')
     return jsonify(
         datetime=res[0],
         temperature_street=res[1],
