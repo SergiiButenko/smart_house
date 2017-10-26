@@ -10,7 +10,7 @@ from helpers.redis import *
 from helpers.common import *
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
+                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 
 BACKEND_IP = 'http://127.0.0.1:7542'
@@ -134,7 +134,7 @@ def inspect_conditions(rule):
         # json_data = json.loads(response.text)
         # if (json_data['data']['allow_irrigation'] is False):
         #     if (rule['rule_id'] == 1):
-        #         update_db_request(database.QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
+        #         database.update(database.QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
         #         logging.warn("Rule '{0}' is canceled. {1}".format(rule['id'], json_data['data']['user_message']))
         #         return False
         #     else:
@@ -161,7 +161,7 @@ def send_to_viber_bot(rule):
             return
 
         arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)
-        logging.debug("{0} arr was get from redis".format(arr))
+        logging.debug("{0} send rule was get from redis".format(arr))
         if (interval_id.encode() in arr):
             logging.info('interval_id {0} is already send'.format(interval_id))
             return
@@ -223,12 +223,12 @@ def enable_rule():
                     except Exception as e:
                         logging.error("Rule '{0}' can't be executed. Exception occured. {1}".format(str(rule), e))
                         # Set failed state
-                        update_db_request(database.QUERY[mn() + '_cancel_interval'].format(rule['interval_id'], 3))
-                        update_db_request(database.QUERY[mn()].format(rule['id'], 3))
+                        database.update(database.QUERY[mn() + '_cancel_interval'].format(rule['interval_id'], 3))
+                        database.update(database.QUERY[mn()].format(rule['id'], 3))
                     else:
                         logging.info("Rule '{0}' is done.".format(str(rule)))
                         # Set ok state
-                        update_db_request(database.QUERY[mn()].format(rule['id'], 2))
+                        database.update(database.QUERY[mn()].format(rule['id'], 2))
                     finally:
                         logging.debug("get next active rule")
                         set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
