@@ -197,7 +197,6 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
         },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be active now');
-            console.log('data' + data);
             update_branches(data);
         },
         error: function() {
@@ -244,7 +243,6 @@ function update_branches_request() {
 
 function update_branches(json) {
     arr = json['branches']
-    console.log(arr)
 
     for (var i = 0; i <= arr.length; i++) {
         toogle_card(i, arr[i]);
