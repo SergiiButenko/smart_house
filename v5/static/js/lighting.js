@@ -196,4 +196,35 @@ function toogle_card(element_id, branch) {
         $('#btn-start-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#btn-start-with-options-' + element_id).css('display', 'inline-block').removeClass("hidden");
     }
+
+    var options = {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: 'UTC'
+    };
+
+    if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
+        next_rule = branch['next_rule']['timer']
+        next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+
+        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
+        $('#next-' + element_id).html("</br>Наступний запуск: " + next_rule);
+
+        $('#btn-cancel-' + element_id).data('id', branch['next_rule']['id'])
+        $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
+    } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
+        next_rule = branch['next_rule']['timer']
+        next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+
+        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
+        $('#next-' + element_id).html("</br>Освітлення вимкнеться: " + next_rule);
+        $('#btn-cancel-' + element_id).hide().addClass("hidden");
+    } else {
+        $('#next-' + element_id).html("</br>Наступний запуск: немає запису");
+        $('#next-' + element_id).hide().addClass("hidden");
+        $('#btn-cancel-' + element_id).hide().addClass("hidden");
+    }
 }
