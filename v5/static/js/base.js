@@ -55,30 +55,30 @@ $(document).ready(function() {
     // touch_analog_sensor();
 
     // Add arduino touch script to determine if connection is alive
-    (function worker() {
-        $.ajax({
-            url: '/irrigation_lighting_status',
-            beforeSend: function(xhr, opts) {
-                set_status_spinner();
+    // (function worker() {
+    //     $.ajax({
+    //         url: '/irrigation_lighting_status',
+    //         beforeSend: function(xhr, opts) {
+    //             set_status_spinner();
 
-                if ($('#irrigate_modal').hasClass('in')) {
-                    xhr.abort();
-                }
-            },
-            success: function(data) {
-                console.log("connected to arduino");
+    //             if ($('#irrigate_modal').hasClass('in')) {
+    //                 xhr.abort();
+    //             }
+    //         },
+    //         success: function(data) {
+    //             console.log("connected to arduino");
 
-                set_status_ok();
-                setTimeout(worker, arduino_check_connect_sec * 1000);
-            },
-            error: function() {
-                console.error("Can't connect to arduino");
+    //             set_status_ok();
+    //             setTimeout(worker, arduino_check_connect_sec * 1000);
+    //         },
+    //         error: function() {
+    //             console.error("Can't connect to arduino");
 
-                set_status_error();
-                setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-            }
-        });
-    })();
+    //             set_status_error();
+    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
+    //         }
+    //     });
+    // })();
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
 
@@ -114,24 +114,6 @@ $(document).ready(function() {
 });
 
 
-// function touch_arduino() {
-//     $.ajax({
-//         url: server + '/arduino_status',
-//         beforeSend: function(xhr, opts) {
-//             $("#arduino_status").text(class_spin.msg);
-//             $("#button_gif").removeClass().addClass(class_spin.class);
-//         },
-//         success: function(data) {
-//             console.log("connected to arduino");
-//             set_status_ok();
-//         },
-//         error: function() {
-//             console.error("Can't connect to arduino");
-//             set_status_error();
-//         }
-//     });
-// }
-
 function touch_analog_sensor() {
     $.ajax({
         url: server + '/humidity_sensor',
@@ -155,9 +137,7 @@ var class_err = {
     class: 'status-error'
 }
 
-function set_status_error() {
-    $("#system_status").text(class_err.msg);
-    
+function set_status_error() {   
     $(".card-irrigation").addClass(class_err.class);
     $(".card-lighting").addClass(class_err.class);
     
@@ -168,8 +148,6 @@ function set_status_error() {
 }
 
 function set_status_ok() {
-    $("#system_status").text(class_ok.msg);
-
     $(".card-irrigation").removeClass(class_err.class);
     $(".card-lighting").removeClass(class_err.class);
 
@@ -186,7 +164,6 @@ function set_status_ok() {
 }
 
 function set_status_spinner() {
-    $("#system_status").text(class_spin.msg);
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
     

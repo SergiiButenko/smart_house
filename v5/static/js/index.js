@@ -195,6 +195,9 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
             'quantity': interval_quantity,
             'time_wait': time_wait
         },
+        beforeSend: function(xhr, opts) {
+            set_status_spinner();
+        },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be active now');
             update_branches(data);
