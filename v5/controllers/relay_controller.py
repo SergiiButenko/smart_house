@@ -9,6 +9,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 PUMP_PIN = 17
+EXCEPT_PINS = [1, 2, 3, 17]
 
 BRANCHES = [
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
@@ -67,7 +68,7 @@ def check_if_no_active():
     try:
         for branch in BRANCHES:
             # pump won't turn off, cause it stays on after branch off
-            if branch['pin'] == PUMP_PIN:
+            if branch['pin'] in EXCEPT_PINS:
                 continue
 
             state = GPIO.input(branch['pin'])
