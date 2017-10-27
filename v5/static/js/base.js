@@ -155,6 +155,7 @@ function set_status_ok() {
     $(".btn-start").removeClass('disabled');
     $(".stop-lighting").removeClass('disabled');
     $(".stop-power_outlet").removeClass('disabled');
+    $(".stop-irrigation").removeClass('disabled');
 
     $(".status-span").hide();
     $(".btn-open-modal").show();
