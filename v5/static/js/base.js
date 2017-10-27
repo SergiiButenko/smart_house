@@ -169,6 +169,8 @@ function set_status_spinner() {
     
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
+    $(".stop-irrigation").addClass('disabled');
+    
 }
 
 
