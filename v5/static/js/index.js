@@ -201,6 +201,7 @@ function branch_on(index, time_minutes, interval_quantity, time_wait) {
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be active now');
             update_branches(data);
+            set_status_ok();
         },
         error: function() {
             console.error("Can't update " + branch[index]['name']);
@@ -219,9 +220,13 @@ function branch_off(index) {
             'id': index,
             'mode': 'manually'
         },
+        beforeSend: function(xhr, opts) {
+            set_status_spinner();
+        },
         success: function(data) {
             console.log('Line ' + branch[index]['name'] + ' should be deactivated now');
             update_branches(data);
+            set_status_ok();
         },
         error: function() {
             console.error("Can't update " + branch[index]['name']);
