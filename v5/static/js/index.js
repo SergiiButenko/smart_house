@@ -48,32 +48,32 @@ $(document).ready(function() {
     });
 
 
-    // (function worker2() {
-    //     $.ajax({
-    //         url: '/irrigation_lighting_status',
-    //         beforeSend: function(xhr, opts) {
-    //             set_status_spinner();
+    (function worker2() {
+        $.ajax({
+            url: '/irrigation_lighting_status',
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
 
-    //             if ($('#irrigate_modal').hasClass('in')) {
-    //                 xhr.abort();
-    //             }
-    //         },
-    //         success: function(data) {
-    //             console.log("connected to arduino");
+                if ($('#irrigate_modal').hasClass('in')) {
+                    xhr.abort();
+                }
+            },
+            success: function(data) {
+                console.log("connected to arduino");
 
-    //             update_branches(data);
+                update_branches(data);
 
-    //             set_status_ok();
-    //             setTimeout(worker2, arduino_check_connect_sec * 1000);
-    //         },
-    //         error: function() {
-    //             console.error("Can't connect to arduino");
+                set_status_ok();
+                setTimeout(worker2, arduino_check_connect_sec * 1000);
+            },
+            error: function() {
+                console.error("Can't connect to arduino");
 
-    //             set_status_error();
-    //             setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
-    //         }
-    //     });
-    // })();
+                set_status_error();
+                setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
+            }
+        });
+    })();
 
     $('#irrigation_intervals').on('input', function(e) {
         var input = parseInt($(this).val());
