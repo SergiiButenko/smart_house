@@ -73,6 +73,7 @@ def check_if_no_active():
 
             state = GPIO.input(branch['pin'])
             if state == GPIO.HIGH:
+                logging.info("branch {0} is active".format(branch['id']))
                 return False
 
         logging.info("No active branch")
