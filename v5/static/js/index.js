@@ -7,6 +7,19 @@ var branch = [];
 
 $(document).ready(function() {
 
+    var socket = io.connect(server, {
+        'sync disconnect on unload': true
+    });
+    socket.on('connect', function() {
+        console.log("connected to websocket");
+    });
+
+    socket.on('branch_status', function(msg) {
+        console.log('Message received. New brach status: ' + msg.data);
+        update_branches(JSON.parse(msg.data));
+    });
+
+
     //Rename branches
     $.ajax({
         url: '/branch_settings',
@@ -35,32 +48,32 @@ $(document).ready(function() {
     });
 
 
-    (function worker2() {
-        $.ajax({
-            url: '/irrigation_lighting_status',
-            beforeSend: function(xhr, opts) {
-                set_status_spinner();
+    // (function worker2() {
+    //     $.ajax({
+    //         url: '/irrigation_lighting_status',
+    //         beforeSend: function(xhr, opts) {
+    //             set_status_spinner();
 
-                if ($('#irrigate_modal').hasClass('in')) {
-                    xhr.abort();
-                }
-            },
-            success: function(data) {
-                console.log("connected to arduino");
+    //             if ($('#irrigate_modal').hasClass('in')) {
+    //                 xhr.abort();
+    //             }
+    //         },
+    //         success: function(data) {
+    //             console.log("connected to arduino");
 
-                update_branches(data);
+    //             update_branches(data);
 
-                set_status_ok();
-                setTimeout(worker2, arduino_check_connect_sec * 1000);
-            },
-            error: function() {
-                console.error("Can't connect to arduino");
+    //             set_status_ok();
+    //             setTimeout(worker2, arduino_check_connect_sec * 1000);
+    //         },
+    //         error: function() {
+    //             console.error("Can't connect to arduino");
 
-                set_status_error();
-                setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
-            }
-        });
-    })();
+    //             set_status_error();
+    //             setTimeout(worker2, arduino_check_broken_connect_sec * 1000);
+    //         }
+    //     });
+    // })();
 
     $('#irrigation_intervals').on('input', function(e) {
         var input = parseInt($(this).val());
@@ -71,24 +84,11 @@ $(document).ready(function() {
         }
     });
 
-    var socket = io.connect(server, {
-        'sync disconnect on unload': true
-    });
-    socket.on('connect', function() {
-        console.log("connected to websocket");
-    });
-
-    socket.on('branch_status', function(msg) {
-        console.log('Message received. New brach status: ' + msg.data);
-        update_branches(JSON.parse(msg.data));
-    });
-
-
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
-    $('#irrigate_modal').on('hidden.bs.modal', function() {
-        update_branches_request();
-    })
+    // $('#irrigate_modal').on('hidden.bs.modal', function() {
+    //     update_branches_request();
+    // })
 
     $(".btn-open-modal").click(function() {
         index = $(this).data('id');
@@ -293,7 +293,7 @@ function toogle_card(element_id, branch) {
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = branch['next_rule']['timer']
         next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
-        
+
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
         $('#btn-cancel-' + element_id).hide().addClass("hidden");

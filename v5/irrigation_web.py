@@ -658,7 +658,7 @@ def activate_branch():
     arr = form_responce_for_branches(response_arr)
     send_branch_status_message('branch_status', arr)
 
-    return jsonify(branches=json.dumps(arr, default=date_handler))
+    return jsonify(branches=arr)
 
 
 def retry_branch_off(branch_id):
