@@ -199,6 +199,16 @@ function convert_date_to_time(date_str) {
     return hours + ":" + minutest;
 }
 
+function convert_date(date_str) {
+    date = new Date(date_str);
+    var day = ("0" + date.getDate()).slice(-2);
+    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+
+    var res = date.getFullYear() + "-" + (month) + "-" + (day);
+
+    return res;
+}
+
 function convert_date_to_local_date(add_to_date) {
     now = new Date();
     now.setDate(now.getDate() + parseInt(add_to_date));

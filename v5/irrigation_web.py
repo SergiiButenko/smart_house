@@ -401,17 +401,40 @@ def ongoing_rules():
         list_arr = []
 
     rows = []
+    # SELECT id, line_id, time, intervals, time_wait, repeat_value, dow, date_start, time_start, end_value, end_date, end_repeat_quantity 
     for row in list_arr:
-        id = row[0]
-        day_number = row[1]
-        branch_name = row[2]
-        rule_name = row[3]
-        time = row[4]
-        minutes = row[5]
-        active = row[6]
-        rule_state = row[7]
-        rows.append({'id': id, 'branch_name': branch_name, 'dow': day_number, 'rule_name': rule_name,
-                    'time': time, 'minutest': minutes, 'active': active, 'rule_state': rule_state})
+        rule_id = row[0]
+        line_id = row[1]
+        time = row[2]
+        intervals = row[3]
+        time_wait = row[4]
+        repeat_value = row[5]
+        dow = row[6]
+        date_start = row[7]
+        time_start = row[8]
+        end_value = row[9]
+        end_date = row[10]
+        end_repeat_quantity = row[11]
+        active = row[12]
+        name = row[13]
+        rows.append({
+            'rule_id': rule_id,
+            'line_id': line_id,
+            'time': time,
+            'intervals': intervals,
+            'time_wait': time_wait,
+            'repeat_value': repeat_value,
+            'dow': dow,
+            'date_start': date_start,
+            'time_start': time_start,
+            'end_value': end_value,
+            'end_date': end_date,
+            'end_repeat_quantity': end_repeat_quantity,
+            'active': active,
+            'name': name
+            })
+
+    #repeat_value
 
     template = render_template('ongoing_rules.html', my_list=rows)
     return template

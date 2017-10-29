@@ -32,13 +32,15 @@ QUERY['history'] = (
     "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "
     "FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state "
     "WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.state = rule_state.id "
-    "order by l.timer desc")
+    "ORDER BY l.timer desc")
 
 QUERY['ongoing_rules'] = (
-    "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active "
-    "FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type "
-    "WHERE w.day_number = dw.num AND w.line_id = li.number AND w.rule_id = rule_type.id "
-    "ORDER BY w.day_number, w.time")
+    "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
+    "r.dow, r.date_start, r.time_start, r.end_value, r.end_date, "
+    "r.end_repeat_quantity, r.active, l.name"
+    "FROM ongoing_rules as r, lines as l "
+    "WHERE r.line_id = l.number "
+    "ORDER BY date_start")
 
 QUERY['get_timetable_list_1'] = (
     "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "

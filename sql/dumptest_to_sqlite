@@ -44,15 +44,22 @@ CREATE TABLE life (
     FOREIGN KEY(rule_id) REFERENCES type_of_rule(id)
 );
 
-CREATE TABLE state_of_rule (
-    id INTEGER PRIMARY KEY,
-    short_name text NOT NULL,
-    full_name text NOT NULL
-);
 
-CREATE TABLE type_of_rule (
+CREATE TABLE ongoing_rules (
     id INTEGER PRIMARY KEY,
-    name text NOT NULL
+    line_id integer NOT NULL,
+    time integer NOT NULL,
+    intervals integer NOT NULL,
+    time_wait integer NOT NULL,
+    repeat_value integer NOT NULL,
+    dow text,
+    date_start timestamp without time zone NOT NULL,
+    time_start timestamp without time zone NOT NULL,
+    end_value integer NOT NULL,
+    end_date timestamp without time zone,
+    end_repeat_quantity integer,
+    active integer NOT NULL DEFAULT 0, 
+    FOREIGN KEY(line_id) REFERENCES lines(number)
 );
 
 CREATE TABLE lines (
@@ -64,6 +71,19 @@ CREATE TABLE lines (
     time_wait integer NOT NULL DEFAULT 15,
     start_time time without time zone NOT NULL DEFAULT '2017-06-29 18:34:00'
 );
+
+CREATE TABLE state_of_rule (
+    id INTEGER PRIMARY KEY,
+    short_name text NOT NULL,
+    full_name text NOT NULL
+);
+
+CREATE TABLE type_of_rule (
+    id INTEGER PRIMARY KEY,
+    name text NOT NULL
+);
+
+
 
 CREATE TABLE temperature_statistics (
     id INTEGER PRIMARY KEY, 
