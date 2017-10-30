@@ -27,26 +27,26 @@ $(document).ready(function() {
 
 
     $('.add-ongoing-rule').on('click', function(e) {
-        console.log("json");
         json = { 'rule': {} }
-        console.log(json);
-
         modal = $('#irrigate_modal');
-        console.log(modal);
 
         json['rule'] = {
-            'line_id': $(modal).find('.branch_select').val(),
-            'time': $(modal).find('.irrigation_minutes').val(),
-            'intervals': $(modal).find('.irrigation_intervals').val(),
-            'time_wait': $(modal).find('.irrigation_time_wait').val(),
-            'repeat_value': $(modal).find('.schedule_select').val(),
-            // 'dow': dow,
+            'line_id': $(modal).find('#branch_select').val(),
+            'time': $(modal).find('#irrigation_minutes').val(),
+            'intervals': $(modal).find('#irrigation_intervals').val(),
+            'time_wait': $(modal).find('#irrigation_time_wait').val(),
+            'repeat_value': $(modal).find('#schedule_select').val(),
+            'dow': '',
             'date_start': $(modal).find('.irrigation_date').val(),
             'time_start': $(modal).find('.irrigation_time').val(),
             'end_value': $(modal).find('.form-group input:checked').val(),
             'end_date': $(modal).find('#date').val(),
             'end_repeat_quantity': $(modal).find('#quantity').val()
             }
+
+        $("#checkboxes input:checked").each(function() {
+            json['dow'] = json['dow'] + $(this).attr('title') + ';'
+        });
 
         // $.ajax({
         //     url: '/add_rule',
