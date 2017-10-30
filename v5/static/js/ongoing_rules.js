@@ -24,6 +24,53 @@ $(document).ready(function() {
 
 
 
+    $('.add-ongoing-rule').on('click', function(e) {
+        json = { 'rule': {} }
+
+        modal = $('#irrigate_modal');
+
+        json['rule'] = {
+            'line_id': $(modal).find('.branch_select').val(),
+            'time': $(modal).find('.irrigation_minutes').val(),
+            'intervals': $(modal).find('.irrigation_intervals').val(),
+            'time_wait': $(modal).find('.irrigation_time_wait').val(),
+            'repeat_value': $(modal).find('.schedule_select').val(),
+            'dow': dow,
+            'date_start': $(modal).find('.irrigation_date').val(),
+            'time_start': $(modal).find('.irrigation_time').val(),
+            'end_value': $(modal).find('.form-group input:checked').val(),
+            'end_date': $(modal).find('#date').val(),
+            'end_repeat_quantity': $(modal).find('#quantity').val()
+            }
+
+        // $.ajax({
+        //     url: '/add_rule',
+        //     type: "post",
+        //     data: JSON.stringify(json),
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: "json",
+        //     beforeSend: function(xhr, opts) {
+        //         $('#go_plan').addClass("disabled");
+        //     },
+        //     success: function() {
+        //         $('#go_plan').removeClass("disabled");
+        //         window.location.replace("/#");
+        //     },
+        //     error: function() {
+        //         alert("error");
+        //         $('#go_plan').removeClass("disabled");
+        //     }
+        // });
+
+        console.log(json);
+    });
+
+
+
+
+
+
+
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });

@@ -161,7 +161,7 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: '/v2/add_rule',
+            url: '/add_rule',
             type: "post",
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
