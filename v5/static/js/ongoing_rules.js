@@ -45,7 +45,7 @@ $(document).ready(function() {
             }
 
         $("#checkboxes input:checked").each(function() {
-            json['dow'] = json['dow'] + $(this).attr('title') + ';'
+            json['rule']['dow'] = json['dow'] + $(this).attr('value') + ';'
         });
 
         // $.ajax({
