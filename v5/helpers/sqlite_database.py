@@ -37,7 +37,7 @@ QUERY['history'] = (
 QUERY['ongoing_rules'] = (
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
     "r.dow, r.date_start, r.time_start, r.end_value, r.end_date, "
-    "r.end_repeat_quantity, r.active, l.name"
+    "r.end_repeat_quantity, r.active, l.name "
     "FROM ongoing_rules as r, lines as l "
     "WHERE r.line_id = l.number "
     "ORDER BY date_start")

@@ -1,3 +1,5 @@
+branch=[]
+
 $(document).ready(function() {
 
     //Rename branches
@@ -25,9 +27,12 @@ $(document).ready(function() {
 
 
     $('.add-ongoing-rule').on('click', function(e) {
+        console.log("json");
         json = { 'rule': {} }
+        console.log(json);
 
         modal = $('#irrigate_modal');
+        console.log(modal);
 
         json['rule'] = {
             'line_id': $(modal).find('.branch_select').val(),
@@ -35,7 +40,7 @@ $(document).ready(function() {
             'intervals': $(modal).find('.irrigation_intervals').val(),
             'time_wait': $(modal).find('.irrigation_time_wait').val(),
             'repeat_value': $(modal).find('.schedule_select').val(),
-            'dow': dow,
+            // 'dow': dow,
             'date_start': $(modal).find('.irrigation_date').val(),
             'time_start': $(modal).find('.irrigation_time').val(),
             'end_value': $(modal).find('.form-group input:checked').val(),
