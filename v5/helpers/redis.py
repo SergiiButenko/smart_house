@@ -27,6 +27,25 @@ def convert_to_obj(data):
     return data
 
 
+def convert_to_datetime(value):
+    try:
+        value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+    except:
+        pass
+
+    try:
+        value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+    except:
+        pass
+
+    try:
+        value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f+00:00")
+    except:
+        pass
+        # 2017-10-26T15:29:51.685474+00:00
+    return value
+
+
 def date_hook(json_dict):
     """Convert str to datatime object."""
     for (key, value) in json_dict.items():

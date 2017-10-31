@@ -296,33 +296,23 @@ def history():
 @app.route("/add_rule", methods=['POST'])
 def add_rule_endpoint():
     """Used in add rule modal window."""
-    content = request.json['list']
+    rule = request.json['rule']
+    rule['rule_id'] = int(rule['rule_id'])
+    rule['line_id'] = int(rule['line_id'])
+    rule['time'] = convert_to_datetime(rule['time'])
+    rule['intervals'] = int(rule['intervals'])
+    rule['time_wait'] = int(rule['time_wait'])
+    rule['repeat_value'] = int(rule['repeat_value'])
+    rule['dow'] = rule['dow']
+    rule['date_start'] = convert_to_datetime(rule['date_start'])
+    rule['time_start'] = convert_to_datetime(rule['time_start'])
+    rule['end_value'] = int(rule['end_value'])
+    rule['end_date'] = convert_to_datetime(rule['end_date'])
+    rule['end_repeat_quantity'] = int(rule['end_repeat_quantity'])
+    rule['active'] = True
+    rule['rule_id'] = str(uuid.uuid4())
 
-    for rule in content:
-        rule = content[rule]
-        print(rule)
-        branch_id = int(rule['branch_id'])
-        time_min = int(rule['time'])
-        start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
-        time_wait = int(rule['time_wait'])
-        num_of_intervals = int(rule['interval'])
-
-        interval_id = str(uuid.uuid4())
-
-        now = datetime.datetime.now()
-        stop_time = start_time + datetime.timedelta(minutes=time_min)
-
-        database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-        database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-
-        # first interval is executed
-        for x in range(2, num_of_intervals + 1):
-            start_time = stop_time + datetime.timedelta(minutes=time_wait)
-            stop_time = start_time + datetime.timedelta(minutes=time_min)
-            database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-            database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-            logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
-
+    logging.info("Rule has arrived. {0}".format(str(rule)))
     update_all_rules()
     return json.dumps({'status': 'OK'})
 
