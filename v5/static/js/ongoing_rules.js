@@ -1,4 +1,4 @@
-branch=[]
+branch = []
 
 $(document).ready(function() {
 
@@ -42,32 +42,29 @@ $(document).ready(function() {
             'end_value': $(modal).find('.form-group input:checked').val(),
             'end_date': $(modal).find('#date').val(),
             'end_repeat_quantity': $(modal).find('#quantity').val()
-            }
+        }
 
         $("#checkboxes input:checked").each(function() {
             json['rule']['dow'] = json['rule']['dow'] + $(this).val() + ';'
         });
 
-        // $.ajax({
-        //     url: '/add_rule',
-        //     type: "post",
-        //     data: JSON.stringify(json),
-        //     contentType: "application/json; charset=utf-8",
-        //     dataType: "json",
-        //     beforeSend: function(xhr, opts) {
-        //         $('#go_plan').addClass("disabled");
-        //     },
-        //     success: function() {
-        //         $('#go_plan').removeClass("disabled");
-        //         window.location.replace("/#");
-        //     },
-        //     error: function() {
-        //         alert("error");
-        //         $('#go_plan').removeClass("disabled");
-        //     }
-        // });
+        $.ajax({
+            url: '/add_rule',
+            type: "post",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function() {
+                console.log(json);
+                $('#irrigate_modal').modal('hide');
+            },
+            error: function() {
+                alert("error");
+                console.log(json);
+            }
+        });
 
-        console.log(json);
+
     });
 
 
