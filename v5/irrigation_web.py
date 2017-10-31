@@ -307,7 +307,7 @@ def add_rule_endpoint():
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['end_value'] = int(rule['end_value'])
     rule['end_date'] = convert_to_datetime(rule['end_date'])
-    rule['end_repeat_quantity'] = int(rule['end_repeat_quantity'])
+    rule['end_repeat_quantity'] = rule['end_repeat_quantity']
     rule['active'] = True
     rule['rule_id'] = str(uuid.uuid4())
 
