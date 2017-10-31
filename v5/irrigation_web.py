@@ -297,7 +297,6 @@ def history():
 def add_rule_endpoint():
     """Used in add rule modal window."""
     rule = request.json['rule']
-    rule['rule_id'] = int(rule['rule_id'])
     rule['line_id'] = int(rule['line_id'])
     rule['time'] = convert_to_datetime(rule['time'])
     rule['intervals'] = int(rule['intervals'])
