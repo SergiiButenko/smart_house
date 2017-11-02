@@ -294,24 +294,35 @@ def history():
 
 
 @app.route("/add_rule", methods=['POST'])
-def add_rule_endpoint():
+def add_rule():
     """Used in add rule modal window."""
-    rule = request.json['rule']
-    rule['line_id'] = int(rule['line_id'])
-    rule['time'] = convert_to_datetime(rule['time'])
-    rule['intervals'] = int(rule['intervals'])
-    rule['time_wait'] = int(rule['time_wait'])
-    rule['repeat_value'] = int(rule['repeat_value'])
-    rule['dow'] = rule['dow']
-    rule['date_start'] = convert_to_datetime(rule['date_start'])
-    rule['time_start'] = convert_to_datetime(rule['time_start'])
-    rule['end_value'] = int(rule['end_value'])
-    rule['end_date'] = convert_to_datetime(rule['end_date'])
-    rule['end_repeat_quantity'] = rule['end_repeat_quantity']
-    rule['active'] = True
-    rule['rule_id'] = str(uuid.uuid4())
+    content = request.json['list']
 
-    logging.info("Rule has arrived. {0}".format(str(rule)))
+    for rule in content:
+        rule = content[rule]
+        print(rule)
+        branch_id = int(rule['branch_id'])
+        time_min = int(rule['time'])
+        start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
+        time_wait = int(rule['time_wait'])
+        num_of_intervals = int(rule['interval'])
+
+        interval_id = str(uuid.uuid4())
+
+        now = datetime.datetime.now()
+        stop_time = start_time + datetime.timedelta(minutes=time_min)
+
+        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+
+        # first interval is executed
+        for x in range(2, num_of_intervals + 1):
+            start_time = stop_time + datetime.timedelta(minutes=time_wait)
+            stop_time = start_time + datetime.timedelta(minutes=time_min)
+            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+            logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
+
     update_all_rules()
     return json.dumps({'status': 'OK'})
 
@@ -420,28 +431,44 @@ def ongoing_rules():
             'end_date': end_date,
             'end_repeat_quantity': end_repeat_quantity,
             'active': active,
-            'name': name
-            })
-
-    #repeat_value
+            'name': name})
+    # repeat_value
 
     template = render_template('ongoing_rules.html', my_list=rows)
     return template
 
 
-@app.route("/add_ongoing_rule")
+@app.route("/add_ongoing_rule", methods=['POST'])
 def add_ongoing_rule():
-    """User can add ongoing rule from ui."""
-    branch_id = int(request.args.get('branch_id'))
-    time_min = int(request.args.get('time_min'))
-    time_start = request.args.get('datetime_start')
-    dow = int(request.args.get('dow'))
+    """Used in add rule modal window."""
+    rule = request.json['rule']
+    rule['line_id'] = int(rule['line_id'])
+    rule['time'] = convert_to_datetime(rule['time'])
+    rule['intervals'] = int(rule['intervals'])
+    rule['time_wait'] = int(rule['time_wait'])
+    rule['repeat_value'] = int(rule['repeat_value'])
+    rule['dow'] = rule['dow']
+    rule['date_start'] = convert_to_datetime(rule['date_start'])
+    rule['time_start'] = convert_to_datetime(rule['time_start'])
+    rule['end_value'] = int(rule['end_value'])
+    rule['end_date'] = convert_to_datetime(rule['end_date'])
+    rule['end_repeat_quantity'] = rule['end_repeat_quantity']
+    rule['active'] = True
+    rule['rule_id'] = str(uuid.uuid4())
 
-    database.update(database.QUERY[mn()].format(dow, branch_id, 1, time_start, time_min))
+    logging.info("Rule has arrived. {0}".format(str(rule)))
+
+    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
+    # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
+    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
+    # database.update(database.QUERY[mn()].format(
+    #     rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+    #     rule['repeat_value'], rule['dow'], rule['date_start'], rule['time_start'],
+    #     rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
+    #     rule['rule_id']))
+
     update_all_rules()
-    template = ongoing_rules_table()
-    send_message('ongoind_rules_update', {'data': template})
-    return template
+    return json.dumps({'status': 'OK'})
 
 
 @app.route("/remove_ongoing_rule")
