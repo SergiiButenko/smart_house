@@ -461,11 +461,11 @@ def add_ongoing_rule():
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
     # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
     # "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
-    # database.update(database.QUERY[mn()].format(
-    #     rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-    #     rule['repeat_value'], rule['dow'], rule['date_start'], rule['time_start'],
-    #     rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
-    #     rule['rule_id']))
+    database.update(database.QUERY[mn()].format(
+        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+        rule['repeat_value'], rule['dow'], rule['date_start'], rule['time_start'],
+        rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
+        rule['rule_id']))
 
     update_all_rules()
     return json.dumps({'status': 'OK'})
