@@ -49,7 +49,7 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: '/add_rule',
+            url: '/add_ongoing_rule',
             type: "post",
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
