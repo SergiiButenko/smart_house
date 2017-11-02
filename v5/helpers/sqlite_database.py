@@ -34,14 +34,6 @@ QUERY['history'] = (
     "WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.state = rule_state.id "
     "ORDER BY l.timer desc")
 
-QUERY['ongoing_rules'] = (
-    "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
-    "r.dow, r.date_start, r.time_start, r.end_value, r.end_date, "
-    "r.end_repeat_quantity, r.active, l.name "
-    "FROM ongoing_rules as r, lines as l "
-    "WHERE r.line_id = l.number "
-    "ORDER BY date_start")
-
 QUERY['get_timetable_list_1'] = (
     "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "
     "FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state "
@@ -54,11 +46,6 @@ QUERY['get_timetable_list_2'] = (
     "WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer>= datetime('now', 'localtime', '-{0} hour') AND l.timer<=datetime('now', 'localtime', '+{0} hour') AND l.state = rule_state.id "
     "ORDER BY l.timer desc")
 
-QUERY['add_rule'] = (
-    "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
-    "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
-    "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
-
 QUERY['ongoing_rules'] = (
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
     "r.dow, r.date_start, r.time_start, r.end_value, r.end_date, "
@@ -67,13 +54,14 @@ QUERY['ongoing_rules'] = (
     "WHERE r.line_id = l.number "
     "ORDER BY date_start")
 
-QUERY['add_rule_endpoint_v2'] = (
+QUERY['add_ongoing_rule'] = (
+    "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
+    "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
+    "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
+
+QUERY['add_rule'] = (
     "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) "
     "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', {6})")
-
-QUERY['add_ongoing_rule'] = (
-    "INSERT INTO week_schedule(day_number, line_id, rule_id, \"time\", \"interval\", active) "
-    "VALUES ({0}, {1}, {2}, '{3}', {4}, 1)")
 
 QUERY['activate_branch_1'] = (
     "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time) "
