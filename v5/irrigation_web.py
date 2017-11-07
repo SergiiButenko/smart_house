@@ -438,6 +438,25 @@ def ongoing_rules():
     return template
 
 
+def update_rules_from_ongoing_rules(rule):
+    """Form rules from ongoing rule."""
+    # select * from ongoing_rule where rule_id = rule['rule_id']
+    if len(res) > 0:
+        # update
+        # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
+        print('s')
+
+    if rule['end_value'] == 1:
+        now = datetime.datetime.now()
+        end_date = now + datetime.timedelta(days=31)
+
+    if rule['end_value'] == 3:
+        end_date = rule['']
+
+
+    # insert
+
+
 @app.route("/add_ongoing_rule", methods=['POST'])
 def add_ongoing_rule():
     """Used in add rule modal window."""
@@ -447,11 +466,11 @@ def add_ongoing_rule():
     rule['intervals'] = int(rule['intervals'])
     rule['time_wait'] = int(rule['time_wait'])
     rule['repeat_value'] = int(rule['repeat_value'])
-    rule['dow'] = rule['dow']
+    rule['dow'] = None if rule['dow'] == '' else rule['dow']
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['end_value'] = int(rule['end_value'])
-    rule['end_date'] = convert_to_datetime(rule['end_date'])
+    rule['end_date'] = None if rule['end_date'] == '' else convert_to_datetime(rule['end_date'])
     rule['end_repeat_quantity'] = rule['end_repeat_quantity']
     rule['active'] = True
     rule['rule_id'] = str(uuid.uuid4())
@@ -459,11 +478,20 @@ def add_ongoing_rule():
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
     # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
     # "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
+    # insert into ongoing table
     database.update(database.QUERY[mn()].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
         rule['repeat_value'], rule['dow'], rule['date_start'], rule['time_start'],
         rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
         rule['rule_id']))
+
+
+    # update rules;
+
+
+
+
+
 
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
