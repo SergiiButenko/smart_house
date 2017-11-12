@@ -227,9 +227,9 @@ function form_text(el_in) {
     $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
 }
 
-function toogle_week_schedule(el) {
-    el = $(el).closest('.top')
-    $(el).val()
+function toogle_week_schedule(el_in) {
+    $(el_in).val()
+    el = $(el_in).closest('.top')
 
     if (val != 8 || isNaN(val)) {
         $(el).find('#week_schedule').hide();
