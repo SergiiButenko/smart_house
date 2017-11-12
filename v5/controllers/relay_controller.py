@@ -41,7 +41,10 @@ for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
 
 iteraion = 1
-GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, lambda pin: logging.info("Event:{0}".format(iteraion += 1)))
+GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, lambda pin: 
+    iteraion += 1
+    logging.info("Event:{0}".format(iteraion))
+    )
 
 
 def on(pin):
