@@ -9,7 +9,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 PUMP_PIN = 17
-RAIN_PIN = 18
+RAIN_PIN = 21
 EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 
 BRANCHES = [
@@ -33,15 +33,14 @@ BRANCHES = [
     {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT},
 ]
 
+iteraion = 1
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
-
-
-iteraion = 1
 
 
 def rissing(channel):
