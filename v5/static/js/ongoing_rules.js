@@ -25,10 +25,10 @@ $(document).ready(function() {
     });
 
 
-    $( "li" ).each(function( index ) {
-      console.log( index + ": " + $( this ).text() );
+    $(".card-rule").each(function() {
+        form_text($(this))
     });
-    
+
 
     $('.add-ongoing-rule').on('click', function(e) {
         json = { 'rule': {} }
@@ -128,7 +128,7 @@ $(document).ready(function() {
 
         form_text($(this));
     });
-    
+
     $("#checkboxes :checkbox").click(function() {
         form_text($(this));
     });
@@ -183,7 +183,7 @@ function remove_rule(that) {
     });
 }
 
-function form_text(el_in) {   
+function form_text(el_in) {
     el = $(el_in).closest('.top')
 
     schedule_text = $(el).find('#schedule_select option:selected').attr('title');
