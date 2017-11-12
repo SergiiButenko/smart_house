@@ -472,7 +472,7 @@ def add_ongoing_rule():
     rule['end_value'] = int(rule['end_value'])
     rule['end_date'] = 'NULL' if rule['end_date'] == '' else "'{0}'".format(convert_to_datetime(rule['end_date']))
     rule['end_repeat_quantity'] = 'NULL' if rule['end_repeat_quantity'] == '' else int(rule['end_repeat_quantity'])
-    rule['active'] = True
+    rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
 
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
