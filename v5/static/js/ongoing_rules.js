@@ -99,11 +99,12 @@ $(document).ready(function() {
     });
 
     $(".btn-open-modal2").click(function() {
-        index = parseInt($("#branch_select").val());
+        modal = $('#irrigate_modal')
+        index = parseInt($(modal).find("#branch_select").val());
         set_branch(index);
-        $('.irrigation_date').val(convert_date_to_local_date(0));
-        form_text($(this));
-        $('#irrigate_modal').modal('show');
+        $(modal).find('.irrigation_date').val(convert_date_to_local_date(0));
+        form_text($(modal));
+        $(modal).modal('show');
     });
 
 
