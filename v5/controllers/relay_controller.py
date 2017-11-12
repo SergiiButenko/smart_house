@@ -40,11 +40,18 @@ GPIO.cleanup()
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
 
+
 iteraion = 1
-GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, lambda pin: 
+
+
+def rissing(channel):
+    global iteraion
     iteraion += 1
     logging.info("Event:{0}".format(iteraion))
-    )
+
+
+GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
+GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing)
 
 
 def on(pin):
