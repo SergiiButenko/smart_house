@@ -25,81 +25,6 @@ $(document).ready(function() {
     });
 
 
-    $(".card-rule").each(function() {
-        schedule_select = $(this).find('#schedule_select')
-        schedule_select.val(schedule_select.data('value'))
-
-        checkboxes = $(this).find('#checkboxes')
-        checkboxes.val(checkboxes.data('checked'))
-
-        irrigation_date = $(this).find('.irrigation_date')
-        irrigation_date.val(convert_date(irrigation_date.data('value')))
-
-        irrigation_time = $(this).find('.irrigation_time')
-        irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
-
-        radio_options = $(this).find('#radio_options')
-        radio_option_value = radio_options.data('value')
-        radio_end_repeat_quantity = radio_options.data('end_repeat_quantity')
-        radio_end_date = radio_options.data('end_date')
-
-        radio_option_checked = radio_options.data('checked')
-        $(this).find('#radio_'+radio_option_checked).prop("checked", true).button("refresh");
-
-        if (radio_option_checked == 2) {
-            $(this).find('#quantity').val(radio_end_repeat_quantity)
-        }
-
-        if (radio_option_checked == 3) {
-            $(this).find('#date').val(convert_date(radio_end_date))
-        }
-
-        form_text($(this))
-    });
-
-
-    $('.add-ongoing-rule').on('click', function(e) {
-        json = { 'rule': {} }
-        modal = $('#irrigate_modal');
-
-        json['rule'] = {
-            'line_id': $(modal).find('#branch_select').val(),
-            'time': $(modal).find('#irrigation_minutes').val(),
-            'intervals': $(modal).find('#irrigation_intervals').val(),
-            'time_wait': $(modal).find('#irrigation_time_wait').val(),
-            'repeat_value': $(modal).find('#schedule_select').val(),
-            'dow': '',
-            'date_start': $(modal).find('.irrigation_date').val(),
-            'time_start': $(modal).find('.irrigation_time').val(),
-            'end_value': $(modal).find('.form-group input:checked').val(),
-            'end_date': $(modal).find('#date').val(),
-            'end_repeat_quantity': $(modal).find('#quantity').val()
-        }
-
-        $("#checkboxes input:checked").each(function() {
-            json['rule']['dow'] = json['rule']['dow'] + $(this).val() + ';'
-        });
-
-        $.ajax({
-            url: '/add_ongoing_rule',
-            type: "post",
-            data: JSON.stringify(json),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function() {
-                console.log(json);
-                $('#irrigate_modal').modal('hide');
-            },
-            error: function() {
-                alert("error");
-                console.log(json);
-            }
-        });
-
-
-    });
-
-
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });
@@ -169,47 +94,38 @@ $(document).ready(function() {
 });
 
 
-function activate_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/activate_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
+$(".card-rule").each(function() {
+    schedule_select = $(this).find('#schedule_select')
+    schedule_select.val(schedule_select.data('value'))
 
-function deactivate_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/deactivate_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
+    checkboxes = $(this).find('#checkboxes')
+    checkboxes.val(checkboxes.data('checked'))
 
-function remove_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/remove_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
+    irrigation_date = $(this).find('.irrigation_date')
+    irrigation_date.val(convert_date(irrigation_date.data('value')))
+
+    irrigation_time = $(this).find('.irrigation_time')
+    irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
+
+    radio_options = $(this).find('#radio_options')
+    radio_option_value = radio_options.data('value')
+    radio_end_repeat_quantity = radio_options.data('end_repeat_quantity')
+    radio_end_date = radio_options.data('end_date')
+
+    radio_option_checked = radio_options.data('checked')
+    $(this).find('#radio_' + radio_option_checked).prop("checked", true).button("refresh");
+
+    if (radio_option_checked == 2) {
+        $(this).find('#quantity').val(radio_end_repeat_quantity)
+    }
+
+    if (radio_option_checked == 3) {
+        $(this).find('#date').val(convert_date(radio_end_date))
+    }
+
+    form_text($(this))
+});
+
 
 function form_text(el_in) {
     el = $(el_in).closest('.top')
@@ -256,6 +172,91 @@ function form_text(el_in) {
     }
 
     $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
+}
+
+
+
+$('.add-ongoing-rule').on('click', function(e) {
+    json = { 'rule': {} }
+    modal = $('#irrigate_modal');
+
+    json['rule'] = {
+        'line_id': $(modal).find('#branch_select').val(),
+        'time': $(modal).find('#irrigation_minutes').val(),
+        'intervals': $(modal).find('#irrigation_intervals').val(),
+        'time_wait': $(modal).find('#irrigation_time_wait').val(),
+        'repeat_value': $(modal).find('#schedule_select').val(),
+        'dow': '',
+        'date_start': $(modal).find('.irrigation_date').val(),
+        'time_start': $(modal).find('.irrigation_time').val(),
+        'end_value': $(modal).find('.form-group input:checked').val(),
+        'end_date': $(modal).find('#date').val(),
+        'end_repeat_quantity': $(modal).find('#quantity').val()
+    }
+
+    $("#checkboxes input:checked").each(function() {
+        json['rule']['dow'] = json['rule']['dow'] + $(this).val() + ';'
+    });
+
+    $.ajax({
+        url: '/add_ongoing_rule',
+        type: "post",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function() {
+            console.log(json);
+            $('#irrigate_modal').modal('hide');
+        },
+        error: function() {
+            alert("error");
+            console.log(json);
+        }
+    });
+
+
+});
+
+function activate_rule(that) {
+    id = $(that).data('id');
+    $.ajax({
+        url: '/activate_ongoing_rule',
+        type: "get",
+        data: {
+            'id': id
+        },
+        success: function(data) {
+            $("#rules_table").html(data);
+        }
+    });
+}
+
+function deactivate_rule(that) {
+    id = $(that).data('id');
+    $.ajax({
+        url: '/deactivate_ongoing_rule',
+        type: "get",
+        data: {
+            'id': id
+        },
+        success: function(data) {
+            $("#rules_table").html(data);
+        }
+    });
+}
+
+function remove_rule(that) {
+    id = $(that).data('id');
+    $.ajax({
+        url: '/remove_ongoing_rule',
+        type: "get",
+        data: {
+            'id': id
+        },
+        success: function(data) {
+            $("#rules_table").html(data);
+        }
+    });
 }
 
 function toogle_week_schedule(el_in) {
