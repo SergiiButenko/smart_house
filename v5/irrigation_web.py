@@ -466,7 +466,7 @@ def add_ongoing_rule():
     rule['intervals'] = int(rule['intervals'])
     rule['time_wait'] = int(rule['time_wait'])
     rule['repeat_value'] = int(rule['repeat_value'])
-    rule['dow'] = None if rule['dow'] == '' else rule['dow']
+    rule['dow'] = None if rule['dow'] == '' else "'{0}'".format(rule['dow'])
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['end_value'] = int(rule['end_value'])
