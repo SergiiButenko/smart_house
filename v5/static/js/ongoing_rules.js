@@ -41,14 +41,17 @@ $(document).ready(function() {
         radio_options = $(this).find('#radio_options')
         radio_option_checked = radio_options.data('checked')
         radio_option_value = radio_options.data('value')
+        radio_end_repeat_quantity = radio_options.data('end_repeat_quantity')
+        radio_end_date = radio_options.data('end_date')
+        
         $(this).find('#radio_'+radio_option_checked).prop("checked", true).button("refresh");
 
         if (radio_option_checked == 2) {
-            $('#quantity').val(radio_option_value)
+            $('#quantity').val(radio_end_repeat_quantity)
         }
 
         if (radio_option_checked == 3) {
-            $('#date').val(convert_date(radio_option_value))
+            $('#date').val(convert_date(radio_end_date))
         }
 
 
