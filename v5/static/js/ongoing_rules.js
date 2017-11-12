@@ -33,15 +33,15 @@ $(document).ready(function() {
         checkboxes.val(checkboxes.data('checked'))
 
         irrigation_date = $(this).find('.irrigation_date')
-        irrigation_date.val(irrigation_date.data('value'))
+        irrigation_date.val(convert_date(irrigation_date.data('value')))
 
         irrigation_time = $(this).find('.irrigation_time')
-        irrigation_time.val(irrigation_time.data('value'))
+        irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
 
         radio_options = $(this).find('#radio_options')
         radio_option_checked = radio_options.data('checked')
         radio_option_value = radio_options.data('value')
-        radio_button = $(this).find('#radio_'+radio_option_checked).val(radio_option_value)
+        radio_button = $(this).find('#radio_'+radio_option_checked).prop("checked", true)
 
         form_text($(this))
     });
