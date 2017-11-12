@@ -68,11 +68,6 @@ $(document).ready(function() {
     });
 
 
-
-
-
-
-
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });
@@ -128,6 +123,7 @@ $(document).ready(function() {
 
         form_text();
     });
+    
     $("#checkboxes :checkbox").click(form_text);
 
     $(".radio_input").focus(function() {
@@ -180,21 +176,22 @@ function remove_rule(that) {
     });
 }
 
-function form_text() {
-    schedule_text = $('#schedule_select option:selected').attr('title');
-    schedule_val = $('#schedule_select option:selected').val();
+function form_text(el) {   
+    el = $(this).closest('.top')
+
+    schedule_text = $(el).find('#schedule_select option:selected').attr('title');
+    schedule_val = $(el).find('#schedule_select option:selected').val();
     weekdays = []
 
     if (schedule_val == 8) {
-        $("#checkboxes input:checked").each(function() {
+        $(el).find("#checkboxes input:checked").each(function() {
             weekdays.push($(this).attr('title'));
         });
 
         schedule_text = schedule_text + ": " + weekdays.join(',')
     }
 
-
-    time = $('.irrigation_time').val();
+    time = $(el).find('.irrigation_time').val();
 
     var options = {
         weekday: "long",
@@ -203,9 +200,9 @@ function form_text() {
         // timeZone: 'UTC'
     };
 
-    radio = $(".form-group input:checked")
+    radio = $(el).find(".form-group input:checked")
     radio_text = ''
-    date_new = $('.irrigation_date').val();
+    date_new = $(el).find('.irrigation_date').val();
     if (radio.val() == 1) {
         now = new Date(date_new);
         now.setMonth(now.getMonth() + 1);
@@ -223,7 +220,7 @@ function form_text() {
         radio_text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
     }
 
-    $("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
+    $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
 }
 
 function toogle_week_schedule(val) {

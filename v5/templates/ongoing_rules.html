@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block nav_item_title %}Постійні правила{% endblock %} {% block modals %}
-<div id="irrigate_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="irrigate_modal-label" aria-hidden="true" data-id='0'>
+<div id="irrigate_modal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="irrigate_modal-label" aria-hidden="true" data-id='0'>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -142,7 +142,7 @@
     <div class="row">
     {% for n in my_list %}
         <div class="col-xs-12 col-sm-12 col-md-10 col-lg-4">
-            <div class="card card-rule">
+            <div class="card card-rule top">
                 <div class="card-block">
                     <div class="card-title">
                         <h4 data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="display: inline-block;">{{n['name']}}</h4>
