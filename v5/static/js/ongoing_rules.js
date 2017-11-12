@@ -179,9 +179,7 @@ function remove_rule(that) {
 }
 
 function form_text(el_in) {   
-    console.log(el_in)
     el = $(el_in).closest('.top')
-    console.log(el)
 
     schedule_text = $(el).find('#schedule_select option:selected').attr('title');
     schedule_val = $(el).find('#schedule_select option:selected').val();
@@ -228,7 +226,7 @@ function form_text(el_in) {
 }
 
 function toogle_week_schedule(el_in) {
-    $(el_in).val()
+    val = $(el_in).val()
     el = $(el_in).closest('.top')
 
     if (val != 8 || isNaN(val)) {
