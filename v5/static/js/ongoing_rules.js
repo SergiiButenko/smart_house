@@ -25,6 +25,10 @@ $(document).ready(function() {
     });
 
 
+    $( "li" ).each(function( index ) {
+      console.log( index + ": " + $( this ).text() );
+    });
+    
 
     $('.add-ongoing-rule').on('click', function(e) {
         json = { 'rule': {} }
