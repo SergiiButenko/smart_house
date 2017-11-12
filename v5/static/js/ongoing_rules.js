@@ -178,8 +178,9 @@ function remove_rule(that) {
     });
 }
 
-function form_text(el) {   
-    el = $(this).closest('.top')
+function form_text(el_in) {   
+    console.log(el)
+    el = $(el_in).closest('.top')
     console.log(el)
 
     schedule_text = $(el).find('#schedule_select option:selected').attr('title');
