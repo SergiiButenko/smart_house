@@ -41,7 +41,7 @@ $(document).ready(function() {
         radio_options = $(this).find('#radio_options')
         radio_option_checked = radio_options.data('checked')
         radio_option_value = radio_options.data('value')
-        radio_button = $(this).find('#radio_'+radio_option_checked).prop("checked", true)
+        $(this).find('#radio_'+radio_option_checked).prop("checked", true).button("refresh");
 
         form_text($(this))
     });
