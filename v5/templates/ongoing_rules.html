@@ -145,7 +145,7 @@
             <div class="card card-rule">
                 <div class="card-block">
                     <div class="card-title">
-                        <h4 data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="display: inline-block;">{{n['name']}}</h4>
+                        <h4 data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}" style="display: inline-block;">{{n['name']}}</h4>
                         <div class="material-switch pull-right" style="display: inline-block; float: right;">
                             <input id="all_rules" name="someSwitchOption001" type="checkbox" />
                             <label for="all_rules" class="label-primary"></label>
@@ -153,7 +153,7 @@
                     </div>
                     <p class="card-text">
                         <table>
-                            <tbody class="collapse" id="collapseExample">
+                            <tbody class="collapse" id="{{n['rule_id']}}">
                                 <tr>
                                     <th>Тривалість:</th>
                                     <td>

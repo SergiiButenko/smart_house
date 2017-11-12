@@ -432,22 +432,6 @@ def ongoing_rules():
             'end_repeat_quantity': end_repeat_quantity,
             'active': active,
             'name': name})
-
-        logging.info({
-            'rule_id': rule_id,
-            'line_id': line_id,
-            'time': time,
-            'intervals': intervals,
-            'time_wait': time_wait,
-            'repeat_value': repeat_value,
-            'dow': dow,
-            'date_start': date_start,
-            'time_start': time_start,
-            'end_value': end_value,
-            'end_date': end_date,
-            'end_repeat_quantity': end_repeat_quantity,
-            'active': active,
-            'name': name})
     # repeat_value
 
     template = render_template('ongoing_rules.html', my_list=rows)

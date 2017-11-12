@@ -41,11 +41,15 @@ $(document).ready(function() {
         radio_options = $(this).find('#radio_options')
         radio_option_checked = radio_options.data('checked')
         radio_option_value = radio_options.data('value')
-        $(this).find('#radio_'+radio_option_checked).prop("checked", true)
-        console.log($(this).find('#radio_'+radio_option_checked).prop("checked"))
+        $(this).find('#radio_'+radio_option_checked).prop("checked", true).button("refresh");
 
-        $(this).find('#radio_'+radio_option_checked).button("refresh");
-        $(this).find('#radio_'+radio_option_checked).click()
+        if radio_option_checked == 2 {
+            $('#quantity').val(radio_option_value)
+        }
+
+        if radio_option_checked == 3 {
+            $('#date').val(convert_date(radio_option_value))
+        }
 
 
 
