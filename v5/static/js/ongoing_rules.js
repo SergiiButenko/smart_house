@@ -246,12 +246,12 @@ function form_text(el_in) {
 
 
     if (radio.val() == 2) {
-        val = $("#quantity").val();
+        val = $(el).find("#quantity").val();
         radio_text = "кількість повторів: " + val;
     }
 
     if (radio.val() == 3) {
-        now = new Date($("#date").val());
+        now = new Date($(el).find("#date").val());
         radio_text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
     }
 
