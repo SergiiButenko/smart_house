@@ -403,6 +403,7 @@ def ongoing_rules():
     rows = []
     # SELECT id, line_id, time, intervals, time_wait, repeat_value, dow, date_start, time_start, end_value, end_date, end_repeat_quantity 
     for row in list_arr:
+        logging.info(str(row))
         rule_id = row[0]
         line_id = row[1]
         time = row[2]
@@ -417,7 +418,6 @@ def ongoing_rules():
         end_repeat_quantity = row[11]
         active = row[12]
         name = row[13]
-        logging.info(str(row))
         rows.append({
             'rule_id': rule_id,
             'line_id': line_id,
