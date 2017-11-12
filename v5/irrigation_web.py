@@ -467,24 +467,17 @@ def add_ongoing_rule():
     rule['time_wait'] = int(rule['time_wait'])
     rule['repeat_value'] = int(rule['repeat_value'])
     rule['dow'] = None if rule['dow'] == '' else rule['dow']
-    print("dow", rule['dow'])
-    print(rule['dow'] == '')
-    
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['end_value'] = int(rule['end_value'])
     rule['end_date'] = None if rule['end_date'] == '' else convert_to_datetime(rule['end_date'])
-    print("end_date", rule['end_date'])
-    print(rule['end_date'] == '')
-    print(convert_to_datetime(rule['end_date']))    
-
-    rule['end_repeat_quantity'] = rule['end_repeat_quantity']
+    rule['end_repeat_quantity'] = None if rule['end_repeat_quantity'] == '' else int(rule['end_repeat_quantity'])
     rule['active'] = True
     rule['rule_id'] = str(uuid.uuid4())
 
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
     # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
-    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, '{5}', '{6}', '{7}', {8}, '{9}', {10}, {11}, {12})")
+    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {8}, '{9}', {10}, {11}, {12})")
     # insert into ongoing table
     database.update(database.QUERY[mn()].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
@@ -494,12 +487,6 @@ def add_ongoing_rule():
 
 
     # update rules;
-
-
-
-
-
-
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
