@@ -73,36 +73,36 @@ $(document).ready(function() {
     });
 
     $('#date').on('input', function(e) {
-        form_text();
+        form_text($(this));
     });
 
     $('#quantity').on('input', function(e) {
-        form_text();
+        form_text($(this));
     });
 
     $('.irrigation_date').on('input', function(e) {
-        form_text();
+        form_text($(this));
     });
 
     $('.irrigation_time').on('input', function(e) {
-        form_text();
+        form_text($(this));
     });
 
     $('#branch_select').on('change', function(e) {
         index = parseInt($(this).val());
         set_branch(index);
-        form_text();
+        form_text($(this));
     });
 
     $('#schedule_select').on('change', function(e) {
-        toogle_week_schedule($(this).val());
+        toogle_week_schedule($(this));
     });
 
     $(".btn-open-modal2").click(function() {
         index = parseInt($("#branch_select").val());
         set_branch(index);
         $('.irrigation_date').val(convert_date_to_local_date(0));
-        form_text();
+        form_text($(this));
         $('#irrigate_modal').modal('show');
     });
 
@@ -121,14 +121,16 @@ $(document).ready(function() {
             $("#quantity").val('');
         }
 
-        form_text();
+        form_text($(this));
     });
     
-    $("#checkboxes :checkbox").click(form_text);
+    $("#checkboxes :checkbox").click(function() {
+        form_text($(this));
+    });
 
     $(".radio_input").focus(function() {
         $(this).closest('.radio').find(":radio").click();
-        form_text();
+        form_text($(this));
     });
 
 });
@@ -178,6 +180,7 @@ function remove_rule(that) {
 
 function form_text(el) {   
     el = $(this).closest('.top')
+    console.log(el)
 
     schedule_text = $(el).find('#schedule_select option:selected').attr('title');
     schedule_val = $(el).find('#schedule_select option:selected').val();
@@ -223,16 +226,17 @@ function form_text(el) {
     $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
 }
 
-function toogle_week_schedule(val) {
-    val = parseInt(val);
+function toogle_week_schedule(el) {
+    el = $(this).closest('.top')
+    $(this).val()
 
     if (val != 8 || isNaN(val)) {
-        $('#week_schedule').hide();
+        $(el).find('#week_schedule').hide();
     } else {
-        $('#week_schedule').show();
+        $(el).find('#week_schedule').show();
     }
 
-    form_text();
+    form_text(el);
 }
 
 function toogle_time_wait(val) {
