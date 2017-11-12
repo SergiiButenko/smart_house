@@ -179,7 +179,7 @@ function remove_rule(that) {
 }
 
 function form_text(el_in) {   
-    console.log(el)
+    console.log(el_in)
     el = $(el_in).closest('.top')
     console.log(el)
 
