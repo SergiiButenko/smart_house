@@ -109,6 +109,7 @@ $(document).ready(function() {
     });
 
     $('#quantity').on('input', function(e) {
+        console.log($(this))
         form_text($(this));
     });
 
