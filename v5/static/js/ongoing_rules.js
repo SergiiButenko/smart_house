@@ -104,12 +104,11 @@ $(document).ready(function() {
         toogle_time_wait($(this).val());
     });
 
-    $('#date').on('input', function(e) {
+    $('.date').on('input', function(e) {
         form_text($(this));
     });
 
-    $('#quantity').on('input', function(e) {
-        console.log($(this))
+    $('.quantity').on('input', function(e) {
         form_text($(this));
     });
 
