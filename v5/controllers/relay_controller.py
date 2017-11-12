@@ -9,7 +9,8 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 PUMP_PIN = 17
-EXCEPT_PINS = [1, 2, 3, 17]
+RAIN_PIN = 18
+EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 
 BRANCHES = [
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
@@ -29,7 +30,7 @@ BRANCHES = [
     {'id': 14, 'pin': 14, 'state': -1, 'mode': GPIO.OUT},
     {'id': 15, 'pin': 15, 'state': -1, 'mode': GPIO.OUT},
     {'id': 16, 'pin': 16, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT}
+    {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT},
 ]
 
 
@@ -38,6 +39,9 @@ GPIO.cleanup()
 
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
+
+iteraion = 1
+GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, lambda pin: logging.info("Event:{0}".format(iteraion += 1)))
 
 
 def on(pin):
