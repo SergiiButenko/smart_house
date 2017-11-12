@@ -43,11 +43,11 @@ $(document).ready(function() {
         radio_option_value = radio_options.data('value')
         $(this).find('#radio_'+radio_option_checked).prop("checked", true).button("refresh");
 
-        if radio_option_checked == 2 {
+        if (radio_option_checked == 2) {
             $('#quantity').val(radio_option_value)
         }
 
-        if radio_option_checked == 3 {
+        if (radio_option_checked == 3) {
             $('#date').val(convert_date(radio_option_value))
         }
 
