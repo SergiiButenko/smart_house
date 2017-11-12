@@ -417,6 +417,7 @@ def ongoing_rules():
         end_repeat_quantity = row[11]
         active = row[12]
         name = row[13]
+        logging.info(str(row))
         rows.append({
             'rule_id': rule_id,
             'line_id': line_id,
