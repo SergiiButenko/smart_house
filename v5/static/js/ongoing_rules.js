@@ -228,8 +228,8 @@ function form_text(el_in) {
 }
 
 function toogle_week_schedule(el) {
-    el = $(this).closest('.top')
-    $(this).val()
+    el = $(el).closest('.top')
+    $(el).val()
 
     if (val != 8 || isNaN(val)) {
         $(el).find('#week_schedule').hide();
