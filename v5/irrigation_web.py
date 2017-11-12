@@ -470,7 +470,7 @@ def add_ongoing_rule():
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['end_value'] = int(rule['end_value'])
-    rule['end_date'] = None if rule['end_date'] == '' else convert_to_datetime(rule['end_date'])
+    rule['end_date'] = None if rule['end_date'] == '' else "'{0}'".format(convert_to_datetime(rule['end_date']))
     rule['end_repeat_quantity'] = None if rule['end_repeat_quantity'] == '' else int(rule['end_repeat_quantity'])
     rule['active'] = True
     rule['rule_id'] = str(uuid.uuid4())
