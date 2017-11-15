@@ -45,11 +45,10 @@ for branch in BRANCHES:
 
 def rissing(channel):
     global iteraion
-    iteraion += 1
     logging.info("Event:{0}".format(iteraion))
+    iteraion += 1
 
-
-GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  
+GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing)
 
 
