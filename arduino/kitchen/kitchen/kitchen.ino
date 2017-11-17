@@ -1,6 +1,6 @@
-int relay_pin = 13;
+int relay_pin = 4;
 int ir_pin=2;
-volatile byte state = LOW;
+volatile byte toogle_on_off = 0;
 
 void setup()  {
 
@@ -8,16 +8,19 @@ void setup()  {
  pinMode(ir_pin,INPUT); //Pin 5 as signal input
  pinMode(relay_pin, OUTPUT);
  
- attachInterrupt(1, blink, FALLING);
+ attachInterrupt(1, toogle, FALLING);
 
 }
 void loop()  {
- delay(750);
- digitalWrite(relay_pin, state);
+  if (toogle_on_off == 1){
+   delay(500);
+   digitalWrite(relay_pin, !digitalRead(relay_pin));
+  toogle_on_off = 0;
+  }
 }
 
-void blink() {
-  state = !state;
+void toogle() {
+  toogle_on_off = 1;
 }
 
 
