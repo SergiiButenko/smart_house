@@ -5,7 +5,7 @@ volatile byte toogle_on_off = 0;
 void setup()  {
 
   Serial.begin(9600); //Start serial communication boud rate at 9600
-  pinMode(ir_pin,INPUT_PULLUP); //Pin 5 as signal input
+  pinMode(ir_pin,INPUT); //Pin 5 as signal input
   pinMode(relay_pin, OUTPUT);
   digitalWrite(relay_pin, LOW);
 
