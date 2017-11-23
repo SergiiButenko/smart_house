@@ -1,30 +1,45 @@
 int relay_pin = 12;
 int ir_pin=2;
 volatile byte toogle_on_off = 0;
+volatile int delta = 50;
 
 void setup()  {
 
   Serial.begin(9600); //Start serial communication boud rate at 9600
-  pinMode(ir_pin,INPUT); //Pin 5 as signal input
+  //  pinMode(ir_pin,INPUT); //Pin 5 as signal input
   pinMode(relay_pin, OUTPUT);
-  digitalWrite(relay_pin, LOW);
+  digitalWrite(relay_pin, HIGH);
 
-  attachInterrupt(0, toogle, RISING);
+  attachInterrupt(0, toogle, FALLING);
 
 }
 void loop()  {
   if (toogle_on_off == 1){
-    Serial.println("on");
+    delay(delta);
+
+    if (digitalRead(ir_pin) == HIGH){
+      toogle_on_off = 0;
+      return;
+    }
+
     digitalWrite(relay_pin, !digitalRead(relay_pin));
-    toogle_on_off = 0;
     delay(1000);
     toogle_on_off = 0;
   }
 }
 
 void toogle() {
-  toogle_on_off = 1;
+  if (digitalRead(ir_pin) == LOW){
+    toogle_on_off = 1;
+  }
 }
+
+
+
+
+
+
+
 
 
 
