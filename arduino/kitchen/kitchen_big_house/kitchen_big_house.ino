@@ -2,8 +2,8 @@ int relay_pin = 8;
 int ir_pin_1=2;
 int ir_pin_2=3;
 
-int ir_pin_check_1=2;
-int ir_pin_check_2=3;
+int ir_pin_check_1=5;
+int ir_pin_check_2=7;
 
 
 volatile byte toogle_on_off = 0;
