@@ -8,7 +8,7 @@ int ir_pin_check_2=7;
 
 volatile byte toogle_on_off = 0;
 volatile int toogle = 0;
-volatile int delta = 70;
+volatile int delta = 10;
 
 void setup()  {
 
