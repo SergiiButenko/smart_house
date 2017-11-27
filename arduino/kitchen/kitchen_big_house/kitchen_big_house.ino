@@ -30,7 +30,7 @@ void loop()  {
   if (toogle_on_off == 1 && toogle == 1){
     delay(delta);
 
-    if ((digitalRead(ir_pin_1) == HIGH) || ((digitalRead(ir_pin_check_1) == HIGH))) {
+    if ((digitalRead(ir_pin_1) == HIGH)) {// || ((digitalRead(ir_pin_check_1) == HIGH))) {
       toogle_on_off = 0;
       toogle = 0;
       return;
@@ -45,7 +45,7 @@ void loop()  {
   if (toogle_on_off == 1 && toogle == 2){
     delay(delta);
 
-    if ((digitalRead(ir_pin_2) == HIGH) || ((digitalRead(ir_pin_check_2) == HIGH))) {
+    if ((digitalRead(ir_pin_2) == HIGH)){// || ((digitalRead(ir_pin_check_2) == HIGH))) {
       toogle_on_off = 0;
       toogle = 0;
       return;
@@ -56,7 +56,6 @@ void loop()  {
     toogle_on_off = 0;
     toogle = 0;
   }
-  delay(10);
 }
 
 void toogle_1() {
@@ -65,7 +64,7 @@ void toogle_1() {
   if ((digitalRead(ir_pin_1) == LOW)){// && (digitalRead(ir_pin_check_1) == LOW)) {
     toogle_on_off = 1;
     toogle = 1;
-    Serial.println("toogle_1");
+    //Serial.println("toogle_1");
   }
 }
 
@@ -75,7 +74,7 @@ void toogle_2() {
  if ((digitalRead(ir_pin_2) == LOW)){ //&& (digitalRead(ir_pin_check_2) == LOW)) {
     toogle_on_off = 1;
     toogle = 2;
-    Serial.println("toogle_2");
+    //Serial.println("toogle_2");
   }
 }
 
