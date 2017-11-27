@@ -2,7 +2,7 @@ int relay_pin = 8;
 int ir_pin_1=2;
 int ir_pin_2=3;
 
-int ir_pin_check_1=5;
+int ir_pin_check_1=9;
 int ir_pin_check_2=7;
 
 
@@ -27,23 +27,15 @@ void setup()  {
 
 }
 void loop()  {
-  Serial.print(digitalRead(ir_pin_1));
-  Serial.print(digitalRead(ir_pin_check_1));
-
-  Serial.print(digitalRead(ir_pin_2));
-  Serial.print(digitalRead(ir_pin_check_2));
-
   if (toogle_on_off == 1 && toogle == 1){
     delay(delta);
 
     if ((digitalRead(ir_pin_1) == HIGH) || ((digitalRead(ir_pin_check_1) == HIGH))) {
       toogle_on_off = 0;
       toogle = 0;
-      Serial.println("off");
       return;
     }
 
-    Serial.println("on");
     digitalWrite(relay_pin, !digitalRead(relay_pin));
     delay(1000);
     toogle_on_off = 0;
@@ -56,21 +48,21 @@ void loop()  {
     if ((digitalRead(ir_pin_2) == HIGH) || ((digitalRead(ir_pin_check_2) == HIGH))) {
       toogle_on_off = 0;
       toogle = 0;
-      Serial.println("off");
       return;
     }
 
-    Serial.println("on");
     digitalWrite(relay_pin, !digitalRead(relay_pin));
     delay(1000);
     toogle_on_off = 0;
     toogle = 0;
   }
-
+  delay(10);
 }
 
 void toogle_1() {
-  if ((digitalRead(ir_pin_1) == LOW) && ((digitalRead(ir_pin_check_1) == LOW))){
+//  Serial.print(digitalRead(ir_pin_1));
+//  Serial.print(digitalRead(ir_pin_check_1));
+  if ((digitalRead(ir_pin_1) == LOW)){// && (digitalRead(ir_pin_check_1) == LOW)) {
     toogle_on_off = 1;
     toogle = 1;
     Serial.println("toogle_1");
@@ -78,12 +70,15 @@ void toogle_1() {
 }
 
 void toogle_2() {
-  if ((digitalRead(ir_pin_2) == LOW) && ((digitalRead(ir_pin_check_2) == LOW))){
+//  Serial.print(digitalRead(ir_pin_2));
+//  Serial.println(digitalRead(ir_pin_check_2));
+ if ((digitalRead(ir_pin_2) == LOW)){ //&& (digitalRead(ir_pin_check_2) == LOW)) {
     toogle_on_off = 1;
     toogle = 2;
     Serial.println("toogle_2");
   }
 }
+
 
 
 
