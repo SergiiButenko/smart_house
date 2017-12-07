@@ -1,0 +1,15 @@
+[Unit]
+Description=Backend part of irrigation system for peregonivka for port 7542
+After=network.target
+Requires=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /var/www/web/irrigation_web.py
+
+Restart=always
+RestartSec=5
+TimeoutSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

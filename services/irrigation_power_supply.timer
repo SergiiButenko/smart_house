@@ -1,0 +1,11 @@
+[Unit]
+Description=power supply timer
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+Unit=irrigation_power_supply.service
+
+
+[Install]
+WantedBy=multi-user.target
