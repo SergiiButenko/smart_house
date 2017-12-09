@@ -466,7 +466,7 @@ def add_ongoing_rule():
     rule['repeat_value'] = int(rule['repeat_value'])
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
-    rule['end_date'] = 'NULL' if rule['end_date'] == '' else "{0}".format(convert_to_datetime(rule['end_date']))
+    rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
 
