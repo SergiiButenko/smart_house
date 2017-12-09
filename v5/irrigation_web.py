@@ -421,9 +421,9 @@ def ongoing_rules():
             'intervals': intervals,
             'time_wait': time_wait,
             'repeat_value': repeat_value,
-            'date_start': date_start,
-            'time_start': time_start,
-            'end_date': end_date,
+            'date_start': str(date_start),
+            'time_start': str(time_start),
+            'end_date': str(end_date),
             'active': active,
             'name': name})
         
@@ -434,13 +434,12 @@ def ongoing_rules():
             'intervals': intervals,
             'time_wait': time_wait,
             'repeat_value': repeat_value,
-            'date_start': date_start,
-            'time_start': time_start,
-            'end_date': end_date,
+            'date_start': str(date_start),
+            'time_start': str(time_start),
+            'end_date': str(end_date),
             'active': active,
-            'name': name}
-            )
-        
+            'name': name})
+
     # repeat_value
 
     template = render_template('ongoing_rules.html', my_list=rows)
