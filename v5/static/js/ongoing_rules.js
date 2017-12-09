@@ -67,11 +67,47 @@ $(document).ready(function() {
     });
 
     $('.active_true_false').change(function() {
-        if(this.checked) {
-            var returnVal = confirm("Are you sure?");
-            $(this).prop("checked", returnVal);
+        if (this.checked) {
+            $("#confirm_modal").data('id', $(this).data('id'));
+            $('#confirm_modal').modal('show');
+        } else {
+            $("#dismiss_modal").data('id', $(this).data('id'));
+            $('#dismiss_modal').modal('show')
         }
-        $(this).val(this.checked);        
+    });
+
+    $(".activate").click(function() {
+        $("#confirm_modal").data('id');
+        $.ajax({
+            url: '/activate_ongoing_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                $('#confirm_modal').modal('hide');
+            }, 
+            error: function(data) {
+                alert("Сталася помилка. Cпробуйте ще раз");
+            }
+        });
+    });
+
+    $(".deactivate").click(function() {
+        $("#dismiss_modal").data('id');
+        $.ajax({
+            url: '/deactivate_ongoing_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                $('#dismiss_modal').modal('hide');
+            }, 
+            error: function(data) {
+                alert("Сталася помилка. Cпробуйте ще раз");
+            }
+        });
     });
 
 });
@@ -137,19 +173,6 @@ $('.add-ongoing-rule').on('click', function(e) {
 
 });
 
-function activate_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/activate_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
 
 function deactivate_rule(that) {
     id = $(that).data('id');
