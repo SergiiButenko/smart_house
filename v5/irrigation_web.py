@@ -446,9 +446,15 @@ def update_rules_from_ongoing_rules(rule):
         # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
         print('s')
 
-    if rule['end_value'] == 1:
+    if rule['end_value'] in (1, 3):
         now = datetime.datetime.now()
-        end_date = now + datetime.timedelta(days=31)
+        end_date = rule['end_date']
+
+    
+
+
+    if rule['end_value'] == 3:
+        end_date = rule['']
 
     if rule['end_value'] == 3:
         end_date = rule['']
@@ -485,8 +491,8 @@ def add_ongoing_rule():
         rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
         rule['rule_id']))
 
-
     # update rules;
+    update_rules_from_ongoing_rules(rule['rule_id'])
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
