@@ -26,28 +26,16 @@ $(document).ready(function() {
 
     $(".card-rule").each(function() {
         schedule_select = $(this).find('#schedule_select')
-        console.log(schedule_select)
-
         schedule_select.val(schedule_select.data('value'))
-        console.log(schedule_select.data('value'))
-
 
         irrigation_date = $(this).find('.irrigation_date')
-        console.log(irrigation_date)
-
         irrigation_date.val(convert_date(irrigation_date.data('value')))
-        console.log(irrigation_date.data('value'))
-
 
         irrigation_time = $(this).find('.irrigation_time')
-        console.log(irrigation_time)
         irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
-        console.log(irrigation_time.data('value'))
 
         irrigation_end_date = $(this).find('.irrigation_end_date')
-        console.log(irrigation_end_date)
         irrigation_end_date.val(convert_date(irrigation_end_date.data('value')))
-        console.log(irrigation_end_date.data('value'))
 
         form_text($(this))
     });
