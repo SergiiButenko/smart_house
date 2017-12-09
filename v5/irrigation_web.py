@@ -446,9 +446,15 @@ def update_rules_from_ongoing_rules(rule):
         # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
         print('s')
 
-    if rule['end_value'] == 1:
+    if rule['end_value'] in (1, 3):
         now = datetime.datetime.now()
-        end_date = now + datetime.timedelta(days=31)
+        end_date = rule['end_date']
+
+    
+
+
+    if rule['end_value'] == 3:
+        end_date = rule['']
 
     if rule['end_value'] == 3:
         end_date = rule['']
@@ -466,15 +472,14 @@ def add_ongoing_rule():
     rule['intervals'] = int(rule['intervals'])
     rule['time_wait'] = int(rule['time_wait'])
     rule['repeat_value'] = int(rule['repeat_value'])
-    rule['dow'] = 'NULL' if rule['dow'] == '' else "'{0}'".format(rule['dow'])
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
-    rule['end_value'] = int(rule['end_value'])
     rule['end_date'] = 'NULL' if rule['end_date'] == '' else "'{0}'".format(convert_to_datetime(rule['end_date']))
-    rule['end_repeat_quantity'] = 'NULL' if rule['end_repeat_quantity'] == '' else int(rule['end_repeat_quantity'])
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
 
+    print(str(rule))
+    return json.dumps({'status': 'OK'})
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
     # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
     # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {8}, '{9}', {10}, {11}, {12})")
@@ -485,8 +490,8 @@ def add_ongoing_rule():
         rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
         rule['rule_id']))
 
-
     # update rules;
+    update_rules_from_ongoing_rules(rule['rule_id'])
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
