@@ -81,7 +81,7 @@ function form_text(el_in) {
     now = new Date($(card).find("#end_date").val());
     text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
-    $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + text);
+    $(card).find("#summary").text(schedule_text + ' о ' + time + ', ' + text);
 }
 
 
@@ -89,7 +89,7 @@ function form_text(el_in) {
 $('.add-ongoing-rule').on('click', function(e) {
     json = { 'rule': {} }
     modal = $('#irrigate_modal');
-    
+
     json['rule'] = {
         'line_id': $(modal).find('#branch_select').val(),
         'time': $(modal).find('#irrigation_minutes').val(),
