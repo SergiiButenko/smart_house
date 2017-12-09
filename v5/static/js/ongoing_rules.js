@@ -101,6 +101,12 @@ $('.add-ongoing-rule').on('click', function(e) {
         'end_date': $(modal).find('#end_date').val(),
     }
 
+    if (end_date == '') {
+        alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+        console.log(json);
+        return;
+    }
+
     $.ajax({
         url: '/add_ongoing_rule',
         type: "post",
@@ -112,7 +118,7 @@ $('.add-ongoing-rule').on('click', function(e) {
             $('#irrigate_modal').modal('hide');
         },
         error: function() {
-            alert("error");
+            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
         }
     });
