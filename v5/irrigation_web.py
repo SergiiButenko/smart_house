@@ -470,8 +470,6 @@ def add_ongoing_rule():
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
 
-    logging.info(str(rule))
-    return json.dumps({'status': 'OK'})
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
     # "time_start, end_date, active, rule_id) "
     # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
@@ -483,7 +481,7 @@ def add_ongoing_rule():
         rule['rule_id']))
 
     # update rules;
-    update_rules_from_ongoing_rules(rule['rule_id'])
+    # update_rules_from_ongoing_rules(rule['rule_id'])
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
