@@ -66,6 +66,14 @@ $(document).ready(function() {
         $(modal).modal('show');
     });
 
+    $('.active_true_false').change(function() {
+        if(this.checked) {
+            var returnVal = confirm("Are you sure?");
+            $(this).prop("checked", returnVal);
+        }
+        $(this).val(this.checked);        
+    });
+
 });
 
 
