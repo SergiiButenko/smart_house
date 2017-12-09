@@ -38,7 +38,7 @@ $(document).ready(function() {
         irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
 
         active_true_false = $(this).find('.active_true_false');
-        active_true_false.prop("checked") = active_true_false.data('value');
+        active_true_false.prop("checked", active_true_false.data('value'));
 
         form_text($(this))
     });
