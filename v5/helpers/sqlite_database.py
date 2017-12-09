@@ -51,7 +51,7 @@ QUERY['ongoing_rules'] = (
     "r.date_time_start, r.end_date, r.active, l.name "
     "FROM ongoing_rules as r, lines as l "
     "WHERE r.line_id = l.number "
-    "ORDER BY date_time_start")
+    "ORDER BY r.date_time_start")
 
 QUERY['add_ongoing_rule'] = (
     "INSERT INTO date_time_start(line_id, time, intervals, time_wait, repeat_value, date_time_start, "
