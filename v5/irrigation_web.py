@@ -409,11 +409,10 @@ def ongoing_rules():
         intervals = row[3]
         time_wait = row[4]
         repeat_value = row[5]
-        date_start = row[6]
-        time_start = row[7]
-        end_date = row[8]
-        active = row[9]
-        name = row[10]
+        date_time_start = row[6]
+        end_date = row[7]
+        active = row[8]
+        name = row[9]
         rows.append({
             'rule_id': rule_id,
             'line_id': line_id,
@@ -421,8 +420,7 @@ def ongoing_rules():
             'intervals': intervals,
             'time_wait': time_wait,
             'repeat_value': repeat_value,
-            'date_start': str(date_start),
-            'time_start': str(time_start),
+            'date_time_start': str(date_time_start),
             'end_date': str(end_date),
             'active': active,
             'name': name})
@@ -466,6 +464,9 @@ def add_ongoing_rule():
     rule['repeat_value'] = int(rule['repeat_value'])
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
+    rule['date_time_start'] = datetime.datetime.combine(
+        rule['date_start'], rule['time_start']
+        )
     rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
@@ -476,7 +477,7 @@ def add_ongoing_rule():
     # insert into ongoing table
     database.update(database.QUERY[mn()].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-        rule['repeat_value'], rule['date_start'], rule['time_start'],
+        rule['repeat_value'], rule['date_time_start'],
         rule['end_date'], rule['active'], rule['rule_id']))
 
     # update rules;
