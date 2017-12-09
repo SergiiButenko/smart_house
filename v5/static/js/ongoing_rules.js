@@ -67,6 +67,12 @@ $(document).ready(function() {
     });
 
     $('.active_true_false').change(function() {
+        if(this.checked) {
+            var returnVal = confirm("Ви впевненні?");
+            $(this).prop("checked", returnVal);
+        }
+        $(this).val(this.checked); 
+
         if (this.checked) {
             $("#confirm_modal").data('id', $(this).data('id'));
             $('#confirm_modal').modal('show');
