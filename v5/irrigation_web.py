@@ -465,7 +465,7 @@ def add_ongoing_rule():
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['date_time_start'] = datetime.datetime.combine(
-        rule['date_start'], rule['time_start']
+        rule['time_start'], rule['date_start']
         )
     rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['active'] = 1
