@@ -42,10 +42,6 @@
                                     <option value=1 selected="selected" title="Кожен день">Кожен день</option>
                                     <option value=2 title="Кожні 2 дня">Кожні 2 дня</option>
                                     <option value=3 title="Кожні 3 дня">Кожні 3 дня</option>
-                                    <option value=4 title="Кожні 4 дня">Кожні 4 дня</option>
-                                    <option value=5 title="Кожні 5 днів">Кожні 5 днів</option>
-                                    <option value=6 title="Кожні 6 днів">Кожні 6 днів</option>
-                                    <option value=7 title="Кожні 7 днів">Кожні 7 днів</option>
                                 </select>
                             </td>
                         </tr>
@@ -54,7 +50,7 @@
                         <tr tabindex="0">
                             <th>Дата початку:</th>
                             <td>
-                                <input class="form-control irrigation_date form-text-control" type="date">
+                                <input type="date" class="form-control irrigation_date form-text-control">
                             </td>
                         </tr>
                         <tr tabindex="0">
@@ -66,7 +62,7 @@
                         <tr>
                             <th>Дата завершення:</th>
                             <td>
-                                <input class="form-control irrigation_end_date form-text-control" type="date" id='end_date'>
+                                <input type="date" id='end_date' class="form-control irrigation_end_date form-text-control">
                             </td>
                         </tr>
                         <tr tabindex="0">
@@ -132,29 +128,25 @@
                                             <option value=1 selected="selected" title="Кожен день">Кожен день</option>
                                             <option value=2 title="Кожні 2 дня">Кожні 2 дня</option>
                                             <option value=3 title="Кожні 3 дня">Кожні 3 дня</option>
-                                            <option value=4 title="Кожні 4 дня">Кожні 4 дня</option>
-                                            <option value=5 title="Кожні 5 днів">Кожні 5 днів</option>
-                                            <option value=6 title="Кожні 6 днів">Кожні 6 днів</option>
-                                            <option value=7 title="Кожні 7 днів">Кожні 7 днів</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Дата початку:</th>
                                     <td>
-                                        <input class="form-control irrigation_date form-text-control" type="date" data-value={{n[ 'date_start']}}>
+                                        <input class="irrigation_date form-text-control" type="date" data-value={{n[ 'date_start']}}>
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Час:</th>
                                     <td>
-                                        <input type="time" class="form-control irrigation_time form-text-control" data-value={{n[ 'time_start']}}>
+                                        <input type="time" class="irrigation_time form-text-control" data-value={{n[ 'time_start']}}>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Дата завершення:</th>
                                     <td>
-                                        <input class="form-control irrigation_end_date form-text-control" type="date" id='end_date' data-value={{n[ 'end_date']}}>
+                                        <input class="irrigation_end_date form-text-control" type="date" id='end_date' data-value={{n[ 'end_date']}}>
                                     </td>
                                 </tr>
                             </tbody>
