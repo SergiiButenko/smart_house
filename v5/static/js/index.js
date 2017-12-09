@@ -165,6 +165,9 @@ $(document).ready(function() {
             data: {
                 'id': index
             },
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
+            },
             success: function(data) {
                 console.log('Line ' + branch[index]['name'] + ' wont be started');
                 update_branches(data);

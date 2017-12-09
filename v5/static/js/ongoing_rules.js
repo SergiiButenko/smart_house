@@ -24,154 +24,64 @@ $(document).ready(function() {
         }
     });
 
+    $(".card-rule").each(function() {
+        schedule_select = $(this).find('#schedule_select')
+        schedule_select.val(schedule_select.data('value'))
+
+        irrigation_date = $(this).find('.irrigation_date')
+        irrigation_date.val(convert_date(irrigation_date.data('value')))
+
+        irrigation_time = $(this).find('.irrigation_time')
+        irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
+
+        irrigation_end_date = $(this).find('.irrigation_end_date')
+        irrigation_end_date.val(convert_date_to_time(irrigation_end_date.data('value')))
+
+        form_text($(this))
+    });
 
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });
 
-    $('.date').on('input', function(e) {
-        form_text($(this));
-    });
-
-    $('.quantity').on('input', function(e) {
-        form_text($(this));
-    });
-
-    $('.irrigation_date').on('input', function(e) {
-        form_text($(this));
-    });
-
-    $('.irrigation_time').on('input', function(e) {
+    $('.form-text-control').on('input', function(e) {
         form_text($(this));
     });
 
     $('#branch_select').on('change', function(e) {
         index = parseInt($(this).val());
-        set_branch(index);
+        set_branch_defaults(index);
         form_text($(this));
     });
 
-    $('#schedule_select').on('change', function(e) {
-        toogle_week_schedule($(this));
-    });
-
-    $(".btn-open-modal2").click(function() {
+    $(".btn-open-modal").click(function() {
         modal = $('#irrigate_modal')
         index = parseInt($(modal).find("#branch_select").val());
-        set_branch(index);
+        set_branch_defaults(index);
         $(modal).find('.irrigation_date').val(convert_date_to_local_date(0));
         form_text($(modal));
         $(modal).modal('show');
     });
 
-
-    $("input[name='optionsRadios']").change(function() {
-        radio = $(".form-group input:checked")
-        if (radio.val() == 3) {
-            $("#date").val(convert_date_to_local_date(1));
-        } else {
-            $("#date").val('');
-        }
-
-        if (radio.val() == 2) {
-            $("#quantity").val(1);
-        } else {
-            $("#quantity").val('');
-        }
-
-        form_text($(this));
-    });
-
-    $("#checkboxes :checkbox").click(function() {
-        form_text($(this));
-    });
-
-    $(".radio_input").focus(function() {
-        $(this).closest('.radio').find(":radio").click();
-        form_text($(this));
-    });
-
-});
-
-
-$(".card-rule").each(function() {
-    schedule_select = $(this).find('#schedule_select')
-    schedule_select.val(schedule_select.data('value'))
-
-    checkboxes = $(this).find('#checkboxes')
-    checkboxes.val(checkboxes.data('checked'))
-
-    irrigation_date = $(this).find('.irrigation_date')
-    irrigation_date.val(convert_date(irrigation_date.data('value')))
-
-    irrigation_time = $(this).find('.irrigation_time')
-    irrigation_time.val(convert_date_to_time(irrigation_time.data('value')))
-
-    radio_options = $(this).find('#radio_options')
-    radio_option_value = radio_options.data('value')
-    radio_end_repeat_quantity = radio_options.data('end_repeat_quantity')
-    radio_end_date = radio_options.data('end_date')
-
-    radio_option_checked = radio_options.data('checked')
-    $(this).find('#radio_' + radio_option_checked).prop("checked", true).button("refresh");
-
-    if (radio_option_checked == 2) {
-        $(this).find('#quantity').val(radio_end_repeat_quantity)
-    }
-
-    if (radio_option_checked == 3) {
-        $(this).find('#date').val(convert_date(radio_end_date))
-    }
-
-    form_text($(this))
 });
 
 
 function form_text(el_in) {
-    el = $(el_in).closest('.top')
+    var card = $(el_in).closest('.top')
 
-    schedule_text = $(el).find('#schedule_select option:selected').attr('title');
-    schedule_val = $(el).find('#schedule_select option:selected').val();
-    weekdays = []
-
-    if (schedule_val == 8) {
-        $(el).find("#checkboxes input:checked").each(function() {
-            weekdays.push($(this).attr('title'));
-        });
-
-        schedule_text = schedule_text + ": " + weekdays.join(',')
-    }
-
-    time = $(el).find('.irrigation_time').val();
+    schedule_text = $(card).find('#schedule_select option:selected').attr('title');
+    time = $(card).find('.irrigation_time').val();
 
     var options = {
         weekday: "long",
         month: "short",
         day: "numeric"
-        // timeZone: 'UTC'
     };
 
-    radio = $(el).find(".form-group input:checked")
-    radio_text = ''
-    date_new = $(el).find('.irrigation_date').val();
-    if (radio.val() == 1) {
-        now = new Date(date_new);
-        now.setMonth(now.getMonth() + 1);
-        radio_text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
-    }
+    now = new Date($(card).find("#end_date").val());
+    text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
-
-    if (radio.val() == 2) {
-        val = $(el).find("#quantity").val();
-        radio_text = "кількість повторів: " + val;
-    }
-
-    if (radio.val() == 3) {
-        now = new Date($(el).find("#date").val());
-        radio_text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
-    }
-
-    $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + radio_text);
+    $(el).find("#summary").text(schedule_text + ' о ' + time + ', ' + text);
 }
 
 
@@ -186,17 +96,10 @@ $('.add-ongoing-rule').on('click', function(e) {
         'intervals': $(modal).find('#irrigation_intervals').val(),
         'time_wait': $(modal).find('#irrigation_time_wait').val(),
         'repeat_value': $(modal).find('#schedule_select').val(),
-        'dow': '',
         'date_start': $(modal).find('.irrigation_date').val(),
         'time_start': $(modal).find('.irrigation_time').val(),
-        'end_value': $(modal).find('.form-group input:checked').val(),
-        'end_date': $(modal).find('#date').val(),
-        'end_repeat_quantity': $(modal).find('#quantity').val()
+        'end_date': $(modal).find('#end_date').val(),
     }
-
-    $("#checkboxes input:checked").each(function() {
-        json['rule']['dow'] = json['rule']['dow'] + $(this).val() + ';'
-    });
 
     $.ajax({
         url: '/add_ongoing_rule',
@@ -259,19 +162,6 @@ function remove_rule(that) {
     });
 }
 
-function toogle_week_schedule(el_in) {
-    val = $(el_in).val()
-    el = $(el_in).closest('.top')
-
-    if (val != 8 || isNaN(val)) {
-        $(el).find('#week_schedule').hide();
-    } else {
-        $(el).find('#week_schedule').show();
-    }
-
-    form_text(el);
-}
-
 function toogle_time_wait(val) {
     var input = parseInt(val)
     if (input <= 1 || isNaN(input)) {
@@ -281,7 +171,7 @@ function toogle_time_wait(val) {
     }
 }
 
-function set_branch(index) {
+function set_branch_defaults(index) {
     name = branch[index]['name'];
     time = branch[index]['default_time'];
     interval = branch[index]['default_interval'];
