@@ -409,11 +409,11 @@ def ongoing_rules():
         intervals = row[3]
         time_wait = row[4]
         repeat_value = row[5]
-        date_start = row[7]
-        time_start = row[8]
-        end_date = row[10]
-        active = row[12]
-        name = row[13]
+        date_start = row[6]
+        time_start = row[7]
+        end_date = row[8]
+        active = row[9]
+        name = row[10]
         rows.append({
             'rule_id': rule_id,
             'line_id': line_id,
@@ -426,22 +426,6 @@ def ongoing_rules():
             'end_date': str(end_date),
             'active': active,
             'name': name})
-        
-        logging.info({
-            'rule_id': rule_id,
-            'line_id': line_id,
-            'time': time,
-            'intervals': intervals,
-            'time_wait': time_wait,
-            'repeat_value': repeat_value,
-            'date_start': str(date_start),
-            'time_start': str(time_start),
-            'end_date': str(end_date),
-            'active': active,
-            'name': name})
-
-    # repeat_value
-
     template = render_template('ongoing_rules.html', my_list=rows)
     return template
 
@@ -488,9 +472,9 @@ def add_ongoing_rule():
 
     logging.info(str(rule))
     return json.dumps({'status': 'OK'})
-    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
-    # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
-    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {8}, '{9}', {10}, {11}, {12})")
+    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
+    # "time_start, end_date, active, rule_id) "
+    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
     # insert into ongoing table
     database.update(database.QUERY[mn()].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
