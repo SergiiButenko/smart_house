@@ -409,12 +409,9 @@ def ongoing_rules():
         intervals = row[3]
         time_wait = row[4]
         repeat_value = row[5]
-        dow = row[6]
         date_start = row[7]
         time_start = row[8]
-        end_value = row[9]
         end_date = row[10]
-        end_repeat_quantity = row[11]
         active = row[12]
         name = row[13]
         rows.append({
@@ -424,12 +421,9 @@ def ongoing_rules():
             'intervals': intervals,
             'time_wait': time_wait,
             'repeat_value': repeat_value,
-            'dow': dow,
             'date_start': date_start,
             'time_start': time_start,
-            'end_value': end_value,
             'end_date': end_date,
-            'end_repeat_quantity': end_repeat_quantity,
             'active': active,
             'name': name})
     # repeat_value
@@ -478,7 +472,7 @@ def add_ongoing_rule():
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
 
-    print(str(rule))
+    logging.info(str(rule))
     return json.dumps({'status': 'OK'})
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, dow, date_start, "
     # "time_start, end_value, end_date, end_repeat_quantity, active, rule_id) "
