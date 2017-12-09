@@ -476,9 +476,8 @@ def add_ongoing_rule():
     # insert into ongoing table
     database.update(database.QUERY[mn()].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-        rule['repeat_value'], rule['dow'], rule['date_start'], rule['time_start'],
-        rule['end_value'], rule['end_date'], rule['end_repeat_quantity'], rule['active'],
-        rule['rule_id']))
+        rule['repeat_value'], rule['date_start'], rule['time_start'],
+        rule['end_date'], rule['active'], rule['rule_id']))
 
     # update rules;
     # update_rules_from_ongoing_rules(rule['rule_id'])
