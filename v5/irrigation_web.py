@@ -435,14 +435,14 @@ def ongoing_rules():
 def update_rules_from_ongoing_rules(rule):
     """Form rules from ongoing rule."""
     # select * from ongoing_rule where rule_id = rule['rule_id']
-    res = database.select(database.QUERY[mn() + '_select_id'].format(rule['rule_id']))
-    if len(res) > 0:
-        # update ongoning rule
-        database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
-        database.update(database.QUERY[mn() + '_update_ongoing_rule'].format(
-            rule['rule_id'],  ))
-        # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
-        # print('s')
+    # res = database.select(database.QUERY[mn() + '_select_id'].format(rule['rule_id']))
+    # if len(res) > 0:
+    #     # update ongoning rule
+    #     database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
+    #     database.update(database.QUERY[mn() + '_update_ongoing_rule'].format(
+    #         rule['rule_id'],  ))
+    #     # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
+    #     # print('s')
 
     _delta = rule['end_date'] - rule['date_time_start']
     _days = _delta.days + 1
