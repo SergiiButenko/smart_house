@@ -466,7 +466,7 @@ def update_rules_from_ongoing_rules(rule):
         branch_id = int(rule['line_id'])
         time_min = int(rule['time'])
         time_wait = int(rule['time_wait'])
-        num_of_intervals = int(rule['interval'])
+        num_of_intervals = int(rule['intervals'])
         interval_id = str(uuid.uuid4())
 
         stop_datetime = date_datetime + datetime.timedelta(minutes=time_min)
