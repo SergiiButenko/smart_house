@@ -513,7 +513,7 @@ def add_ongoing_rule():
         rule['end_date'], rule['active'], rule['rule_id']))
 
     # update rules;
-    # update_rules_from_ongoing_rules(rule['rule_id'])
+    update_rules_from_ongoing_rules(rule)
     update_all_rules()
     logging.info("Rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
