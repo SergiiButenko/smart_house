@@ -77,7 +77,7 @@ QUERY['update_rules_from_ongoing_rules_remove_from_life'] = (
 
 QUERY['remove_ongoing_rule_delete_ongoing_rule'] = QUERY['update_rules_from_ongoing_rules_delete_ongoing_rule']
 
-QUERY['remove_ongoing_rule_remove_from_life'] = QUERY['update_rules_from_ongoing_rules_rules_remove_from_life']
+QUERY['remove_ongoing_rule_remove_from_life'] = QUERY['update_rules_from_ongoing_rules_remove_from_life']
 
 QUERY['update_rules_from_ongoing_rules_add_rule_to_life'] = (
     "INSERT INTO life(line_id, rule_id, state, date, timer, interval_id, time, ongoing_rule_id) "
