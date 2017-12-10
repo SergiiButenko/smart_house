@@ -435,8 +435,12 @@ def ongoing_rules():
 def update_rules_from_ongoing_rules(rule):
     """Form rules from ongoing rule."""
     # select * from ongoing_rule where rule_id = rule['rule_id']
-    # if len(res) > 0:
+    res = database.select(database.QUERY[mn() + '_select_id'].format(rule['rule_id']))
+    if len(res) > 0:
         # update ongoning rule
+        database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
+        database.update(database.QUERY[mn() + '_update_ongoing_rule'].format(
+            rule['rule_id'],  ))
         # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
         # print('s')
 
@@ -457,7 +461,7 @@ def update_rules_from_ongoing_rules(rule):
     # rule['end_date'] = convert_to_datetime(rule['end_date'])
     # rule['active'] = 1
     # rule['rule_id'] = str(uuid.uuid4())
-    ongoing_rule_id = rule['rule_id']
+    ongoing_rule_id = rule['rule_id' + 1]
 
     for days_to_add in range(0, _days):
         date_datetime = rule['date_time_start'] + datetime.timedelta(days=days_to_add)
@@ -529,7 +533,7 @@ def add_ongoing_rule():
     # update rules;
     update_rules_from_ongoing_rules(rule)
     update_all_rules()
-    logging.info("Rule added. {0}".format(str(rule)))
+    logging.info("Ongoing rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
 
 
@@ -537,22 +541,44 @@ def add_ongoing_rule():
 def remove_ongoing_rule():
     """User can remove ongoing rule from ui."""
     id = int(request.args.get('id'))
-    database.update(database.QUERY[mn()].format(id))
+    database.update(database.QUERY[mn()+'_remove_from_life'].format(id))
+    database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(id))
     update_all_rules()
-    template = ongoing_rules_table()
-    send_message('ongoind_rules_update', {'data': template})
-    return template
+    return json.dumps({'status': 'OK'})
 
 
 @app.route("/edit_ongoing_rule")
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
-    # id = int(request.args.get('id'))
-    # database.update(database.QUERY[mn()].format(id))
+    rule = request.json['rule']
+    rule['line_id'] = int(rule['line_id'])
+    rule['time'] = convert_to_datetime(rule['time'])
+    rule['intervals'] = int(rule['intervals'])
+    rule['time_wait'] = int(rule['time_wait'])
+    rule['repeat_value'] = int(rule['repeat_value'])
+    rule['date_start'] = convert_to_datetime(rule['date_start'])
+    rule['time_start'] = convert_to_datetime(rule['time_start'])
+    rule['date_time_start'] = datetime.datetime.combine(
+        rule['date_start'], rule['time_start'].time()
+        )
+    rule['end_date'] = convert_to_datetime(rule['end_date'])
+    rule['active'] = rule['active']
+    rule['rule_id'] = rule['rule_id']
+
+    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
+    # "time_start, end_date, active, rule_id) "
+    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
+    # insert into ongoing table
+    database.update(database.QUERY[mn()].format(
+        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+        rule['repeat_value'], rule['date_time_start'],
+        rule['end_date'], rule['active'], rule['rule_id']))
+
+    # update rules;
+    update_rules_from_ongoing_rules(rule)
     update_all_rules()
-    template = ongoing_rules_table()
-    send_message('ongoind_rules_update', {'data': template})
-    return template
+    logging.info("Ongoing rule added. {0}".format(str(rule)))
+    return json.dumps({'status': 'OK'})
 
 
 @app.route("/activate_ongoing_rule")

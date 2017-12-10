@@ -57,7 +57,7 @@ $(document).ready(function() {
         form_text($(this));
     });
 
-    $(".btn-open-modal").click(function() {
+    $(".btn-open-modal").click(function(e) {
         modal = $('#irrigate_modal')
         index = parseInt($(modal).find("#branch_select").val());
         set_branch_defaults(index);
@@ -66,11 +66,29 @@ $(document).ready(function() {
         $(modal).modal('show');
     });
 
+    $(".ongoing-rule-remove").click(function(e) {
+        id = $(this).data('id');
+        $.ajax({
+            url: '/remove_ongoing_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                $('#confirm_modal').modal('hide');
+            },
+            error: function(data) {
+                alert("Сталася помилка. Cпробуйте ще раз");
+            }
+        });
+    });
+
+
     $('.active_true_false').change(function() {
         if (this.checked) {
             var returnVal = confirm("Ви впевненні?");
             $(this).prop("checked", returnVal);
-            $(this).val(this.checked); 
+            $(this).val(this.checked);
             id = $(this).data('id')
 
             if (returnVal == true) {
