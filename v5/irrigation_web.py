@@ -38,6 +38,10 @@ BRANCHES_LENGTH = 18
 RULES_FOR_BRANCHES = [None] * BRANCHES_LENGTH
 BRANCHES_SETTINGS = [None] * BRANCHES_LENGTH
 
+START_RULE = 1
+STOP_RULE = 2
+ENABLED_RULE = 1
+
 
 def update_all_rules():
     """Set next active rules for all branches."""
@@ -431,26 +435,54 @@ def ongoing_rules():
 def update_rules_from_ongoing_rules(rule):
     """Form rules from ongoing rule."""
     # select * from ongoing_rule where rule_id = rule['rule_id']
-    if len(res) > 0:
-        # update
+    # if len(res) > 0:
+        # update ongoning rule
         # delete from life where ongoing_rule_id = rule['rule_id'] and timer >= now('localime', 'utc')
-        print('s')
+        # print('s')
 
-    if rule['end_value'] in (1, 3):
-        now = datetime.datetime.now()
-        end_date = rule['end_date']
+    _delta = rule['end_date'] - rule['date_time_start']
+    _days = _delta.days + 1
+    logging.info("number of days: {0}".format(_days))
 
-    
+    # rule['line_id'] = int(rule['line_id'])
+    # rule['time'] = convert_to_datetime(rule['time'])
+    # rule['intervals'] = int(rule['intervals'])
+    # rule['time_wait'] = int(rule['time_wait'])
+    # rule['repeat_value'] = int(rule['repeat_value'])
+    # rule['date_start'] = convert_to_datetime(rule['date_start'])
+    # rule['time_start'] = convert_to_datetime(rule['time_start'])
+    # rule['date_time_start'] = datetime.datetime.combine(
+    #     rule['date_start'], rule['time_start'].time()
+    #     )
+    # rule['end_date'] = convert_to_datetime(rule['end_date'])
+    # rule['active'] = 1
+    # rule['rule_id'] = str(uuid.uuid4())
+    ongoing_rule_id = rule['rule_id']
 
+    for days_to_add in range(0, _days):
+        date_datetime = rule['date_time_start'] + datetime.timedelta(days=days_to_add)
 
-    if rule['end_value'] == 3:
-        end_date = rule['']
+        #start_time = rule['date_time_start']
+        branch_id = int(rule['line_id'])
+        time_min = int(rule['time'])
+        time_wait = int(rule['time_wait'])
+        num_of_intervals = int(rule['interval'])
+        interval_id = str(uuid.uuid4())
 
-    if rule['end_value'] == 3:
-        end_date = rule['']
+        stop_datetime = date_datetime + datetime.timedelta(minutes=time_min)
 
+        update_db_request(QUERY[mn()].format(branch_id, START_RULE, ENABLED_RULE, date_datetime.date(), date_datetime, interval_id, time_min, ongoing_rule_id))
+        update_db_request(QUERY[mn()].format(branch_id, STOP_RULE, ENABLED_RULE, date_datetime.date(), stop_datetime, interval_id, 0, ongoing_rule_id))
+        logging.info("Start time: {0}. Stop time: {1} added to database".format(str(date_datetime), str(stop_datetime)))
 
-    # insert
+        # first interval is executed
+        for x in range(2, num_of_intervals + 1):
+            date_datetime = stop_datetime + datetime.timedelta(minutes=time_wait)
+            stop_datetime = date_datetime + datetime.timedelta(minutes=time_min)
+
+            update_db_request(QUERY[mn()].format(branch_id, START_RULE, ENABLED_RULE, date_datetime.date(), date_datetime, interval_id, time_min, ongoing_rule_id))
+            update_db_request(QUERY[mn()].format(branch_id, STOP_RULE, ENABLED_RULE, date_datetime.date(), stop_datetime, interval_id, 0, ongoing_rule_id))
+            logging.info("Start time: {0}. Stop time: {1} added to database".format(str(date_datetime), str(stop_datetime)))
 
 
 @app.route("/add_ongoing_rule", methods=['POST'])
