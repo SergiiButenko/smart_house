@@ -463,7 +463,7 @@ def update_rules_from_ongoing_rules(rule):
     # rule['rule_id'] = str(uuid.uuid4())
     ongoing_rule_id = rule['rule_id']
 
-    for days_to_add in range(0, _days + 1):
+    for days_to_add in range(0, _days + 1, rule['repeat_value']):
         date_datetime = rule['date_time_start'] + datetime.timedelta(days=days_to_add)
 
         #start_time = rule['date_time_start']
