@@ -60,20 +60,20 @@ QUERY['add_ongoing_rule'] = (
 
 QUERY['update_rules_from_ongoing_select_id'] = (
     "SELECT * FROM ongoing_rules "
-    "WHERE rule_id = {0}")
+    "WHERE rule_id = '{0}'")
 
 QUERY['update_rules_from_ongoing_update_ongoing_rule'] = (
     "UPDATE ongoing_rules "
     "SET line_id = {1}, time = {2}, intervals = {3}, "
     "time_wait = {4}, repeat_value = {5}, date_time_start = {6}, "
     "end_date = {7}, active = {8}"
-    "WHERE rule_id = {0}")
+    "WHERE rule_id = '{0}'")
 
 QUERY['update_rules_from_ongoing_delete_ongoing_rule'] = (
-    "DELETE FROM ongoing_rules WHERE rule_id = {0}")
+    "DELETE FROM ongoing_rules WHERE rule_id = '{0}'")
 
 QUERY['update_rules_from_ongoing_rules_remove_from_life'] = (
-    "DELETE FROM life WHERE ongoing_rule_id = {0} AND timer >= datetime('now', 'localtime')")
+    "DELETE FROM life WHERE ongoing_rule_id = '{0}' AND timer >= datetime('now', 'localtime')")
 
 QUERY['remove_ongoing_rule_delete_ongoing_rule'] = QUERY['update_rules_from_ongoing_delete_ongoing_rule']
 
