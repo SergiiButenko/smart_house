@@ -67,54 +67,44 @@ $(document).ready(function() {
     });
 
     $('.active_true_false').change(function() {
-        if(this.checked) {
+        if (this.checked) {
             var returnVal = confirm("Ви впевненні?");
             $(this).prop("checked", returnVal);
-        }
-        $(this).val(this.checked); 
+            $(this).val(this.checked); 
+            id = $(this).data('id')
 
-        if (this.checked) {
-            $("#confirm_modal").data('id', $(this).data('id'));
-            $('#confirm_modal').modal('show');
-        } else {
-            $("#dismiss_modal").data('id', $(this).data('id'));
-            $('#dismiss_modal').modal('show')
-        }
-    });
-
-    $(".activate").click(function() {
-        $("#confirm_modal").data('id');
-        $.ajax({
-            url: '/activate_ongoing_rule',
-            type: "get",
-            data: {
-                'id': id
-            },
-            success: function(data) {
-                $('#confirm_modal').modal('hide');
-            }, 
-            error: function(data) {
-                alert("Сталася помилка. Cпробуйте ще раз");
+            if (returnVal == true) {
+                $.ajax({
+                    url: '/activate_ongoing_rule',
+                    type: "get",
+                    data: {
+                        'id': id
+                    },
+                    success: function(data) {
+                        $('#confirm_modal').modal('hide');
+                    },
+                    error: function(data) {
+                        alert("Сталася помилка. Cпробуйте ще раз");
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/deactivate_ongoing_rule',
+                    type: "get",
+                    data: {
+                        'id': id
+                    },
+                    success: function(data) {
+                        $('#dismiss_modal').modal('hide');
+                    },
+                    error: function(data) {
+                        alert("Сталася помилка. Cпробуйте ще раз");
+                    }
+                });
             }
-        });
+        }
     });
 
-    $(".deactivate").click(function() {
-        $("#dismiss_modal").data('id');
-        $.ajax({
-            url: '/deactivate_ongoing_rule',
-            type: "get",
-            data: {
-                'id': id
-            },
-            success: function(data) {
-                $('#dismiss_modal').modal('hide');
-            }, 
-            error: function(data) {
-                alert("Сталася помилка. Cпробуйте ще раз");
-            }
-        });
-    });
 
 });
 
