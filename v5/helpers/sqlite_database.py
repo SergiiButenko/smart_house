@@ -48,7 +48,7 @@ QUERY['get_timetable_list_2'] = (
 
 QUERY['ongoing_rules'] = (
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
-    "r.date_time_start, r.end_date, r.active, l.name "
+    "r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
     "FROM ongoing_rules as r, lines as l "
     "WHERE r.line_id = l.number "
     "ORDER BY r.date_time_start")

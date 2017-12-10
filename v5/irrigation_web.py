@@ -407,7 +407,7 @@ def ongoing_rules():
     rows = []
     # SELECT id, line_id, time, intervals, time_wait, repeat_value, dow, date_start, time_start, end_value, end_date, end_repeat_quantity 
     for row in list_arr:
-        rule_id = row[0]
+        rule_id = row[10]
         line_id = row[1]
         time = row[2]
         intervals = row[3]
@@ -461,9 +461,9 @@ def update_rules_from_ongoing_rules(rule):
     # rule['end_date'] = convert_to_datetime(rule['end_date'])
     # rule['active'] = 1
     # rule['rule_id'] = str(uuid.uuid4())
-    ongoing_rule_id = rule['rule_id' + 1]
+    ongoing_rule_id = rule['rule_id']
 
-    for days_to_add in range(0, _days):
+    for days_to_add in range(0, _days + 1):
         date_datetime = rule['date_time_start'] + datetime.timedelta(days=days_to_add)
 
         #start_time = rule['date_time_start']
