@@ -471,8 +471,15 @@ def update_rules_from_ongoing_rules(rule):
 
         stop_datetime = date_datetime + datetime.timedelta(minutes=time_min)
 
-        database.update(database.QUERY[mn()].format(branch_id, START_RULE, ENABLED_RULE, date_datetime.date(), date_datetime, interval_id, time_min, ongoing_rule_id))
-        database.update(database.QUERY[mn()].format(branch_id, STOP_RULE, ENABLED_RULE, date_datetime.date(), stop_datetime, interval_id, 0, ongoing_rule_id))
+        database.update(database.QUERY[mn() + '_add_rule_to_life'].format(
+            branch_id, START_RULE, ENABLED_RULE,
+            date_datetime.date(), date_datetime,
+            interval_id, time_min, ongoing_rule_id))
+        database.update(database.QUERY[mn() + '_add_rule_to_life'].format(
+            branch_id, STOP_RULE, ENABLED_RULE,
+            date_datetime.date(), stop_datetime,
+            interval_id, 0, ongoing_rule_id))
+
         logging.info("Start time: {0}. Stop time: {1} added to database".format(str(date_datetime), str(stop_datetime)))
 
         # first interval is executed
@@ -480,8 +487,15 @@ def update_rules_from_ongoing_rules(rule):
             date_datetime = stop_datetime + datetime.timedelta(minutes=time_wait)
             stop_datetime = date_datetime + datetime.timedelta(minutes=time_min)
 
-            database.update(database.QUERY[mn()].format(branch_id, START_RULE, ENABLED_RULE, date_datetime.date(), date_datetime, interval_id, time_min, ongoing_rule_id))
-            database.update(database.QUERY[mn()].format(branch_id, STOP_RULE, ENABLED_RULE, date_datetime.date(), stop_datetime, interval_id, 0, ongoing_rule_id))
+            database.update(database.QUERY[mn() + '_add_rule_to_life'].format(
+                branch_id, START_RULE, ENABLED_RULE,
+                date_datetime.date(), date_datetime,
+                interval_id, time_min, ongoing_rule_id))
+            database.update(database.QUERY[mn() + '_add_rule_to_life'].format(
+                branch_id, STOP_RULE, ENABLED_RULE,
+                date_datetime.date(), stop_datetime,
+                interval_id, 0, ongoing_rule_id))
+
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(date_datetime), str(stop_datetime)))
 
 
