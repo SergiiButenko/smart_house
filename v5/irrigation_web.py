@@ -540,7 +540,7 @@ def add_ongoing_rule():
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
     """User can remove ongoing rule from ui."""
-    id = int(request.args.get('id'))
+    id = request.args.get('id')
     database.update(database.QUERY[mn()+'_remove_from_life'].format(id))
     database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(id))
     update_all_rules()
