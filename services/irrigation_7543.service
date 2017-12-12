@@ -4,7 +4,7 @@ After=network.target
 Requires=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /var/www/v5/irrigation_web.py 
+ExecStart=/usr/bin/python3 /var/www/web/irrigation_web.py 
 
 Restart=always
 RestartSec=5

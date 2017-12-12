@@ -1,10 +1,10 @@
 [Unit]
-Description=Backend part of irrigation system for peregonivka for port 7542
+Description=Backend part of irrigation system for peregonivka BETA
 After=network.target
 Requires=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /var/www/v5/irrigation_web.py
+ExecStart=/usr/bin/python3 /var/www/web/rules_handler.py
 
 Restart=always
 RestartSec=5
