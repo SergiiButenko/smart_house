@@ -85,41 +85,44 @@ $(document).ready(function() {
 
 
     $('.active_true_false').change(function() {
-        if (this.checked) {
-            var returnVal = confirm("Ви впевненні?");
-            $(this).prop("checked", returnVal);
-            $(this).val(this.checked);
-            id = $(this).data('id')
+        var old_value = this.checked
+        var returnVal = confirm("Ви впевненні?");
+        if (returnVal == false){
+            return;
+        }
 
-            if (returnVal == true) {
-                $.ajax({
-                    url: '/activate_ongoing_rule',
-                    type: "get",
-                    data: {
-                        'id': id
-                    },
-                    success: function(data) {
-                        $('#confirm_modal').modal('hide');
-                    },
-                    error: function(data) {
-                        alert("Сталася помилка. Cпробуйте ще раз");
-                    }
-                });
-            } else {
-                $.ajax({
-                    url: '/deactivate_ongoing_rule',
-                    type: "get",
-                    data: {
-                        'id': id
-                    },
-                    success: function(data) {
-                        $('#dismiss_modal').modal('hide');
-                    },
-                    error: function(data) {
-                        alert("Сталася помилка. Cпробуйте ще раз");
-                    }
-                });
-            }
+        $(this).prop("checked", returnVal);
+        $(this).val(this.checked);
+        id = $(this).data('id')
+
+        if (old_value == false) {
+            $.ajax({
+                url: '/activate_ongoing_rule',
+                type: "get",
+                data: {
+                    'id': id
+                },
+                success: function(data) {
+                    $('#confirm_modal').modal('hide');
+                },
+                error: function(data) {
+                    alert("Сталася помилка. Cпробуйте ще раз");
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/deactivate_ongoing_rule',
+                type: "get",
+                data: {
+                    'id': id
+                },
+                success: function(data) {
+                    $('#dismiss_modal').modal('hide');
+                },
+                error: function(data) {
+                    alert("Сталася помилка. Cпробуйте ще раз");
+                }
+            });
         }
     });
 
