@@ -97,7 +97,7 @@
                     <div class="card-title">
                         <h4>{{n['name']}}</h4>
                         <div class="material-switch pull-right" style="display: inline-block; float: right;">
-                            <input id="all_rules" class="active_true_false" type="checkbox" data-value={{n['active']}} data-id={{n['rule_id']}}/>
+                            <input id="all_rules" class="active_true_false" type="checkbox" data-value={{n[ 'active']}} data-id={{n[ 'rule_id']}}/>
                             <label for="all_rules" class="label-primary"></label>
                         </div>
                     </div>
@@ -151,14 +151,23 @@
                                     </td>
                                 </tr>
                             </tbody>
-                        </table><br>
+                        </table>
+                        <br>
                         <span id='summary'></span>
                     </p>
                 </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-secondary ongoing-rule-remove" data-id="{{n['rule_id']}}">Видалити</button>
                     <!-- <button type="button" class="btn btn-secondary">Редагувати</button> -->
-                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}">Деталі</button>
+                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}">
+                        <span class="if-collapsed">Деталі</span>
+                        <span class="if-not-collapsed">Скрити деталі</span>
+                    </button>
+                    <a class="btn btn-primary collapsed" data-toggle="collapse" href="#collapseExample">
+                        <!--You can put any valid html inside these!-->
+                        <span class="if-collapsed">Open</span>
+                        <span class="if-not-collapsed">Close</span>
+                    </a>
                 </div>
             </div>
         </div>
