@@ -87,14 +87,16 @@ $(document).ready(function() {
     $('.active_true_false').change(function() {
         var old_value = this.checked
         var returnVal = confirm("Ви впевненні?");
-        if (returnVal == false){
+        if (returnVal == false) {
+            $(this).prop("checked", old_value);
+            $(this).val(this.old_value);
             return;
         }
 
         $(this).prop("checked", returnVal);
         $(this).val(this.checked);
-        id = $(this).data('id')
 
+        id = $(this).data('id')
         if (old_value == false) {
             $.ajax({
                 url: '/activate_ongoing_rule',
