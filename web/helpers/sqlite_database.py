@@ -112,7 +112,7 @@ QUERY['activate_ongoing_rule_ongoing'] = "UPDATE ongoing_rules SET active=1 WHER
 QUERY['activate_ongoing_rule_life'] = "UPDATE life SET active=1 WHERE ongoing_rule_id='{0}'"
 
 QUERY['deactivate_ongoing_rule_ongoing'] = "UPDATE ongoing_rules SET active=0 WHERE rule_id='{0}'"
-QUERY['deactivate_ongoing_rule_life'] = "UPDATE ongoing_rules SET active=0 WHERE ongoing_rule_id='{0}'"
+QUERY['deactivate_ongoing_rule_life'] = "UPDATE life SET active=0 WHERE ongoing_rule_id='{0}'"
 
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 
