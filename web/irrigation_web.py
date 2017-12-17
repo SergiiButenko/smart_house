@@ -540,9 +540,9 @@ def add_ongoing_rule():
 @app.route("/remove_ongoing_rule")
 def remove_ongoing_rule():
     """User can remove ongoing rule from ui."""
-    id = request.args.get('id')
-    database.update(database.QUERY[mn()+'_remove_from_life'].format(id))
-    database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(id))
+    rule_id = request.args.get('id')
+    database.update(database.QUERY[mn()+'_remove_from_life'].format(rule_id))
+    database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(rule_id))
     update_all_rules()
     return json.dumps({'status': 'OK'})
 
@@ -584,8 +584,9 @@ def edit_ongoing_rule():
 @app.route("/activate_ongoing_rule")
 def activate_ongoing_rule():
     """User can activate ongoing rule from ui."""
-    id = int(request.args.get('id'))
-    database.update(database.QUERY[mn()].format(id))
+    rule_id = request.args.get('id')
+    database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
+    database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
@@ -595,8 +596,9 @@ def activate_ongoing_rule():
 @app.route("/deactivate_ongoing_rule")
 def deactivate_ongoing_rule():
     """User can deactivate ongoing rule from ui."""
-    id = int(request.args.get('id'))
-    database.update(database.QUERY[mn()].format(id))
+    rule_id = request.args.get('id')
+    database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
+    database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
     template = ongoing_rules_table()
     send_message('ongoind_rules_update', {'data': template})
