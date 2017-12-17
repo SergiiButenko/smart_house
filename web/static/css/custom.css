@@ -1,9 +1,9 @@
-[data-toggle="collapse"].collapsed .if-not-collapsed {
+/*[data-toggle="collapse"].collapsed .if-not-collapsed {
   display: none;
 }
 [data-toggle="collapse"]:not(.collapsed) .if-collapsed {
   display: none;
-}
+}*/
 
 .dropdown-label {
     font-size: 1.5rem;

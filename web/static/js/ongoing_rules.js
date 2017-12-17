@@ -122,8 +122,6 @@ $(document).ready(function() {
             }
         }
     });
-
-
 });
 
 
@@ -240,3 +238,15 @@ function set_branch_defaults(index) {
 
     toogle_time_wait(index);
 }
+
+
+
+$('.collapse').on('hide.bs.collapse', function() {
+    $('.if-collapsed').show();
+    $('.if-not-collapsed').hide();
+})
+
+$('.collapse').on('show.bs.collapse', function() {
+    $('.if-collapsed').hide();
+    $('.if-not-collapsed').show();
+})
