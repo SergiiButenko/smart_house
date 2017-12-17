@@ -84,9 +84,11 @@ $(document).ready(function() {
     });
 
 
-    $('.active_true_false').change(function() {
-        var old_value = this.checked
+    $('.active_true_false').change(function() {        
+        var old_value = $(this).prop("checked")
+        console.log(old_value);
         var returnVal = confirm("Ви впевненні?");
+        console.log(returnVal);
         if (returnVal == false) {
             $(this).prop("checked", old_value);
             $(this).val(this.old_value);
