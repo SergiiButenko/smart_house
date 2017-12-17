@@ -85,7 +85,7 @@ $(document).ready(function() {
 
 
     $('.active_true_false').change(function() {        
-        var old_value = $(this).prop("checked")
+        var old_value = !($(this).prop("checked"))
         console.log(old_value);
         var returnVal = confirm("Ви впевненні?");
         console.log(returnVal);
