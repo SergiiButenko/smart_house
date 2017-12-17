@@ -157,17 +157,14 @@
                     </p>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-secondary ongoing-rule-remove" data-id="{{n['rule_id']}}">Видалити</button>
+                    <button type="button" class="btn btn-secondary ongoing-rule-remove" data-id="{{n['rule_id']}}">
+                    <span class="if-not-collapsed">Видалити</span>
+                    </button>
                     <!-- <button type="button" class="btn btn-secondary">Редагувати</button> -->
                     <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}">
                         <span class="if-collapsed">Деталі</span>
                         <span class="if-not-collapsed">Скрити деталі</span>
                     </button>
-                    <a class="btn btn-primary collapsed" data-toggle="collapse" href="#collapseExample">
-                        <!--You can put any valid html inside these!-->
-                        <span class="if-collapsed">Open</span>
-                        <span class="if-not-collapsed">Close</span>
-                    </a>
                 </div>
             </div>
         </div>
