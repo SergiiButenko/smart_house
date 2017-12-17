@@ -95,9 +95,9 @@
             <div class="card card-rule">
                 <div class="card-block">
                     <div class="card-title">
-                        <h4 data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}" style="display: inline-block;">{{n['name']}}</h4>
+                        <h4>{{n['name']}}</h4>
                         <div class="material-switch pull-right" style="display: inline-block; float: right;">
-                            <input id="all_rules" class="active_true_false" name="someSwitchOption001" type="checkbox" data-value={{n['active']}} data-id={{n['rule_id']}}/>
+                            <input id="all_rules" class="active_true_false" type="checkbox" data-value={{n['active']}} data-id={{n['rule_id']}}/>
                             <label for="all_rules" class="label-primary"></label>
                         </div>
                     </div>
@@ -107,13 +107,13 @@
                                 <tr>
                                     <th>Тривалість:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_minutes" value={{n[ 'time']}} required>
+                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_minutes" value={{n[ 'time']}} required disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Повтори:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_intervals" value={{n[ 'intervals']}} required>
+                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_intervals" value={{n[ 'intervals']}} required disabled>
                                     </td>
                                 </tr>
                                 <tr id="irrigation_time_wait_group" disabled>
@@ -158,7 +158,7 @@
                 <div class="card-footer">
                     <button type="button" class="btn btn-secondary ongoing-rule-remove" data-id="{{n['rule_id']}}">Видалити</button>
                     <!-- <button type="button" class="btn btn-secondary">Редагувати</button> -->
-                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Деталі</button>
+                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}">Деталі</button>
                 </div>
             </div>
         </div>
