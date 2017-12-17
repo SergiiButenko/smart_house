@@ -241,7 +241,7 @@ function set_branch_defaults(index) {
 
 
 
-$('.collapse').on('hide.bs.collapse', function() {
+$('.collapse').on('hidden.bs.collapse', function() {
     $('.if-collapsed').show();
     $('.if-not-collapsed').hide();
 })
