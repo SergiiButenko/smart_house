@@ -122,6 +122,57 @@ $(document).ready(function() {
             }
         }
     });
+
+
+    $('.add-ongoing-rule').on('click', function(e) {
+        json = { 'rule': {} }
+        modal = $('#irrigate_modal');
+
+        json['rule'] = {
+            'line_id': $(modal).find('#branch_select').val(),
+            'time': $(modal).find('#irrigation_minutes').val(),
+            'intervals': $(modal).find('#irrigation_intervals').val(),
+            'time_wait': $(modal).find('#irrigation_time_wait').val(),
+            'repeat_value': $(modal).find('#schedule_select').val(),
+            'date_start': $(modal).find('.irrigation_date').val(),
+            'time_start': $(modal).find('.irrigation_time').val(),
+            'end_date': $(modal).find('#end_date').val(),
+        }
+
+        if (json['rule']['end_date'] == '') {
+            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+            console.log(json);
+            return;
+        }
+
+        $.ajax({
+            url: '/add_ongoing_rule',
+            type: "post",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function() {
+                console.log(json);
+                $('#irrigate_modal').modal('hide');
+            },
+            error: function() {
+                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+                console.log(json);
+            }
+        });
+    });
+
+
+    $('.collapse').on('hidden.bs.collapse', function() {
+        $('.if-collapsed').show();
+        $('.if-not-collapsed').hide();
+    })
+
+    $('.collapse').on('show.bs.collapse', function() {
+        $('.if-collapsed').hide();
+        $('.if-not-collapsed').show();
+    })
+
 });
 
 
@@ -145,60 +196,7 @@ function form_text(el_in) {
 
 
 
-$('.add-ongoing-rule').on('click', function(e) {
-    json = { 'rule': {} }
-    modal = $('#irrigate_modal');
 
-    json['rule'] = {
-        'line_id': $(modal).find('#branch_select').val(),
-        'time': $(modal).find('#irrigation_minutes').val(),
-        'intervals': $(modal).find('#irrigation_intervals').val(),
-        'time_wait': $(modal).find('#irrigation_time_wait').val(),
-        'repeat_value': $(modal).find('#schedule_select').val(),
-        'date_start': $(modal).find('.irrigation_date').val(),
-        'time_start': $(modal).find('.irrigation_time').val(),
-        'end_date': $(modal).find('#end_date').val(),
-    }
-
-    if (json['rule']['end_date'] == '') {
-        alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-        console.log(json);
-        return;
-    }
-
-    $.ajax({
-        url: '/add_ongoing_rule',
-        type: "post",
-        data: JSON.stringify(json),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function() {
-            console.log(json);
-            $('#irrigate_modal').modal('hide');
-        },
-        error: function() {
-            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-            console.log(json);
-        }
-    });
-
-
-});
-
-
-function deactivate_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/deactivate_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
 
 function remove_rule(that) {
     id = $(that).data('id');
@@ -238,15 +236,3 @@ function set_branch_defaults(index) {
 
     toogle_time_wait(index);
 }
-
-
-
-$('.collapse').on('hidden.bs.collapse', function() {
-    $('.if-collapsed').show();
-    $('.if-not-collapsed').hide();
-})
-
-$('.collapse').on('show.bs.collapse', function() {
-    $('.if-collapsed').hide();
-    $('.if-not-collapsed').show();
-})
