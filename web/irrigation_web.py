@@ -588,9 +588,7 @@ def activate_ongoing_rule():
     database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
     database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
-    template = ongoing_rules_table()
-    send_message('ongoind_rules_update', {'data': template})
-    return template
+    return json.dumps({'status': 'OK'})
 
 
 @app.route("/deactivate_ongoing_rule")
@@ -600,10 +598,7 @@ def deactivate_ongoing_rule():
     database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
     database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
-    template = ongoing_rules_table()
-    send_message('ongoind_rules_update', {'data': template})
-    return template
-
+    return json.dumps({'status': 'OK'})
 
 @app.route("/get_timetable_list")
 def get_timetable_list():
