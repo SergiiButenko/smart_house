@@ -3,7 +3,7 @@ git reset --hard
 git pull origin dev
 msg=`git log -1 --pretty=%B | tr -s ' ' | tr ' ' '_'`
 
-cd /var/www/v5/services
+cd /var/www/services
 cp -uv * /etc/systemd/system/
 
 systemctl daemon-reload
