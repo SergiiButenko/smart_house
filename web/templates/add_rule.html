@@ -58,39 +58,17 @@
 </div>
 {% endblock %}
 <!-- Custom styles for this template -->
-
 {% block container %}
-<div class="card-group">
-<div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
-        <div class="card">
-            <div class="card-block">
-                <button type="button" class="btn btn-secondary btn-block" id="add_rule_block">
-                    Додати ще
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
-        <div class="card">
-            <div class="card-block">
-                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='/#'">
-                    Скасувати
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
-        <div class="card">
-            <div class="card-block">
-                <button type="button" class="btn btn-primary btn-block" id="go_plan">
-                    Запланувати
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<hr style="margin-top: 2rem; margin-bottom: 2rem" />
+<button type="button" class="btn btn-raised btn-block btn-primary" id="go_plan">
+    Запланувати
+</button>
+<button type="button" class="btn btn-raised btn-block btn-secondary" id="add_rule_block">
+    Додати ще
+</button>
+<button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/#'">
+    Скасувати
+</button>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
 {% endblock %}
