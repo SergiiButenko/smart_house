@@ -171,41 +171,22 @@
         {% endfor %}
     </div>
 </div>
-<div class="row">
-    
-                <button type="button" class="btn btn-secondary btn-block btn-open-modal">
-                    Додати постійне правило
-                </button>
-            
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <div class="card">
-            <div class="card-block">
-                <a class="btn btn-secondary btn-block" href="/add_rule" role="button">
+<hr style="margin-top: 2rem; margin-bottom: 2rem" />
+<h4>Додаткові дії</h4>
+</br>
+</br>
+<button type="button" class="btn btn-primary btn-open-modal">
+    Додати постійне правило
+</button>
+<a class="btn btn-secondary btn-block" href="/add_rule" role="button">
                     Додати одноразове правило
                 </a>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <div class="card">
-            <div class="card-block">
-                <a class="btn btn-secondary btn-block" href="/add_rule?add_to_date=0" role="button">
+<a class="btn btn-secondary btn-block" href="/add_rule?add_to_date=0" role="button">
                     Запланувати полив на сьогодні
                 </a>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <div class="card">
-            <div class="card-block">
-                <a class="btn btn-secondary btn-block" href="/add_rule?add_to_date=1" role="button">
+<a class="btn btn-secondary btn-block" href="/add_rule?add_to_date=1" role="button">
                     Запланувати полив на завтра
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+                </a> 
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/ongoing_rules.js"></script>
 {% endblock %}
