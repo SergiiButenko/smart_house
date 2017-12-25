@@ -238,6 +238,7 @@ $(document).ready(function() {
         $(card).find('.irrigation_date').val(rule['start_values']['date_start'])
         $(card).find('.irrigation_time').val(rule['start_values']['time_start'])
         $(card).find('#end_date').val(rule['start_values']['end_date'])
+        form_text($(card).find('#end_date'))
     });
 
 });
