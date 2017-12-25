@@ -84,28 +84,24 @@ $(document).ready(function() {
     });
 
 
-    $('.active_true_false').change(function(e) {        
-        var card = $(e.target).closest('.top');
-        console.log(card);
-        console.log($(e.target).data('id'));
+    $('.active_true_false').change(function(e) {                
+        switcher = $(e.target);
+        console.log($(switcher).data('id'));
 
-        switcher = $(card).find('#all_rules');
-        console.log(switcher.data('id'));
-
-        var old_value = !(switcher.prop("checked"));
+        var old_value = !($(switcher).prop("checked"));
         console.log(old_value);
         var returnVal = confirm("Ви впевненні?");
         console.log(returnVal);
         if (returnVal == false) {
-            switcher.prop("checked", old_value);
-            switcher.val(switcher.old_value);
+            $(switcher).prop("checked", old_value);
+            $(switcher).val($(switcher).old_value);
             return;
         }
 
-        switcher.prop("checked", returnVal);
-        switcher.val(this.checked);
+        $(switcher).prop("checked", returnVal);
+        $(switcher).val($(switcher).checked);
 
-        id = switcher.data('id')
+        id = $(switcher).data('id')
         if (old_value == false) {
             $.ajax({
                 url: '/activate_ongoing_rule',
