@@ -547,7 +547,7 @@ def remove_ongoing_rule():
     return json.dumps({'status': 'OK'})
 
 
-@app.route("/edit_ongoing_rule")
+@app.route("/edit_ongoing_rule", methods=['PUT'])
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
     rule = request.json['rule']
@@ -569,14 +569,14 @@ def edit_ongoing_rule():
     # "time_start, end_date, active, rule_id) "
     # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
     # insert into ongoing table
-    database.update(database.QUERY[mn()].format(
-        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-        rule['repeat_value'], rule['date_time_start'],
-        rule['end_date'], rule['active'], rule['rule_id']))
+    # database.update(database.QUERY[mn()].format(
+    #     rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+    #     rule['repeat_value'], rule['date_time_start'],
+    #     rule['end_date'], rule['active'], rule['rule_id']))
 
-    # update rules;
-    update_rules_from_ongoing_rules(rule)
-    update_all_rules()
+    # # update rules;
+    # update_rules_from_ongoing_rules(rule)
+    # update_all_rules()
     logging.info("Ongoing rule added. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
 

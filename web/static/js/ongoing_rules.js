@@ -171,6 +171,44 @@ $(document).ready(function() {
         });
     });
 
+     $('.ongoing-rule-save').on('click', function(e) {
+        var json = { 'rule': {} }
+        var card = $(e.target).closest('.top')
+
+        json['rule'] = {
+            'line_id': $(card).find('#branch_select').val(),
+            'time': $(card).find('#irrigation_minutes').val(),
+            'intervals': $(card).find('#irrigation_intervals').val(),
+            'time_wait': $(card).find('#irrigation_time_wait').val(),
+            'repeat_value': $(card).find('#schedule_select').val(),
+            'date_start': $(card).find('.irrigation_date').val(),
+            'time_start': $(card).find('.irrigation_time').val(),
+            'end_date': $(card).find('#end_date').val(),
+            'rule_id': $(e.target.data('id'))
+        }
+
+        if (json['rule']['end_date'] == '') {
+            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+            console.log(json);
+            return;
+        }
+
+        $.ajax({
+            url: '/edit_ongoing_rule',
+            type: "put",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function() {
+                console.log(json);
+            },
+            error: function() {
+                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+                console.log(json);
+            }
+        });
+    });
+
 
     $('.collapse').on('hidden.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
