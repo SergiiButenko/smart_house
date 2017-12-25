@@ -209,7 +209,7 @@ function form_text(el_in) {
 
     $(card).find("#summary").text(
         schedule_text + ' о ' + time + ', ' + text + '.</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин';
+        interval + ' рази, по ' + minutes + ' хвилин'
         );
 }
 
