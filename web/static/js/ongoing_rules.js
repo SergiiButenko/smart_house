@@ -175,6 +175,10 @@ $(document).ready(function() {
                 $('.add-flow').removeClass('disabled');
             }
         });
+
+        collapse.collapse('hide');
+        $(card).find('.edit-flow').hide();
+        $(card).find('.show-flow').show();
     });
 
     $('.ongoing-rule-save').on('click', function(e) {
