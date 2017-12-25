@@ -175,15 +175,15 @@ $(document).ready(function() {
     $('.collapse').on('hidden.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
         
-        $(card).find('.if-collapsed').show();
-        $(card).find('.if-not-collapsed').hide();
+        $(card).find('.if-collapsed').css('display', 'inline-block');
+        $(card).find('.if-not-collapsed').css('display', 'none');
     })
 
     $('.collapse').on('show.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
         
-        $(card).find('.if-collapsed').hide();
-        $(card).find('.if-not-collapsed').show();
+        $(card).find('.if-collapsed').css('display', 'none');
+        $(card).find('.if-not-collapsed').css('display', 'inline-block');
     })
 
 });
