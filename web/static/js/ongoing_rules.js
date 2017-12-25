@@ -189,8 +189,17 @@ $(document).ready(function() {
 
     $(".ongoing-rule-edit").click(function(e) {
         var card = $(e.target).closest('.top')
-        console.log('#' + $(e.target).data('id'))
         collapse = $(card).find('#' + $(e.target).data('id'))
+
+        rule['start_values'] = {
+            'time': $(card).find('#irrigation_minutes').val(),
+            'intervals': $(card).find('#irrigation_intervals').val(),
+            'time_wait': $(card).find('#irrigation_time_wait').val(),
+            'repeat_value': $(card).find('#schedule_select').val(),
+            'date_start': $(card).find('.irrigation_date').val(),
+            'time_start': $(card).find('.irrigation_time').val(),
+            'end_date': $(card).find('#end_date').val(),
+        }
 
         $(card).find('#irrigation_minutes').removeClass('disabled');
         $(card).find('#irrigation_intervals').removeClass('disabled');
@@ -207,8 +216,11 @@ $(document).ready(function() {
 
     $(".ongoing-rule-cancel").click(function(e) {
         var card = $(e.target).closest('.top')
-        console.log('#' + $(e.target).data('id'))
         collapse = $(card).find('#' + $(e.target).data('id'))
+        
+        collapse.collapse('hide');
+        $(card).find('.edit-flow').hide();
+        $(card).find('.show-flow').show();
 
         $(card).find('#irrigation_minutes').addClass('disabled');
         $(card).find('#irrigation_intervals').addClass('disabled');
@@ -216,11 +228,15 @@ $(document).ready(function() {
         $(card).find('#schedule_select').addClass('disabled');
         $(card).find('.irrigation_date').addClass('disabled');
         $(card).find('.irrigation_time').addClass('disabled');
-        $(card).find('#end_date').removeClass('disabled');
-        
-        collapse.collapse('hide');
-        $(card).find('.edit-flow').hide();
-        $(card).find('.show-flow').show();
+        $(card).find('#end_date').addClass('disabled');
+
+        $(card).find('#irrigation_minutes').val(rule['start_values']['time']);
+        $(card).find('#irrigation_intervals').val(rule['start_values']['intervals'])
+        $(card).find('#irrigation_time_wait').val(rule['start_values']['time_wait'])
+        $(card).find('#schedule_select').val(rule['start_values']['repeat_value'])
+        $(card).find('.irrigation_date').val(rule['start_values']['date_start'])
+        $(card).find('.irrigation_time').val(rule['start_values']['time_start'])
+        $(card).find('#end_date').val(rule['start_values']['end_date'])
     });
 
 });
