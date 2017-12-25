@@ -191,6 +191,7 @@ $(document).ready(function() {
         var card = $(e.target).closest('.top')
         collapse = $(card).find('#' + $(e.target).data('id'))
 
+        rule = {}
         rule['start_values'] = {
             'time': $(card).find('#irrigation_minutes').val(),
             'intervals': $(card).find('#irrigation_intervals').val(),
