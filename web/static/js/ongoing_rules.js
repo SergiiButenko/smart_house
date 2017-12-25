@@ -211,9 +211,6 @@ $(document).ready(function() {
             },
             success: function() {
                 console.log(json);
-                console.log($(this))
-
-                var card = $(this).closest('.top')
                 console.log(card)
 
                 collapse = $(card).find('#' + $(this).data('id'))
