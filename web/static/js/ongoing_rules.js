@@ -189,8 +189,8 @@ $(document).ready(function() {
 
     $(".edit").click(function(e) {
         var card = $(e.target).closest('.top')
-        console.log('#' + e.target.id)
-        collapse = $(card).find('#' + e.target.id)
+        console.log('#' + e.target.data('id'))
+        collapse = $(card).find('#' + e.target.data('id'))
 
         $(card).find('#irrigation_minutes').removeClass('disabled');
         $(card).find('#irrigation_intervals').removeClass('disabled');
