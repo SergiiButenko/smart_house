@@ -107,47 +107,47 @@
                                 <tr>
                                     <th>Тривалість:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_minutes" value={{n[ 'time']}} required disabled>
+                                        <input type="number" pattern="\d*" class="form-control disabled" id="irrigation_minutes" value={{n[ 'time']}} required>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Повтори:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_intervals" value={{n[ 'intervals']}} required disabled>
+                                        <input type="number" pattern="\d*" class="form-control disabled" id="irrigation_intervals" value={{n[ 'intervals']}} required>
                                     </td>
                                 </tr>
-                                <tr id="irrigation_time_wait_group" disabled>
+                                <tr id="irrigation_time_wait_group">
                                     <th>Час між поливами:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_time_wait" value={{n[ 'time_wait']}} required disabled>
+                                        <input type="number" pattern="\d*" class="form-control disabled" id="irrigation_time_wait" value={{n[ 'time_wait']}} required>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Повторюється:</th>
                                     <td>
-                                        <select class="form-control form-text-control" id="schedule_select" data-value={{n[ 'repeat_value']}}>
+                                        <select class="form-control form-text-control disabled" id="schedule_select" data-value={{n[ 'repeat_value']}}>
                                             <option value=1 selected="selected" title="Кожен день">Кожен день</option>
                                             <option value=2 title="Кожні 2 дня">Кожні 2 дня</option>
                                             <option value=3 title="Кожні 3 дня">Кожні 3 дня</option>
-                                        </select disabled>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Дата початку:</th>
                                     <td>
-                                        <input class="form-control irrigation_date form-text-control" type="date" data-value="{{n['date_time_start']}}" disabled>
+                                        <input class="form-control irrigation_date form-text-control disabled" type="date" data-value="{{n['date_time_start']}}">
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Час:</th>
                                     <td>
-                                        <input type="time" class="form-control irrigation_time form-text-control" data-value="{{n['date_time_start']}}" disabled>
+                                        <input type="time" class="form-control irrigation_time form-text-control disabled" data-value="{{n['date_time_start']}}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Дата завершення:</th>
                                     <td>
-                                        <input class="form-control irrigation_end_date form-text-control" type="date" id='end_date' data-value="{{n['end_date']}}" disabled>
+                                        <input class="form-control irrigation_end_date form-text-control disabled" type="date" id='end_date' data-value="{{n['end_date']}}">
                                     </td>
                                 </tr>
                             </tbody>
