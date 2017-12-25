@@ -213,7 +213,7 @@ $(document).ready(function() {
                 console.log(json);
                 console.log(card);
 
-                collapse = $(card).find('#' + $(e.target.data('id')));
+                collapse = $(card).find('#' + $(e.target).data('id'));
                 console.log(collapse);
 
                 collapse.collapse('hide');
