@@ -87,6 +87,7 @@ $(document).ready(function() {
     $('.active_true_false').change(function(e) {        
         var card = $(e.target).closest('.top');
         switcher = card.find('.active_true_false');
+        console.log(switcher.data('id'));
 
         var old_value = !(switcher.prop("checked"));
         console.log(old_value);
@@ -195,8 +196,8 @@ function form_text(el_in) {
 
     schedule_text = $(card).find('#schedule_select option:selected').attr('title');
     time = $(card).find('.irrigation_time').val();
-    minutes = $(card).find('.irrigation_minutes').val();
-    interval = $(card).find('.irrigation_intervals').val();
+    minutes = $(card).find('#irrigation_minutes').val();
+    interval = $(card).find('#irrigation_intervals').val();
 
     var options = {
         weekday: "long",
@@ -207,8 +208,8 @@ function form_text(el_in) {
     now = new Date($(card).find("#end_date").val());
     text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
-    $(card).find("#summary").text(
-        schedule_text + ' о ' + time + ', ' + text + '.</br>' +
+    $(card).find("#summary").html(
+        schedule_text + ' о ' + time + ', ' + text + '</br>' +
         interval + ' рази, по ' + minutes + ' хвилин'
         );
 }
