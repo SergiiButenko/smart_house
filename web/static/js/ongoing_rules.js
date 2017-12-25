@@ -1,3 +1,4 @@
+var server = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 branch = []
 
 $(document).ready(function() {
