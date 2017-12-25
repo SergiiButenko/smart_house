@@ -27,7 +27,7 @@ $(document).ready(function() {
 
     socket.on('add_ongoing_rule', function(msg) {
         console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
-        $(msg.data).insertBefore('#last_card');
+        $(msg.data.trim()).insertBefore('#last_card');
     });
 
     //Rename branches
