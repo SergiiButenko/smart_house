@@ -211,10 +211,10 @@ $(document).ready(function() {
             },
             success: function() {
                 console.log(json);
-                console.log(card)
+                console.log(card);
 
-                collapse = $(card).find('#' + $(this).data('id'))
-                console.log(collapse)
+                collapse = $(card).find('#' + $(e.target.data('id')));
+                console.log(collapse);
 
                 collapse.collapse('hide');
                 $(card).find('.edit-flow').hide();
