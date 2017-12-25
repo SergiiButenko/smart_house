@@ -8,6 +8,9 @@
     display: none;
 }
 
+.edit-flow {
+    display: none;
+}
 
 .card-irrigate-active {
     border-top: 10px solid green;

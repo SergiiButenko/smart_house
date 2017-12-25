@@ -196,6 +196,7 @@ function form_text(el_in) {
     time = $(card).find('.irrigation_time').val();
     minutes = $(card).find('#irrigation_minutes').val();
     interval = $(card).find('#irrigation_intervals').val();
+    time_wait = $(card).find('#time_wait').val();
 
     var options = {
         weekday: "long",
@@ -208,7 +209,7 @@ function form_text(el_in) {
 
     $(card).find("#summary").html(
         schedule_text + ' о ' + time + ', ' + text + '</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин'
+        interval + ' рази, по ' + minutes + ' хвилин, через ' + time_wait + ' хвилин'
         );
 }
 
