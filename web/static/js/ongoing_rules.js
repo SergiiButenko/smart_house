@@ -86,6 +86,7 @@ $(document).ready(function() {
 
     $('.active_true_false').change(function(e) {        
         var card = $(e.target).closest('.top');
+        console.log(card);
         console.log($(e.target).data('id'));
 
         switcher = $(card).find('#all_rules');
