@@ -175,10 +175,6 @@ $(document).ready(function() {
                 $('.add-flow').removeClass('disabled');
             }
         });
-
-        collapse.collapse('hide');
-        $(card).find('.edit-flow').hide();
-        $(card).find('.show-flow').show();
     });
 
     $('.ongoing-rule-save').on('click', function(e) {
@@ -215,6 +211,9 @@ $(document).ready(function() {
             },
             success: function() {
                 console.log(json);
+                collapse.collapse('hide');
+                $(card).find('.edit-flow').hide();
+                $(card).find('.show-flow').show();
             },
             error: function() {
                 alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
