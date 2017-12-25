@@ -211,9 +211,14 @@ $(document).ready(function() {
             },
             success: function() {
                 console.log(json);
+                console.log($(this))
 
                 var card = $(this).closest('.top')
+                console.log(card)
+
                 collapse = $(card).find('#' + $(this).data('id'))
+                console.log(collapse)
+
                 collapse.collapse('hide');
                 $(card).find('.edit-flow').hide();
                 $(card).find('.show-flow').show();
