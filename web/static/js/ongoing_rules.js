@@ -160,6 +160,9 @@ $(document).ready(function() {
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            beforeSend: function(xhr, opts) {
+                $('.add-flow').addClass('disabled');
+            },
             success: function() {
                 console.log(json);
                 $('#irrigate_modal').modal('hide');
@@ -167,11 +170,14 @@ $(document).ready(function() {
             error: function() {
                 alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
                 console.log(json);
+            },
+            complete: function() {
+                $('.add-flow').removeClass('disabled');
             }
         });
     });
 
-     $('.ongoing-rule-save').on('click', function(e) {
+    $('.ongoing-rule-save').on('click', function(e) {
         var json = { 'rule': {} }
         var card = $(e.target).closest('.top')
 
@@ -199,12 +205,20 @@ $(document).ready(function() {
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            beforeSend: function(xhr, opts) {
+                $('.edit-flow').addClass('disabled');
+                $('.show-flow').addClass('disabled');
+            },
             success: function() {
                 console.log(json);
             },
             error: function() {
                 alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
                 console.log(json);
+            },
+            complete: function() {
+                $('.edit-flow').removeClass('disabled');
+                $('.show-flow').removeClass('disabled');
             }
         });
     });
@@ -247,7 +261,7 @@ $(document).ready(function() {
         $(card).find('.irrigation_date').removeClass('disabled');
         $(card).find('.irrigation_time').removeClass('disabled');
         $(card).find('#end_date').removeClass('disabled');
-        
+
         collapse.collapse('show');
         $(card).find('.edit-flow').show();
         $(card).find('.show-flow').hide();
@@ -256,7 +270,7 @@ $(document).ready(function() {
     $(".ongoing-rule-cancel").click(function(e) {
         var card = $(e.target).closest('.top')
         collapse = $(card).find('#' + $(e.target).data('id'))
-        
+
         collapse.collapse('hide');
         $(card).find('.edit-flow').hide();
         $(card).find('.show-flow').show();
