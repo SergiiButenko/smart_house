@@ -435,16 +435,8 @@ def ongoing_rules():
 def update_rules_from_ongoing_rules(rule):
     """Form rules from ongoing rule."""
 
-    # select * from ongoing_rule where rule_id = rule['rule_id']
-    res = database.select(database.QUERY[mn() + '_select_id'].format(rule['rule_id']))
-    if len(res) > 0:
-        # update ongoning rule
-        logging.info("UPDATE")
-        for r in res:
-            logging.info(str(r[0]))
-        return
-        # database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
-    
+    database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
+
     _delta = rule['end_date'] - rule['date_time_start']
     _days = _delta.days + 1
     logging.info("number of days: {0}".format(_days))
@@ -565,16 +557,15 @@ def edit_ongoing_rule():
     rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['rule_id'] = rule['rule_id']
 
-    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
-    # "time_start, end_date, active, rule_id) "
-    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
-    # insert into ongoing table
-    # database.update(database.QUERY[mn()].format(
-    #     rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-    #     rule['repeat_value'], rule['date_time_start'],
-    #     rule['end_date'], rule['active'], rule['rule_id']))
+    # "UPDATE ongoing_rules 
+    # SET line_id = {0}, time = {1}, intervals = {2}, time_wait = {3}, repeat_value={4}, date_time_start='{5}'"
+    # end_date = '{6}' WHERE rule_id = '{7}'"
+    database.update(database.QUERY[mn()+'_ongoing'].format(
+        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+        rule['repeat_value'], rule['date_time_start'],
+        rule['end_date'], rule['rule_id']))
 
-    # # update rules;
+    # update rules;
     update_rules_from_ongoing_rules(rule)
     # update_all_rules()
     logging.info("Ongoing rule modified. {0}".format(str(rule)))

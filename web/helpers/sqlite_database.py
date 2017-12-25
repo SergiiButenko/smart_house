@@ -114,6 +114,13 @@ QUERY['activate_ongoing_rule_life'] = "UPDATE life SET active=1 WHERE ongoing_ru
 QUERY['deactivate_ongoing_rule_ongoing'] = "UPDATE ongoing_rules SET active=0 WHERE rule_id='{0}'"
 QUERY['deactivate_ongoing_rule_life'] = "UPDATE life SET active=0 WHERE ongoing_rule_id='{0}'"
 
+QUERY['edit_ongoing_rule_ongoing'] = (
+    "UPDATE ongoing_rules "
+    "SET line_id = {0}, time = {1}, intervals = {2}, "
+    "time_wait = {3}, repeat_value={4}, "
+    "date_time_start='{5}' end_date = '{6}' "
+    "WHERE rule_id = '{7}'")
+
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 
 QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
