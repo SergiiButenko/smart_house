@@ -53,9 +53,8 @@ $(document).ready(function() {
 
     socket.on('add_ongoing_rule', function(msg) {
         console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
-        msg = JSON.parse(msg.data)
-        $('#last_card').html = $.parseHTML(msg['rule'])
-        // $(msg['rule']).insertBefore('#last_card');
+        msg = JSON.parse(msg.data);        
+        $(msg['rule']).insertBefore('#last_card');
     });
 
     //Rename branches
