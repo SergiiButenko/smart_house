@@ -86,7 +86,6 @@ $(document).ready(function() {
 
     $('.active_true_false').change(function(e) {                
         switcher = $(e.target);
-        console.log($(switcher).data('id'));
 
         var old_value = !($(switcher).prop("checked"));
         console.log(old_value);
@@ -98,8 +97,8 @@ $(document).ready(function() {
             return;
         }
 
-        $(switcher).prop("checked", returnVal);
-        $(switcher).val($(switcher).checked);
+        $(switcher).prop("checked", old_value);
+        $(switcher).val(!$(switcher).old_value);
 
         id = $(switcher).data('id')
         if (old_value == false) {
