@@ -20,6 +20,7 @@ $(document).ready(function() {
         $('.top').each(function() {
             if ($(this).data('id') == msg.data['rule_id']) {
                 switcher = $(this).find('.active_true_false');
+                console.log(switcher);
                 $(switcher).prop("checked", msg.data['status']);
                 // $(switcher).val($(switcher).old_value);
             }
