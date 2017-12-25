@@ -97,7 +97,7 @@ $(document).ready(function() {
             return;
         }
 
-        $(switcher).prop("checked", old_value);
+        $(switcher).prop("checked", !old_value);
         $(switcher).val(!$(switcher).old_value);
 
         id = $(switcher).data('id')
