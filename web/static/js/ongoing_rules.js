@@ -85,23 +85,23 @@ $(document).ready(function() {
 
 
     $('.active_true_false').change(function(e) {        
-        console.log($(e));
-        console.log($(e.target));
+        var card = $(e.target).closest('.top');
+        switcher = card.find('.active_true_false');
 
-        var old_value = !($(this).prop("checked"))
+        var old_value = !(switcher.prop("checked"));
         console.log(old_value);
         var returnVal = confirm("Ви впевненні?");
         console.log(returnVal);
         if (returnVal == false) {
-            $(this).prop("checked", old_value);
-            $(this).val(this.old_value);
+            switcher.prop("checked", old_value);
+            switcher.val(switcher.old_value);
             return;
         }
 
-        $(this).prop("checked", returnVal);
-        $(this).val(this.checked);
+        switcher.prop("checked", returnVal);
+        switcher.val(this.checked);
 
-        id = $(this).data('id')
+        id = switcher.data('id')
         if (old_value == false) {
             $.ajax({
                 url: '/activate_ongoing_rule',
@@ -207,10 +207,10 @@ function form_text(el_in) {
     now = new Date($(card).find("#end_date").val());
     text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
-    $(card).find("#summary").innerHTML = 
+    $(card).find("#summary").text(
         schedule_text + ' о ' + time + ', ' + text + '.</br>' +
         interval + ' рази, по ' + minutes + ' хвилин';
-        
+        );
 }
 
 
