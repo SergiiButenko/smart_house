@@ -187,7 +187,7 @@ $(document).ready(function() {
     })
 
 
-    $(".edit").click(function(e) {
+    $(".ongoing-rule-edit").click(function(e) {
         var card = $(e.target).closest('.top')
         console.log('#' + $(e.target).data('id'))
         collapse = $(card).find('#' + $(e.target).data('id'))
@@ -202,7 +202,25 @@ $(document).ready(function() {
         
         collapse.collapse('show');
         $(card).find('.edit-flow').show();
+        $(card).find('.show-flow').hide();
+    });
+
+    $(".ongoing-rule-cancel").click(function(e) {
+        var card = $(e.target).closest('.top')
+        console.log('#' + $(e.target).data('id'))
+        collapse = $(card).find('#' + $(e.target).data('id'))
+
+        $(card).find('#irrigation_minutes').addClass('disabled');
+        $(card).find('#irrigation_intervals').addClass('disabled');
+        $(card).find('#irrigation_time_wait').addClass('disabled');
+        $(card).find('#schedule_select').addClass('disabled');
+        $(card).find('.irrigation_date').addClass('disabled');
+        $(card).find('.irrigation_time').addClass('disabled');
+        $(card).find('#end_date').removeClass('disabled');
         
+        collapse.collapse('hide');
+        $(card).find('.edit-flow').hide();
+        $(card).find('.show-flow').show();
     });
 
 });
