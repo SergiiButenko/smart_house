@@ -84,7 +84,7 @@ $(document).ready(function() {
     });
 
 
-    $('.active_true_false').change(function(e) {                
+    $('.active_true_false').change(function(e) {
         switcher = $(e.target);
 
         var old_value = !($(switcher).prop("checked"));
@@ -174,17 +174,35 @@ $(document).ready(function() {
 
     $('.collapse').on('hidden.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
-        
+
         $(card).find('.if-collapsed').show();
         $(card).find('.if-not-collapsed').hide();
     })
 
     $('.collapse').on('show.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
-        
+
         $(card).find('.if-collapsed').hide();
         $(card).find('.if-not-collapsed').show();
     })
+
+
+    $(".edit").click(function(e) {
+        var card = $(e.target).closest('.top')
+        collapse = $(card).find('#' + e.target.id)
+
+        $(card).find('#irrigation_minutes').removeClass('disabled');
+        $(card).find('#irrigation_intervals').removeClass('disabled');
+        $(card).find('#irrigation_time_wait').removeClass('disabled');
+        $(card).find('#schedule_select').removeClass('disabled');
+        $(card).find('.irrigation_date').removeClass('disabled');
+        $(card).find('.irrigation_time').removeClass('disabled');
+        $(card).find('#end_date').removeClass('disabled');
+        
+        collapse.collapse('show');
+        $(card).find('.edit-flow').show();
+        
+    });
 
 });
 
@@ -196,7 +214,7 @@ function form_text(el_in) {
     time = $(card).find('.irrigation_time').val();
     minutes = $(card).find('#irrigation_minutes').val();
     interval = $(card).find('#irrigation_intervals').val();
-    time_wait = $(card).find('#time_wait').val();
+    time_wait = $(card).find('#irrigation_time_wait').val();
 
     var options = {
         weekday: "long",
@@ -209,12 +227,9 @@ function form_text(el_in) {
 
     $(card).find("#summary").html(
         schedule_text + ' о ' + time + ', ' + text + '</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин, через ' + time_wait + ' хвилин'
-        );
+        interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+    );
 }
-
-
-
 
 
 function remove_rule(that) {

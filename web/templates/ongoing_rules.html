@@ -160,13 +160,16 @@
                     <button type="button" class="btn btn-danger ongoing-rule-remove edit-flow" data-id="{{n['rule_id']}}">
                         Видалити
                     </button>
-                    <button type="button" class="btn btn-secondary ongoing-rule-edit edit-flow" data-id="{{n['rule_id']}}">
+                    <button type="button" class="btn btn-secondary ongoing-rule-cancel edit-flow" data-id="{{n['rule_id']}}">
                         Скасувати зміни
                     </button>
-                    <button type="button" class="btn btn-secondary ongoing-rule-edit edit-flow" data-id="{{n['rule_id']}}">
+                    <button type="button" class="btn btn-secondary ongoing-rule-save edit-flow" data-id="{{n['rule_id']}}">
                         Зберегти правило
                     </button>
 
+                    <button type="button" class="btn btn-secondary edit" data-id="{{n['rule_id']}}">
+                        Редагувати
+                    </button>
                     <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#{{n['rule_id']}}" aria-expanded="false" aria-controls="{{n['rule_id']}}">
                         <span class="if-collapsed">Деталі</span>
                         <span class="if-not-collapsed">Приховати деталі</span>
