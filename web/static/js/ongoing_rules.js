@@ -176,7 +176,7 @@ $(document).ready(function() {
         var card = $(e.target).closest('.top')
 
         json['rule'] = {
-            'line_id': $(card).find('#branch_select').val(),
+            'line_id': $(card).find('#line_id').data('id'),
             'time': $(card).find('#irrigation_minutes').val(),
             'intervals': $(card).find('#irrigation_intervals').val(),
             'time_wait': $(card).find('#irrigation_time_wait').val(),
