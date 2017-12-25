@@ -184,7 +184,7 @@ $(document).ready(function() {
             'date_start': $(card).find('.irrigation_date').val(),
             'time_start': $(card).find('.irrigation_time').val(),
             'end_date': $(card).find('#end_date').val(),
-            'rule_id': $(e.target.data('id'))
+            'rule_id': $(e.target).data('id')
         }
 
         if (json['rule']['end_date'] == '') {
