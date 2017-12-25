@@ -4,6 +4,10 @@
     text-transform: capitalize;
 }
 
+.if-not-collapsed {
+    display: none;
+}
+
 
 .card-irrigate-active {
     border-top: 10px solid green;
