@@ -18,11 +18,11 @@ $(document).ready(function() {
     socket.on('ongoing_rule_state', function(msg) {
         console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
         $('.top').each(function() {
-            msg = JSON.parse(msg.data)
-            if ($(this).data('id') == msg['rule_id']) {
+            console.log(msg.data['rule_id'])
+            if ($(this).data('id') == msg.data['rule_id']) {
                 switcher = $(this).find('.active_true_false');
                 console.log(switcher);
-                $(switcher).prop("checked", msg['status']);
+                $(switcher).prop("checked", msg.data['status']);
                 // $(switcher).val($(switcher).old_value);
             }
         });
