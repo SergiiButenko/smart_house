@@ -17,17 +17,29 @@ $(document).ready(function() {
 
     socket.on('ongoing_rule_state', function(msg) {
         console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
-        console.log(JSON.parse(msg.data));
+        $('.top').each(function() {
+            if ($(this).data('id') == msg.data['rule_id']) {
+                switcher = $(this).find('.active_true_false');
+                $(switcher).prop("checked", msg.data['status']);
+                // $(switcher).val($(switcher).old_value);
+            }
+        });
+
+
     });
 
     socket.on('remove_ongoing_rule', function(msg) {
         console.log('Message received. remove_ongoing_rule. Rule to remove: ' + msg.data);
-        console.log(JSON.parse(msg.data));
+        $('.top').each(function() {
+            if ($(this).data('id') == msg.data['rule_id']) {
+                $(this).remove();
+            }
+        });
     });
 
     socket.on('add_ongoing_rule', function(msg) {
         console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
-        $(msg.data.trim()).insertBefore('#last_card');
+        $(msg.data).insertBefore('#last_card');
     });
 
     //Rename branches
@@ -122,7 +134,7 @@ $(document).ready(function() {
         console.log(returnVal);
         if (returnVal == false) {
             $(switcher).prop("checked", old_value);
-            $(switcher).val($(switcher).old_value);
+            // $(switcher).val($(switcher).old_value);
             return;
         }
 
@@ -134,10 +146,6 @@ $(document).ready(function() {
                 data: {
                     'id': id
                 },
-                success: function(data) {
-                    $(switcher).prop("checked", !old_value);
-                    $(switcher).val(!$(switcher).old_value);
-                },
                 error: function(data) {
                     alert("Сталася помилка. Cпробуйте ще раз");
                 }
@@ -148,10 +156,6 @@ $(document).ready(function() {
                 type: "get",
                 data: {
                     'id': id
-                },
-                success: function(data) {
-                    $(switcher).prop("checked", !old_value);
-                    $(switcher).val(!$(switcher).old_value);
                 },
                 error: function(data) {
                     alert("Сталася помилка. Cпробуйте ще раз");
