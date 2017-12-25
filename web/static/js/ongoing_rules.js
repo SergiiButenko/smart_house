@@ -67,6 +67,10 @@ $(document).ready(function() {
     });
 
     $(".ongoing-rule-remove").click(function(e) {
+        var returnVal = confirm("Видалити правило?");
+        if (returnVal == false)
+            return;
+
         id = $(this).data('id');
         $.ajax({
             url: '/remove_ongoing_rule',
@@ -326,10 +330,6 @@ function form_text(el_in) {
 
 
 function remove_rule(that) {
-    var returnVal = confirm("Видалити правило?");
-    if (returnVal == false)
-        return;
-    
     id = $(that).data('id');
     $.ajax({
         url: '/remove_ongoing_rule',
