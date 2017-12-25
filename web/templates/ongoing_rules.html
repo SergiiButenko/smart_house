@@ -119,7 +119,7 @@
                                 <tr id="irrigation_time_wait_group" disabled>
                                     <th>Час між поливами:</th>
                                     <td>
-                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_time_wait" value={{n[ 'time_wait']}} required>
+                                        <input type="number" pattern="\d*" class="form-control" id="irrigation_time_wait" value={{n[ 'time_wait']}} required disabled>
                                     </td>
                                 </tr>
                                 <tr>
@@ -129,25 +129,25 @@
                                             <option value=1 selected="selected" title="Кожен день">Кожен день</option>
                                             <option value=2 title="Кожні 2 дня">Кожні 2 дня</option>
                                             <option value=3 title="Кожні 3 дня">Кожні 3 дня</option>
-                                        </select>
+                                        </select disabled>
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Дата початку:</th>
                                     <td>
-                                        <input class="form-control irrigation_date form-text-control" type="date" data-value="{{n['date_time_start']}}">
+                                        <input class="form-control irrigation_date form-text-control" type="date" data-value="{{n['date_time_start']}}" disabled>
                                     </td>
                                 </tr>
                                 <tr tabindex="0">
                                     <th>Час:</th>
                                     <td>
-                                        <input type="time" class="form-control irrigation_time form-text-control" data-value="{{n['date_time_start']}}">
+                                        <input type="time" class="form-control irrigation_time form-text-control" data-value="{{n['date_time_start']}}" disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Дата завершення:</th>
                                     <td>
-                                        <input class="form-control irrigation_end_date form-text-control" type="date" id='end_date' data-value="{{n['end_date']}}">
+                                        <input class="form-control irrigation_end_date form-text-control" type="date" id='end_date' data-value="{{n['end_date']}}" disabled>
                                     </td>
                                 </tr>
                             </tbody>
