@@ -16,13 +16,15 @@ $(document).ready(function() {
         rule = msg['rule'];
         $('.top').each(function() {
             if ($(this).data('id') == rule['rule_id']) {
-                $(this).find('#irrigation_minutes').val(rule['time'])
-                $(this).find('#irrigation_intervals').val(rule['intervals'])
-                $(this).find('#irrigation_time_wait').val(rule['time_wait'])
-                $(this).find('#schedule_select').val(rule['repeat_value'])
-                $(this).find('.irrigation_date').val(rule['date_start'])
-                $(this).find('.irrigation_time').val(rule['time_start'])
-                $(this).find('#end_date').val(rule['end_date'])
+                $(this).find('#irrigation_minutes').val(rule['time']);
+                $(this).find('#irrigation_intervals').val(rule['intervals']);
+                $(this).find('#irrigation_time_wait').val(rule['time_wait']);
+                $(this).find('#schedule_select').val(rule['repeat_value']);
+                $(this).find('.irrigation_date').val(rule['date_start']);
+                $(this).find('.irrigation_time').val(rule['time_start']);
+                $(this).find('#end_date').val(rule['end_date']);
+
+                form_text($(this).find('#end_date'));
             }
         });
 
