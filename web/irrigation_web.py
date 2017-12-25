@@ -440,6 +440,8 @@ def update_rules_from_ongoing_rules(rule):
     if len(res) > 0:
         # update ongoning rule
         logging.info("UPDATE")
+        for r in res:
+            logging.info(str(r))
         return
         # database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
     
