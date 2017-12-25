@@ -170,12 +170,18 @@ $(document).ready(function() {
     });
 
 
-    $('.collapse').on('hidden.bs.collapse', function() {
+    $('.collapse').on('hidden.bs.collapse', function(e) {
+        var SendButton = $(e.target);
+        console.log(SendButton);
+
         $('.if-collapsed').show();
         $('.if-not-collapsed').hide();
     })
 
-    $('.collapse').on('show.bs.collapse', function() {
+    $('.collapse').on('show.bs.collapse', function(e) {
+        var SendButton = $(e.target);
+        console.log(SendButton);
+        
         $('.if-collapsed').hide();
         $('.if-not-collapsed').show();
     })

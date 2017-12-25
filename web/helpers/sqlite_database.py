@@ -50,7 +50,7 @@ QUERY['ongoing_rules'] = (
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
     "r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
     "FROM ongoing_rules as r, lines as l "
-    "WHERE r.line_id = l.number "
+    "WHERE r.line_id = l.number AND r.end_date>=datetime('now', 'localtime') "
     "ORDER BY r.date_time_start")
 
 QUERY['add_ongoing_rule'] = (
