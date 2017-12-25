@@ -18,7 +18,7 @@ $(document).ready(function() {
     socket.on('ongoing_rule_state', function(msg) {
         console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
         $('.top').each(function() {
-            console.log($(this));
+            console.log($(this).data('id'));
             if ($(this).data('id') == msg.data['rule_id']) {
                 switcher = $(this).find('.active_true_false');
                 console.log(switcher);
