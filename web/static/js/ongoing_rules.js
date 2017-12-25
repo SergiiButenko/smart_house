@@ -18,11 +18,11 @@ $(document).ready(function() {
     socket.on('ongoing_rule_state', function(msg) {
         console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
         $('.top').each(function() {
-            console.log(JSON.parse(msg.data))
-            if ($(this).data('id') == msg.data['rule_id']) {
+            msg = JSON.parse(msg.data)
+            if ($(this).data('id') == msg['rule']['rule_id']) {
                 switcher = $(this).find('.active_true_false');
                 console.log(switcher);
-                $(switcher).prop("checked", msg.data['status']);
+                $(switcher).prop("checked", msg['rule']['status']);
                 // $(switcher).val($(switcher).old_value);
             }
         });
@@ -32,8 +32,9 @@ $(document).ready(function() {
 
     socket.on('remove_ongoing_rule', function(msg) {
         console.log('Message received. remove_ongoing_rule. Rule to remove: ' + msg.data);
+        msg = JSON.parse(msg.data)
         $('.top').each(function() {
-            if ($(this).data('id') == msg.data['rule_id']) {
+            if ($(this).data('id') == msg['rule']['rule_id']) {
                 $(this).remove();
             }
         });
