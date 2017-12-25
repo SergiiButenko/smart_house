@@ -171,19 +171,17 @@ $(document).ready(function() {
 
 
     $('.collapse').on('hidden.bs.collapse', function(e) {
-        var SendButton = $(e.target);
-        console.log(SendButton);
-
-        $('.if-collapsed').show();
-        $('.if-not-collapsed').hide();
+        var card = $(e.target).closest('.top')
+        
+        $(card).find('.if-collapsed').show();
+        $(card).find('.if-not-collapsed').hide();
     })
 
     $('.collapse').on('show.bs.collapse', function(e) {
-        var SendButton = $(e.target);
-        console.log(SendButton);
+        var card = $(e.target).closest('.top')
         
-        $('.if-collapsed').hide();
-        $('.if-not-collapsed').show();
+        $(card).find('.if-collapsed').hide();
+        $(card).find('.if-not-collapsed').show();
     })
 
 });
