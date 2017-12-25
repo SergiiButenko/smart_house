@@ -533,7 +533,7 @@ def add_ongoing_rule():
     update_all_rules()
     logging.info("Ongoing rule added. {0}".format(str(rule)))
 
-    template = render_template('ongoing_rule_single.html', my_list=rule)
+    template = render_template('ongoing_rule_single.html', n=rule)
     send_ongoing_rule_message('add_ongoing_rule', template)
     return json.dumps({'status': 'OK'})
 
