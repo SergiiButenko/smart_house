@@ -118,7 +118,7 @@ QUERY['edit_ongoing_rule_ongoing'] = (
     "UPDATE ongoing_rules "
     "SET line_id = {0}, time = {1}, intervals = {2}, "
     "time_wait = {3}, repeat_value={4}, "
-    "date_time_start='{5}' end_date = '{6}' "
+    "date_time_start='{5}', end_date = '{6}' "
     "WHERE rule_id = '{7}'")
 
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
