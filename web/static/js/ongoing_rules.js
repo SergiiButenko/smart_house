@@ -207,10 +207,10 @@ function form_text(el_in) {
     now = new Date($(card).find("#end_date").val());
     text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
-    $(card).find("#summary").innerHTML(
+    $(card).find("#summary").innerHTML = 
         schedule_text + ' о ' + time + ', ' + text + '.</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин'
-        );
+        interval + ' рази, по ' + minutes + ' хвилин';
+        
 }
 
 
