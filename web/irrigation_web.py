@@ -121,7 +121,7 @@ def send_branch_status_message(channel, data):
 
 def send_ongoing_rule_message(channel, data):
     """Convert data in order to send data object."""
-    send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
+    send_message(channel, {'data': json.dumps(data, default=date_handler)})
 
 
 @app.route("/update_all_rules")
