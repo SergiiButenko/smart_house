@@ -28,6 +28,7 @@ $(document).ready(function() {
     socket.on('add_ongoing_rule', function(msg) {
         console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
         var html = $.parseHTML(msg.data)
+        console.log(html)
         $(html).insertBefore('#last_card');
     });
 
