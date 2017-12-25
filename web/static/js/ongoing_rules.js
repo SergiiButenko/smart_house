@@ -211,11 +211,7 @@ $(document).ready(function() {
             },
             success: function() {
                 console.log(json);
-                console.log(card);
-
                 collapse = $(card).find('#' + $(e.target).data('id'));
-                console.log(collapse);
-
                 collapse.collapse('hide');
                 $(card).find('.edit-flow').hide();
                 $(card).find('.show-flow').show();
@@ -330,6 +326,10 @@ function form_text(el_in) {
 
 
 function remove_rule(that) {
+    var returnVal = confirm("Видалити правило?");
+    if (returnVal == false)
+        return;
+    
     id = $(that).data('id');
     $.ajax({
         url: '/remove_ongoing_rule',
