@@ -12,7 +12,20 @@ $(document).ready(function() {
 
     socket.on('edit_ongoing_rule', function(msg) {
         console.log('Message received. edit_ongoing_rule. New rule\'s seting: ' + msg.data);
-        console.log(JSON.parse(msg.data));
+        msg = JSON.parse(msg.data);
+        rule = msg['rule'];
+        $('.top').each(function() {
+            if ($(this).data('id') == rule['rule_id']) {
+                $(this).find('#irrigation_minutes').val(rule['time'])
+                $(this).find('#irrigation_intervals').val(rule['intervals'])
+                $(this).find('#irrigation_time_wait').val(rule['time_wait'])
+                $(this).find('#schedule_select').val(rule['repeat_value'])
+                $(this).find('.irrigation_date').val(rule['date_start'])
+                $(this).find('.irrigation_time').val(rule['time_start'])
+                $(this).find('#end_date').val(rule['end_date'])
+            }
+        });
+
     });
 
     socket.on('ongoing_rule_state', function(msg) {
@@ -21,13 +34,9 @@ $(document).ready(function() {
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
                 switcher = $(this).find('.active_true_false');
-                console.log(switcher);
                 $(switcher).prop("checked", msg['rule']['status']);
-                // $(switcher).val($(switcher).old_value);
             }
         });
-
-
     });
 
     socket.on('remove_ongoing_rule', function(msg) {
