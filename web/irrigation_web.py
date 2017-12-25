@@ -533,7 +533,8 @@ def add_ongoing_rule():
     update_all_rules()
     logging.info("Ongoing rule added. {0}".format(str(rule)))
 
-    send_ongoing_rule_message('add_ongoing_rule', rule)
+    template = render_template('ongoing_rule_single.html', my_list=rule)
+    send_ongoing_rule_message('add_ongoing_rule', template)
     return json.dumps({'status': 'OK'})
 
 
@@ -545,7 +546,7 @@ def remove_ongoing_rule():
     database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(rule_id))
     update_all_rules()
 
-    send_ongoing_rule_message('remove_ongoing_rule', rule_id)
+    send_ongoing_rule_message('remove_ongoing_rule', {'rule_id': rule_id})
     return json.dumps({'status': 'OK'})
 
 

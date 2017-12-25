@@ -106,9 +106,6 @@ $(document).ready(function() {
             data: {
                 'id': id
             },
-            success: function(data) {
-                $('#confirm_modal').modal('hide');
-            },
             error: function(data) {
                 alert("Сталася помилка. Cпробуйте ще раз");
             }
@@ -129,9 +126,6 @@ $(document).ready(function() {
             return;
         }
 
-        $(switcher).prop("checked", !old_value);
-        $(switcher).val(!$(switcher).old_value);
-
         id = $(switcher).data('id')
         if (old_value == false) {
             $.ajax({
@@ -141,7 +135,8 @@ $(document).ready(function() {
                     'id': id
                 },
                 success: function(data) {
-                    $('#confirm_modal').modal('hide');
+                    $(switcher).prop("checked", !old_value);
+                    $(switcher).val(!$(switcher).old_value);
                 },
                 error: function(data) {
                     alert("Сталася помилка. Cпробуйте ще раз");
@@ -155,7 +150,8 @@ $(document).ready(function() {
                     'id': id
                 },
                 success: function(data) {
-                    $('#dismiss_modal').modal('hide');
+                    $(switcher).prop("checked", !old_value);
+                    $(switcher).val(!$(switcher).old_value);
                 },
                 error: function(data) {
                     alert("Сталася помилка. Cпробуйте ще раз");
