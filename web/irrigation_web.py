@@ -562,7 +562,6 @@ def edit_ongoing_rule():
         rule['date_start'], rule['time_start'].time()
         )
     rule['end_date'] = convert_to_datetime(rule['end_date'])
-    rule['active'] = rule['active']
     rule['rule_id'] = rule['rule_id']
 
     # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
@@ -577,7 +576,7 @@ def edit_ongoing_rule():
     # # update rules;
     # update_rules_from_ongoing_rules(rule)
     # update_all_rules()
-    logging.info("Ongoing rule added. {0}".format(str(rule)))
+    logging.info("Ongoing rule modified. {0}".format(str(rule)))
     return json.dumps({'status': 'OK'})
 
 
