@@ -88,7 +88,7 @@ $(document).ready(function() {
         var card = $(e.target).closest('.top');
         console.log($(e.target).data('id'));
 
-        switcher = $(card).find('.active_true_false');
+        switcher = $(card).find('#all_rules');
         console.log(switcher.data('id'));
 
         var old_value = !(switcher.prop("checked"));
