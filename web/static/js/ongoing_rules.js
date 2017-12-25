@@ -2,6 +2,33 @@ branch = []
 
 $(document).ready(function() {
 
+    var socket = io.connect(server, {
+        'sync disconnect on unload': true
+    });
+    socket.on('connect', function() {
+        console.log("connected to websocket");
+    });
+
+    socket.on('edit_ongoing_rule', function(msg) {
+        console.log('Message received. edit_ongoing_rule. New rule\'s seting: ' + msg.data);
+        console.log(JSON.parse(msg.data));
+    });
+
+    socket.on('ongoing_rule_state', function(msg) {
+        console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
+        console.log(JSON.parse(msg.data));
+    });
+
+    socket.on('remove_ongoing_rule', function(msg) {
+        console.log('Message received. remove_ongoing_rule. Rule to remove: ' + msg.data);
+        console.log(JSON.parse(msg.data));
+    });
+
+    socket.on('add_ongoing_rule', function(msg) {
+        console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
+        console.log(JSON.parse(msg.data));
+    });
+
     //Rename branches
     $.ajax({
         url: '/branch_settings',
@@ -328,20 +355,6 @@ function form_text(el_in) {
     );
 }
 
-
-function remove_rule(that) {
-    id = $(that).data('id');
-    $.ajax({
-        url: '/remove_ongoing_rule',
-        type: "get",
-        data: {
-            'id': id
-        },
-        success: function(data) {
-            $("#rules_table").html(data);
-        }
-    });
-}
 
 function toogle_time_wait(val) {
     var input = parseInt(val)

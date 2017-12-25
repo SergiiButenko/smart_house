@@ -119,6 +119,11 @@ def send_branch_status_message(channel, data):
     send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
 
 
+def send_ongoing_rule_message(channel, data):
+    """Convert data in order to send data object."""
+    send_message(channel, {'data': json.dumps({'branches': data}, default=date_handler)})
+
+
 @app.route("/update_all_rules")
 def update_rules():
     """Synchronize rules with database."""
@@ -527,6 +532,8 @@ def add_ongoing_rule():
     update_rules_from_ongoing_rules(rule)
     update_all_rules()
     logging.info("Ongoing rule added. {0}".format(str(rule)))
+
+    send_ongoing_rule_message('add_ongoing_rule', rule)
     return json.dumps({'status': 'OK'})
 
 
@@ -537,6 +544,8 @@ def remove_ongoing_rule():
     database.update(database.QUERY[mn()+'_remove_from_life'].format(rule_id))
     database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(rule_id))
     update_all_rules()
+
+    send_ongoing_rule_message('remove_ongoing_rule', rule_id)
     return json.dumps({'status': 'OK'})
 
 
@@ -569,6 +578,8 @@ def edit_ongoing_rule():
     update_rules_from_ongoing_rules(rule)
     # update_all_rules()
     logging.info("Ongoing rule modified. {0}".format(str(rule)))
+    
+    send_ongoing_rule_message('edit_ongoing_rule', rule)
     return json.dumps({'status': 'OK'})
 
 
@@ -579,6 +590,8 @@ def activate_ongoing_rule():
     database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
     database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
+
+    send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 1})
     return json.dumps({'status': 'OK'})
 
 
@@ -589,6 +602,8 @@ def deactivate_ongoing_rule():
     database.update(database.QUERY[mn() + '_ongoing'].format(rule_id))
     database.update(database.QUERY[mn() + '_life'].format(rule_id))
     update_all_rules()
+
+    send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 0})
     return json.dumps({'status': 'OK'})
 
 @app.route("/get_timetable_list")
