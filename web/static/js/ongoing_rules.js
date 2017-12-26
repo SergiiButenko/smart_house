@@ -57,17 +57,11 @@ $(document).ready(function() {
         $(msg['rule']['template']).insertBefore('#last_card');
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
-                console.log($(this).data('id'));
-                console.log($(this));
 
-                $(this).find('#irrigation_minutes').val(rule['time']);
-                $(this).find('#irrigation_intervals').val(rule['intervals']);
-                $(this).find('#irrigation_time_wait').val(rule['time_wait']);
-                $(this).find('#schedule_select').val(rule['repeat_value']);
-                $(this).find('.irrigation_date').val(convert_date(rule['date_start']));
-                $(this).find('.irrigation_time').val(convert_date_to_time(rule['time_start']));
-                $(this).find('#end_date').val(convert_date(rule['end_date']));
-
+                // $(this).find('#irrigation_minutes').val(rule['time']);
+                // $(this).find('#irrigation_intervals').val(rule['intervals']);
+                // $(this).find('#irrigation_time_wait').val(rule['time_wait']);
+                
                 schedule_select = $(this).find('#schedule_select');
                 $(schedule_select).val($(schedule_select).data('value'));
 
