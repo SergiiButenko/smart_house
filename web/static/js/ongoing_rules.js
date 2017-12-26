@@ -270,6 +270,7 @@ function set_events(){
 
         json['rule'] = {
             'line_id': $(modal).find('#branch_select').val(),
+            'line_name': $(modal).find('#branch_select').find("option:selected").attr("title"),
             'time': $(modal).find('#irrigation_minutes').val(),
             'intervals': $(modal).find('#irrigation_intervals').val(),
             'time_wait': $(modal).find('#irrigation_time_wait').val(),
