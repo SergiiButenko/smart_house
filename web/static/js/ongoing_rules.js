@@ -61,7 +61,7 @@ $(document).ready(function() {
                 // $(this).find('#irrigation_minutes').val(rule['time']);
                 // $(this).find('#irrigation_intervals').val(rule['intervals']);
                 // $(this).find('#irrigation_time_wait').val(rule['time_wait']);
-                
+
                 schedule_select = $(this).find('#schedule_select');
                 $(schedule_select).val($(schedule_select).data('value'));
 
@@ -78,6 +78,7 @@ $(document).ready(function() {
                 $(active_true_false).prop("checked", $(active_true_false).data('value'));
 
                 form_text($(this).find('.active_true_false'));
+                set_events();
             }
         });
 
@@ -124,7 +125,63 @@ $(document).ready(function() {
 
         form_text($(this))
     });
+    set_events();
+    
+});
 
+
+function form_text(el_in) {
+    var card = $(el_in).closest('.top')
+
+    schedule_text = $(card).find('#schedule_select option:selected').attr('title');
+    time = $(card).find('.irrigation_time').val();
+    minutes = $(card).find('#irrigation_minutes').val();
+    interval = $(card).find('#irrigation_intervals').val();
+    time_wait = $(card).find('#irrigation_time_wait').val();
+
+    var options = {
+        weekday: "long",
+        month: "short",
+        day: "numeric"
+    };
+
+    now = new Date($(card).find("#end_date").val());
+    text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
+
+    $(card).find("#summary").html(
+        schedule_text + ' о ' + time + ', ' + text + '</br>' +
+        interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+    );
+}
+
+
+function toogle_time_wait(val) {
+    var input = parseInt(val)
+    if (input <= 1 || isNaN(input)) {
+        $('#irrigation_time_wait_group').hide();
+    } else {
+        $('#irrigation_time_wait_group').show();
+    }
+}
+
+function set_branch_defaults(index) {
+    name = branch[index]['name'];
+    time = branch[index]['default_time'];
+    interval = branch[index]['default_interval'];
+    time_wait = branch[index]['default_time_wait'];
+    default_time_start = branch[index]['start_time']
+
+
+    $('#irrigation_minutes').val(time);
+    $('#irrigation_intervals').val(interval);
+    $('#irrigation_time_wait').val(time_wait);
+    $('.irrigation_time').val(convert_date_to_time(default_time_start));
+
+    toogle_time_wait(index);
+}
+
+
+function set_events(){
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });
@@ -370,56 +427,4 @@ $(document).ready(function() {
         $(card).find('#end_date').val(rule['start_values']['end_date'])
         form_text($(card).find('#end_date'))
     });
-
-});
-
-
-function form_text(el_in) {
-    var card = $(el_in).closest('.top')
-
-    schedule_text = $(card).find('#schedule_select option:selected').attr('title');
-    time = $(card).find('.irrigation_time').val();
-    minutes = $(card).find('#irrigation_minutes').val();
-    interval = $(card).find('#irrigation_intervals').val();
-    time_wait = $(card).find('#irrigation_time_wait').val();
-
-    var options = {
-        weekday: "long",
-        month: "short",
-        day: "numeric"
-    };
-
-    now = new Date($(card).find("#end_date").val());
-    text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
-
-    $(card).find("#summary").html(
-        schedule_text + ' о ' + time + ', ' + text + '</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
-    );
-}
-
-
-function toogle_time_wait(val) {
-    var input = parseInt(val)
-    if (input <= 1 || isNaN(input)) {
-        $('#irrigation_time_wait_group').hide();
-    } else {
-        $('#irrigation_time_wait_group').show();
-    }
-}
-
-function set_branch_defaults(index) {
-    name = branch[index]['name'];
-    time = branch[index]['default_time'];
-    interval = branch[index]['default_interval'];
-    time_wait = branch[index]['default_time_wait'];
-    default_time_start = branch[index]['start_time']
-
-
-    $('#irrigation_minutes').val(time);
-    $('#irrigation_intervals').val(interval);
-    $('#irrigation_time_wait').val(time_wait);
-    $('.irrigation_time').val(convert_date_to_time(default_time_start));
-
-    toogle_time_wait(index);
 }
