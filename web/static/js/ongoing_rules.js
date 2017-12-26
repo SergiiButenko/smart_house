@@ -57,23 +57,31 @@ $(document).ready(function() {
         $(msg['rule']['template']).insertBefore('#last_card');
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
+
+                $(this).find('#irrigation_minutes').val(rule['time']);
+                $(this).find('#irrigation_intervals').val(rule['intervals']);
+                $(this).find('#irrigation_time_wait').val(rule['time_wait']);
+                $(this).find('#schedule_select').val(rule['repeat_value']);
+                $(this).find('.irrigation_date').val(convert_date(rule['date_start']));
+                $(this).find('.irrigation_time').val(convert_date_to_time(rule['time_start']));
+                $(this).find('#end_date').val(convert_date(rule['end_date']));
+
                 schedule_select = $(this).find('#schedule_select');
-                schedule_select.val(schedule_select.data('value'));
+                $(schedule_select).val($(schedule_select).data('value'));
 
                 irrigation_date = $(this).find('.irrigation_date');
-                irrigation_date.val(convert_date(irrigation_date.data('value')));
+                $(irrigation_date).val(convert_date($(irrigation_date).data('value')));
 
                 irrigation_time = $(this).find('.irrigation_time');
-                irrigation_time.val(convert_date_to_time(irrigation_time.data('value')));
+                $(irrigation_time).val(convert_date_to_time($(irrigation_time).data('value')));
 
                 irrigation_end_date = $(this).find('.irrigation_end_date');
-                irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
+                $(irrigation_end_date).val(convert_date($(irrigation_end_date).data('value')));
 
                 active_true_false = $(this).find('.active_true_false');
-                active_true_false.prop("checked", active_true_false.data('value'));
+                $(active_true_false).prop("checked", $(active_true_false).data('value'));
 
-                form_text($(this))
-
+                form_text($(this).find('.active_true_false'));
             }
         });
 
