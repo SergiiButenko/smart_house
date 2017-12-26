@@ -57,6 +57,8 @@ $(document).ready(function() {
         $(msg['rule']['template']).insertBefore('#last_card');
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
+                console.log($(this).data('id'));
+                console.log($(this));
 
                 $(this).find('#irrigation_minutes').val(rule['time']);
                 $(this).find('#irrigation_intervals').val(rule['intervals']);
