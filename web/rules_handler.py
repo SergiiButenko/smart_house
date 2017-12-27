@@ -127,16 +127,14 @@ def inspect_conditions(rule):
             return False
 
         rain = database.select(database.QUERY[mn() + '_rain'])
-        logging.info(rain)
-        logging.info(rain[0])
 
         if rain is None:
             return True
 
-        if rain[0] < RAIN_MAX:
+        if rain[0][0] < RAIN_MAX:
             return True
 
-        if rain[0] >= RAIN_MAX:
+        if rain[0][0] >= RAIN_MAX:
             return False
     except Exception as e:
         logging.error("Exeption occured while getting rain volume. {0}".format(e))
