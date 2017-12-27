@@ -123,9 +123,6 @@ def sync_rules_from_redis():
 def inspect_conditions(rule):
     """Check if rule can be executed or not."""
     try:
-        if rule is None:
-            return False
-
         rain = database.select(database.QUERY[mn() + '_rain'])
 
         if rain is None:

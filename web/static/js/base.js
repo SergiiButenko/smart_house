@@ -237,5 +237,7 @@ function get_parameter_by_name(name, url) {
 }
 
 function daydiff(first, second) {
-    return Math.round((second - first) / (1000 * 60 * 60 * 24));
+    date1 = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+    date2 = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+    return Math.ceil((date1 - date1) / (1000 * 60 * 60 * 24));
 }
