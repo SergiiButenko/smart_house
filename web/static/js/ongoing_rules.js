@@ -142,7 +142,8 @@ function form_text(el_in) {
     var options = {
         weekday: "long",
         month: "short",
-        day: "numeric"
+        day: "numeric",
+        timeZone: 'UTC'
     };
 
     var now = new Date($(card).find("#end_date").val());
