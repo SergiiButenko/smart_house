@@ -141,7 +141,7 @@ QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 
 
 QUERY['rissing'] = "INSERT INTO rain (volume) VALUES ({0})"
 
-QUERY['weather'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-24 hour');"
+QUERY['weather'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-1 minute');"
 QUERY['inspect_conditions_rain'] = QUERY['weather']
 
 
