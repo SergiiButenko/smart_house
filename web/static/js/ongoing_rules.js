@@ -118,10 +118,10 @@ $(document).ready(function() {
         irrigation_time.val(convert_date_to_time(irrigation_time.data('value')));
 
         var irrigation_end_date = $(this).find('.irrigation_end_date');
-        var irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
+        irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
 
         var active_true_false = $(this).find('.active_true_false');
-        var active_true_false.prop("checked", active_true_false.data('value'));
+        active_true_false.prop("checked", active_true_false.data('value'));
 
         form_text($(this))
     });
