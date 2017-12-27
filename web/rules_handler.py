@@ -121,7 +121,7 @@ def sync_rules_from_redis():
         raise e
 
 
-def inspect_conditions(rule):
+def inspect_conditions():
     """Check if rule can be executed or not."""
     try:
         rain = database.select(database.QUERY[mn() + '_rain'].format(HOURS))[0][0]
