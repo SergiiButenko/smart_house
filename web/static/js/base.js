@@ -137,10 +137,10 @@ var class_err = {
     class: 'status-error'
 }
 
-function set_status_error() {   
+function set_status_error() {
     $(".card-irrigation").addClass(class_err.class);
     $(".card-lighting").addClass(class_err.class);
-    
+
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
 
@@ -167,11 +167,11 @@ function set_status_ok() {
 function set_status_spinner() {
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
-    
+
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
     $(".stop-irrigation").addClass('disabled');
-    
+
 }
 
 
@@ -192,15 +192,20 @@ function setDrawerPosition(position) {
     $container.addClass(position)
 }
 
-function convert_date_to_time(date_str) {
-    date = new Date(date_str);
+function convert_date_to_time(date) {
+   if !(date instanceof Date) {
+        date = new Date(date);
+    }
+    
     hours = ("0" + (date.getHours())).slice(-2);
     minutest = ("0" + (date.getMinutes())).slice(-2);
     return hours + ":" + minutest;
 }
 
-function convert_date(date_str) {
-    date = new Date(date_str);
+function convert_date(date) {
+    if !(date instanceof Date) {
+        date = new Date(date);
+    }
     var day = ("0" + date.getDate()).slice(-2);
     var month = ("0" + (date.getMonth() + 1)).slice(-2);
 
@@ -232,5 +237,5 @@ function get_parameter_by_name(name, url) {
 }
 
 function daydiff(first, second) {
-    return Math.round((second-first)/(1000*60*60*24));
+    return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
