@@ -30,6 +30,8 @@ USERS = [
     {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
 
+RAIN_MAX = 20
+
 
 def branch_on(line_id, alert_time):
     """Blablbal."""
@@ -124,30 +126,25 @@ def inspect_conditions(rule):
         if rule is None:
             return False
 
-        # if (RULES_ENABLED is False):
-        #     logging.warn("All rules are disabled on demand")
-        #     return False
+        rain = database.select(database.QUERY[mn() + '_rain'])
+        logging.info(rain)
+        logging.info(rain[0])
 
-        # response = requests.get(url=BACKEND_IP + '/weather2', params={"force_update": 'false'}, timeout=(3, 3))
-        # logging.debug('response {0}'.format(response.text))
+        if rain is None:
+            return True
 
-        # json_data = json.loads(response.text)
-        # if (json_data['data']['allow_irrigation'] is False):
-        #     if (rule['rule_id'] == 1):
-        #         database.update(database.QUERY[mn()].format(json_data['data']['rule_status'], rule['id']))
-        #         logging.warn("Rule '{0}' is canceled. {1}".format(rule['id'], json_data['data']['user_message']))
-        #         return False
-        #     else:
-        #         logging.warn("Humidity sensor will execute 'disable branch' rule dispite humidity sensor values")
+        if rain[0] < RAIN_MAX:
+            return True
+
+        if rain[0] >= RAIN_MAX:
+            return False
     except Exception as e:
-        logging.error(e)
-        logging.error("Can't check conditions for rule. Ecxeption occured")
+        logging.error("Exeption occured while getting rain volume. {0}".format(e))
         return False
-
-    return True
 
 
 def send_to_viber_bot(rule):
+    """Send messages to viber."""
     try:
         id = rule['id']
         rule_id = rule['rule_id']
@@ -199,10 +196,11 @@ def enable_rule():
             time.sleep(10)
 
             for rule in RULES_FOR_BRANCHES:
-                if (inspect_conditions(rule) is False):
-                    continue
-
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
+
+                if (inspect_conditions(rule) is False):
+                    logging.info("Rule can't be executed cause of rain volume too high")
+                    continue
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):
                     try:

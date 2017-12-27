@@ -821,16 +821,28 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
+    rain = database.select(database.QUERY[mn()])
+    if len(rain) == 0:
+        rain = 0
+    else:
+        rain = rain[0]
+
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
         response = requests.get(url=url, timeout=(3, 3))
         response.raise_for_status()
         json_data = convert_to_obj(response.text)
-        return jsonify(temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)), humidity=str(round(json_data['main']['humidity'], 2)))
+        return jsonify(
+            temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
+            humidity=str(round(json_data['main']['humidity'], 2)),
+            rain=str(rain))
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
-        return jsonify(temperature="0")
+        return jsonify(
+            temperature="0",
+            humidity="0",
+            rain="0")
 
 
 @app.route("/temperature")
