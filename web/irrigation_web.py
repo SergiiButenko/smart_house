@@ -31,18 +31,6 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 
 DEBUG = False
 
-VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
-ARDUINO_SMALL_H_IP = 'http://butenko.asuscomm.com:5555'
-
-BRANCHES_LENGTH = 18
-RULES_FOR_BRANCHES = [None] * BRANCHES_LENGTH
-BRANCHES_SETTINGS = [None] * BRANCHES_LENGTH
-
-START_RULE = 1
-STOP_RULE = 2
-ENABLED_RULE = 1
-
-
 def update_all_rules():
     """Set next active rules for all branches."""
     try:
@@ -818,6 +806,10 @@ def weather():
     rain = database.select(database.QUERY[mn()])[0][0]
     if rain is None:
         rain = 0
+    
+    rain_status = 0
+    if rain < RAIN_MAX:
+        rain_status =1
 
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
@@ -827,14 +819,16 @@ def weather():
         return jsonify(
             temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
             humidity=str(round(json_data['main']['humidity'], 2)),
-            rain=str(rain))
+            rain=str(rain),
+            rain_status=rain_status)
     except requests.exceptions.RequestException as e:
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
         return jsonify(
             temperature="0",
             humidity="0",
-            rain="0")
+            rain="0",
+            rain_status=0)
 
 
 @app.route("/temperature")
@@ -916,12 +910,6 @@ def temperature():
         temperature_big_h_2_fl=res[9],
         humidity_big_h_2_fl=res[10]
     )
-
-
-@app.route("/sensors")
-def sensors():
-    """Blablbal."""
-    return app.send_static_file('sensors.html')
 
 
 @app.route("/.well-known/acme-challenge/caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk")

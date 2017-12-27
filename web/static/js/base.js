@@ -44,43 +44,21 @@ $(document).ready(function() {
         $.ajax({
             url: '/weather',
             success: function(data) {
-                $("#temp").html("Температура повітря: " + data['temperature'] + " &#8451;");
-                $("#hum").html("Вологість: " + data['humidity'] + " %");
+                $("#temp").html(data['temperature']);
+                $("#hum").html(data['humidity']);
+                $("#rain").html(data['humidity']);
+                if data['rain_status'] == 1 {
+                    $("#irrigation_status").html("Автоматичний полив дозволений");
+                } else {
+                    $("#irrigation_status").html("Автоматичний полив заборонений");
+                }
+                
+
                 setTimeout(update_weather, 60 * 1000 * 30);
             }
         });
     })();
-
-
-    // touch_analog_sensor();
-
-    // Add arduino touch script to determine if connection is alive
-    // (function worker() {
-    //     $.ajax({
-    //         url: '/irrigation_lighting_status',
-    //         beforeSend: function(xhr, opts) {
-    //             set_status_spinner();
-
-    //             if ($('#irrigate_modal').hasClass('in')) {
-    //                 xhr.abort();
-    //             }
-    //         },
-    //         success: function(data) {
-    //             console.log("connected to arduino");
-
-    //             set_status_ok();
-    //             setTimeout(worker, arduino_check_connect_sec * 1000);
-    //         },
-    //         error: function() {
-    //             console.error("Can't connect to arduino");
-
-    //             set_status_error();
-    //             setTimeout(worker, arduino_check_broken_connect_sec * 1000);
-    //         }
-    //     });
-    // })();
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
-
 
     //comming from template
     var buttons = ["drawer-f-l", "drawer-f-r", "drawer-f-t", "drawer-f-b"]
@@ -113,15 +91,6 @@ $(document).ready(function() {
 
 });
 
-
-function touch_analog_sensor() {
-    $.ajax({
-        url: server + '/humidity_sensor',
-        success: function(data) {
-            $("#humidity_text").text(data['text']);
-        }
-    });
-}
 
 // this is for status button
 var class_ok = {

@@ -13,27 +13,6 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 
-BACKEND_IP = 'http://127.0.0.1:7542'
-VIBER_BOT_IP = 'https://mozart.hopto.org:7443'
-
-HUMIDITY_MAX = 1000
-RULES_FOR_BRANCHES = [None] * 40
-
-RULES_ENABLED = True
-REDIS_KEY_FOR_VIBER = 'viber_sent_intervals'
-VIBER_SENT_TIMEOUT = 10
-
-
-USERS = [
-    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
-    {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
-    {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
-]
-
-HOURS = 24
-RAIN_MAX = 20
-
-
 def branch_on(line_id, alert_time):
     """Blablbal."""
     try:
