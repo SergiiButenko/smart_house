@@ -30,6 +30,7 @@ USERS = [
     {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
 
+HOURS = 24
 RAIN_MAX = 20
 
 
@@ -123,15 +124,15 @@ def sync_rules_from_redis():
 def inspect_conditions(rule):
     """Check if rule can be executed or not."""
     try:
-        rain = database.select(database.QUERY[mn() + '_rain'])
-
+        rain = database.select(database.QUERY[mn() + '_rain'].format(HOURS))[0][0]
         if rain is None:
-            return True
+            rain  = 0
 
-        if rain[0][0] < RAIN_MAX:
-            return True
+        logging.info("Rain volume for last {0} hours is {1}mm".format(HOURS, rain[0][0]))
 
-        if rain[0][0] >= RAIN_MAX:
+        if rain < RAIN_MAX:
+            return True
+        else:
             return False
     except Exception as e:
         logging.error("Exeption occured while getting rain volume. {0}".format(e))
@@ -196,8 +197,10 @@ def enable_rule():
 
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
-                if (inspect_conditions(rule) is False):
+                if (inspect_conditions() is False):
                     logging.info("Rule can't be executed cause of rain volume too high")
+                    database.update(database.QUERY[mn() + "_canceled_by_rain"].format(rule['id']))
+                    set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
                     continue
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):

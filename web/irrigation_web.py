@@ -815,11 +815,9 @@ def deactivate_branch():
 @app.route("/weather")
 def weather():
     """Blablbal."""
-    rain = database.select(database.QUERY[mn()])
+    rain = database.select(database.QUERY[mn()])[0][0]
     if rain is None:
         rain = 0
-    else:
-        rain = rain[0][0]
 
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:

@@ -106,7 +106,7 @@ QUERY['deactivate_branch_2'] = (
     "VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}')")
 
 QUERY['enable_rule'] = "UPDATE life SET state=2 WHERE id={0}"
-QUERY['enable_rule_state_6'] = "UPDATE life SET state=6 WHERE id={0}"
+QUERY['enable_rule_canceled_by_rain'] = "UPDATE life SET state=5 WHERE id={0}"
 
 QUERY['activate_ongoing_rule_ongoing'] = "UPDATE ongoing_rules SET active=1 WHERE rule_id='{0}'"
 QUERY['activate_ongoing_rule_life'] = "UPDATE life SET active=1 WHERE ongoing_rule_id='{0}'"
@@ -141,7 +141,7 @@ QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 
 
 QUERY['rissing'] = "INSERT INTO rain (volume) VALUES ({0})"
 
-QUERY['weather'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-24 minute');"
+QUERY['weather'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-{0} hours');"
 QUERY['inspect_conditions_rain'] = QUERY['weather']
 
 
