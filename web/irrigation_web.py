@@ -822,7 +822,7 @@ def deactivate_branch():
 def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])
-    if len(rain) == 0:
+    if rain is None:
         rain = 0
     else:
         rain = rain[0]
