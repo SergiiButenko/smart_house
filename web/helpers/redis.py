@@ -40,6 +40,11 @@ def convert_to_datetime(value):
         pass
 
     try:
+        value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S+00:00")
+    except:
+        pass
+
+    try:
         value = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f+00:00")
     except:
         pass
