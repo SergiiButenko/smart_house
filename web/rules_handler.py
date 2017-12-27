@@ -126,10 +126,8 @@ def inspect_conditions():
     try:
         rain = database.select(database.QUERY[mn() + '_rain'].format(HOURS))[0][0]
         if rain is None:
-            rain  = 0    
-        
-        logging.info("Rain volume for last {0} hours is {1}mm".format(HOURS, rain))
-        
+            rain  = 0
+
         if rain < RAIN_MAX:
             return True
         else:
