@@ -285,16 +285,33 @@ function toogle_card(element_id, branch) {
     };
 
     if (branch['last_rule']) {
-        last_rule = branch['last_rule']['timer']
-        last_rule = (new Date(last_rule)).toLocaleTimeString("uk-UA", options);
+        last_rule = new Date(branch['last_rule']['timer'])
+        now = new Date();
+
+        if (daydiff(now, last_rule) == 0) {
+            last_rule = "сьогодні";
+        } else if (daydiff(now, last_rule) == -1) {
+            last_rule = "вчора";
+        } else {
+            last_rule = last_rule.toLocaleTimeString("uk-UA", options);
+        }
     } else {
         last_rule = "немає запису"
     }
     $('#last-' + element_id).text("Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
-        next_rule = branch['next_rule']['timer']
-        next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+        next_rule = new Date(branch['next_rule']['timer'])
+        now = new Date();
+        if (daydiff(now, next_rule) == 0) {
+            next_rule = "сьогодні";
+        } else if (daydiff(now, next_rule) == 1) {
+            next_rule = "завтра";
+        } else if (daydiff(now, next_rule) == 2) {
+            next_rule = "післязавтра";
+        } else {
+            next_rule = next_rule.toLocaleTimeString("uk-UA", options);
+        }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
@@ -302,8 +319,17 @@ function toogle_card(element_id, branch) {
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
-        next_rule = branch['next_rule']['timer']
-        next_rule = (new Date(next_rule)).toLocaleTimeString("uk-UA", options);
+        next_rule = new Date(branch['next_rule']['timer'])
+        now = new Date();
+        if (daydiff(now, next_rule) == 0) {
+            next_rule = "сьогодні";
+        } else if (daydiff(now, next_rule) == 1) {
+            next_rule = "завтра";
+        } else if (daydiff(now, next_rule) == 2) {
+            next_rule = "післязавтра";
+        } else {
+            next_rule = next_rule.toLocaleTimeString("uk-UA", options);
+        }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
