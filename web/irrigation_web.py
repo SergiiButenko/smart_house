@@ -825,7 +825,7 @@ def weather():
     if rain is None:
         rain = 0
     else:
-        rain = rain[0]
+        rain = rain[0][0]
 
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
