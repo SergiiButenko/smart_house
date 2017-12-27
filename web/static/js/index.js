@@ -275,10 +275,15 @@ function toogle_card(element_id, branch) {
         $('#btn-start-' + element_id).css('display', 'inline-block').removeClass("hidden");
     }
 
-    var options = {
+    var options_datetime = {
         weekday: "long",
         month: "short",
         day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    };
+
+    var options_time = {
         hour: "2-digit",
         minute: "2-digit"
     };
@@ -288,11 +293,11 @@ function toogle_card(element_id, branch) {
         now = new Date();
 
         if (daydiff(now, last_rule) == 0) {
-            last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA");
+            last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, last_rule) == -1) {
-            last_rule = "вчора, о " + last_rule.toLocaleTimeString("uk-UA");
+            last_rule = "вчора, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
         } else {
-            last_rule = last_rule.toLocaleTimeString("uk-UA", options);
+            last_rule = last_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
     } else {
         last_rule = "немає запису"
@@ -303,13 +308,13 @@ function toogle_card(element_id, branch) {
         next_rule = new Date(branch['next_rule']['timer'])
         now = new Date();
         if (daydiff(now, next_rule) == 0) {
-            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
-            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 2) {
-            next_rule = "післязавтра, о" + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "післязавтра, о" + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else {
-            next_rule = next_rule.toLocaleTimeString("uk-UA", options);
+            next_rule = next_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
@@ -321,13 +326,13 @@ function toogle_card(element_id, branch) {
         next_rule = new Date(branch['next_rule']['timer'])
         now = new Date();
         if (daydiff(now, next_rule) == 0) {
-            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
-            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 2) {
-            next_rule = "післязавтра, о " + next_rule.toLocaleTimeString("uk-UA");
+            next_rule = "післязавтра, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else {
-            next_rule = next_rule.toLocaleTimeString("uk-UA", options);
+            next_rule = next_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
