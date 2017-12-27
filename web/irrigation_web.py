@@ -485,8 +485,6 @@ def add_ongoing_rule():
     template = render_template('ongoing_rule_single.html', rule=rule)
     send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
 
-    branch_status = garden_controller.branch_status()
-    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
@@ -500,8 +498,6 @@ def remove_ongoing_rule():
 
     send_ongoing_rule_message('remove_ongoing_rule', {'rule_id': rule_id})
 
-    branch_status = garden_controller.branch_status()
-    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
@@ -536,8 +532,6 @@ def edit_ongoing_rule():
 
     send_ongoing_rule_message('edit_ongoing_rule', rule)
 
-    branch_status = garden_controller.branch_status()
-    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
