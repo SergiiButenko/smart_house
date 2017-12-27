@@ -166,8 +166,10 @@ function convert_date_to_time(date) {
         date = new Date(date);
     }
 
-    hours = ("0" + (date.getHours())).slice(-2);
-    minutest = ("0" + (date.getMinutes())).slice(-2);
+    var date = convertDateToUTC(date);
+
+    var hours = ("0" + (date.getHours())).slice(-2);
+    var minutest = ("0" + (date.getMinutes())).slice(-2);
     return hours + ":" + minutest;
 }
 
@@ -175,6 +177,8 @@ function convert_date(date) {
     if (date instanceof Date == false) {
         date = new Date(date);
     }
+    var date = convertDateToUTC(date);
+    
     var day = ("0" + date.getDate()).slice(-2);
     var month = ("0" + (date.getMonth() + 1)).slice(-2);
 
@@ -184,7 +188,7 @@ function convert_date(date) {
 }
 
 function convert_date_to_local_date(add_to_date) {
-    now = new Date();
+    var now = new Date();
     now.setDate(now.getDate() + parseInt(add_to_date));
 
     var day = ("0" + now.getDate()).slice(-2);
@@ -209,4 +213,14 @@ function daydiff(first, second) {
     date1 = new Date(first.getFullYear(), first.getMonth(), first.getDate());
     date2 = new Date(second.getFullYear(), second.getMonth(), second.getDate());
     return Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24));
+}
+
+function convertDateToUTC(date) { 
+    return new Date(
+        date.getUTCFullYear(), 
+        date.getUTCMonth(), 
+        date.getUTCDate(), 
+        date.getUTCHours(), 
+        date.getUTCMinutes(), 
+        date.getUTCSeconds()); 
 }
