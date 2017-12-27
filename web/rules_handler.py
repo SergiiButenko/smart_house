@@ -194,6 +194,9 @@ def enable_rule():
             time.sleep(10)
 
             for rule in RULES_FOR_BRANCHES:
+                if rule is None:
+                    continue
+
                 logging.info("Rule '{0}' is going to be executed".format(str(rule)))
 
                 if (inspect_conditions(rule) is False):
