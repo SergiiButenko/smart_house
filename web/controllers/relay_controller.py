@@ -3,7 +3,8 @@
 import logging
 import time
 import RPi.GPIO as GPIO
-
+from helpers import sqlite_database as database
+from helpers.common import *
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
@@ -44,9 +45,13 @@ for branch in BRANCHES:
 
 
 def rissing(channel):
+    """Fillup rain table"""
     global iteraion
     logging.info("Event:{0}".format(iteraion))
     iteraion += 1
+
+    database.update(database.QUERY[mn()].format(10))
+
 
 GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing)

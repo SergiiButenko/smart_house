@@ -410,7 +410,7 @@ def ongoing_rules():
         list_arr = []
 
     rows = []
-    # SELECT id, line_id, time, intervals, time_wait, repeat_value, dow, date_start, time_start, end_value, end_date, end_repeat_quantity 
+    # SELECT id, line_id, time, intervals, time_wait, repeat_value, dow, date_start, time_start, end_value, end_date, end_repeat_quantity
     for row in list_arr:
         rule_id = row[10]
         line_id = row[1]
@@ -439,7 +439,6 @@ def ongoing_rules():
 
 def update_rules_from_ongoing_rules(rule):
     """Form rules from ongoing rule."""
-
     database.update(database.QUERY[mn() + '_remove_from_life'].format(rule['rule_id']))
 
     _delta = rule['end_date'] - rule['date_time_start']
@@ -464,7 +463,7 @@ def update_rules_from_ongoing_rules(rule):
     for days_to_add in range(0, _days + 1, rule['repeat_value']):
         date_datetime = rule['date_time_start'] + datetime.timedelta(days=days_to_add)
 
-        #start_time = rule['date_time_start']
+        # start_time = rule['date_time_start']
         branch_id = int(rule['line_id'])
         time_min = int(rule['time'])
         time_wait = int(rule['time_wait'])
@@ -514,8 +513,7 @@ def add_ongoing_rule():
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['date_time_start'] = datetime.datetime.combine(
-        rule['date_start'], rule['time_start'].time()
-        )
+        rule['date_start'], rule['time_start'].time())
     rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['active'] = 1
     rule['rule_id'] = str(uuid.uuid4())
@@ -536,6 +534,9 @@ def add_ongoing_rule():
 
     template = render_template('ongoing_rule_single.html', rule=rule)
     send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
+
+    branch_status = garden_controller.branch_status()
+    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
@@ -543,11 +544,14 @@ def add_ongoing_rule():
 def remove_ongoing_rule():
     """User can remove ongoing rule from ui."""
     rule_id = request.args.get('id')
-    database.update(database.QUERY[mn()+'_remove_from_life'].format(rule_id))
-    database.update(database.QUERY[mn()+'_delete_ongoing_rule'].format(rule_id))
+    database.update(database.QUERY[mn() + '_remove_from_life'].format(rule_id))
+    database.update(database.QUERY[mn() + '_delete_ongoing_rule'].format(rule_id))
     update_all_rules()
 
     send_ongoing_rule_message('remove_ongoing_rule', {'rule_id': rule_id})
+
+    branch_status = garden_controller.branch_status()
+    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
@@ -563,15 +567,14 @@ def edit_ongoing_rule():
     rule['date_start'] = convert_to_datetime(rule['date_start'])
     rule['time_start'] = convert_to_datetime(rule['time_start'])
     rule['date_time_start'] = datetime.datetime.combine(
-        rule['date_start'], rule['time_start'].time()
-        )
+        rule['date_start'], rule['time_start'].time())
     rule['end_date'] = convert_to_datetime(rule['end_date'])
     rule['rule_id'] = rule['rule_id']
 
-    # "UPDATE ongoing_rules 
+    # "UPDATE ongoing_rules
     # SET line_id = {0}, time = {1}, intervals = {2}, time_wait = {3}, repeat_value={4}, date_time_start='{5}'"
     # end_date = '{6}' WHERE rule_id = '{7}'"
-    database.update(database.QUERY[mn()+'_ongoing'].format(
+    database.update(database.QUERY[mn() + '_ongoing'].format(
         rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
         rule['repeat_value'], rule['date_time_start'],
         rule['end_date'], rule['rule_id']))
@@ -580,8 +583,11 @@ def edit_ongoing_rule():
     update_rules_from_ongoing_rules(rule)
     # update_all_rules()
     logging.info("Ongoing rule modified. {0}".format(str(rule)))
-    
+
     send_ongoing_rule_message('edit_ongoing_rule', rule)
+
+    branch_status = garden_controller.branch_status()
+    send_branch_status_message('branch_status', form_responce_for_branches(branch_status))
     return json.dumps({'status': 'OK'})
 
 
@@ -607,6 +613,7 @@ def deactivate_ongoing_rule():
 
     send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 0})
     return json.dumps({'status': 'OK'})
+
 
 @app.route("/get_timetable_list")
 def get_timetable_list():
