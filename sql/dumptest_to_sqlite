@@ -16,6 +16,12 @@ CREATE TABLE day_of_week (
     name text NOT NULL
 );
 
+CREATE TABLE rain (
+    id INTEGER PRIMARY KEY,
+    datetime time without time zone NOT NULL DEFAULT (datetime('now','localtime')),
+    volume REAL NOT NULL
+);
+
 CREATE TABLE week_schedule (
     id INTEGER PRIMARY KEY,
     day_number integer NOT NULL,

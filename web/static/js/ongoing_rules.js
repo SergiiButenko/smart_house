@@ -12,8 +12,8 @@ $(document).ready(function() {
 
     socket.on('edit_ongoing_rule', function(msg) {
         console.log('Message received. edit_ongoing_rule. New rule\'s seting: ' + msg.data);
-        msg = JSON.parse(msg.data);
-        rule = msg['rule'];
+        var msg = JSON.parse(msg.data);
+        var rule = msg['rule'];
         $('.top').each(function() {
             if ($(this).data('id') == rule['rule_id']) {
                 $(this).find('#irrigation_minutes').val(rule['time']);
@@ -32,7 +32,7 @@ $(document).ready(function() {
 
     socket.on('ongoing_rule_state', function(msg) {
         console.log('Message received. ongoing_rule_state. New rule\'s state: ' + msg.data);
-        msg = JSON.parse(msg.data)
+        var msg = JSON.parse(msg.data)
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
                 switcher = $(this).find('.active_true_false');
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
     socket.on('remove_ongoing_rule', function(msg) {
         console.log('Message received. remove_ongoing_rule. Rule to remove: ' + msg.data);
-        msg = JSON.parse(msg.data)
+        var msg = JSON.parse(msg.data)
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
                 $(this).remove();
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
     socket.on('add_ongoing_rule', function(msg) {
         console.log('Message received. add_ongoing_rule. New rule: ' + msg.data);
-        msg = JSON.parse(msg.data);
+        var msg = JSON.parse(msg.data);
         $(msg['rule']['template']).insertBefore('#last_card');
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
@@ -108,20 +108,20 @@ $(document).ready(function() {
     });
 
     $(".card-rule").each(function() {
-        schedule_select = $(this).find('#schedule_select');
+        var schedule_select = $(this).find('#schedule_select');
         schedule_select.val(schedule_select.data('value'));
 
-        irrigation_date = $(this).find('.irrigation_date');
+        var irrigation_date = $(this).find('.irrigation_date');
         irrigation_date.val(convert_date(irrigation_date.data('value')));
 
-        irrigation_time = $(this).find('.irrigation_time');
+        var irrigation_time = $(this).find('.irrigation_time');
         irrigation_time.val(convert_date_to_time(irrigation_time.data('value')));
 
-        irrigation_end_date = $(this).find('.irrigation_end_date');
-        irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
+        var irrigation_end_date = $(this).find('.irrigation_end_date');
+        var irrigation_end_date.val(convert_date(irrigation_end_date.data('value')));
 
-        active_true_false = $(this).find('.active_true_false');
-        active_true_false.prop("checked", active_true_false.data('value'));
+        var active_true_false = $(this).find('.active_true_false');
+        var active_true_false.prop("checked", active_true_false.data('value'));
 
         form_text($(this))
     });
@@ -133,11 +133,11 @@ $(document).ready(function() {
 function form_text(el_in) {
     var card = $(el_in).closest('.top')
 
-    schedule_text = $(card).find('#schedule_select option:selected').attr('title');
-    time = $(card).find('.irrigation_time').val();
-    minutes = $(card).find('#irrigation_minutes').val();
-    interval = $(card).find('#irrigation_intervals').val();
-    time_wait = $(card).find('#irrigation_time_wait').val();
+    var schedule_text = $(card).find('#schedule_select option:selected').attr('title');
+    var time = $(card).find('.irrigation_time').val();
+    var minutes = $(card).find('#irrigation_minutes').val();
+    var interval = $(card).find('#irrigation_intervals').val();
+    var time_wait = $(card).find('#irrigation_time_wait').val();
 
     var options = {
         weekday: "long",
@@ -145,8 +145,8 @@ function form_text(el_in) {
         day: "numeric"
     };
 
-    now = new Date($(card).find("#end_date").val());
-    text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
+    var now = new Date($(card).find("#end_date").val());
+    var text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
 
     $(card).find("#summary").html(
         schedule_text + ' о ' + time + ', ' + text + '</br>' +
@@ -165,11 +165,11 @@ function toogle_time_wait(val) {
 }
 
 function set_branch_defaults(index) {
-    name = branch[index]['name'];
-    time = branch[index]['default_time'];
-    interval = branch[index]['default_interval'];
-    time_wait = branch[index]['default_time_wait'];
-    default_time_start = branch[index]['start_time']
+    var name = branch[index]['name'];
+    var time = branch[index]['default_time'];
+    var interval = branch[index]['default_interval'];
+    var time_wait = branch[index]['default_time_wait'];
+    var default_time_start = branch[index]['start_time']
 
 
     $('#irrigation_minutes').val(time);
@@ -191,14 +191,14 @@ function set_events(){
     });
 
     $('#branch_select').on('change', function(e) {
-        index = parseInt($(this).val());
+        var index = parseInt($(this).val());
         set_branch_defaults(index);
         form_text($(this));
     });
 
     $(".btn-open-modal").click(function(e) {
-        modal = $('#irrigate_modal')
-        index = parseInt($(modal).find("#branch_select").val());
+        var modal = $('#irrigate_modal')
+        var index = parseInt($(modal).find("#branch_select").val());
         set_branch_defaults(index);
         $(modal).find('.irrigation_date').val(convert_date_to_local_date(0));
         form_text($(modal));
@@ -210,7 +210,7 @@ function set_events(){
         if (returnVal == false)
             return;
 
-        id = $(this).data('id');
+        var id = $(this).data('id');
         $.ajax({
             url: '/remove_ongoing_rule',
             type: "get",
@@ -225,7 +225,7 @@ function set_events(){
 
 
     $('.active_true_false').change(function(e) {
-        switcher = $(e.target);
+        var switcher = $(e.target);
 
         var old_value = !($(switcher).prop("checked"));
         console.log(old_value);
@@ -237,7 +237,7 @@ function set_events(){
             return;
         }
 
-        id = $(switcher).data('id')
+        var id = $(switcher).data('id')
         if (old_value == false) {
             $.ajax({
                 url: '/activate_ongoing_rule',
@@ -265,8 +265,8 @@ function set_events(){
 
 
     $('.add-ongoing-rule').on('click', function(e) {
-        json = { 'rule': {} }
-        modal = $('#irrigate_modal');
+        var json = { 'rule': {} }
+        var modal = $('#irrigate_modal');
 
         json['rule'] = {
             'line_id': $(modal).find('#branch_select').val(),
@@ -377,9 +377,9 @@ function set_events(){
 
     $(".ongoing-rule-edit").click(function(e) {
         var card = $(e.target).closest('.top')
-        collapse = $(card).find('#' + $(e.target).data('id'))
+        var collapse = $(card).find('#' + $(e.target).data('id'))
 
-        rule = {}
+        var rule = {}
         rule['start_values'] = {
             'time': $(card).find('#irrigation_minutes').val(),
             'intervals': $(card).find('#irrigation_intervals').val(),
@@ -405,7 +405,7 @@ function set_events(){
 
     $(".ongoing-rule-cancel").click(function(e) {
         var card = $(e.target).closest('.top')
-        collapse = $(card).find('#' + $(e.target).data('id'))
+        var collapse = $(card).find('#' + $(e.target).data('id'))
 
         collapse.collapse('hide');
         $(card).find('.edit-flow').hide();

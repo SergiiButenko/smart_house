@@ -226,43 +226,6 @@ def add_rule_page():
     return render_template('add_rule.html')
 
 
-def get_table_body_only(query=None):
-    """If no query is passed returns all entries from life table."""
-    if (query is None):
-        query = database.QUERY[mn()]
-
-    list_arr = database.select(query, 'fetchall')
-
-    rows = []
-    if list_arr is not None:
-        for row in list_arr:
-            id = row[0]
-            branch_name = row[1]
-            rule_name = row[2]
-            state = row[3]
-            timer = row[5]
-            active = row[6]
-            rule_state = row[7]
-            time = row[8]
-            outdated = 0
-            if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
-                outdated = 1
-
-            rows.append({
-                'id': id,
-                'branch_name': branch_name,
-                'rule_name': rule_name,
-                'state': state,
-                'time': time,
-                'timer': "{:%A, %d-%m-%y %R}".format(timer),
-                'outdated': outdated,
-                'active': active,
-                'rule_state': rule_state})
-
-    template = render_template('timetable_table_only.html', my_list=rows)
-    return template
-
-
 @app.route("/history")
 def history():
     """Return history page if no parameters passed and only table body if opposite."""
@@ -445,19 +408,6 @@ def update_rules_from_ongoing_rules(rule):
     _days = _delta.days + 1
     logging.info("number of days: {0}".format(_days))
 
-    # rule['line_id'] = int(rule['line_id'])
-    # rule['time'] = convert_to_datetime(rule['time'])
-    # rule['intervals'] = int(rule['intervals'])
-    # rule['time_wait'] = int(rule['time_wait'])
-    # rule['repeat_value'] = int(rule['repeat_value'])
-    # rule['date_start'] = convert_to_datetime(rule['date_start'])
-    # rule['time_start'] = convert_to_datetime(rule['time_start'])
-    # rule['date_time_start'] = datetime.datetime.combine(
-    #     rule['date_start'], rule['time_start'].time()
-    #     )
-    # rule['end_date'] = convert_to_datetime(rule['end_date'])
-    # rule['active'] = 1
-    # rule['rule_id'] = str(uuid.uuid4())
     ongoing_rule_id = rule['rule_id']
 
     for days_to_add in range(0, _days + 1, rule['repeat_value']):
@@ -613,19 +563,6 @@ def deactivate_ongoing_rule():
 
     send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 0})
     return json.dumps({'status': 'OK'})
-
-
-@app.route("/get_timetable_list")
-def get_timetable_list():
-    """Blablbal."""
-    if 'days' in request.args:
-        days = int(request.args.get('days'))
-        return get_table_body_only(database.QUERY[mn() + '_1'].format(days))
-
-    if 'before' in request.args and 'after' in request.args:
-        before = int(request.args.get('before'))
-        after = int(request.args.get('after'))
-        return get_table_body_only(database.QUERY[mn() + '_2'].format(before, after))
 
 
 def form_responce_for_branches(payload):
