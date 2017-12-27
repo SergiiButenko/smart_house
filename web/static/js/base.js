@@ -44,13 +44,13 @@ $(document).ready(function() {
         $.ajax({
             url: '/weather',
             success: function(data) {
-                $("#temp").html(data['temperature']);
-                $("#hum").html(data['humidity']);
-                $("#rain").html(data['humidity']);
+                $("#temp").text(data['temperature']);
+                $("#hum").text(data['humidity']);
+                $("#rain").text(data['humidity']);
                 if (data['rain_status'] == 1) {
-                    $("#irrigation_status").html("Автоматичний полив дозволений");
+                    $("#irrigation_status").text("Автоматичний полив дозволений");
                 } else {
-                    $("#irrigation_status").html("Автоматичний полив заборонений");
+                    $("#irrigation_status").text("Автоматичний полив заборонений");
                 }
                 
 
