@@ -288,9 +288,9 @@ function toogle_card(element_id, branch) {
         now = new Date();
 
         if (daydiff(now, last_rule) == 0) {
-            last_rule = "сьогодні, о " + convert_date_to_time(last_rule);
+            last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA");
         } else if (daydiff(now, last_rule) == -1) {
-            last_rule = "вчора, о " + convert_date_to_time(last_rule);
+            last_rule = "вчора, о " + last_rule.toLocaleTimeString("uk-UA");
         } else {
             last_rule = last_rule.toLocaleTimeString("uk-UA", options);
         }
@@ -303,11 +303,11 @@ function toogle_card(element_id, branch) {
         next_rule = new Date(branch['next_rule']['timer'])
         now = new Date();
         if (daydiff(now, next_rule) == 0) {
-            next_rule = "сьогодні, о " + convert_date_to_time(next_rule);
+            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA");
         } else if (daydiff(now, next_rule) == 1) {
-            next_rule = "завтра, о " + convert_date_to_time(next_rule);
+            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA");
         } else if (daydiff(now, next_rule) == 2) {
-            next_rule = "післязавтра, о" + convert_date_to_time(next_rule);
+            next_rule = "післязавтра, о" + next_rule.toLocaleTimeString("uk-UA");
         } else {
             next_rule = next_rule.toLocaleTimeString("uk-UA", options);
         }
@@ -321,11 +321,11 @@ function toogle_card(element_id, branch) {
         next_rule = new Date(branch['next_rule']['timer'])
         now = new Date();
         if (daydiff(now, next_rule) == 0) {
-            next_rule = "сьогодні, о " + convert_date_to_time(next_rule);
+            next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA");
         } else if (daydiff(now, next_rule) == 1) {
-            next_rule = "завтра, о " + convert_date_to_time(next_rule);
+            next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA");
         } else if (daydiff(now, next_rule) == 2) {
-            next_rule = "післязавтра, о " + convert_date_to_time(next_rule);
+            next_rule = "післязавтра, о " + next_rule.toLocaleTimeString("uk-UA");
         } else {
             next_rule = next_rule.toLocaleTimeString("uk-UA", options);
         }
