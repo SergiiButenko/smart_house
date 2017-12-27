@@ -77,6 +77,14 @@ $(document).ready(function() {
                 active_true_false = $(this).find('.active_true_false');
                 $(active_true_false).prop("checked", $(active_true_false).data('value'));
 
+                $(this).find('#irrigation_minutes').addClass('disabled');
+                $(this).find('#irrigation_intervals').addClass('disabled');
+                $(this).find('#irrigation_time_wait').addClass('disabled');
+                $(this).find('#schedule_select').addClass('disabled');
+                $(this).find('.irrigation_date').addClass('disabled');
+                $(this).find('.irrigation_time').addClass('disabled');
+                $(this).find('#end_date').addClass('disabled');
+                
                 form_text($(this).find('.active_true_false'));
                 set_events();
             }
@@ -126,7 +134,7 @@ $(document).ready(function() {
         form_text($(this))
     });
     set_events();
-    
+
 });
 
 
@@ -182,7 +190,7 @@ function set_branch_defaults(index) {
 }
 
 
-function set_events(){
+function set_events() {
     $('#irrigation_intervals').on('input', function(e) {
         toogle_time_wait($(this).val());
     });
