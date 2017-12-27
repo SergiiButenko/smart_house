@@ -47,7 +47,7 @@ $(document).ready(function() {
                 $("#temp").html(data['temperature']);
                 $("#hum").html(data['humidity']);
                 $("#rain").html(data['humidity']);
-                if data['rain_status'] == 1 {
+                if (data['rain_status'] == 1) {
                     $("#irrigation_status").html("Автоматичний полив дозволений");
                 } else {
                     $("#irrigation_status").html("Автоматичний полив заборонений");
