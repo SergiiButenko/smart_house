@@ -193,17 +193,17 @@ function setDrawerPosition(position) {
 }
 
 function convert_date_to_time(date) {
-   if !(date instanceof Date) {
+   if (date instanceof Date == false) {
         date = new Date(date);
     }
-    
+
     hours = ("0" + (date.getHours())).slice(-2);
     minutest = ("0" + (date.getMinutes())).slice(-2);
     return hours + ":" + minutest;
 }
 
 function convert_date(date) {
-    if !(date instanceof Date) {
+    if (date instanceof Date == false) {
         date = new Date(date);
     }
     var day = ("0" + date.getDate()).slice(-2);
