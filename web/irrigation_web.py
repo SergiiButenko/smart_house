@@ -442,8 +442,6 @@ def update_rules_from_ongoing_rules(rule):
 def add_ongoing_rule():
     """Used in add rule modal window."""
     rule = request.json['rule']
-    logging.info("Income rule {0}".format(str(rule)))
-
     rule['line_id'] = int(rule['line_id'])
     rule['line_name'] = rule['line_name']
     rule['time'] = convert_to_datetime(rule['time'])

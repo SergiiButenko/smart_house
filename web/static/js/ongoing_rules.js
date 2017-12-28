@@ -191,15 +191,15 @@ function set_branch_defaults(index) {
 
 
 function set_events() {
-    $('#irrigation_intervals').on('input', function(e) {
+    $('#irrigation_intervals').off().on('input', function(e) {
         toogle_time_wait($(this).val());
     });
 
-    $('.form-text-control').on('input', function(e) {
+    $('.form-text-control').off().on('input', function(e) {
         form_text($(this));
     });
 
-    $('#branch_select').on('change', function(e) {
+    $('#branch_select').off().on('change', function(e) {
         var index = parseInt($(this).val());
         set_branch_defaults(index);
         form_text($(this));
@@ -214,7 +214,7 @@ function set_events() {
         $(modal).modal('show');
     });
 
-    $(".ongoing-rule-remove").click(function(e) {
+    $(".ongoing-rule-remove").off().click(function(e) {
         var returnVal = confirm("Видалити правило?");
         if (returnVal == false)
             return;
@@ -233,7 +233,7 @@ function set_events() {
     });
 
 
-    $('.active_true_false').change(function(e) {
+    $('.active_true_false').off().change(function(e) {
         var switcher = $(e.target);
 
         var old_value = !($(switcher).prop("checked"));
@@ -273,7 +273,7 @@ function set_events() {
     });
 
 
-    $('.add-ongoing-rule').on('click', function(e) {
+    $('.add-ongoing-rule').off().on('click', function(e) {
         var json = { 'rule': {} }
         var modal = $('#irrigate_modal');
 
@@ -318,7 +318,7 @@ function set_events() {
         });
     });
 
-    $('.ongoing-rule-save').on('click', function(e) {
+    $('.ongoing-rule-save').off().on('click', function(e) {
         var json = { 'rule': {} }
         var card = $(e.target).closest('.top')
 
@@ -369,7 +369,7 @@ function set_events() {
     });
 
 
-    $('.collapse').on('hidden.bs.collapse', function(e) {
+    $('.collapse').off().on('hidden.bs.collapse', function(e) {
         var card = $(e.target).closest('.top')
 
         $(card).find('.if-collapsed').show();
@@ -384,7 +384,7 @@ function set_events() {
     })
 
 
-    $(".ongoing-rule-edit").click(function(e) {
+    $(".ongoing-rule-edit").off().click(function(e) {
         var card = $(e.target).closest('.top')
         var collapse = $(card).find('#' + $(e.target).data('id'))
 
@@ -412,7 +412,7 @@ function set_events() {
         $(card).find('.show-flow').hide();
     });
 
-    $(".ongoing-rule-cancel").click(function(e) {
+    $(".ongoing-rule-cancel").off().click(function(e) {
         var card = $(e.target).closest('.top')
         var collapse = $(card).find('#' + $(e.target).data('id'))
 
