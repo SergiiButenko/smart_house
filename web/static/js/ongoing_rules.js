@@ -21,7 +21,7 @@ $(document).ready(function() {
                 $(this).find('#irrigation_time_wait').val(rule['time_wait']);
                 $(this).find('#schedule_select').val(rule['repeat_value']);
                 $(this).find('.irrigation_date').val(convert_date(rule['date_start']));
-                $(this).find('.irrigation_time').val(convert_date_to_time(rule['time_start']));
+                $(this).find('.irrigation_time').val(convert_date_to_time_utc(rule['time_start']));
                 $(this).find('#end_date').val(convert_date(rule['end_date']));
 
                 form_text($(this).find('#end_date'));
