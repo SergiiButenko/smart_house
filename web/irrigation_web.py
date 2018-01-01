@@ -14,6 +14,7 @@ import logging
 import uuid
 import pytemperature
 import time
+import copy
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
@@ -210,8 +211,25 @@ def power_outlets_settings():
 
 @app.route("/add_rule")
 def add_rule_page():
+    if 'add_to_date' in request.args:
+        days = int(request.args.get('add_to_date'))
+
+    branch_list = []
+    for item in BRANCHES_SETTINGS:
+        if item is not None and item['line_type'] == 'irrigation':
+            start_time = convert_to_datetime(item['start_time'])
+            branch_list.append({
+                'line_id': item['branch_id'],
+                'line_name': item['name'],
+                'default_time': item['time'],
+                'default_interval': item['intervals'],
+                'default_time_wait': item['time_wait'],
+                'start_time': ("%s:%s" % (start_time.hour, start_time.minute)),
+                'start_date': str(datetime.date.today() + datetime.timedelta(days=days))
+            })
+
     """Add rule page."""
-    return render_template('add_rule.html')
+    return render_template('add_rule.html', my_list=branch_list)
 
 
 @app.route("/history")

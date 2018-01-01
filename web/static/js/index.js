@@ -34,15 +34,6 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']),
                     'start_time': new Date(item['start_time'])
                 }
-
-                // for (var i = 1; i < branch.length; i++) {
-                //     if (branch[i] != undefined) {
-                //         $('#card-' + i).parent().css('display', 'inline-block');
-                //         $('#title-' + i).text(branch[i]['name']);
-                //     } else {
-                //         $('#card-' + i).parent().remove();
-                //     }
-                // }
             }
         }
     });
