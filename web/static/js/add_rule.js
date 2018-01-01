@@ -24,8 +24,11 @@ $(document).ready(function() {
                     'start_time': new Date(item['start_time'])
                 }
 
-                $(".dropdown-menu-card").append(
-                    "<button class=\"dropdown-item\" data-id=" + item['id'] + ">" + item['name'] + "</button>"
+                // $(".dropdown-menu-card").append(
+                //     "<button class=\"dropdown-item\" data-id=" + item['id'] + ">" + item['name'] + "</button>"
+                // );
+                $("#branch_select").append(
+                    "<option value=" + item['id'] + ">" + item['name'] + "</option>"
                 );
 
                 if (add_cards) {
@@ -42,7 +45,7 @@ $(document).ready(function() {
                     card = clone_card();
 
                     card.find('.card').data('id', item['id']);
-                    card.find("#dropdownMenu2").html('<span class="dropdown-label">' + branch[item['id']]['name'] + ' <span class="caret"></span>');
+                    card.find("#branch_select").val(item['id'])
                     card.find('.irrigation_minutes').val(default_time);
                     card.find('.irrigation_intervals').val(default_interval);
                     card.find('.irrigation_time').val(convert_date_to_time(default_time_start));
@@ -61,9 +64,61 @@ $(document).ready(function() {
                 clone_card();
             }
 
-            $(".dropdown-item").click(function() {
-                drop_down_click(this);
+
+            $('#branch_select').off().on('change', function(e) {
+                var index = parseInt($(this).val());
+                set_branch_defaults(index, $(this));
             });
+
+            function toogle_time_wait(val) {
+                var input = parseInt(val)
+                if (input <= 1 || isNaN(input)) {
+                    $('#irrigation_time_wait_group').hide();
+                } else {
+                    $('#irrigation_time_wait_group').show();
+                }
+            }
+
+            function set_branch_defaults(index, el) {
+                default_time = branch[id]['default_time']
+                default_interval = branch[id]['default_interval']
+                default_time_wait = branch[id]['default_time_wait']
+                default_time_start = branch[id]['start_time']
+
+                card = $(el).closest(".card")
+                card.data('id', id);
+                card.find('.irrigation_minutes').val(default_time);
+                card.find('.irrigation_intervals').val(default_interval);
+                console.log(card.find('.irrigation_time'))
+                card.find('.irrigation_time').val(convert_date_to_time(default_time_start));
+
+                group = card.find('#irrigation_time_wait_group')
+                if (default_interval <= 1 || isNaN(default_interval)) {
+                    group.hide();
+                } else {
+                    group.show();
+                }
+
+                card.find('.irrigation_time_wait').val(default_time_wait);
+
+                var name = branch[index]['name'];
+                var time = branch[index]['default_time'];
+                var interval = branch[index]['default_interval'];
+                var time_wait = branch[index]['default_time_wait'];
+                var default_time_start = branch[index]['start_time']
+
+
+                $('#irrigation_minutes').val(time);
+                $('#irrigation_intervals').val(interval);
+                $('#irrigation_time_wait').val(time_wait);
+                $('.irrigation_time').val(convert_date_to_time(default_time_start));
+
+                toogle_time_wait(index);
+            }
+
+            // $(".dropdown-item").click(function() {
+            //     drop_down_click(this);
+            // });
 
             $('.irrigation_intervals').on('input', function(e) {
                 var input = parseInt($(this).val());
@@ -84,6 +139,7 @@ $(document).ready(function() {
 
     });
 
+
     $("#add_rule_block").click(function() {
         clone_card();
     });
@@ -103,37 +159,6 @@ $(document).ready(function() {
         });
 
         return clone;
-    }
-
-
-    function drop_down_click(el) {
-        id = $(el).data('id')
-        
-        if(id == undefined)
-            return;
-
-        default_time = branch[id]['default_time']
-        default_interval = branch[id]['default_interval']
-        default_time_wait = branch[id]['default_time_wait']
-        default_time_start = branch[id]['start_time']
-
-        $(el).parents(".dropdown").find('.btn').html('<span class="dropdown-label">' + $(el).text() + '</span><span class="caret"></span>');
-
-        card = $(el).closest(".card")
-        card.data('id', id);
-        card.find('.irrigation_minutes').val(default_time);
-        card.find('.irrigation_intervals').val(default_interval);
-        console.log(card.find('.irrigation_time'))
-        card.find('.irrigation_time').val(convert_date_to_time(default_time_start));
-
-        group = card.find('#irrigation_time_wait_group')
-        if (default_interval <= 1 || isNaN(default_interval)) {
-            group.hide();
-        } else {
-            group.show();
-        }
-
-        card.find('.irrigation_time_wait').val(default_time_wait);
     }
 
     $("#go_plan").click(function() {
@@ -171,11 +196,11 @@ $(document).ready(function() {
             },
             success: function() {
                 $('#go_plan').removeClass("disabled");
-                 window.location.replace("/#");
+                window.location.replace("/#");
             },
             error: function() {
-               alert("error");
-               $('#go_plan').removeClass("disabled");
+                alert("error");
+                $('#go_plan').removeClass("disabled");
             }
         });
     });

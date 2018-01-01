@@ -4,14 +4,7 @@
         <div class="card">
             <div class="card-block">
                 <div class="card-title">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="dropdown-label">Виберіть що поливати</span>
-                            <span class="caret" style=""></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-card" aria-labelledby="dropdownMenu2">
-                        </div>
-                    </div>
+                    <select class="form-control form-text-control" id="branch_select" title="Виберіть гілку полива"></select>
                 </div>
                 <p class="card-text">
                     <div class="row">
@@ -58,10 +51,9 @@
 </div>
 {% endblock %}
 <!-- Custom styles for this template -->
-
 {% block container %}
 <div class="card-group">
-<div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
+    <div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
         <div class="card">
             <div class="card-block">
                 <button type="button" class="btn btn-secondary btn-block" id="add_rule_block">
@@ -71,13 +63,25 @@
         </div>
     </div>
 </div>
+
 <hr style="margin-top: 2rem; margin-bottom: 2rem" />
 <button type="button" class="btn btn-raised btn-block btn-primary" id="go_plan">
     Запланувати
 </button>
+<button type="button" class="btn btn-secondary btn-block" id="add_rule_block">
+    Додати ще одне одноразове правило
+</button>
 <button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/#'">
     Скасувати
-</button>
+</button></br>
+
+<h5>Додаткові дії</h5></br>
+<a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=0" role="button">
+                    Запланувати полив на сьогодні
+                </a>
+<a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=1" role="button">
+                    Запланувати полив на завтра
+                </a> 
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
 {% endblock %}

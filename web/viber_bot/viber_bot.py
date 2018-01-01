@@ -18,10 +18,12 @@ import sched
 import threading
 import json
 import re
+from helpers.common import *
 
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
+
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
@@ -33,15 +35,6 @@ viber = Api(BotConfiguration(
     avatar='http://viber.com/avatar.jpg',
     auth_token='46a517b9f870fcf1-799a9ca308bbd873-7745aee775fec7a7'
 ))
-
-
-USERS = [
-    {'name': 'Sergii', 'id': 'cHxBN+Zz1Ldd/60xd62U/w=='},
-    {'name': 'Oleg', 'id': 'IRYaSCRnmV1IT1ddtB8Bdw=='},
-    {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
-]
-
-BACKEND_IP = 'http://127.0.0.1:7542'
 
 
 def check_user_is_valid(user_id):
