@@ -216,7 +216,7 @@ def add_rule_page():
 
     branch_list = []
     for item in BRANCHES_SETTINGS:
-        if item is not None and item['line_type'] == 'irrigation':
+        if item is not None and item['line_type'] == 'irrigation' and item['name'] != 'Насос':
             start_time = convert_to_datetime(item['start_time'])
             branch_list.append({
                 'line_id': item['branch_id'],
