@@ -225,7 +225,7 @@ def add_rule_page():
                 'default_time': item['time'],
                 'default_interval': item['intervals'],
                 'default_time_wait': item['time_wait'],
-                'start_time': ("%s:%s" % (start_time.hour, start_time.minute)),
+                'start_time': ("%s:%s" % (start_time.strftime("%H"), start_time.strftime("%M"))),
                 'start_date': str(datetime.date.today() + datetime.timedelta(days=days))
             })
 
