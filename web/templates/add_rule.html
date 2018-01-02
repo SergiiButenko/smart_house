@@ -1,74 +1,56 @@
-{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}
-<div class="card_to_copy">
-    <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5" style="display:none">
-        <div class="card">
-            <div class="card-block">
-                <div class="card-title">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="dropdown-label">Виберіть що поливати</span>
-                            <span class="caret" style=""></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-card" aria-labelledby="dropdownMenu2">
-                        </div>
-                    </div>
-                </div>
-                <p class="card-text">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label>Дата</label>
-                                <input class="form-control irrigation_date" type="date">
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Час</label>
-                                <input type="time" class="form-control irrigation_time">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <div class="form-group" id="irrigation_minutes_group">
-                                <label>Тривалість</label>
-                                <input type="number" pattern="\d*" class="form-control irrigation_minutes" required>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="form-group" id="irrigation_intervals_group">
-                                <label>Повтори</label>
-                                <input type="number" pattern="\d*" class="form-control irrigation_intervals">
-                            </div>
-                        </div>
-                        <div class="col-xs-5">
-                            <div class="form-group" id="irrigation_time_wait_group" style="display:none">
-                                <label>Час між поливами</label>
-                                <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required>
-                            </div>
-                        </div>
-                    </div>
-                </p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-secondary remove_card">Видалити</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %}
 <!-- Custom styles for this template -->
-
 {% block container %}
-<div class="card-group">
-<div class="col-xs-6 col-sm-5 col-md-6 col-lg-5">
-        <div class="card">
-            <div class="card-block">
-                <button type="button" class="btn btn-secondary btn-block" id="add_rule_block">
-                    Додати ще
-                </button>
+<div id="card-holder">
+    <div class="row">
+        {% for n in my_list %}
+        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-block">
+                    <h4>{{n['line_name']}}</h4>
+                    <p class="card-text">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Дата</label>
+                                    <input class="form-control irrigation_date" type="date" value="{{n[' start_date ']}}">
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Час</label>
+                                    <input type="time" class="form-control irrigation_time" value="{{n[' start_time ']}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group" id="irrigation_minutes_group">
+                                    <label>Тривалість</label>
+                                    <input type="number" pattern="\d*" class="form-control irrigation_minutes" required value={{n[ 'time']}}>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group" id="irrigation_intervals_group">
+                                    <label>Повтори</label>
+                                    <input type="number" pattern="\d*" class="form-control irrigation_intervals" value={{n[ 'intervals']}}>
+                                </div>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="form-group" id="irrigation_time_wait_group" style="display:none">
+                                    <label>Час між поливами</label>
+                                    <input type="number" pattern="\d*" class="form-control irrigation_time_wait" required value={{n[ 'time_wait']}}>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-secondary remove_card">Видалити</a>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </div>
 <hr style="margin-top: 2rem; margin-bottom: 2rem" />
@@ -78,6 +60,13 @@
 <button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/#'">
     Скасувати
 </button>
-{% endblock %} {% block custom_scripts %}
+</br>
+<h5>Додаткові дії</h5></br>
+<a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=0" role="button">
+                    Запланувати полив на сьогодні...
+                </a>
+<a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=1" role="button">
+                    Запланувати полив на завтра...
+                </a> {% endblock %} {% block custom_scripts %}
 <script src="static/js/add_rule.js"></script>
 {% endblock %}

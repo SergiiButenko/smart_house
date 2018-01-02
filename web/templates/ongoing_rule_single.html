@@ -1,38 +1,38 @@
- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 top" data-id="{{rule['rule_id']}}">
+ <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 top" data-id="{{n['rule_id']}}">
     <div class='card card-rule'>
         <div class='card-block'>
             <div class='card-title'>
-                <h4 style='display: inline-block; float: left;' id='line_id' data-id={{rule[ 'line_id']}}>{{rule['line_name']}}</h4>
+                <h4 style='display: inline-block; float: left;' id='line_id' data-id={{n[ 'line_id']}}>{{n['line_name']}}</h4>
                 <div class='material-switch pull-right' style='display: inline-block; float: right;'>
-                    <input id='input_{{rule[ 'rule_id']}}' class='active_true_false' type='checkbox' data-value={{rule[ 'active']}} data-id='{{rule[ 'rule_id']}}' />
-                    <label for='input_{{rule[ 'rule_id']}}' class='label-primary'></label>
+                    <input id='input_{{n[ 'rule_id']}}' class='active_true_false' type='checkbox' data-value={{n[ 'active']}} data-id='{{n[ 'rule_id']}}' />
+                    <label for='input_{{n[ 'rule_id']}}' class='label-primary'></label>
                 </div>
             </div>
             <p class='card-text' style='display: inline-block;'>
                 <table>
-                    <tbody class='collapse' id='{{rule['rule_id']}}'>
+                    <tbody class='collapse' id='{{n['rule_id']}}'>
                         <tr>
                             <th>Тривалість:</th>
                             <td>
-                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_minutes' value={{rule[ 'time']}} required>
+                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_minutes' value={{n[ 'time']}} required>
                             </td>
                         </tr>
                         <tr>
                             <th>Повтори:</th>
                             <td>
-                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_intervals' value={{rule[ 'intervals']}} required>
+                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_intervals' value={{n[ 'intervals']}} required>
                             </td>
                         </tr>
                         <tr id='irrigation_time_wait_group'>
                             <th>Час між поливами:</th>
                             <td>
-                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_time_wait' value={{rule[ 'time_wait']}} required>
+                                <input type='number' pattern='\d*' class='form-control form-text-control disabled' id='irrigation_time_wait' value={{n[ 'time_wait']}} required>
                             </td>
                         </tr>
                         <tr>
                             <th>Повторюється:</th>
                             <td>
-                                <select class='form-control form-text-control disabled' id='schedule_select' data-value={{rule[ 'repeat_value']}}>
+                                <select class='form-control form-text-control disabled' id='schedule_select' data-value={{n[ 'repeat_value']}}>
                                     <option value=1 selected='selected' title='Кожен день'>Кожен день</option>
                                     <option value=2 title='Кожні 2 дня'>Кожні 2 дня</option>
                                     <option value=3 title='Кожні 3 дня'>Кожні 3 дня</option>
@@ -42,19 +42,19 @@
                         <tr tabindex='0'>
                             <th>Дата початку:</th>
                             <td>
-                                <input class='form-control irrigation_date form-text-control disabled' type='date' data-value='{{rule['date_time_start']}}'>
+                                <input class='form-control irrigation_date form-text-control disabled' type='date' data-value='{{n['date_time_start']}}'>
                             </td>
                         </tr>
                         <tr tabindex='0'>
                             <th>Час:</th>
                             <td>
-                                <input type='time' class='form-control irrigation_time form-text-control disabled' data-value='{{rule['date_time_start']}}'>
+                                <input type='time' class='form-control irrigation_time form-text-control disabled' data-value='{{n['date_time_start']}}'>
                             </td>
                         </tr>
                         <tr>
                             <th>Дата завершення:</th>
                             <td>
-                                <input class='form-control irrigation_end_date form-text-control disabled' type='date' id='end_date' data-value='{{rule['end_date']}}'>
+                                <input class='form-control irrigation_end_date form-text-control disabled' type='date' id='end_date' data-value='{{n['end_date']}}'>
                             </td>
                         </tr>
                     </tbody>
@@ -64,19 +64,19 @@
             </p>
         </div>
         <div class='card-footer'>
-            <button type='button' class='btn btn-danger ongoing-rule-remove edit-flow' data-id='{{rule['rule_id']}}'>
+            <button type='button' class='btn btn-danger ongoing-rule-remove edit-flow' data-id='{{n['rule_id']}}'>
                 Видалити
             </button>
-            <button type='button' class='btn btn-secondary ongoing-rule-cancel edit-flow' data-id='{{rule['rule_id']}}'>
+            <button type='button' class='btn btn-secondary ongoing-rule-cancel edit-flow' data-id='{{n['rule_id']}}'>
                 Скасувати зміни
             </button>
-            <button type='button' class='btn btn-primary ongoing-rule-save edit-flow' data-id='{{rule['rule_id']}}'>
+            <button type='button' class='btn btn-primary ongoing-rule-save edit-flow' data-id='{{n['rule_id']}}'>
                 Зберегти правило
             </button>
-            <button type='button' class='btn btn-secondary ongoing-rule-edit show-flow' data-id='{{rule['rule_id']}}'>
+            <button type='button' class='btn btn-secondary ongoing-rule-edit show-flow' data-id='{{n['rule_id']}}'>
                 Редагувати
             </button>
-            <button type='button' class='btn btn-primary show-flow' data-toggle='collapse' data-target='#{{rule['rule_id']}}' aria-expanded='false' aria-controls='{{rule['rule_id']}}'>
+            <button type='button' class='btn btn-primary show-flow' data-toggle='collapse' data-target='#{{n['rule_id']}}' aria-expanded='false' aria-controls='{{n['rule_id']}}'>
                 <span class='if-collapsed'>Деталі</span>
                 <span class='if-not-collapsed'>Приховати деталі</span>
             </button>
