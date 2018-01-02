@@ -218,6 +218,7 @@ def add_rule_page():
     for item in BRANCHES_SETTINGS:
         if item is not None and item['line_type'] == 'irrigation':
             start_time = convert_to_datetime(item['start_time'])
+            logging.info(start_time)
             branch_list.append({
                 'line_id': item['branch_id'],
                 'line_name': item['name'],
