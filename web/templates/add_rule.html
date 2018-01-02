@@ -13,13 +13,13 @@
                             <div class="col-xs-6">
                                 <div class="form-group">
                                     <label>Дата</label>
-                                    <input class="form-control irrigation_date" type="date" value="{{n[' start_date ']}}">
+                                    <input class="form-control irrigation_date" type="date" value="{{n['start_date']}}">
                                 </div>
                             </div>
                             <div class="col-xs-4">
                                 <div class="form-group">
                                     <label>Час</label>
-                                    <input type="time" class="form-control irrigation_time" value="{{n[' start_time ']}}">
+                                    <input type="time" class="form-control irrigation_time" value="{{n['start_time']}}">
                                 </div>
                             </div>
                         </div>
@@ -52,15 +52,16 @@
         </div>
         {% endfor %}
     </div>
-</div>
-<hr style="margin-top: 2rem; margin-bottom: 2rem" />
+</div></br>
+
 <button type="button" class="btn btn-raised btn-block btn-primary" id="go_plan">
     Запланувати
 </button>
 <button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/#'">
     Скасувати
 </button>
-</br>
+
+<hr style="margin-top: 2rem; margin-bottom: 2rem" />
 <h5>Додаткові дії</h5></br>
 <a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=0" role="button">
                     Запланувати полив на сьогодні...
