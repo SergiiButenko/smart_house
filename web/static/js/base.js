@@ -63,7 +63,7 @@ $(document).ready(function() {
 
 
         modal = $('#plann_modal');
-        date = $(modal).data('date') = new Date().toDateInputValue();
+        date = new Date().toDateInputValue();
         $(modal).find($('.irrigation_date')).val(date);
         modal.show();
     });
