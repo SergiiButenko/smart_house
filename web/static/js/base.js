@@ -10,33 +10,68 @@ $(document).ready(function() {
     //     $('.navbar-toggler').click();
     // });
 
-    $('#irrigate_tommorow').on('click', function() {
-        $('#confirm_modal-body').html("Почати полив завтра?");
-        $('#irrigate_modal').data('date', 1);
-        $('#confirm_modal').modal('show');
-    });
+    // $('#irrigate_tommorow').on('click', function() {
+    //     $('#confirm_modal-body').html("Почати полив завтра?");
+    //     $('#irrigate_modal').data('date', 1);
+    //     $('#confirm_modal').modal('show');
+    // });
 
-    $('#irrigate_today').on('click', function() {
-        $('#confirm_modal-body').html("Почати полив сьогодні?");
-        $('#irrigate_modal').data('date', 0);
-        $('#confirm_modal').modal('show');
-    });
+    // $('#irrigate_today').on('click', function() {
+    //     $('#confirm_modal-body').html("Почати полив сьогодні?");
+    //     $('#irrigate_modal').data('date', 0);
+    //     $('#confirm_modal').modal('show');
+    // });
 
-    $(".irrigate-all").on('click', function() {
-        data = $('#irrigate_modal').data('date');
+    // $(".irrigate-all").on('click', function() {
+    //     data = $('#irrigate_modal').data('date');
+    //     $.ajax({
+    //         url: '/irrigate_all',
+    //         type: "get",
+    //         data: {
+    //             'add_to_date': data
+    //         },
+    //         success: function(data) {
+    //             $('#confirm_modal').modal('hide');
+    //         },
+    //         error: function(data) {
+    //             $('#confirm_modal-body').html("Сталася помилка. Спробуйте ще раз");
+    //         }
+    //     });
+    // });
+
+    $("#add_rule").on('click', function() {
         $.ajax({
-            url: '/irrigate_all',
-            type: "get",
-            data: {
-                'add_to_date': data
-            },
+            url: '/branch_settings',
             success: function(data) {
-                $('#confirm_modal').modal('hide');
-            },
-            error: function(data) {
-                $('#confirm_modal-body').html("Сталася помилка. Спробуйте ще раз");
+                list = data['list']
+                for (j in list) {
+                    item = list[j]
+                    branch[item['id']] = {
+                        'name': item['name'],
+                        'default_time': parseInt(item['default_time']),
+                        'default_interval': parseInt(item['default_interval']),
+                        'default_time_wait': parseInt(item['default_time_wait']),
+                        'start_time': new Date(item['start_time'])
+                    }
+
+                    $("#branch_select_modal").append(
+                        "<option value=" + item['id'] + ">" + item['name'] + "</option>"
+                    );
+                }
             }
         });
+
+
+        modal = $('#plann_modal');
+        date = $(modal).data('date') = new Date().toDateInputValue();
+        $(modal).find($('.irrigation_date')).val(date);
+        modal.show();
+    });
+
+    $('#branch_select_modal').off().on('change', function(e) {
+        var index = parseInt($(this).val());
+        set_branch_defaults(index);
+        form_text($(this));
     });
 
     //Add arduino touch script to determine if connection is alive
@@ -52,7 +87,7 @@ $(document).ready(function() {
                 } else {
                     $("#irrigation_status").text("Автоматичний полив заборонений");
                 }
-                
+
 
                 setTimeout(update_weather, 60 * 1000 * 30);
             }
@@ -162,7 +197,7 @@ function setDrawerPosition(position) {
 }
 
 function convert_date_to_time(date) {
-   if (date instanceof Date == false) {
+    if (date instanceof Date == false) {
         date = new Date(date);
     }
 
@@ -175,7 +210,7 @@ function convert_date_to_time(date) {
 
 
 function convert_date_to_time_utc(date) {
-   if (date instanceof Date == false) {
+    if (date instanceof Date == false) {
         date = new Date(date);
     }
 
@@ -191,7 +226,7 @@ function convert_date(date) {
         date = new Date(date);
     }
     // var date = convertDateToUTC(date);
-    
+
     var day = ("0" + date.getDate()).slice(-2);
     var month = ("0" + (date.getMonth() + 1)).slice(-2);
 
@@ -228,12 +263,37 @@ function daydiff(first, second) {
     return Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24));
 }
 
-function convertDateToUTC(date) { 
+function convertDateToUTC(date) {
     return new Date(
-        date.getUTCFullYear(), 
-        date.getUTCMonth(), 
-        date.getUTCDate(), 
-        date.getUTCHours(), 
-        date.getUTCMinutes(), 
-        date.getUTCSeconds()); 
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds());
+}
+
+function toogle_time_wait(val) {
+    var input = parseInt(val)
+    if (input <= 1 || isNaN(input)) {
+        $('#irrigation_time_wait_group').hide();
+    } else {
+        $('#irrigation_time_wait_group').show();
+    }
+}
+
+function set_branch_defaults(index) {
+    var name = branch[index]['name'];
+    var time = branch[index]['default_time'];
+    var interval = branch[index]['default_interval'];
+    var time_wait = branch[index]['default_time_wait'];
+    var default_time_start = branch[index]['start_time']
+
+
+    $('#irrigation_minutes').val(time);
+    $('#irrigation_intervals').val(interval);
+    $('#irrigation_time_wait').val(time_wait);
+    $('.irrigation_time').val(convert_date_to_time(default_time_start));
+
+    toogle_time_wait(index);
 }
