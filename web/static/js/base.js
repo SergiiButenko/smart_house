@@ -71,7 +71,6 @@ $(document).ready(function() {
     $('#branch_select_modal').off().on('change', function(e) {
         var index = parseInt($(this).val());
         set_branch_defaults(index);
-        form_text($(this));
     });
 
     //Add arduino touch script to determine if connection is alive
