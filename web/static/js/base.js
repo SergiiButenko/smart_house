@@ -65,7 +65,7 @@ $(document).ready(function() {
         modal = $('#plann_modal');
         date = convert_date(new Date());
         $(modal).find($('.irrigation_date')).val(date);
-        $(modal).show();
+        $(modal).modal("show");
     });
 
     $('#branch_select_modal').off().on('change', function(e) {
