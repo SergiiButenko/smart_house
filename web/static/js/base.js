@@ -294,5 +294,5 @@ function set_branch_defaults(index) {
     $('#irrigation_time_wait').val(time_wait);
     $('.irrigation_time').val(convert_date_to_time(default_time_start));
 
-    toogle_time_wait(index);
+    toogle_time_wait(interval);
 }
