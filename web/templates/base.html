@@ -19,7 +19,8 @@
 </head>
 
 <body>
-    <div id="plann_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="plann_modal-label" aria-hidden="true" data-id='0'>
+    {% block modals %}{% endblock %}
+    <div id="plann_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="plann_modal-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -78,7 +79,6 @@
             <!-- /.modal-dialog -->
         </div>
     </div>
-    {% block modals %}{% endblock %}
     <!-- Small modal -->
     <div class="bmd-layout-container bmd-drawer-f-l bmd-drawer-overlay-md-down bmd-drawer-in-lg-up">
         <header class="bmd-layout-header">
