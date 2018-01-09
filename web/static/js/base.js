@@ -74,11 +74,14 @@ $(document).ready(function() {
         set_branch_defaults(index, modal);
     });
 
-    $('#irrigation_intervals').each(function(e) {
-        $(this).off().on('input', function(e) {
-            console.log("here")
-            toogle_time_wait($(this).val());
-        })
+$('#irrigation_intervals').on('input', function(e) {
+    console.log("here");
+        var input = parseInt($(this).val());
+        if (input <= 1 || isNaN(input)) {
+            $('#irrigation_time_wait_group').hide();
+        } else {
+            $('#irrigation_time_wait_group').css('display', 'inline-block');
+        }
     });
 
     //Add arduino touch script to determine if connection is alive
