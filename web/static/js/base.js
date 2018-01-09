@@ -74,13 +74,13 @@ $(document).ready(function() {
         set_branch_defaults(index, modal);
     });
 
-$('#irrigation_intervals').on('input', function(e) {
-    console.log("here");
+    $('#irrigation_intervals_modal').on('input', function(e) {
+        modal = $('#plann_modal');
         var input = parseInt($(this).val());
         if (input <= 1 || isNaN(input)) {
-            $('#irrigation_time_wait_group').hide();
+            $(modal).find('#irrigation_time_wait_group').hide();
         } else {
-            $('#irrigation_time_wait_group').css('display', 'inline-block');
+            $(modal).find('#irrigation_time_wait_group').css('display', 'inline-block');
         }
     });
 
