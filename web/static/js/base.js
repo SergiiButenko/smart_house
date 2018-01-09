@@ -284,9 +284,9 @@ function toogle_time_wait(val, modal) {
         }
     } else {
         if (input <= 1 || isNaN(input)) {
-            $(modal).find($('#irrigation_time_wait_group')).hide();
+            $(modal).find('#irrigation_time_wait_group').hide();
         } else {
-            $(modal).find($('#irrigation_time_wait_group')).show();
+            $(modal).find('#irrigation_time_wait_group').show();
         }
     }
 }
@@ -299,10 +299,10 @@ function set_branch_defaults(index, modal) {
     var default_time_start = branch[index]['start_time']
 
     if (modal != undefined) {
-        $(modal).find($('#irrigation_minutes')).val(time);
-        $(modal).find($('#irrigation_intervals')).val(interval);
-        $(modal).find($('#irrigation_time_wait')).val(time_wait);
-        $(modal).find($('.irrigation_time')).val(convert_date_to_time(default_time_start));
+        $(modal).find('#irrigation_minutes').val(time);
+        $(modal).find('#irrigation_intervals').val(interval);
+        $(modal).find('#irrigation_time_wait').val(time_wait);
+        $(modal).find('.irrigation_time').val(convert_date_to_time(default_time_start));
     } else {
         $('#irrigation_minutes').val(time);
         $('#irrigation_intervals').val(interval);
