@@ -309,10 +309,10 @@ function set_branch_defaults(index, modal) {
     var default_time_start = branch[index]['start_time']
 
     if (modal != undefined) {
-        $(modal).find('#irrigation_minutes').val(time);
-        $(modal).find('#irrigation_intervals').val(interval);
-        $(modal).find('#irrigation_time_wait').val(time_wait);
-        $(modal).find('.irrigation_time').val(convert_date_to_time(default_time_start));
+        $(modal).find('#irrigation_minutes_plann_modal').val(time);
+        $(modal).find('#irrigation_intervals_plann_modal').val(interval);
+        $(modal).find('#irrigation_time_wait_plann_modal').val(time_wait);
+        $(modal).find('.irrigation_time_plann_modal').val(convert_date_to_time(default_time_start));
     } else {
         $('#irrigation_minutes').val(time);
         $('#irrigation_intervals').val(interval);
