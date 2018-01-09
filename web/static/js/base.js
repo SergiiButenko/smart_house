@@ -69,8 +69,9 @@ $(document).ready(function() {
     });
 
     $('#branch_select_modal').off().on('change', function(e) {
+        modal = $('#plann_modal');
         var index = parseInt($(this).val());
-        set_branch_defaults(index);
+        set_branch_defaults(index, modal);
     });
 
     //Add arduino touch script to determine if connection is alive
@@ -272,27 +273,42 @@ function convertDateToUTC(date) {
         date.getUTCSeconds());
 }
 
-function toogle_time_wait(val) {
+function toogle_time_wait(val, modal) {
     var input = parseInt(val)
-    if (input <= 1 || isNaN(input)) {
-        $('#irrigation_time_wait_group').hide();
+
+    if (modal == undefined) {
+        if (input <= 1 || isNaN(input)) {
+            $('#irrigation_time_wait_group').hide();
+        } else {
+            $('#irrigation_time_wait_group').show();
+        }
     } else {
-        $('#irrigation_time_wait_group').show();
+        if (input <= 1 || isNaN(input)) {
+            $(modal).find($('#irrigation_time_wait_group')).hide();
+        } else {
+            $(modal).find($('#irrigation_time_wait_group')).show();
+        }
     }
 }
 
-function set_branch_defaults(index) {
+function set_branch_defaults(index, modal) {
     var name = branch[index]['name'];
     var time = branch[index]['default_time'];
     var interval = branch[index]['default_interval'];
     var time_wait = branch[index]['default_time_wait'];
     var default_time_start = branch[index]['start_time']
 
+    if (modal != undefined) {
+        $(modal).find($('#irrigation_minutes')).val(time);
+        $(modal).find($('#irrigation_intervals')).val(interval);
+        $(modal).find($('#irrigation_time_wait')).val(time_wait);
+        $(modal).find($('.irrigation_time')).val(convert_date_to_time(default_time_start));
+    } else {
+        $('#irrigation_minutes').val(time);
+        $('#irrigation_intervals').val(interval);
+        $('#irrigation_time_wait').val(time_wait);
+        $('.irrigation_time').val(convert_date_to_time(default_time_start));
+    }
 
-    $('#irrigation_minutes').val(time);
-    $('#irrigation_intervals').val(interval);
-    $('#irrigation_time_wait').val(time_wait);
-    $('.irrigation_time').val(convert_date_to_time(default_time_start));
-
-    toogle_time_wait(interval);
+    toogle_time_wait(interval, modal);
 }
