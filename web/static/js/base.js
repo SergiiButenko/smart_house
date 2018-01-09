@@ -63,7 +63,7 @@ $(document).ready(function() {
                 var date = convert_date(new Date());
                 $(modal).find($('.irrigation_date_plann_modal')).val(date);
                 var index = parseInt($("#branch_select_plann_modal option:selected").val());
-                concole.log(index)
+                console.log(index)
                 set_branch_defaults(index, modal);
 
                 $('#plann_modal').modal("show");
