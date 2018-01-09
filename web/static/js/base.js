@@ -54,7 +54,7 @@ $(document).ready(function() {
                         'start_time': new Date(item['start_time'])
                     }
 
-                    $("#branch_select_modal").append(
+                    $("#branch_select_plann_modal").append(
                         "<option value=" + item['id'] + ">" + item['name'] + "</option>"
                     );
                 }
@@ -64,17 +64,17 @@ $(document).ready(function() {
 
         modal = $('#plann_modal');
         date = convert_date(new Date());
-        $(modal).find($('.irrigation_date')).val(date);
+        $(modal).find($('.irrigation_date_plann_modal')).val(date);
         $('#plann_modal').modal("show");
     });
 
-    $('#branch_select_modal').off().on('change', function(e) {
+    $('#branch_select_plann_modal').off().on('change', function(e) {
         modal = $('#plann_modal');
         var index = parseInt($(this).val());
         set_branch_defaults(index, modal);
     });
 
-    $('#irrigation_intervals_modal').on('input', function(e) {
+    $('#irrigation_intervals_plann_modal').on('input', function(e) {
         modal = $('#plann_modal');
         var input = parseInt($(this).val());
         if (input <= 1 || isNaN(input)) {
