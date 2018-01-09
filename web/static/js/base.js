@@ -74,9 +74,11 @@ $(document).ready(function() {
         set_branch_defaults(index, modal);
     });
 
-    $('#irrigation_intervals').off().on('input', function(e) {
-        console.log("here")
-        toogle_time_wait($(this).val());
+    $('#irrigation_intervals').each(function(e) {
+        #(this).off().on('input', function(e) {
+            console.log("here")
+            toogle_time_wait($(this).val());
+        })
     });
 
     //Add arduino touch script to determine if connection is alive
