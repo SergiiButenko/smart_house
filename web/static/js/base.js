@@ -75,7 +75,7 @@ $(document).ready(function() {
     });
 
     $('#irrigation_intervals').each(function(e) {
-        #(this).off().on('input', function(e) {
+        $(this).off().on('input', function(e) {
             console.log("here")
             toogle_time_wait($(this).val());
         })
