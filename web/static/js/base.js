@@ -74,7 +74,7 @@ $(document).ready(function() {
         set_branch_defaults(index, modal);
     });
 
-     $('#irrigation_intervals_modal').off().on('input', function(e) {
+     $('#irrigation_intervals').off().on('input', function(e) {
         toogle_time_wait($(this).val());
     });
 
