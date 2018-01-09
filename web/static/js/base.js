@@ -62,9 +62,12 @@ $(document).ready(function() {
         });
 
 
-        modal = $('#plann_modal');
-        date = convert_date(new Date());
+        var modal = $('#plann_modal');
+        var date = convert_date(new Date());
         $(modal).find($('.irrigation_date_plann_modal')).val(date);
+        var index = parseInt($("#branch_select_plann_modal option:selected").val());
+        set_branch_defaults(index, modal);
+
         $('#plann_modal').modal("show");
     });
 
