@@ -4,41 +4,6 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
-    // $("#my-drawer .list-group-item").click(function() {
-    //     // $(this).parent().children().removeClass("active");
-    //     // $(this).addClass("active");
-    //     $('.navbar-toggler').click();
-    // });
-
-    // $('#irrigate_tommorow').on('click', function() {
-    //     $('#confirm_modal-body').html("Почати полив завтра?");
-    //     $('#irrigate_modal').data('date', 1);
-    //     $('#confirm_modal').modal('show');
-    // });
-
-    // $('#irrigate_today').on('click', function() {
-    //     $('#confirm_modal-body').html("Почати полив сьогодні?");
-    //     $('#irrigate_modal').data('date', 0);
-    //     $('#confirm_modal').modal('show');
-    // });
-
-    // $(".irrigate-all").on('click', function() {
-    //     data = $('#irrigate_modal').data('date');
-    //     $.ajax({
-    //         url: '/irrigate_all',
-    //         type: "get",
-    //         data: {
-    //             'add_to_date': data
-    //         },
-    //         success: function(data) {
-    //             $('#confirm_modal').modal('hide');
-    //         },
-    //         error: function(data) {
-    //             $('#confirm_modal-body').html("Сталася помилка. Спробуйте ще раз");
-    //         }
-    //     });
-    // });
-
     $("#add_rule").on('click', function() {
         $.ajax({
             url: '/branch_settings',
