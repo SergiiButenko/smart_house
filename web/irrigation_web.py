@@ -401,7 +401,7 @@ def ongoing_rules():
             'date_time_start': str(date_time_start),
             'end_date': str(end_date),
             'active': active,
-            'name': name})
+            'line_name': name})
     template = render_template('ongoing_rules.html', my_list=rows)
     return template
 
