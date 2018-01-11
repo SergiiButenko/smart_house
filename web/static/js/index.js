@@ -283,7 +283,7 @@ function toogle_card(element_id, branch) {
 
     if (branch['last_rule']) {
         last_rule = new Date(branch['last_rule']['timer'])
-        now = convertDateToUTC();
+        now = convertDateToUTC(new Date());
 
         if (daydiff(now, last_rule) == 0) {
             last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
