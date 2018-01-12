@@ -290,15 +290,15 @@ def add_rule():
         now = datetime.datetime.now()
         stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-        update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-        update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+        database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+        database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
         # first interval is executed
         for x in range(2, num_of_intervals + 1):
             start_time = stop_time + datetime.timedelta(minutes=time_wait)
             stop_time = start_time + datetime.timedelta(minutes=time_min)
-            update_db_request(QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-            update_db_request(QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+            database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+            database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
