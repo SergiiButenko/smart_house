@@ -9,7 +9,7 @@ $(document).ready(function() {
             url: '/branch_settings',
             success: function(data) {
                 list = data['list']
-                $("#branch_select_plann_modal").empty();
+                $("#branch_select_plann_modal").find('option').remove();
 
                 for (j in list) {
                     item = list[j]
