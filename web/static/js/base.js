@@ -55,7 +55,7 @@ $(document).ready(function() {
 
     $(".plan").click(function() {
         var json = { 'list': {} }
-        var card = $(this).closest(".card")
+        var card = $(this).closest("#plann_modal")
 
         branch_id = card.data('branch_id');
         time = card.find('.irrigation_minutes').val();
