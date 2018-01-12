@@ -95,22 +95,24 @@
         {% endfor %}
         <div id='last_card'></div>
     </div>
-</div>
+</div></br>
+
+<button type="button" class="btn btn-raised btn-block btn-primary btn-open-modal">
+    Додати постійне правило
+</button>
+
 <hr style="margin-top: 2rem; margin-bottom: 2rem" />
 
 <h5>Додаткові дії</h5>
 </br>
-<button type="button" class="btn btn-raised btn-block btn-primary btn-open-modal">
-    Додати постійне правило
-</button>
 <a class="btn btn-raised btn-block btn-secondary add_rule" role="button">
                     Додати одноразове правило
                 </a>
 <a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=0" role="button">
-                    Запланувати полив на сьогодні
+                    Запланувати полив на сьогодні...
                 </a>
 <a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=1" role="button">
-                    Запланувати полив на завтра
+                    Запланувати полив на завтра...
                 </a> 
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/ongoing_rules.js"></script>
