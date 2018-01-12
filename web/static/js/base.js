@@ -9,6 +9,8 @@ $(document).ready(function() {
             url: '/branch_settings',
             success: function(data) {
                 list = data['list']
+                $("#branch_select_plann_modal").empty();
+
                 for (j in list) {
                     item = list[j]
                     branch[item['id']] = {
@@ -19,7 +21,7 @@ $(document).ready(function() {
                         'start_time': new Date(item['start_time'])
                     }
 
-                    $("#branch_select_plann_modal").empty().append(
+                    $("#branch_select_plann_modal").append(
                         "<option value=" + item['id'] + ">" + item['name'] + "</option>"
                     );
                 }
