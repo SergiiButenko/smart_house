@@ -65,44 +65,4 @@ $(document).ready(function() {
             }
         });
     });
-
-    $(".plan").click(function() {
-        var json = { 'list': {} }
-        var card = $(this).closest(".card")
-
-        branch_id = card.data('branch_id');
-        time = card.find('.irrigation_minutes').val();
-        interval = card.find('.irrigation_intervals').val();
-        time_wait = card.find('.irrigation_time_wait').val();
-        date_start = card.find('.irrigation_date').val();
-        time_start = card.find('.irrigation_time').val();
-        json.list[branch_id] = {
-            "branch_id": branch_id,
-            "time": time,
-            "interval": interval,
-            "time_wait": time_wait,
-            "datetime_start": date_start + " " + time_start
-        }
-
-        console.log(json)
-
-        // $.ajax({
-        //     url: '/add_rule',
-        //     type: "post",
-        //     data: JSON.stringify(json),
-        //     contentType: "application/json; charset=utf-8",
-        //     dataType: "json",
-        //     beforeSend: function(xhr, opts) {
-        //         $('#go_plan').addClass("disabled");
-        //     },
-        //     success: function() {
-        //         $('#go_plan').removeClass("disabled");
-        //         window.location.replace("/#");
-        //     },
-        //     error: function() {
-        //         alert("error");
-        //         $('#go_plan').removeClass("disabled");
-        //     }
-        // });
-    });
 });
