@@ -19,7 +19,7 @@ $(document).ready(function() {
                         'start_time': new Date(item['start_time'])
                     }
 
-                    $("#branch_select_plann_modal").append(
+                    $("#branch_select_plann_modal")..empty().append(
                         "<option value=" + item['id'] + ">" + item['name'] + "</option>"
                     );
                 }
