@@ -144,7 +144,6 @@ function set_status_ok() {
     $(".btn-open-modal").show();
 
     $(".alert").alert('close')
-
 }
 
 function set_status_spinner() {
@@ -154,10 +153,7 @@ function set_status_spinner() {
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
     $(".stop-irrigation").addClass('disabled');
-
 }
-
-
 
 // Comming from template
 function clearDrawerClasses($container) {
