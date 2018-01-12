@@ -55,14 +55,14 @@ $(document).ready(function() {
 
     $(".plan").click(function() {
         var json = { 'list': {} }
-        var card = $(this).closest("#plann_modal")
-
-        branch_id = card.data('branch_id');
-        time = card.find('.irrigation_minutes').val();
-        interval = card.find('.irrigation_intervals').val();
-        time_wait = card.find('.irrigation_time_wait').val();
-        date_start = card.find('.irrigation_date').val();
-        time_start = card.find('.irrigation_time').val();
+        var modal = $(this).closest("#plann_modal")
+        
+        branch_id = $(modal).find('#branch_select_plann_modal option:selected').val();
+        time = $(modal).find('#irrigation_minutes_plann_modal').val();
+        interval = $(modal).find('#irrigation_intervals_plann_modal').val();
+        time_wait = $(modal).find('#irrigation_time_wait_plann_modal').val();
+        date_start = $(modal).find('.irrigation_date_plann_modal').val();
+        time_start = $(modal).find('.irrigation_time_plann_modal').val();
         json.list[branch_id] = {
             "branch_id": branch_id,
             "time": time,
