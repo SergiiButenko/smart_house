@@ -4,7 +4,7 @@ var arduino_check_broken_connect_sec = 60;
 var branch = [];
 
 $(document).ready(function() {
-    $("#add_rule").on('click', function() {
+    $(".add_rule").on('click', function() {
         $.ajax({
             url: '/branch_settings',
             success: function(data) {
