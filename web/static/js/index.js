@@ -20,7 +20,6 @@ $(document).ready(function() {
     });
 
 
-    //Rename branches
     $.ajax({
         url: '/branch_settings',
         success: function(data) {
@@ -281,9 +280,9 @@ function toogle_card(element_id, branch) {
         timeZone: 'UTC'
     };
 
+    now = convertDateToUTC(new Date());
     if (branch['last_rule']) {
         last_rule = new Date(branch['last_rule']['timer'])
-        now = convertDateToUTC(new Date());
 
         if (daydiff(now, last_rule) == 0) {
             last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
@@ -299,7 +298,7 @@ function toogle_card(element_id, branch) {
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule = new Date(branch['next_rule']['timer'])
-        now = new Date();
+
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
@@ -317,7 +316,7 @@ function toogle_card(element_id, branch) {
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule = new Date(branch['next_rule']['timer'])
-        now = new Date();
+
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {

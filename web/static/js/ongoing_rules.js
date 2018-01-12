@@ -58,10 +58,6 @@ $(document).ready(function() {
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
 
-                // $(this).find('#irrigation_minutes').val(rule['time']);
-                // $(this).find('#irrigation_intervals').val(rule['intervals']);
-                // $(this).find('#irrigation_time_wait').val(rule['time_wait']);
-
                 schedule_select = $(this).find('#schedule_select');
                 $(schedule_select).val($(schedule_select).data('value'));
 
