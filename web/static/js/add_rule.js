@@ -31,10 +31,6 @@ $(document).ready(function() {
         json = { 'list': {} }
 
         $(".card").each(function() {
-            if ($(this).data('branch_id') == undefined || $(this).data('branch_id') == 0) {
-                return;
-            }
-
             branch_id = $(this).data('branch_id');
             time = $(this).find('.irrigation_minutes').val();
             interval = $(this).find('.irrigation_intervals').val();
@@ -49,7 +45,6 @@ $(document).ready(function() {
                 "datetime_start": date_start + " " + time_start
             }
         });
-        console.log(json);
 
         $.ajax({
             url: '/add_rule',
