@@ -3,8 +3,8 @@ var branch = [];
 
 $(document).ready(function() {
     $(".card").each(function() {
-        group = $(this).find('#irrigation_time_wait_group')
-        interval = $(this).find('.irrigation_intervals').val();
+        var group = $(this).find('#irrigation_time_wait_group')
+        var interval = $(this).find('.irrigation_intervals').val();
         if (interval <= 1 || isNaN(interval)) {
             group.hide();
         } else {
@@ -14,8 +14,8 @@ $(document).ready(function() {
 
     $('.irrigation_intervals').on('input', function(e) {
         var input = parseInt($(this).val());
-        card = $(this).closest(".card")
-        group = card.find('#irrigation_time_wait_group')
+        var card = $(this).closest(".card")
+        var group = card.find('#irrigation_time_wait_group')
         if (input <= 1 || isNaN(input)) {
             group.hide();
         } else {
@@ -28,7 +28,7 @@ $(document).ready(function() {
     });
 
     $("#go_plan").click(function() {
-        json = { 'list': {} }
+        var json = { 'list': {} }
 
         $(".card").each(function() {
             branch_id = $(this).data('branch_id');
@@ -64,5 +64,45 @@ $(document).ready(function() {
                 $('#go_plan').removeClass("disabled");
             }
         });
+    });
+
+    $(".plan").click(function() {
+        var json = { 'list': {} }
+        var card = $(this).closest(".card")
+
+        branch_id = card.data('branch_id');
+        time = card.find('.irrigation_minutes').val();
+        interval = card.find('.irrigation_intervals').val();
+        time_wait = card.find('.irrigation_time_wait').val();
+        date_start = card.find('.irrigation_date').val();
+        time_start = card.find('.irrigation_time').val();
+        json.list[branch_id] = {
+            "branch_id": branch_id,
+            "time": time,
+            "interval": interval,
+            "time_wait": time_wait,
+            "datetime_start": date_start + " " + time_start
+        }
+
+        console.log(json)
+
+        // $.ajax({
+        //     url: '/add_rule',
+        //     type: "post",
+        //     data: JSON.stringify(json),
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: "json",
+        //     beforeSend: function(xhr, opts) {
+        //         $('#go_plan').addClass("disabled");
+        //     },
+        //     success: function() {
+        //         $('#go_plan').removeClass("disabled");
+        //         window.location.replace("/#");
+        //     },
+        //     error: function() {
+        //         alert("error");
+        //         $('#go_plan').removeClass("disabled");
+        //     }
+        // });
     });
 });
