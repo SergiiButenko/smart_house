@@ -45,24 +45,25 @@ $(document).ready(function() {
                 "datetime_start": date_start + " " + time_start
             }
         });
+        console.log(json);
 
-        $.ajax({
-            url: '/add_rule',
-            type: "post",
-            data: JSON.stringify(json),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            beforeSend: function(xhr, opts) {
-                $('#go_plan').addClass("disabled");
-            },
-            success: function() {
-                $('#go_plan').removeClass("disabled");
-                window.location.replace("/#");
-            },
-            error: function() {
-                alert("error");
-                $('#go_plan').removeClass("disabled");
-            }
-        });
+        // $.ajax({
+        //     url: '/add_rule',
+        //     type: "post",
+        //     data: JSON.stringify(json),
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: "json",
+        //     beforeSend: function(xhr, opts) {
+        //         $('#go_plan').addClass("disabled");
+        //     },
+        //     success: function() {
+        //         $('#go_plan').removeClass("disabled");
+        //         window.location.replace("/#");
+        //     },
+        //     error: function() {
+        //         alert("error");
+        //         $('#go_plan').removeClass("disabled");
+        //     }
+        // });
     });
 });
