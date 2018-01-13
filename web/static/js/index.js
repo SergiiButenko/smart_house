@@ -161,10 +161,11 @@ $(document).ready(function() {
             success: function(data) {
                 console.log('Line ' + branch[index]['name'] + ' wont be started');
                 update_branches(data);
+                set_status_ok();
             },
             error: function() {
                 console.error("Can't cancel next rule for " + branch[index]['name']);
-                toogle_card(index, 0);
+                set_status_ok();
             }
         });
     });

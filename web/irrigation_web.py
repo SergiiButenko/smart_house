@@ -302,6 +302,15 @@ def add_rule():
             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
     update_all_rules()
+
+    try:
+        response_status = garden_controller.branch_status()
+
+        arr = form_responce_for_branches(response_status)
+        send_branch_status_message('branch_status', arr)
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't send updated rules. Exception occured")
     return json.dumps({'status': 'OK'})
 
 
