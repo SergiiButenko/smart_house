@@ -281,7 +281,7 @@ function toogle_card(element_id, branch) {
     };
 
     var now = convertDateToUTC(new Date());
-    console.log(branch['user_friendly_name'])
+    console.log(branch[element_id])
     console.log(now);
 
     if (branch['last_rule']) {
