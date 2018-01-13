@@ -137,7 +137,7 @@ QUERY['temperature_2'] = (
 
 QUERY['get_settings'] = "SELECT number, name, time, intervals, time_wait, start_time, line_type, base_url, pump_enabled FROM lines ORDER BY number"
 
-QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 AND interval_id={0}"
+QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 AND interval_id='{0}'"
 
 QUERY['rissing'] = "INSERT INTO rain (volume) VALUES ({0})"
 
