@@ -158,8 +158,7 @@ $(document).ready(function() {
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
             },
-            success: function(data) {                
-                update_branches(data);
+            success: function(data) {                                
                 set_status_ok();
             },
             error: function() {
