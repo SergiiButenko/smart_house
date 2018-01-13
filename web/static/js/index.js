@@ -282,10 +282,11 @@ function toogle_card(element_id, branch) {
 
     var now = convertDateToUTC(new Date());
     console.log(now);
-    console.log(daydiff(now, last_rule));
+
     if (branch['last_rule']) {
         last_rule = new Date(branch['last_rule']['timer'])
         console.log(last_rule);
+        console.log(daydiff(now, last_rule));
         if (daydiff(now, last_rule) == 0) {
             last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, last_rule) == -1) {
