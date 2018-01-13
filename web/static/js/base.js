@@ -78,15 +78,15 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function(xhr, opts) {
-                $('#go_plan').addClass("disabled");
+                set_status_spinner();
             },
             success: function() {
-                $('#go_plan').removeClass("disabled");
-                window.location.replace("/#");
+                set_status_ok();
+                $('#plann_modal').modal('hide');
             },
             error: function() {
                 alert("error");
-                $('#go_plan').removeClass("disabled");
+                set_status_ok();
             }
         });
     });
@@ -180,8 +180,7 @@ function set_status_ok() {
 
     $(".status-span").hide();
     $(".btn-open-modal").show();
-
-    $(".alert").alert('close')
+    $(".btn-modal").removeClass('disabled');
 }
 
 function set_status_spinner() {
@@ -191,6 +190,7 @@ function set_status_spinner() {
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
     $(".stop-irrigation").addClass('disabled');
+    $(".btn-modal").addClass('disabled');
 }
 
 // Comming from template
