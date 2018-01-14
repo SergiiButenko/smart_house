@@ -90,21 +90,20 @@
 {% block container %}
 <div id="card-holder">
     <div class="row">
-        {% for n in my_list %} {% include "ongoing_rule_single.html" with context %} {% endfor %}
+        {% for n in my_list %}
+        {% include "ongoing_rule_single.html" with context %}
+        {% endfor %}
         <div id='last_card'></div>
-        <div class="card text-center mx-auto" id='no_card' style="display: none">
-            <div class="card-block">
-                <h6>Всi правила виконанi або Ви нiчого не додали.</h6>
-            </div>
-        </div>
-        
+        <h6 id='no_card' style="display: none">Всi правила виконанi або Ви нiчого не додали.</h6>
     </div>
-</div>
-</br>
+</div></br>
+
 <button type="button" class="btn btn-raised btn-block btn-primary btn-open-modal">
     Додати постійне правило
 </button>
+
 <hr style="margin-top: 2rem; margin-bottom: 2rem" />
+
 <h5>Додаткові дії</h5>
 </br>
 <a class="btn btn-raised btn-block btn-secondary add_rule" role="button">
@@ -115,6 +114,7 @@
                 </a>
 <a class="btn btn-raised btn-block btn-secondary" href="/add_rule?add_to_date=1" role="button">
                     Запланувати полив на завтра...
-                </a> {% endblock %} {% block custom_scripts %}
+                </a> 
+{% endblock %} {% block custom_scripts %}
 <script src="static/js/ongoing_rules.js"></script>
 {% endblock %}
