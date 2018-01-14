@@ -843,8 +843,6 @@ def weather():
         response = requests.get(url=url, timeout=(5, 5))
         response.raise_for_status()
         json_data = json.loads(response.text)
-        logging.info(str(json_data['main']['temp']))
-        logging.info(str(json_data['main']['humidity']))
         return jsonify(
             temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
             humidity=str(round(json_data['main']['humidity'], 2)),
