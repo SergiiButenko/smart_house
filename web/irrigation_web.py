@@ -842,7 +842,7 @@ def weather():
     try:
         response = requests.get(url=url, timeout=(5, 5))
         response.raise_for_status()
-        json_data = convert_to_obj(response.text)
+        json_data = json.loads(response.text)
         logging.info(str(json_data['main']['temp']))
         logging.info(str(json_data['main']['humidity']))
         return jsonify(
