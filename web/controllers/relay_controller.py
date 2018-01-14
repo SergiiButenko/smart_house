@@ -56,7 +56,7 @@ def rissing(channel):
 
 
 GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing)
+GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing, bouncetime=200)
 
 
 def on(pin):
