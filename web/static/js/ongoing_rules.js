@@ -134,7 +134,7 @@ $(document).ready(function() {
     toogle_no_card();
 });
 
-function toogle_no_card(){}
+function toogle_no_card(){
     if ($(".card-rule").length > 0) {
         console.log('hide')
         $('#no_card').hide();
