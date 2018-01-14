@@ -836,14 +836,15 @@ def weather():
     
     rain_status = 0
     if rain < RAIN_MAX:
-        rain_status =1
+        rain_status = 1
 
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
         response = requests.get(url=url, timeout=(5, 5))
         response.raise_for_status()
         json_data = convert_to_obj(response.text)
-        logging.info(str(json_data))
+        logging.info(str(json_data['main']['temp']))
+        logging.info(str(json_data['main']['humidity']))
         return jsonify(
             temperature=str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
             humidity=str(round(json_data['main']['humidity'], 2)),
@@ -853,9 +854,9 @@ def weather():
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
         return jsonify(
-            temperature="0",
-            humidity="0",
-            rain="0",
+            temperature=0,
+            humidity=0,
+            rain=0,
             rain_status=0)
 
 
