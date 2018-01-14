@@ -49,6 +49,7 @@ $(document).ready(function() {
                 $(this).remove();
             }
         });
+        toogle_no_card();
     });
 
     socket.on('add_ongoing_rule', function(msg) {
@@ -130,8 +131,16 @@ $(document).ready(function() {
         form_text($(this))
     });
     set_events();
-
+    toogle_no_card();
 });
+
+function toogle_no_card(){}
+    if ($(".card-rule").length > 0) {
+        $('#no_card').hide();
+    } else {
+        $('#no_card').show();
+    }
+}
 
 
 function form_text(el_in) {
