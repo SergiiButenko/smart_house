@@ -49,7 +49,6 @@ def rissing(channel):
     global iteraion
     time.sleep(0.005)
     if GPIO.input(Input_Sig) == 1:
-        print("RISING")
         logging.info("Event:{0}".format(iteraion))
         iteraion += 1
 
