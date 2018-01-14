@@ -840,7 +840,7 @@ def weather():
 
     url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
     try:
-        response = requests.get(url=url, timeout=(3, 3))
+        response = requests.get(url=url, timeout=(5, 5))
         response.raise_for_status()
         json_data = convert_to_obj(response.text)
         return jsonify(
@@ -848,7 +848,7 @@ def weather():
             humidity=str(round(json_data['main']['humidity'], 2)),
             rain=str(rain),
             rain_status=rain_status)
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         logging.error(e)
         logging.error("Can't get weather info Exception occured")
         return jsonify(
@@ -856,87 +856,6 @@ def weather():
             humidity="0",
             rain="0",
             rain_status=0)
-
-
-@app.route("/temperature")
-def temperature():
-    """Collect temperature from each station."""
-    mode = request.args.get('force')
-    if (mode is not None):
-        temperature_street = 0
-        humidity_street = 0
-
-        temperature_small_h_1_fl = 0
-        humidity_small_h_1_fl = 0
-
-        temperature_small_h_2_fl = 0
-        humidity_small_h_2_fl = 0
-
-        temperature_big_h_1_fl = 0
-        humidity_big_h_1_fl = 0
-
-        temperature_big_h_2_fl = 0
-        humidity_big_h_2_fl = 0
-
-        url = 'http://api.openweathermap.org/data/2.5/weather?id=698782&appid=319f5965937082b5cdd29ac149bfbe9f'
-        try:
-            response = requests.get(url=url, timeout=(3, 3))
-            response.raise_for_status()
-            json_data = convert_to_obj(response.text)
-            temperature_street = str(round(pytemperature.k2c(json_data['main']['temp']), 2)),
-            humidity_street = str(round(json_data['main']['humidity'], 2))
-        except requests.exceptions.RequestException as e:
-            logging.error(e)
-            logging.error("Can't get weather info Exception occured")
-            humidity_street = 0
-            temperature_street = 0
-
-        try:
-            response = requests.get(url=ARDUINO_SMALL_H_IP + '/temperature', timeout=(3, 3))
-            response.raise_for_status()
-            json_data = convert_to_obj(response.text)
-
-            temperature_small_h_1_fl = json_data['1_floor_temperature']
-            humidity_small_h_1_fl = json_data['1_floor_humidity']
-
-            temperature_small_h_2_fl = json_data['2_floor_temperature']
-            humidity_small_h_2_fl = json_data['2_floor_humidity']
-        except requests.exceptions.RequestException as e:
-            logging.error(e)
-            logging.error("Can't get temp info Exception occured")
-
-            temperature_small_h_1_fl = 0
-            humidity_small_h_1_fl = 0
-
-            temperature_small_h_2_fl = 0
-            humidity_small_h_2_fl = 0
-
-        database.update(database.QUERY[mn() + '_2'].format(
-            temperature_street, humidity_street,
-            temperature_small_h_1_fl, humidity_small_h_1_fl,
-            temperature_small_h_2_fl, humidity_small_h_2_fl,
-            temperature_big_h_1_fl, humidity_big_h_1_fl,
-            temperature_big_h_2_fl, humidity_big_h_2_fl)
-        )
-
-    res = database.select(database.QUERY[mn() + '_1'], 'fetchone')
-    return jsonify(
-        datetime=res[0],
-        temperature_street=res[1],
-        humidity_street=res[2],
-
-        temperature_small_h_1_fl=res[3],
-        humidity_small_h_1_fl=res[4],
-
-        temperature_small_h_2_fl=res[5],
-        humidity_small_h_2_fl=res[6],
-
-        temperature_big_h_1_fl=res[7],
-        humidity_big_h_1_fl=res[8],
-
-        temperature_big_h_2_fl=res[9],
-        humidity_big_h_2_fl=res[10]
-    )
 
 
 @app.route("/.well-known/acme-challenge/caIBL2nKjk9nIX_Earqy9Qy4vttNvOcXA_TEgfNLcUk")
