@@ -352,12 +352,12 @@ function set_events() {
         $(card).find('.if-not-collapsed').show();
     })
 
-
+    var rule = {}
     $(".ongoing-rule-edit").off().click(function(e) {
         var card = $(e.target).closest('.top')
         var collapse = $(card).find('#' + $(e.target).data('id'))
 
-        var rule = {}
+        rule = {}
         rule['start_values'] = {
             'time': $(card).find('#irrigation_minutes').val(),
             'intervals': $(card).find('#irrigation_intervals').val(),
