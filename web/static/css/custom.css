@@ -1,5 +1,6 @@
-.h6 {
-    text-align: center;
+.center {
+    margin: auto;
+    width: 50%;
 }
 
 .dropdown-label {
