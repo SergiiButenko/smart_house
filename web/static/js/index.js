@@ -278,9 +278,9 @@ function toogle_card(element_id, branch) {
         timeZone: 'UTC'
     };
 
-    var now = convertDateToUTC(new Date());
+    var now = new Date();
     if (branch['last_rule']) {
-        last_rule = new Date(branch['last_rule']['timer'])        
+        last_rule = convertDateToUTC(new Date(branch['last_rule']['timer']))
         if (daydiff(now, last_rule) == 0) {
             last_rule = "сьогодні, о " + last_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, last_rule) == -1) {
@@ -294,15 +294,13 @@ function toogle_card(element_id, branch) {
     $('#last-' + element_id).text("Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
-        next_rule = new Date(branch['next_rule']['timer'])
-console.log(next_rule);
-console.log(daydiff(now, next_rule));
+        next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
             next_rule = "завтра, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 2) {
-            next_rule = "післязавтра, о" + next_rule.toLocaleTimeString("uk-UA", options_time);
+            next_rule = "післязавтра, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else {
             next_rule = next_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
@@ -313,9 +311,7 @@ console.log(daydiff(now, next_rule));
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
-        next_rule = new Date(branch['next_rule']['timer'])
-console.log(next_rule);
-console.log(daydiff(now, next_rule));
+        next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
