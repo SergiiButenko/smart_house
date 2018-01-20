@@ -10,7 +10,7 @@ from helpers.redis import *
 from helpers.common import *
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+                    datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.info)
 
 
 def branch_on(line_id, alert_time):
@@ -178,13 +178,7 @@ def enable_rule():
                 if rule is None:
                     continue
 
-                logging.info("Rule '{0}' is going to be executed".format(str(rule)))
-
-                if (inspect_conditions(rule) is False):
-                    logging.info("Rule can't be executed cause of rain volume too high")
-                    database.update(database.QUERY[mn() + "_canceled_by_rain"].format(rule['id']))
-                    set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
-                    continue
+                logging.debug("Rule '{0}' is going to be executed".format(str(rule)))
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):
                     try:
@@ -193,6 +187,12 @@ def enable_rule():
                         logging.error("Can't send rule {0} to viber. Exception occured. {1}".format(str(rule), e))
 
                 if (datetime.datetime.now() >= rule['timer']):
+                    if (inspect_conditions(rule) is False):
+                        logging.info("Rule can't be executed cause of rain volume too high")
+                        database.update(database.QUERY[mn() + "_canceled_by_rain"].format(rule['id']))
+                        set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
+                        continue
+                    
                     logging.info("Rule '{0}' execution started".format(str(rule)))
 
                     try:
