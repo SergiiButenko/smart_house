@@ -28,7 +28,7 @@ $(document).ready(function() {
     });
 
     $("#go_plan").click(function() {
-        var json = { 'rules': {} }
+        var json = { 'rules': [] }
 
         $(".card").each(function() {
             var branch_id = $(this).data('branch_id');
