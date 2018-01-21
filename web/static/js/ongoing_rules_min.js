@@ -253,10 +253,10 @@ function set_events() {
 
 
     $('.add-ongoing-rule').off().on('click', function(e) {
-        var json = { 'rule': {} }
+        var json = { 'rules': [] }
         var modal = $('#irrigate_modal');
 
-        json['rule'] = {
+        json['rules'].push({
             'line_id': $(modal).find('#branch_select').val(),
             'line_name': $(modal).find('#branch_select').find("option:selected").text(),
             'time': $(modal).find('#irrigation_minutes').val(),
@@ -266,9 +266,9 @@ function set_events() {
             'date_start': $(modal).find('.irrigation_date').val(),
             'time_start': $(modal).find('.irrigation_time').val(),
             'end_date': $(modal).find('#end_date').val(),
-        }
+        })
 
-        if (json['rule']['end_date'] == '') {
+        if (json['rules'][0]['end_date'] == '') {
             alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
             return;
@@ -313,7 +313,7 @@ function set_events() {
             'rule_id': $(e.target).data('id')
         })
 
-        if (json['rule'][0]['end_date'] == '') {
+        if (json['rules'][0]['end_date'] == '') {
             alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
             return;
