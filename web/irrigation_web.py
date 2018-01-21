@@ -500,6 +500,15 @@ def add_ongoing_rule():
         template = render_template('ongoing_rule_single.html', n=rule)
         send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
 
+    try:
+        response_status = garden_controller.branch_status()
+
+        arr = form_responce_for_branches(response_status)
+        send_branch_status_message('branch_status', arr)
+    except Exception as e:
+        logging.error(e)
+        logging.error("Can't send updated rules. Exception occured")
+
     return json.dumps({'status': 'OK'})
 
 
