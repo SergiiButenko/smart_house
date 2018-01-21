@@ -298,10 +298,10 @@ function set_events() {
     });
 
     $('.ongoing-rule-save').off().on('click', function(e) {
-        var json = { 'rule': {} }
+        var json = { 'rules': [] }
         var card = $(e.target).closest('.top')
 
-        json['rule'] = {
+        json['rules'].push({
             'line_id': $(card).find('#line_id').data('id'),
             'time': $(card).find('#irrigation_minutes').val(),
             'intervals': $(card).find('#irrigation_intervals').val(),
@@ -311,9 +311,9 @@ function set_events() {
             'time_start': $(card).find('.irrigation_time').val(),
             'end_date': $(card).find('#end_date').val(),
             'rule_id': $(e.target).data('id')
-        }
+        })
 
-        if (json['rule']['end_date'] == '') {
+        if (json['rule'][0]['end_date'] == '') {
             alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
             return;

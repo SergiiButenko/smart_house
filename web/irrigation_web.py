@@ -278,7 +278,6 @@ def add_rule():
 
     for rule in content:
         rule = content[rule]
-        print(rule)
         branch_id = int(rule['branch_id'])
         time_min = int(rule['time'])
         start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
@@ -350,34 +349,34 @@ def cancel_rule():
     return render_template('index.html')
 
 
-def ongoing_rules_table():
-    """Return only table for ongoing rules page."""
-    list_arr = database.select(database.QUERY[mn()], 'fetchall')
-    if (list_arr is None):
-        list_arr = []
+# def ongoing_rules_table():
+#     """Return only table for ongoing rules page."""
+#     list_arr = database.select(database.QUERY[mn()], 'fetchall')
+#     if (list_arr is None):
+#         list_arr = []
 
-    rows = []
-    for row in list_arr:
-        id = row[0]
-        day_number = row[1]
-        branch_name = row[2]
-        rule_name = row[3]
-        time = row[4]
-        minutes = row[5]
-        active = row[6]
-        rule_state = row[7]
-        rows.append({
-            'id': id,
-            'branch_name': branch_name,
-            'dow': day_number,
-            'rule_name': rule_name,
-            'time': time,
-            'minutest': minutes,
-            'active': active,
-            'rule_state': rule_state})
+#     rows = []
+#     for row in list_arr:
+#         id = row[0]
+#         day_number = row[1]
+#         branch_name = row[2]
+#         rule_name = row[3]
+#         time = row[4]
+#         minutes = row[5]
+#         active = row[6]
+#         rule_state = row[7]
+#         rows.append({
+#             'id': id,
+#             'branch_name': branch_name,
+#             'dow': day_number,
+#             'rule_name': rule_name,
+#             'time': time,
+#             'minutest': minutes,
+#             'active': active,
+#             'rule_state': rule_state})
 
-    template = render_template('ongoing_rules_table_only.html', my_list=rows)
-    return template
+#     template = render_template('ongoing_rules_table_only.html', my_list=rows)
+#     return template
 
 
 @app.route("/ongoing_rules")
@@ -468,37 +467,38 @@ def update_rules_from_ongoing_rules(rule):
 @app.route("/add_ongoing_rule", methods=['POST'])
 def add_ongoing_rule():
     """Used in add rule modal window."""
-    rule = request.json['rule']
-    rule['line_id'] = int(rule['line_id'])
-    rule['line_name'] = rule['line_name']
-    rule['time'] = convert_to_datetime(rule['time'])
-    rule['intervals'] = int(rule['intervals'])
-    rule['time_wait'] = int(rule['time_wait'])
-    rule['repeat_value'] = int(rule['repeat_value'])
-    rule['date_start'] = convert_to_datetime(rule['date_start'])
-    rule['time_start'] = convert_to_datetime(rule['time_start'])
-    rule['date_time_start'] = datetime.datetime.combine(
-        rule['date_start'], rule['time_start'].time())
-    rule['end_date'] = convert_to_datetime(rule['end_date'])
-    rule['active'] = 1
-    rule['rule_id'] = str(uuid.uuid4())
+    rules = request.json['rules']
+    for rule in rules:
+        rule['line_id'] = int(rule['line_id'])
+        rule['line_name'] = rule['line_name']
+        rule['time'] = convert_to_datetime(rule['time'])
+        rule['intervals'] = int(rule['intervals'])
+        rule['time_wait'] = int(rule['time_wait'])
+        rule['repeat_value'] = int(rule['repeat_value'])
+        rule['date_start'] = convert_to_datetime(rule['date_start'])
+        rule['time_start'] = convert_to_datetime(rule['time_start'])
+        rule['date_time_start'] = datetime.datetime.combine(
+            rule['date_start'], rule['time_start'].time())
+        rule['end_date'] = convert_to_datetime(rule['end_date'])
+        rule['active'] = 1
+        rule['rule_id'] = str(uuid.uuid4())
 
-    # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
-    # "time_start, end_date, active, rule_id) "
-    # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
-    # insert into ongoing table
-    database.update(database.QUERY[mn()].format(
-        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-        rule['repeat_value'], rule['date_time_start'],
-        rule['end_date'], rule['active'], rule['rule_id']))
+        # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
+        # "time_start, end_date, active, rule_id) "
+        # "VALUES ({0}, '{1}', {2}, '{3}', {4}, {5}, '{6}', {7}, {8}, {9}")
+        # insert into ongoing table
+        database.update(database.QUERY[mn()].format(
+            rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+            rule['repeat_value'], rule['date_time_start'],
+            rule['end_date'], rule['active'], rule['rule_id']))
 
-    # update rules;
-    update_rules_from_ongoing_rules(rule)
-    update_all_rules()
-    logging.info("Ongoing rule added. {0}".format(str(rule)))
+        # update rules;
+        update_rules_from_ongoing_rules(rule)
+        update_all_rules()
+        logging.info("Ongoing rule added. {0}".format(str(rule)))
 
-    template = render_template('ongoing_rule_single.html', n=rule)
-    send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
+        template = render_template('ongoing_rule_single.html', n=rule)
+        send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
 
     return json.dumps({'status': 'OK'})
 
