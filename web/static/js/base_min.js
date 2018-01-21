@@ -54,25 +54,30 @@ $(document).ready(function() {
     });
 
     $(".plan").click(function() {
-        var json = { 'list': {} }
+        var json = { 'rules': [] }
         var modal = $(this).closest("#plann_modal")
         
-        branch_id = $(modal).find('#branch_select_plann_modal option:selected').val();
-        time = $(modal).find('#irrigation_minutes_plann_modal').val();
-        interval = $(modal).find('#irrigation_intervals_plann_modal').val();
-        time_wait = $(modal).find('#irrigation_time_wait_plann_modal').val();
-        date_start = $(modal).find('.irrigation_date_plann_modal').val();
-        time_start = $(modal).find('.irrigation_time_plann_modal').val();
-        json.list[branch_id] = {
-            "branch_id": branch_id,
-            "time": time,
-            "interval": interval,
-            "time_wait": time_wait,
-            "datetime_start": date_start + " " + time_start
-        }
+        var branch_id = $(modal).find('#branch_select_plann_modal option:selected').val();
+        var name = $(modal).find('#branch_select_plann_modal option:selected').text();
+        var time = $(modal).find('#irrigation_minutes_plann_modal').val();
+        var interval = $(modal).find('#irrigation_intervals_plann_modal').val();
+        var time_wait = $(modal).find('#irrigation_time_wait_plann_modal').val();
+        var date_start = $(modal).find('.irrigation_date_plann_modal').val();
+        var time_start = $(modal).find('.irrigation_time_plann_modal').val();
+        json['rules'].push({
+                "line_id": branch_id,
+                'line_name': name,
+                "time": time,
+                "intervals": interval,
+                "time_wait": time_wait,
+                "date_start": date_start,
+                'time_start': time_start,
+                'end_date': date_start,
+                'repeat_value': 4
+            });
 
         $.ajax({
-            url: '/add_rule',
+            url: '/add_ongoing_rule',
             type: "post",
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
