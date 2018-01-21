@@ -46,7 +46,8 @@ $(document).ready(function() {
                 "time_wait": time_wait,
                 "date_start": date_start,
                 'time_start': time_start,
-                'end_date': date_start
+                'end_date': date_start,
+                'repeat_value': 4
             });
         });
         
