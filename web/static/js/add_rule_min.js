@@ -42,7 +42,7 @@ $(document).ready(function() {
                 "line_id": branch_id,
                 'line_name': name,
                 "time": time,
-                "interval": interval,
+                "intervals": interval,
                 "time_wait": time_wait,
                 "date_start": date_start,
                 'time_start': time_start,
