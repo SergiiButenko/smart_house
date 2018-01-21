@@ -1,5 +1,5 @@
 [Unit]
-Description=Backend part of irrigation system for peregonivka BETA
+Description=Rules handler for irrigation system
 After=network.target
 Requires=network.target
 
