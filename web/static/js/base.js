@@ -177,6 +177,7 @@ function set_status_ok() {
     $(".stop-lighting").removeClass('disabled');
     $(".stop-power_outlet").removeClass('disabled');
     $(".stop-irrigation").removeClass('disabled');
+    $(".cancel-irrigation").removeClass('disabled');
 
     $(".status-span").hide();
     $(".btn-open-modal").show();
@@ -186,6 +187,8 @@ function set_status_ok() {
 function set_status_spinner() {
     $(".btn-open-modal").addClass('disabled');
     $(".btn-start").addClass('disabled');
+    $(".cancel-irrigation").addClass('disabled');
+    
 
     $(".stop-lighting").addClass('disabled');
     $(".stop-power_outlet").addClass('disabled');
