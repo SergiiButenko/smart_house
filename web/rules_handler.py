@@ -108,8 +108,8 @@ def inspect_conditions(rule):
             rain = 0
 
         if rule['rule_id'] == 2:
-            logging.info("Stop rule executes always.")
-            logging.info("Rain volume for last {0} hours is {1}mm".format(HOURS, rain))
+            logging.debug("Stop rule executes always.")
+            logging.debug("Rain volume for last {0} hours is {1}mm".format(HOURS, rain))
             return True
 
         if rain < RAIN_MAX:
