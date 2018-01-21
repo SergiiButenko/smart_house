@@ -179,7 +179,8 @@ def enable_rule():
                 if rule is None:
                     continue
 
-                if datetime.datetime.now() - datetime.timedelta(minutes=10):
+                delta = datetime.datetime.now() - now_time
+                if delta.seconds >= 60 * 10:
                     logging.info("Rule '{0}' is planned to be executed".format(str(rule)))
                     now_time = datetime.datetime.now()
 
