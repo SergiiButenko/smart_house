@@ -519,33 +519,34 @@ def remove_ongoing_rule():
 @app.route("/edit_ongoing_rule", methods=['PUT'])
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
-    rule = request.json['rule']
-    rule['line_id'] = int(rule['line_id'])
-    rule['time'] = convert_to_datetime(rule['time'])
-    rule['intervals'] = int(rule['intervals'])
-    rule['time_wait'] = int(rule['time_wait'])
-    rule['repeat_value'] = int(rule['repeat_value'])
-    rule['date_start'] = convert_to_datetime(rule['date_start'])
-    rule['time_start'] = convert_to_datetime(rule['time_start'])
-    rule['date_time_start'] = datetime.datetime.combine(
-        rule['date_start'], rule['time_start'].time())
-    rule['end_date'] = convert_to_datetime(rule['end_date'])
-    rule['rule_id'] = rule['rule_id']
+    rules = request.json['rules']
+    for rule in rules:
+        rule['line_id'] = int(rule['line_id'])
+        rule['time'] = convert_to_datetime(rule['time'])
+        rule['intervals'] = int(rule['intervals'])
+        rule['time_wait'] = int(rule['time_wait'])
+        rule['repeat_value'] = int(rule['repeat_value'])
+        rule['date_start'] = convert_to_datetime(rule['date_start'])
+        rule['time_start'] = convert_to_datetime(rule['time_start'])
+        rule['date_time_start'] = datetime.datetime.combine(
+            rule['date_start'], rule['time_start'].time())
+        rule['end_date'] = convert_to_datetime(rule['end_date'])
+        rule['rule_id'] = rule['rule_id']
 
-    # "UPDATE ongoing_rules
-    # SET line_id = {0}, time = {1}, intervals = {2}, time_wait = {3}, repeat_value={4}, date_time_start='{5}'"
-    # end_date = '{6}' WHERE rule_id = '{7}'"
-    database.update(database.QUERY[mn() + '_ongoing'].format(
-        rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
-        rule['repeat_value'], rule['date_time_start'],
-        rule['end_date'], rule['rule_id']))
+        # "UPDATE ongoing_rules
+        # SET line_id = {0}, time = {1}, intervals = {2}, time_wait = {3}, repeat_value={4}, date_time_start='{5}'"
+        # end_date = '{6}' WHERE rule_id = '{7}'"
+        database.update(database.QUERY[mn() + '_ongoing'].format(
+            rule['line_id'], rule['time'], rule['intervals'], rule['time_wait'],
+            rule['repeat_value'], rule['date_time_start'],
+            rule['end_date'], rule['rule_id']))
 
-    # update rules;
-    update_rules_from_ongoing_rules(rule)
-    # update_all_rules()
-    logging.info("Ongoing rule modified. {0}".format(str(rule)))
+        # update rules;
+        update_rules_from_ongoing_rules(rule)
+        # update_all_rules()
+        logging.info("Ongoing rule modified. {0}".format(str(rule)))
 
-    send_ongoing_rule_message('edit_ongoing_rule', rule)
+        send_ongoing_rule_message('edit_ongoing_rule', rule)
 
     return json.dumps({'status': 'OK'})
 
