@@ -166,7 +166,7 @@ function form_text(el_in) {
     console.log(schedule_val);
     if (schedule_val == 4) {
         $(card).find("#summary").html(
-            schedule_text + ', ' + date.toLocaleDateString("uk-UA", options) + ', о ' + time + '.</br>' +
+            schedule_text + ', ' + date.toLocaleDateString("uk-UA", options) + ' O ' + time + '.</br>' +
             interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
         );
     } else {
