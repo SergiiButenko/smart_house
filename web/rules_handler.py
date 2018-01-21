@@ -139,7 +139,7 @@ def send_to_viber_bot(rule):
         arr = redis_db.lrange(REDIS_KEY_FOR_VIBER, 0, -1)
         logging.debug("{0} send rule was get from redis".format(arr))
         if (interval_id.encode() in arr):
-            logging.info('interval_id {0} is already send'.format(interval_id))
+            logging.debug('interval_id {0} is already send'.format(interval_id))
             return
 
         try:
@@ -168,6 +168,7 @@ def enable_rule():
         update_all_rules()
         logging.debug("rules updated")
 
+        now_time = datetime.datetime.now()
         while True:
             # logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))
             sync_rules_from_redis()
@@ -178,7 +179,9 @@ def enable_rule():
                 if rule is None:
                     continue
 
-                logging.debug("Rule '{0}' is going to be executed".format(str(rule)))
+                if datetime.datetime.now() - datetime.timedelta(minutes=10):
+                    logging.info("Rule '{0}' is planned to be executed".format(str(rule)))
+                    now_time = datetime.datetime.now()
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):
                     try:
@@ -192,7 +195,7 @@ def enable_rule():
                         database.update(database.QUERY[mn() + "_canceled_by_rain"].format(rule['id']))
                         set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
                         continue
-                    
+
                     logging.info("Rule '{0}' execution started".format(str(rule)))
 
                     try:
@@ -212,7 +215,7 @@ def enable_rule():
                         # Set ok state
                         database.update(database.QUERY[mn()].format(rule['id'], 2))
                     finally:
-                        logging.debug("get next active rule")
+                        logging.info("get next active rule")
                         set_next_rule_to_redis(rule['line_id'], database.get_next_active_rule(rule['line_id']))
     except Exception as e:
         logging.error("enable rule thread exception occured. {0}".format(e))
