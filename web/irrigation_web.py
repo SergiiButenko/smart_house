@@ -321,7 +321,6 @@ def cancel_rule():
         abort(500)
 
     id = int(request.args.get('id'))
-    requester = request.args.get('requester')
 
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
     res = database.select(database.QUERY[mn() + "_1"].format(id), 'fetchone')
@@ -333,6 +332,11 @@ def cancel_rule():
     # branch_name = res[1]
     # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
     database.update(database.QUERY[mn() + '_2'].format(interval_id))
+    
+    res = database.select(database.QUERY[mn() + "_select_ongoing_rule"].format(id), 'fetchone')
+    for r in res:
+        logging.info(r)
+
     update_all_rules()
 
     try:
@@ -494,12 +498,12 @@ def add_ongoing_rule():
 
         # update rules;
         update_rules_from_ongoing_rules(rule)
-        update_all_rules()
         logging.info("Ongoing rule added. {0}".format(str(rule)))
 
         template = render_template('ongoing_rule_single.html', n=rule)
         send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
 
+    update_all_rules()
     try:
         response_status = garden_controller.branch_status()
 

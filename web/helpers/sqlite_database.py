@@ -123,12 +123,14 @@ QUERY['edit_ongoing_rule_ongoing'] = (
 
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
 
-QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+# QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
+# QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
-QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
+QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name, l.ongoing_rule_id FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
 QUERY['cancel_rule_2'] = "UPDATE life SET state = 4 WHERE interval_id = '{0}' AND state = 1"
+QUERY['cancel_rule_select_ongoing_rule'] = "SELECT * FROM life where ongoing_rule_id='{0}' and state = 1"
+QUERY['cancel_rule_delete_ongoing_rule'] = "DELETE FROM ongoing_rules WHERE rule_id = '{0}'"
 
 QUERY['temperature_1'] = "SELECT * FROM temperature_statistics limit 1"
 QUERY['temperature_2'] = (
