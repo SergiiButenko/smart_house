@@ -148,6 +148,7 @@ function form_text(el_in) {
     var card = $(el_in).closest('.top')
 
     var schedule_text = $(card).find('#schedule_select option:selected').attr('title');
+    var schedule_val = $(card).find('#schedule_select option:selected').val();
     var time = $(card).find('.irrigation_time').val();
     var minutes = $(card).find('#irrigation_minutes').val();
     var interval = $(card).find('#irrigation_intervals').val();
@@ -160,13 +161,23 @@ function form_text(el_in) {
         timeZone: 'UTC'
     };
 
-    var now = new Date($(card).find("#end_date").val());
-    var text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
+    var date = new Date($(card).find("#end_date").val());
 
-    $(card).find("#summary").html(
-        schedule_text + ' о ' + time + ', ' + text + '</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
-    );
+    console.log(schedule_val);
+    if (schedule_val == 4) {
+        $(card).find("#summary").html(
+            schedule_text + ', ' + date.toLocaleDateString("uk-UA", options) + ', о ' + time + '.</br>' +
+            interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+        );
+    } else {
+        $(card).find("#summary").html(
+            schedule_text + ' о ' + time + ', ' + 'до ' + date.toLocaleDateString("uk-UA", options) + ' включно.' + '</br>' +
+            interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+        );
+    }
+
+
+
 }
 
 function set_events() {
