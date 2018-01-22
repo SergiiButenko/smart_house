@@ -41,11 +41,11 @@ QUERY['get_timetable_list_2'] = (
     "ORDER BY l.timer desc")
 
 QUERY['ongoing_rules'] = (
-    "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
-    "r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
-    "FROM ongoing_rules as r, lines as l "
-    "WHERE r.line_id = l.number AND r.end_date>=date('now', 'localtime') "
-    "ORDER BY r.date_time_start")
+     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, r.date_time_start, r.end_date, r.active, l.name, r.rule_id FROM ongoing_rules as r, lines as l "
+     "WHERE r.line_id = l.number AND (datetime('now', 'localtime') between date(r.date_time_start) and date(r.end_date, '+1 days')) "
+     "EXCEPT select r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, r.date_time_start, r.end_date, r.active, l.name, r.rule_id FROM ongoing_rules as r, lines as l "
+     "WHERE r.line_id = l.number and (date(r.date_time_start) = date(r.end_date) and time('now', 'localtime') >= time(r.date_time_start)) "
+     "ORDER BY r.date_time_start;)"
 
 QUERY['add_ongoing_rule'] = (
     "INSERT INTO ongoing_rules(line_id, time, intervals, time_wait, repeat_value, date_time_start, "
