@@ -200,8 +200,9 @@ function set_events() {
 
     $('.schedule_select').off().on('change', function(e) {
         if ($(this).val() == 4){
-            var tbody = $(this).closest('.tbody')
-            tbody.find('#end_date').val(tbody.find('#start_date').val())
+            var tbody = $(this).closest('.tbody');
+            console.log(tbody);
+            tbody.find('#end_date').val(tbody.find('#start_date').val());
         }
         form_text($(this));
     });
