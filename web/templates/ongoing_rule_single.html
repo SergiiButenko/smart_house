@@ -10,7 +10,7 @@
             </div>
             <p class='card-text' style='display: inline-block;'>
                 <table>
-                    <tbody class='collapse' id='{{n['rule_id']}}'>
+                    <tbody class='collapse tbody' id='{{n['rule_id']}}'>
                         <tr>
                             <th>Тривалість:</th>
                             <td>
@@ -32,7 +32,7 @@
                         <tr>
                             <th>Повторюється:</th>
                             <td>
-                                <select class='form-control form-text-control disabled' id='schedule_select' data-value={{n[ 'repeat_value']}}>
+                                <select class='form-control form-text-control schedule_select disabled' id='schedule_select' data-value={{n[ 'repeat_value']}}>
                                     <option value=1 selected='selected' title='Кожен день'>Кожен день</option>
                                     <option value=2 title='Кожні 2 дня'>Кожні 2 дня</option>
                                     <option value=3 title='Кожні 3 дня'>Кожні 3 дня</option>
@@ -43,7 +43,7 @@
                         <tr tabindex='0'>
                             <th>Дата початку:</th>
                             <td>
-                                <input class='form-control irrigation_date form-text-control disabled' type='date' data-value='{{n['date_time_start']}}'>
+                                <input class='form-control irrigation_date form-text-control disabled' type='date' id='start_date' data-value='{{n['date_time_start']}}'>
                             </td>
                         </tr>
                         <tr tabindex='0'>

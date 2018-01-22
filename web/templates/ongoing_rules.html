@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <table>
-                    <tbody>
+                    <tbody class="tbody">
                         <tr>
                             <th>Що поливати:</th>
                             <td>
@@ -39,7 +39,7 @@
                         <tr>
                             <th>Повторюється:</th>
                             <td>
-                                <select class="form-control form-text-control" id="schedule_select">
+                                <select class="form-control schedule_select form-text-control" id="schedule_select">
                                     <option value=1 selected="selected" title="Кожен день">Кожен день</option>
                                     <option value=2 title="Кожні 2 дня">Кожні 2 дня</option>
                                     <option value=3 title="Кожні 3 дня">Кожні 3 дня</option>
@@ -52,7 +52,7 @@
                         <tr tabindex="0">
                             <th>Дата початку:</th>
                             <td>
-                                <input type="date" class="form-control irrigation_date form-text-control">
+                                <input type="date" id='start_date' class="form-control irrigation_date form-text-control">
                             </td>
                         </tr>
                         <tr tabindex="0">
