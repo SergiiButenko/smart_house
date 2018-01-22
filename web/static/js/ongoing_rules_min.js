@@ -154,29 +154,28 @@ function form_text(el_in) {
     var interval = $(card).find('#irrigation_intervals').val();
     var time_wait = $(card).find('#irrigation_time_wait').val();
 
-    var options = {
+    var options_date = {
         weekday: "long",
         month: "short",
-        day: "numeric"//,
-        // timeZone: 'UTC'
+        day: "numeric"
     };
 
     var date = convertDateToUTC(new Date($(card).find("#end_date").val()));
     var now = new Date();
     var text = "";
     if (daydiff(now, date) == 0) {
-        text = "сьогодні";
+        text = "сьогодні.";
     } else if (daydiff(now, date) == 1) {
-        text = "завтра";
+        text = "завтра.";
     } else if (daydiff(now, date) == 2) {
-        text = "післязавтра";
+        text = "післязавтра.";
     } else {
-        text = date.toLocaleTimeString("uk-UA", options);
+        text = date.toLocaleTimeString("uk-UA", options_date);
     }
 
     if (schedule_val == 4) {
         $(card).find("#summary").html(
-            schedule_text + ', ' + text + '. O ' + time + '.</br>' +
+            schedule_text + ', ' + text + ' O ' + time + '.</br>' +
             interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
         );
     } else {
