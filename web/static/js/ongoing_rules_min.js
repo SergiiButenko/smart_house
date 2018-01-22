@@ -199,13 +199,13 @@ function set_events() {
     });
 
     $('.schedule_select').off().on('change', function(e) {
-        if ($(this).val() == 4){
+        if ($(this).val() == 4) {
             var tbody = $(this).closest('.tbody')
             tbody.find('#end_date').val(tbody.find('#start_date').val())
         }
         form_text($(this));
     });
-    
+
 
     $('#branch_select').off().on('change', function(e) {
         var index = parseInt($(this).val());
@@ -240,7 +240,7 @@ function set_events() {
             error: function(data) {
                 alert("Сталася помилка. Cпробуйте ще раз");
             },
-            complete: function(data){
+            complete: function(data) {
                 set_status_ok();
             }
         });
@@ -248,224 +248,223 @@ function set_events() {
 
 
     $('.active_true_false').off().change(function(e) {
-            var switcher = $(e.target);
+        var switcher = $(e.target);
 
-            var old_value = !($(switcher).prop("checked"));
-            console.log(old_value);
-            var returnVal = confirm("Ви впевненні?");
-            console.log(returnVal);
-            if (returnVal == false) {
-                $(switcher).prop("checked", old_value);
-                // $(switcher).val($(switcher).old_value);
-                return;
-            }
+        var old_value = !($(switcher).prop("checked"));
+        console.log(old_value);
+        var returnVal = confirm("Ви впевненні?");
+        console.log(returnVal);
+        if (returnVal == false) {
+            $(switcher).prop("checked", old_value);
+            // $(switcher).val($(switcher).old_value);
+            return;
+        }
 
-            var id = $(switcher).data('id')
-            if (old_value == false) {
-                $.ajax({
-                        url: '/activate_ongoing_rule',
-                        type: "get",
-                        data: {
-                            'id': id
-                        },
-                        beforeSend: function(xhr, opts) {
-                            set_status_spinner();
-                        },
-                        error: function(data) {
-                            alert("Сталася помилка. Cпробуйте ще раз");
-                        },
-                        complete: function(data() {
-                                set_status_ok();
-                            }
-                        });
-                }
-                else {
-                    $.ajax({
-                        url: '/deactivate_ongoing_rule',
-                        type: "get",
-                        data: {
-                            'id': id
-                        },
-                        beforeSend: function(xhr, opts) {
-                            set_status_spinner();
-                        },
-                        error: function(data) {
-                            alert("Сталася помилка. Cпробуйте ще раз");
-                        },
-                        complete: function(data){
-                            set_status_ok();
-                        }
-                    });
-                }
-            });
-
-
-        $('.add-ongoing-rule').off().on('click', function(e) {
-            var json = { 'rules': [] }
-            var modal = $('#irrigate_modal');
-
-            json['rules'].push({
-                'line_id': $(modal).find('#branch_select').val(),
-                'line_name': $(modal).find('#branch_select').find("option:selected").text(),
-                'time': $(modal).find('#irrigation_minutes').val(),
-                'intervals': $(modal).find('#irrigation_intervals').val(),
-                'time_wait': $(modal).find('#irrigation_time_wait').val(),
-                'repeat_value': $(modal).find('#schedule_select').val(),
-                'date_start': $(modal).find('.irrigation_date').val(),
-                'time_start': $(modal).find('.irrigation_time').val(),
-                'end_date': $(modal).find('#end_date').val(),
-            })
-
-            if (json['rules'][0]['end_date'] == '') {
-                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-                console.log(json);
-                return;
-            }
-
+        var id = $(switcher).data('id')
+        if (old_value == false) {
             $.ajax({
-                url: '/add_ongoing_rule',
-                type: "post",
-                data: JSON.stringify(json),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
+                url: '/activate_ongoing_rule',
+                type: "get",
+                data: {
+                    'id': id
+                },
                 beforeSend: function(xhr, opts) {
-                    $('.add-flow').addClass('disabled');
                     set_status_spinner();
                 },
-                success: function() {
-                    console.log(json);
-                    $('#irrigate_modal').modal('hide');
+                error: function(data) {
+                    alert("Сталася помилка. Cпробуйте ще раз");
                 },
-                error: function() {
-                    alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-                    console.log(json);
-                },
-                complete: function() {
-                    $('.add-flow').removeClass('disabled');
+                complete: function(data) {
                     set_status_ok();
                 }
             });
-        });
-
-        $('.ongoing-rule-save').off().on('click', function(e) {
-            var json = { 'rules': [] }
-            var card = $(e.target).closest('.top')
-
-            json['rules'].push({
-                'line_id': $(card).find('#line_id').data('id'),
-                'time': $(card).find('#irrigation_minutes').val(),
-                'intervals': $(card).find('#irrigation_intervals').val(),
-                'time_wait': $(card).find('#irrigation_time_wait').val(),
-                'repeat_value': $(card).find('#schedule_select').val(),
-                'date_start': $(card).find('.irrigation_date').val(),
-                'time_start': $(card).find('.irrigation_time').val(),
-                'end_date': $(card).find('#end_date').val(),
-                'rule_id': $(e.target).data('id')
-            })
-
-            if (json['rules'][0]['end_date'] == '') {
-                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-                console.log(json);
-                return;
-            }
-
+        } else {
             $.ajax({
-                url: '/edit_ongoing_rule',
-                type: "put",
-                data: JSON.stringify(json),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
+                url: '/deactivate_ongoing_rule',
+                type: "get",
+                data: {
+                    'id': id
+                },
                 beforeSend: function(xhr, opts) {
-                    $('.edit-flow').addClass('disabled');
-                    $('.show-flow').addClass('disabled');
                     set_status_spinner();
                 },
-                success: function() {
-                    console.log(json);
-                    collapse = $(card).find('#' + $(e.target).data('id'));
-                    collapse.collapse('hide');
-                    $(card).find('.edit-flow').hide();
-                    $(card).find('.show-flow').show();
+                error: function(data) {
+                    alert("Сталася помилка. Cпробуйте ще раз");
                 },
-                error: function() {
-                    alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
-                    console.log(json);
-                },
-                complete: function() {
-                    $('.edit-flow').removeClass('disabled');
-                    $('.show-flow').removeClass('disabled');
+                complete: function(data) {
                     set_status_ok();
                 }
             });
-        });
+        }
+    });
 
 
-        $('.collapse').off().on('hidden.bs.collapse', function(e) {
-            var card = $(e.target).closest('.top')
+    $('.add-ongoing-rule').off().on('click', function(e) {
+        var json = { 'rules': [] }
+        var modal = $('#irrigate_modal');
 
-            $(card).find('.if-collapsed').show();
-            $(card).find('.if-not-collapsed').hide();
+        json['rules'].push({
+            'line_id': $(modal).find('#branch_select').val(),
+            'line_name': $(modal).find('#branch_select').find("option:selected").text(),
+            'time': $(modal).find('#irrigation_minutes').val(),
+            'intervals': $(modal).find('#irrigation_intervals').val(),
+            'time_wait': $(modal).find('#irrigation_time_wait').val(),
+            'repeat_value': $(modal).find('#schedule_select').val(),
+            'date_start': $(modal).find('.irrigation_date').val(),
+            'time_start': $(modal).find('.irrigation_time').val(),
+            'end_date': $(modal).find('#end_date').val(),
         })
 
-        $('.collapse').on('show.bs.collapse', function(e) {
-            var card = $(e.target).closest('.top')
+        if (json['rules'][0]['end_date'] == '') {
+            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+            console.log(json);
+            return;
+        }
 
-            $(card).find('.if-collapsed').hide();
-            $(card).find('.if-not-collapsed').show();
-        })
-
-        var rule = {}
-        $(".ongoing-rule-edit").off().click(function(e) {
-            var card = $(e.target).closest('.top')
-            var collapse = $(card).find('#' + $(e.target).data('id'))
-
-            rule = {}
-            rule['start_values'] = {
-                'time': $(card).find('#irrigation_minutes').val(),
-                'intervals': $(card).find('#irrigation_intervals').val(),
-                'time_wait': $(card).find('#irrigation_time_wait').val(),
-                'repeat_value': $(card).find('#schedule_select').val(),
-                'date_start': $(card).find('.irrigation_date').val(),
-                'time_start': $(card).find('.irrigation_time').val(),
-                'end_date': $(card).find('#end_date').val(),
+        $.ajax({
+            url: '/add_ongoing_rule',
+            type: "post",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function(xhr, opts) {
+                $('.add-flow').addClass('disabled');
+                set_status_spinner();
+            },
+            success: function() {
+                console.log(json);
+                $('#irrigate_modal').modal('hide');
+            },
+            error: function() {
+                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+                console.log(json);
+            },
+            complete: function() {
+                $('.add-flow').removeClass('disabled');
+                set_status_ok();
             }
-
-            $(card).find('#irrigation_minutes').removeClass('disabled');
-            $(card).find('#irrigation_intervals').removeClass('disabled');
-            $(card).find('#irrigation_time_wait').removeClass('disabled');
-            $(card).find('#schedule_select').removeClass('disabled');
-            $(card).find('.irrigation_date').removeClass('disabled');
-            $(card).find('.irrigation_time').removeClass('disabled');
-            $(card).find('#end_date').removeClass('disabled');
-
-            collapse.collapse('show');
-            $(card).find('.edit-flow').show();
-            $(card).find('.show-flow').hide();
         });
+    });
 
-        $(".ongoing-rule-cancel").off().click(function(e) {
-            var card = $(e.target).closest('.top')
-            var collapse = $(card).find('#' + $(e.target).data('id'))
+    $('.ongoing-rule-save').off().on('click', function(e) {
+        var json = { 'rules': [] }
+        var card = $(e.target).closest('.top')
 
-            collapse.collapse('hide');
-            $(card).find('.edit-flow').hide();
-            $(card).find('.show-flow').show();
+        json['rules'].push({
+            'line_id': $(card).find('#line_id').data('id'),
+            'time': $(card).find('#irrigation_minutes').val(),
+            'intervals': $(card).find('#irrigation_intervals').val(),
+            'time_wait': $(card).find('#irrigation_time_wait').val(),
+            'repeat_value': $(card).find('#schedule_select').val(),
+            'date_start': $(card).find('.irrigation_date').val(),
+            'time_start': $(card).find('.irrigation_time').val(),
+            'end_date': $(card).find('#end_date').val(),
+            'rule_id': $(e.target).data('id')
+        })
 
-            $(card).find('#irrigation_minutes').addClass('disabled');
-            $(card).find('#irrigation_intervals').addClass('disabled');
-            $(card).find('#irrigation_time_wait').addClass('disabled');
-            $(card).find('#schedule_select').addClass('disabled');
-            $(card).find('.irrigation_date').addClass('disabled');
-            $(card).find('.irrigation_time').addClass('disabled');
-            $(card).find('#end_date').addClass('disabled');
+        if (json['rules'][0]['end_date'] == '') {
+            alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+            console.log(json);
+            return;
+        }
 
-            $(card).find('#irrigation_minutes').val(rule['start_values']['time']);
-            $(card).find('#irrigation_intervals').val(rule['start_values']['intervals'])
-            $(card).find('#irrigation_time_wait').val(rule['start_values']['time_wait'])
-            $(card).find('#schedule_select').val(rule['start_values']['repeat_value'])
-            $(card).find('.irrigation_date').val(rule['start_values']['date_start'])
-            $(card).find('.irrigation_time').val(rule['start_values']['time_start'])
-            $(card).find('#end_date').val(rule['start_values']['end_date'])
-            form_text($(card).find('#end_date'))
+        $.ajax({
+            url: '/edit_ongoing_rule',
+            type: "put",
+            data: JSON.stringify(json),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function(xhr, opts) {
+                $('.edit-flow').addClass('disabled');
+                $('.show-flow').addClass('disabled');
+                set_status_spinner();
+            },
+            success: function() {
+                console.log(json);
+                collapse = $(card).find('#' + $(e.target).data('id'));
+                collapse.collapse('hide');
+                $(card).find('.edit-flow').hide();
+                $(card).find('.show-flow').show();
+            },
+            error: function() {
+                alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
+                console.log(json);
+            },
+            complete: function() {
+                $('.edit-flow').removeClass('disabled');
+                $('.show-flow').removeClass('disabled');
+                set_status_ok();
+            }
         });
-    }
+    });
+
+
+    $('.collapse').off().on('hidden.bs.collapse', function(e) {
+        var card = $(e.target).closest('.top')
+
+        $(card).find('.if-collapsed').show();
+        $(card).find('.if-not-collapsed').hide();
+    })
+
+    $('.collapse').on('show.bs.collapse', function(e) {
+        var card = $(e.target).closest('.top')
+
+        $(card).find('.if-collapsed').hide();
+        $(card).find('.if-not-collapsed').show();
+    })
+
+    var rule = {}
+    $(".ongoing-rule-edit").off().click(function(e) {
+        var card = $(e.target).closest('.top')
+        var collapse = $(card).find('#' + $(e.target).data('id'))
+
+        rule = {}
+        rule['start_values'] = {
+            'time': $(card).find('#irrigation_minutes').val(),
+            'intervals': $(card).find('#irrigation_intervals').val(),
+            'time_wait': $(card).find('#irrigation_time_wait').val(),
+            'repeat_value': $(card).find('#schedule_select').val(),
+            'date_start': $(card).find('.irrigation_date').val(),
+            'time_start': $(card).find('.irrigation_time').val(),
+            'end_date': $(card).find('#end_date').val(),
+        }
+
+        $(card).find('#irrigation_minutes').removeClass('disabled');
+        $(card).find('#irrigation_intervals').removeClass('disabled');
+        $(card).find('#irrigation_time_wait').removeClass('disabled');
+        $(card).find('#schedule_select').removeClass('disabled');
+        $(card).find('.irrigation_date').removeClass('disabled');
+        $(card).find('.irrigation_time').removeClass('disabled');
+        $(card).find('#end_date').removeClass('disabled');
+
+        collapse.collapse('show');
+        $(card).find('.edit-flow').show();
+        $(card).find('.show-flow').hide();
+    });
+
+    $(".ongoing-rule-cancel").off().click(function(e) {
+        var card = $(e.target).closest('.top')
+        var collapse = $(card).find('#' + $(e.target).data('id'))
+
+        collapse.collapse('hide');
+        $(card).find('.edit-flow').hide();
+        $(card).find('.show-flow').show();
+
+        $(card).find('#irrigation_minutes').addClass('disabled');
+        $(card).find('#irrigation_intervals').addClass('disabled');
+        $(card).find('#irrigation_time_wait').addClass('disabled');
+        $(card).find('#schedule_select').addClass('disabled');
+        $(card).find('.irrigation_date').addClass('disabled');
+        $(card).find('.irrigation_time').addClass('disabled');
+        $(card).find('#end_date').addClass('disabled');
+
+        $(card).find('#irrigation_minutes').val(rule['start_values']['time']);
+        $(card).find('#irrigation_intervals').val(rule['start_values']['intervals'])
+        $(card).find('#irrigation_time_wait').val(rule['start_values']['time_wait'])
+        $(card).find('#schedule_select').val(rule['start_values']['repeat_value'])
+        $(card).find('.irrigation_date').val(rule['start_values']['date_start'])
+        $(card).find('.irrigation_time').val(rule['start_values']['time_start'])
+        $(card).find('#end_date').val(rule['start_values']['end_date'])
+        form_text($(card).find('#end_date'))
+    });
+}
