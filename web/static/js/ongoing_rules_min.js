@@ -157,21 +157,31 @@ function form_text(el_in) {
     var options = {
         weekday: "long",
         month: "short",
-        day: "numeric",
-        timeZone: 'UTC'
+        day: "numeric"//,
+        // timeZone: 'UTC'
     };
 
-    var date = new Date($(card).find("#end_date").val());
+    var date = convertDateToUTC(new Date($(card).find("#end_date").val()));
+    var now = new Date();
+    var text = "";
+    if (daydiff(now, date) == 0) {
+        text = "сьогодні";
+    } else if (daydiff(now, date) == 1) {
+        text = "завтра";
+    } else if (daydiff(now, date) == 2) {
+        text = "післязавтра";
+    } else {
+        text = date.toLocaleTimeString("uk-UA", options);
+    }
 
-    console.log(schedule_val);
     if (schedule_val == 4) {
         $(card).find("#summary").html(
-            schedule_text + ', ' + date.toLocaleDateString("uk-UA", options) + ' O ' + time + '.</br>' +
+            schedule_text + ', ' + text + '. O ' + time + '.</br>' +
             interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
         );
     } else {
         $(card).find("#summary").html(
-            schedule_text + ' о ' + time + ', ' + 'до ' + date.toLocaleDateString("uk-UA", options) + ' включно.' + '</br>' +
+            schedule_text + ' о ' + time + ', ' + 'до ' + text + ' включно.' + '</br>' +
             interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
         );
     }
