@@ -76,10 +76,6 @@ $(document).ready(function() {
 
     // http://rosskevin.github.io/bootstrap-material-design/components/card/
 
-    // $('#irrigate_modal').on('hidden.bs.modal', function() {
-    //     update_branches_request();
-    // })
-
     $(".btn-open-modal").click(function() {
         index = $(this).data('id');
         name = branch[index]['name'];

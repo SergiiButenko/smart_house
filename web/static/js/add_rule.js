@@ -28,26 +28,31 @@ $(document).ready(function() {
     });
 
     $("#go_plan").click(function() {
-        var json = { 'list': {} }
+        var json = { 'rules': [] }
 
         $(".card").each(function() {
-            branch_id = $(this).data('branch_id');
-            time = $(this).find('.irrigation_minutes').val();
-            interval = $(this).find('.irrigation_intervals').val();
-            time_wait = $(this).find('.irrigation_time_wait').val();
-            date_start = $(this).find('.irrigation_date').val();
-            time_start = $(this).find('.irrigation_time').val();
-            json.list[branch_id] = {
-                "branch_id": branch_id,
+            var branch_id = $(this).data('branch_id');
+            var name = $(this).find('h4:first').text();
+            var time = $(this).find('.irrigation_minutes').val();
+            var interval = $(this).find('.irrigation_intervals').val();
+            var time_wait = $(this).find('.irrigation_time_wait').val();
+            var date_start = $(this).find('.irrigation_date').val();
+            var time_start = $(this).find('.irrigation_time').val();
+            json['rules'].push({
+                "line_id": branch_id,
+                'line_name': name,
                 "time": time,
-                "interval": interval,
+                "intervals": interval,
                 "time_wait": time_wait,
-                "datetime_start": date_start + " " + time_start
-            }
+                "date_start": date_start,
+                'time_start': time_start,
+                'end_date': date_start,
+                'repeat_value': 4
+            });
         });
-
+        
         $.ajax({
-            url: '/add_rule',
+            url: '/add_ongoing_rule',
             type: "post",
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",

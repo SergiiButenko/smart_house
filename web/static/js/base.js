@@ -54,25 +54,30 @@ $(document).ready(function() {
     });
 
     $(".plan").click(function() {
-        var json = { 'list': {} }
+        var json = { 'rules': [] }
         var modal = $(this).closest("#plann_modal")
         
-        branch_id = $(modal).find('#branch_select_plann_modal option:selected').val();
-        time = $(modal).find('#irrigation_minutes_plann_modal').val();
-        interval = $(modal).find('#irrigation_intervals_plann_modal').val();
-        time_wait = $(modal).find('#irrigation_time_wait_plann_modal').val();
-        date_start = $(modal).find('.irrigation_date_plann_modal').val();
-        time_start = $(modal).find('.irrigation_time_plann_modal').val();
-        json.list[branch_id] = {
-            "branch_id": branch_id,
-            "time": time,
-            "interval": interval,
-            "time_wait": time_wait,
-            "datetime_start": date_start + " " + time_start
-        }
+        var branch_id = $(modal).find('#branch_select_plann_modal option:selected').val();
+        var name = $(modal).find('#branch_select_plann_modal option:selected').text();
+        var time = $(modal).find('#irrigation_minutes_plann_modal').val();
+        var interval = $(modal).find('#irrigation_intervals_plann_modal').val();
+        var time_wait = $(modal).find('#irrigation_time_wait_plann_modal').val();
+        var date_start = $(modal).find('.irrigation_date_plann_modal').val();
+        var time_start = $(modal).find('.irrigation_time_plann_modal').val();
+        json['rules'].push({
+                "line_id": branch_id,
+                'line_name': name,
+                "time": time,
+                "intervals": interval,
+                "time_wait": time_wait,
+                "date_start": date_start,
+                'time_start': time_start,
+                'end_date': date_start,
+                'repeat_value': 4
+            });
 
         $.ajax({
-            url: '/add_rule',
+            url: '/add_ongoing_rule',
             type: "post",
             data: JSON.stringify(json),
             contentType: "application/json; charset=utf-8",
@@ -162,38 +167,40 @@ function set_status_error() {
     $(".card-irrigation").addClass(class_err.class);
     $(".card-lighting").addClass(class_err.class);
 
-    $(".btn-open-modal").addClass('disabled');
-    $(".btn-start").addClass('disabled');
-
+    // $(".btn-open-modal").addClass('disabled');
+    // $(".btn-start").addClass('disabled');
+    $(".btn").addClass('disabled');
     $(".status-span").css('display', 'inline-block');
 }
 
 function set_status_ok() {
-    $(".card-irrigation").removeClass(class_err.class);
-    $(".card-lighting").removeClass(class_err.class);
+    $(".btn").removeClass('disabled');
+    // $(".card-irrigation").removeClass(class_err.class);
+    // $(".card-lighting").removeClass(class_err.class);
 
-    $(".btn-open-modal").removeClass('disabled');
-    $(".btn-start").removeClass('disabled');
-    $(".stop-lighting").removeClass('disabled');
-    $(".stop-power_outlet").removeClass('disabled');
-    $(".stop-irrigation").removeClass('disabled');
-    $(".cancel-irrigation").removeClass('disabled');
+    // $(".btn-open-modal").removeClass('disabled');
+    // $(".btn-start").removeClass('disabled');
+    // $(".stop-lighting").removeClass('disabled');
+    // $(".stop-power_outlet").removeClass('disabled');
+    // $(".stop-irrigation").removeClass('disabled');
+    // $(".cancel-irrigation").removeClass('disabled');
 
     $(".status-span").hide();
-    $(".btn-open-modal").show();
-    $(".btn-modal").removeClass('disabled');
+    // $(".btn-open-modal").show();
+    // $(".btn-modal").removeClass('disabled');
 }
 
 function set_status_spinner() {
-    $(".btn-open-modal").addClass('disabled');
-    $(".btn-start").addClass('disabled');
-    $(".cancel-irrigation").addClass('disabled');
+    $(".btn").addClass('disabled');
+    // $(".btn-open-modal").addClass('disabled');
+    // $(".btn-start").addClass('disabled');
+    // $(".cancel-irrigation").addClass('disabled');
     
 
-    $(".stop-lighting").addClass('disabled');
-    $(".stop-power_outlet").addClass('disabled');
-    $(".stop-irrigation").addClass('disabled');
-    $(".btn-modal").addClass('disabled');
+    // $(".stop-lighting").addClass('disabled');
+    // $(".stop-power_outlet").addClass('disabled');
+    // $(".stop-irrigation").addClass('disabled');
+    // $(".btn-modal").addClass('disabled');
 }
 
 // Comming from template

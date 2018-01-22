@@ -148,25 +148,45 @@ function form_text(el_in) {
     var card = $(el_in).closest('.top')
 
     var schedule_text = $(card).find('#schedule_select option:selected').attr('title');
+    var schedule_val = $(card).find('#schedule_select option:selected').val();
     var time = $(card).find('.irrigation_time').val();
     var minutes = $(card).find('#irrigation_minutes').val();
     var interval = $(card).find('#irrigation_intervals').val();
     var time_wait = $(card).find('#irrigation_time_wait').val();
 
-    var options = {
+    var options_date = {
         weekday: "long",
         month: "short",
-        day: "numeric",
-        timeZone: 'UTC'
+        day: "numeric"
     };
 
-    var now = new Date($(card).find("#end_date").val());
-    var text = 'до ' + now.toLocaleDateString("uk-UA", options) + ' включно.'
+    var date = convertDateToUTC(new Date($(card).find("#end_date").val()));
+    var now = new Date();
+    var text = "";
+    if (daydiff(now, date) == 0) {
+        text = "сьогодні,";
+    } else if (daydiff(now, date) == 1) {
+        text = "завтра,";
+    } else if (daydiff(now, date) == 2) {
+        text = "післязавтра,";
+    } else {
+        text = date.toLocaleDateString("uk-UA", options_date);
+    }
 
-    $(card).find("#summary").html(
-        schedule_text + ' о ' + time + ', ' + text + '</br>' +
-        interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
-    );
+    if (schedule_val == 4) {
+        $(card).find("#summary").html(
+            schedule_text + ', ' + text + ' o ' + time + '.</br>' +
+            interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+        );
+    } else {
+        $(card).find("#summary").html(
+            schedule_text + ' о ' + time + ', ' + 'до ' + text + ' включно.' + '</br>' +
+            interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
+        );
+    }
+
+
+
 }
 
 function set_events() {
@@ -253,10 +273,10 @@ function set_events() {
 
 
     $('.add-ongoing-rule').off().on('click', function(e) {
-        var json = { 'rule': {} }
+        var json = { 'rules': [] }
         var modal = $('#irrigate_modal');
 
-        json['rule'] = {
+        json['rules'].push({
             'line_id': $(modal).find('#branch_select').val(),
             'line_name': $(modal).find('#branch_select').find("option:selected").text(),
             'time': $(modal).find('#irrigation_minutes').val(),
@@ -266,9 +286,9 @@ function set_events() {
             'date_start': $(modal).find('.irrigation_date').val(),
             'time_start': $(modal).find('.irrigation_time').val(),
             'end_date': $(modal).find('#end_date').val(),
-        }
+        })
 
-        if (json['rule']['end_date'] == '') {
+        if (json['rules'][0]['end_date'] == '') {
             alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
             return;
@@ -313,7 +333,7 @@ function set_events() {
             'rule_id': $(e.target).data('id')
         })
 
-        if (json['rule'][0]['end_date'] == '') {
+        if (json['rules'][0]['end_date'] == '') {
             alert("Сталася помилка. Перевірте дані і спробуйте ще раз");
             console.log(json);
             return;
