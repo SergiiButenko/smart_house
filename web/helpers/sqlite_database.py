@@ -22,12 +22,6 @@ QUERY['get_table_body_only'] = (
     "WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.state = rule_state.id "
     "order by l.id, l.timer desc, l.interval_id")
 
-QUERY['ongoing_rules_table'] = (
-    "SELECT w.id, dw.name, li.name, rule_type.name, \"time\" as \"[timestamp]\", \"interval\", w.active "
-    "FROM week_schedule as w, day_of_week as dw, lines as li, type_of_rule as rule_type "
-    "WHERE  w.day_number = dw.num AND w.line_id = li.number AND w.rule_id = rule_type.id "
-    "ORDER BY w.day_number, w.time")
-
 QUERY['history'] = (
     "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "
     "FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state "
@@ -50,7 +44,7 @@ QUERY['ongoing_rules'] = (
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, "
     "r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
     "FROM ongoing_rules as r, lines as l "
-    "WHERE r.line_id = l.number AND r.end_date>=datetime('now', 'localtime') "
+    "WHERE r.line_id = l.number AND r.end_date>=date('now', 'localtime') "
     "ORDER BY r.date_time_start")
 
 QUERY['add_ongoing_rule'] = (
@@ -122,10 +116,6 @@ QUERY['edit_ongoing_rule_ongoing'] = (
     "WHERE rule_id = '{7}'")
 
 QUERY['remove_rule'] = "DELETE from life WHERE id={0}"
-
-# QUERY['remove_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
-
-# QUERY['edit_ongoing_rule'] = "DELETE from week_schedule WHERE id={0}"
 
 QUERY['cancel_rule_1'] = "SELECT l.interval_id, li.name, l.ongoing_rule_id FROM life AS l, lines AS li WHERE l.id = {0} AND l.line_id = li.number"
 QUERY['cancel_rule_2'] = "UPDATE life SET state = 4 WHERE interval_id = '{0}' AND state = 1"
