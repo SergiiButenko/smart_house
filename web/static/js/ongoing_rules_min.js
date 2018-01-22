@@ -170,7 +170,7 @@ function form_text(el_in) {
     } else if (daydiff(now, date) == 2) {
         text = "післязавтра.";
     } else {
-        text = date.toLocaleTimeString("uk-UA", options_date);
+        text = date.toLocaleTimeString("uk-UA", {weekday: "long", month: "short", day: "numeric"});
     }
 
     if (schedule_val == 4) {
