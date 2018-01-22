@@ -48,7 +48,7 @@ QUERY['ongoing_rules'] = (
     # "WHERE r.line_id = l.number and (date(r.date_time_start) = date(r.end_date) and time('now', 'localtime') >= time(r.date_time_start)) "
     # "ORDER BY r.date_time_start;")
     "SELECT r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
-    "FROM ongoing_rules as r, lines as l WHERE r.line_id = l.number AND (date(r.end_date) >= datetime('now', 'localtime')) "
+    "FROM ongoing_rules as r, lines as l WHERE r.line_id = l.number AND (date(r.end_date) >= date('now', 'localtime')) "
     "EXCEPT select r.id, r.line_id, r.time, r.intervals, r.time_wait, r.repeat_value, r.date_time_start, r.end_date, r.active, l.name, r.rule_id "
     "FROM ongoing_rules as r, lines as l WHERE r.line_id = l.number and date(r.date_time_start) = date('now', 'localtime') "
     "and date(r.date_time_start) = date(r.end_date) and time('now', 'localtime') >= time(r.date_time_start) ORDER BY r.date_time_start;")
