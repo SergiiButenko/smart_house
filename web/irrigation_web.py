@@ -238,7 +238,7 @@ def history():
     if 'days' in request.args:
         days = int(request.args.get('days'))
     else:
-        days = 60
+        days = 30
 
     list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
     rows = []
@@ -271,46 +271,46 @@ def history():
     return template
 
 
-@app.route("/add_rule", methods=['POST'])
-def add_rule():
-    """Used in add rule modal window."""
-    content = request.json['list']
+# @app.route("/add_rule", methods=['POST'])
+# def add_rule():
+#     """Used in add rule modal window."""
+#     content = request.json['list']
 
-    for rule in content:
-        rule = content[rule]
-        branch_id = int(rule['branch_id'])
-        time_min = int(rule['time'])
-        start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
-        time_wait = int(rule['time_wait'])
-        num_of_intervals = int(rule['interval'])
+#     for rule in content:
+#         rule = content[rule]
+#         branch_id = int(rule['branch_id'])
+#         time_min = int(rule['time'])
+#         start_time = datetime.datetime.strptime(rule['datetime_start'], "%Y-%m-%d %H:%M")
+#         time_wait = int(rule['time_wait'])
+#         num_of_intervals = int(rule['interval'])
 
-        interval_id = str(uuid.uuid4())
+#         interval_id = str(uuid.uuid4())
 
-        now = datetime.datetime.now()
-        stop_time = start_time + datetime.timedelta(minutes=time_min)
+#         now = datetime.datetime.now()
+#         stop_time = start_time + datetime.timedelta(minutes=time_min)
 
-        database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-        database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+#         database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+#         database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
 
-        # first interval is executed
-        for x in range(2, num_of_intervals + 1):
-            start_time = stop_time + datetime.timedelta(minutes=time_wait)
-            stop_time = start_time + datetime.timedelta(minutes=time_min)
-            database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
-            database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
-            logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
+#         # first interval is executed
+#         for x in range(2, num_of_intervals + 1):
+#             start_time = stop_time + datetime.timedelta(minutes=time_wait)
+#             stop_time = start_time + datetime.timedelta(minutes=time_min)
+#             database.update(database.QUERY[mn()].format(branch_id, 1, 1, now.date(), start_time, interval_id, time_min))
+#             database.update(database.QUERY[mn()].format(branch_id, 2, 1, now.date(), stop_time, interval_id, 0))
+#             logging.info("Start time: {0}. Stop time: {1} added to database".format(str(start_time), str(stop_time)))
 
-    update_all_rules()
+#     update_all_rules()
 
-    try:
-        response_status = garden_controller.branch_status()
+#     try:
+#         response_status = garden_controller.branch_status()
 
-        arr = form_responce_for_branches(response_status)
-        send_branch_status_message('branch_status', arr)
-    except Exception as e:
-        logging.error(e)
-        logging.error("Can't send updated rules. Exception occured")
-    return json.dumps({'status': 'OK'})
+#         arr = form_responce_for_branches(response_status)
+#         send_branch_status_message('branch_status', arr)
+#     except Exception as e:
+#         logging.error(e)
+#         logging.error("Can't send updated rules. Exception occured")
+#     return json.dumps({'status': 'OK'})
 
 
 @app.route("/cancel_rule")
