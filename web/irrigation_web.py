@@ -36,7 +36,7 @@ CACHE_TIMEOUT = 300
 cache = SimpleCache()
 
 
-class Cached(object):
+class cached(object):
     """Cache."""
 
     def __init__(self, timeout=None):
