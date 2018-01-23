@@ -425,7 +425,7 @@ def ongoing_rules():
         logging.info(end_dt)
 
         now = datetime.now()
-        if start_dt.date() == end_dt.date()
+        if start_dt.date() == end_dt.date():
             if end_dt.date() - now.date() == 0:
                 days = 0
             if end_dt.date() - now.date() == 1:
