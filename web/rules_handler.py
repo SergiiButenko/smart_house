@@ -174,13 +174,12 @@ def enable_rule():
         logging.info("Updating rules on start.")
         update_all_rules()
         logging.debug("rules updated")
+        rules_to_log()
 
         now_time = datetime.datetime.now()
         while True:
             # logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))
             sync_rules_from_redis()
-            rules_to_log()
-
             time.sleep(10)
 
             for rule in RULES_FOR_BRANCHES:
