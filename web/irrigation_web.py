@@ -34,6 +34,7 @@ cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 DEBUG = False
 
 CACHE_TIMEOUT = 300
+
 def update_all_rules():
     """Set next active rules for all branches."""
     try:
@@ -123,6 +124,7 @@ def update_rules():
 
 
 @app.route("/")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def index():
     """Index page."""
     branch_list = []
@@ -139,6 +141,7 @@ def index():
 
 
 @app.route("/branch_settings")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def branch_settings():
     """Return branch names."""
     branch_list = []
@@ -156,6 +159,7 @@ def branch_settings():
 
 
 @app.route("/lighting")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def lighting():
     """Return branch names."""
     branch_list = []
@@ -170,6 +174,7 @@ def lighting():
 
 
 @app.route("/lighting_settings")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def lighting_settings():
     """Return branch names."""
     branch_list = []
@@ -184,6 +189,7 @@ def lighting_settings():
 
 
 @app.route("/power_outlets")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def power_outlets():
     """Return branch names."""
     branch_list = []
@@ -198,6 +204,7 @@ def power_outlets():
 
 
 @app.route("/power_outlets_settings")
+@cache.cached(timeout=CACHE_TIMEOUT)
 def power_outlets_settings():
     """Return branch names."""
     branch_list = []
@@ -846,7 +853,7 @@ def deactivate_branch():
 
 
 @app.route("/weather")
-@cache.cached(timeout=60*5)
+@cache.cached(timeout=CACHE_TIMEOUT)
 def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])[0][0]
