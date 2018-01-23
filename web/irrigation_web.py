@@ -3,6 +3,7 @@
 from flask import Flask
 from flask import jsonify, request, render_template
 from flask import abort
+from flask.ext.cache import Cache
 from eventlet import wsgi
 import eventlet
 from flask_socketio import SocketIO
@@ -29,6 +30,7 @@ logging.getLogger('engineio').setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
+cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 
 DEBUG = False
 
@@ -844,6 +846,7 @@ def deactivate_branch():
 
 
 @app.route("/weather")
+@cache.cached(timeout=60*5)
 def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])[0][0]
