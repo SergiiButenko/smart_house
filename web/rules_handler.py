@@ -179,6 +179,7 @@ def enable_rule():
         while True:
             # logging.info("enable_rule_daemon heartbeat. RULES_FOR_BRANCHES: {0}".format(str(RULES_FOR_BRANCHES)))
             sync_rules_from_redis()
+            rules_to_log()
 
             time.sleep(10)
 
