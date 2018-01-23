@@ -89,12 +89,32 @@
 {% block container %}
 <div id="card-holder">
     <div class="row">
+    <h6 id='no_card' class="card-block">Сьгодні</h6>
         {% for n in my_list %}
-        {% include "ongoing_rule_single.html" with context %}
+            {% if n['days'] == 0 %}
+                {% include "ongoing_rule_single.html" with context %}
+            {% endif %}
         {% endfor %}
+    </div>
+    <div class="row">
+    <h6 id='no_card' class="card-block">Завтра</h6>
+        {% for n in my_list %}
+            {% if n['days'] == 1 %}
+                {% include "ongoing_rule_single.html" with context %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="row">
+    <h6 id='no_card' class="card-block">Інші</h6>
+        {% for n in my_list %}
+            {% if n['days'] == -1 %}
+                {% include "ongoing_rule_single.html" with context %}
+            {% endif %}
+        {% endfor %}
+    </div>
         <div id='last_card'></div>
         <h6 id='no_card' class="card-block" style="display: none">Всi правила виконанi або Ви нiчого не додали.</h6>
-    </div>
+    
 </div></br>
 
 <button type="button" class="btn btn-raised btn-block btn-primary btn-open-modal">

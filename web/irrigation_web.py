@@ -414,6 +414,23 @@ def ongoing_rules():
         end_date = row[7]
         active = row[8]
         name = row[9]
+        days = -1
+
+        logging.info(date_time_start)
+        logging.info(end_date)
+
+        start_dt = convert_to_datetime(date_time_start)
+        end_dt = convert_to_datetime(end_date)
+        logging.info(start_dt)
+        logging.info(end_dt)
+
+        now = datetime.now()
+        if start_dt.date() == end_dt.date()
+            if end_dt.date() - now.date() == 0:
+                days = 0
+            if end_dt.date() - now.date() == 1:
+                days = 1
+
         rows.append({
             'rule_id': rule_id,
             'line_id': line_id,
@@ -424,7 +441,8 @@ def ongoing_rules():
             'date_time_start': str(date_time_start),
             'end_date': str(end_date),
             'active': active,
-            'line_name': name})
+            'line_name': name,
+            'days': days})
     template = render_template('ongoing_rules.html', my_list=rows)
     return template
 
