@@ -8,6 +8,7 @@ from eventlet import wsgi
 import eventlet
 from flask_socketio import SocketIO
 from flask_socketio import emit
+from werkzeug.contrib.cache import SimpleCache
 import datetime
 import json
 import requests
@@ -15,7 +16,6 @@ import logging
 import uuid
 import pytemperature
 import time
-import copy
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
@@ -33,6 +33,28 @@ socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
 cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 
 DEBUG = False
+
+CACHE_TIMEOUT = 300
+cache = SimpleCache()
+
+
+class cached(object):
+    """Cache."""
+
+    def __init__(self, timeout=None):
+        """Constructor."""
+        self.timeout = timeout or CACHE_TIMEOUT
+
+    def __call__(self, f):
+        """Decorator."""
+        def decorator(*args, **kwargs):
+            response = cache.get(request.path)
+            if response is None:
+                response = f(*args, **kwargs)
+                cache.set(request.path, response, self.timeout)
+            return response
+        return decorator
+
 
 def update_all_rules():
     """Set next active rules for all branches."""
@@ -139,6 +161,7 @@ def index():
 
 
 @app.route("/branch_settings")
+#@cached()
 def branch_settings():
     """Return branch names."""
     branch_list = []
@@ -156,6 +179,7 @@ def branch_settings():
 
 
 @app.route("/lighting")
+#@cached()
 def lighting():
     """Return branch names."""
     branch_list = []
@@ -170,6 +194,7 @@ def lighting():
 
 
 @app.route("/lighting_settings")
+#@cached()
 def lighting_settings():
     """Return branch names."""
     branch_list = []
@@ -184,6 +209,7 @@ def lighting_settings():
 
 
 @app.route("/power_outlets")
+#@cached()
 def power_outlets():
     """Return branch names."""
     branch_list = []
@@ -198,6 +224,7 @@ def power_outlets():
 
 
 @app.route("/power_outlets_settings")
+#@cached()
 def power_outlets_settings():
     """Return branch names."""
     branch_list = []
@@ -235,6 +262,7 @@ def add_rule_page():
 
 
 @app.route("/history")
+#@cached()
 def history():
     """Return history page if no parameters passed and only table body if opposite."""
     if 'days' in request.args:
@@ -335,7 +363,7 @@ def cancel_rule():
     # branch_name = res[1]
     # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
     database.update(database.QUERY[mn() + '_2'].format(interval_id))
-    
+
     res = database.select(database.QUERY[mn() + "_select_ongoing_rule"].format(ongoing_rule_id), 'fetchone')
     if res is None:
         logging.info('No intervals for {0} ongoing rule. Remove it'.format(ongoing_rule_id))
@@ -852,7 +880,7 @@ def weather():
     rain = database.select(database.QUERY[mn()])[0][0]
     if rain is None:
         rain = 0
-    
+
     rain_status = 0
     if rain < RAIN_MAX:
         rain_status = 1
