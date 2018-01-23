@@ -88,24 +88,24 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
-    <div class="row">
     <h6 id='no_card' class="card-block">Сьгодні</h6>
+    <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 0 %}
                 {% include "ongoing_rule_single.html" with context %}
             {% endif %}
         {% endfor %}
     </div>
-    <div class="row">
     <h6 id='no_card' class="card-block">Завтра</h6>
+    <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 1 %}
                 {% include "ongoing_rule_single.html" with context %}
             {% endif %}
         {% endfor %}
     </div>
-    <div class="row">
     <h6 id='no_card' class="card-block">Інші</h6>
+    <div class="row">
         {% for n in my_list %}
             {% if n['days'] == -1 %}
                 {% include "ongoing_rule_single.html" with context %}
