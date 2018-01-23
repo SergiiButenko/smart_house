@@ -159,7 +159,7 @@ def index():
 
 
 @app.route("/branch_settings")
-@cached()
+#@cached()
 def branch_settings():
     """Return branch names."""
     branch_list = []
@@ -177,7 +177,7 @@ def branch_settings():
 
 
 @app.route("/lighting")
-@cached()
+#@cached()
 def lighting():
     """Return branch names."""
     branch_list = []
@@ -192,7 +192,7 @@ def lighting():
 
 
 @app.route("/lighting_settings")
-@cached()
+#@cached()
 def lighting_settings():
     """Return branch names."""
     branch_list = []
@@ -207,7 +207,7 @@ def lighting_settings():
 
 
 @app.route("/power_outlets")
-@cached()
+#@cached()
 def power_outlets():
     """Return branch names."""
     branch_list = []
@@ -222,7 +222,7 @@ def power_outlets():
 
 
 @app.route("/power_outlets_settings")
-@cached()
+#@cached()
 def power_outlets_settings():
     """Return branch names."""
     branch_list = []
@@ -260,7 +260,7 @@ def add_rule_page():
 
 
 @app.route("/history")
-@cached()
+#@cached()
 def history():
     """Return history page if no parameters passed and only table body if opposite."""
     if 'days' in request.args:
@@ -872,7 +872,7 @@ def deactivate_branch():
 
 
 @app.route("/weather")
-@cached()
+#@cached()
 def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])[0][0]
