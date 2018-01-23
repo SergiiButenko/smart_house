@@ -89,7 +89,6 @@
 {% block container %}
 <div id="card-holder">
     <h5>Сьгодні</h5>
-    <h4>Сьгодні</h4>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 0 %}
@@ -98,7 +97,7 @@
         {% endfor %}
     </div>
     <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-    <h6>Завтра</h6>
+    <h5>Завтра</h5>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 1 %}
@@ -107,7 +106,7 @@
         {% endfor %}
     </div>
     <hr style="margin-top: 2rem; margin-bottom: 2rem" />
-    <h6>Інші</h6>
+    <h5>Усі інші</h5>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == -1 %}
