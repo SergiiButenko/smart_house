@@ -33,7 +33,7 @@ cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 
 DEBUG = False
 
-CACHE_TIMEOUT = 300
+CACHE_TIMEOUT = 600
 
 def update_all_rules():
     """Set next active rules for all branches."""
