@@ -88,7 +88,7 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
-    <h6 id='no_card' class="card-block">Сьгодні</h6>
+    <h6>Сьгодні</h6>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 0 %}
@@ -96,7 +96,7 @@
             {% endif %}
         {% endfor %}
     </div>
-    <h6 id='no_card' class="card-block">Завтра</h6>
+    <h6>Завтра</h6>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == 1 %}
@@ -104,7 +104,7 @@
             {% endif %}
         {% endfor %}
     </div>
-    <h6 id='no_card' class="card-block">Інші</h6>
+    <h6>Інші</h6>
     <div class="row">
         {% for n in my_list %}
             {% if n['days'] == -1 %}

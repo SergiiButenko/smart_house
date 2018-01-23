@@ -416,15 +416,12 @@ def ongoing_rules():
         name = row[9]
         days = -1
 
-        logging.info(date_time_start)
-        logging.info(end_date)
-
         start_dt = convert_to_datetime(date_time_start)
         end_dt = convert_to_datetime(end_date)
-        logging.info(start_dt)
-        logging.info(end_dt)
-
+        
         now = datetime.datetime.now()
+        logging.info(start_dt.date() == end_dt.date())
+        logging.info(end_dt.date() - now.date())
         if start_dt.date() == end_dt.date():
             if end_dt.date() - now.date() == 0:
                 days = 0
