@@ -83,7 +83,7 @@ def convert_to_datetime(value):
     except:
         pass
 
-    # 'date_start': '06:15',
+    # 2018-01-23 22:00:00
     try:
         value = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
     except:
