@@ -159,6 +159,13 @@ def send_to_viber_bot(rule):
         raise e
 
 
+def rules_to_log():
+    for rule in RULES_FOR_BRANCHES:
+        if rule is None:
+            continue
+        logging.info("Rule '{0}' is planned to be executed".format(str(rule)))
+
+
 def enable_rule():
     """Synch with redis each 10 seconds. Execute rules if any."""
     try:
@@ -181,7 +188,7 @@ def enable_rule():
 
                 delta = datetime.datetime.now() - now_time
                 if delta.seconds >= 60 * 10:
-                    logging.info("Rule '{0}' is planned to be executed".format(str(rule)))
+                    rules_to_log()
                     now_time = datetime.datetime.now()
 
                 if (datetime.datetime.now() >= (rule['timer'] - datetime.timedelta(minutes=VIBER_SENT_TIMEOUT))):
