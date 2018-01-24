@@ -62,7 +62,7 @@ $(document).ready(function() {
             },
             success: function() {
                 $('#go_plan').removeClass("disabled");
-                window.location.replace("/#");
+                window.location.replace("/ongoing_rules");
             },
             error: function() {
                 alert("error");
