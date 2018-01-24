@@ -480,11 +480,10 @@ function move_rule(rule, possition) {
 
     if (possition == 0) {
         var children = today.children();
-        if (children.length == 0) {
-            console.log('here')
+        if (children.length == 0) {            
             $(today).prepend(rule);
         } else {
-            children.last().prepend(rule);
+            $(today).prepend(rule);
         }
     }
 
