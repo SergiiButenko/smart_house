@@ -361,7 +361,7 @@ def cancel_rule():
         abort(500)
 
     logging.info("Rule {0} canceled".format(id))
-    return render_template('index.html')
+    return {'status': 'OK'}
 
 
 # def ongoing_rules_table():
@@ -497,6 +497,8 @@ def update_rules_from_ongoing_rules(rule):
 def add_ongoing_rule():
     """Used in add rule modal window."""
     rules = request.json['rules']
+    now = datetime.datetime.now()
+
     for rule in rules:
         rule['line_id'] = int(rule['line_id'])
         rule['line_name'] = rule['line_name']
@@ -511,6 +513,14 @@ def add_ongoing_rule():
         rule['end_date'] = convert_to_datetime(rule['end_date'])
         rule['active'] = 1
         rule['rule_id'] = str(uuid.uuid4())
+        rule['days'] = -1
+
+        if rule['date_start'].date() == rule['end_date'].date():
+            date_delta = rule['end_date'].date() - now.date()
+            if date_delta.days == 0:
+                rule['days'] = 0
+            if date_delta.days == 1:
+                rule['days'] = 1
 
         # "INSERT INTO life(line_id, time, intervals, time_wait, repeat_value, date_start, "
         # "time_start, end_date, active, rule_id) "
@@ -526,7 +536,9 @@ def add_ongoing_rule():
         logging.info("Ongoing rule added. {0}".format(str(rule)))
 
         template = render_template('ongoing_rule_single.html', n=rule)
-        send_ongoing_rule_message('add_ongoing_rule', {'template': template, 'rule_id': rule['rule_id']})
+        send_ongoing_rule_message(
+            'add_ongoing_rule',
+            {'template': template, 'rule_id': rule['rule_id'], 'days': rule['days']})
 
     update_all_rules()
     try:
@@ -558,6 +570,8 @@ def remove_ongoing_rule():
 def edit_ongoing_rule():
     """User can edit ongoing rule from ui."""
     rules = request.json['rules']
+    now = datetime.datetime.now()
+
     for rule in rules:
         rule['line_id'] = int(rule['line_id'])
         rule['time'] = convert_to_datetime(rule['time'])
@@ -570,6 +584,14 @@ def edit_ongoing_rule():
             rule['date_start'], rule['time_start'].time())
         rule['end_date'] = convert_to_datetime(rule['end_date'])
         rule['rule_id'] = rule['rule_id']
+        rule['days'] = -1
+
+        if rule['date_start'].date() == rule['end_date'].date():
+            date_delta = rule['end_date'].date() - now.date()
+            if date_delta.days == 0:
+                rule['days'] = 0
+            if date_delta.days == 1:
+                rule['days'] = 1
 
         # "UPDATE ongoing_rules
         # SET line_id = {0}, time = {1}, intervals = {2}, time_wait = {3}, repeat_value={4}, date_time_start='{5}'"

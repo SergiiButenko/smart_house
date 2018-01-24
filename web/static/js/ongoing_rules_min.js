@@ -16,6 +16,7 @@ $(document).ready(function() {
         var rule = msg['rule'];
         $('.top').each(function() {
             if ($(this).data('id') == rule['rule_id']) {
+                move_rule($(this), rule['days']);
                 $(this).find('#irrigation_minutes').val(rule['time']);
                 $(this).find('#irrigation_intervals').val(rule['intervals']);
                 $(this).find('#irrigation_time_wait').val(rule['time_wait']);
@@ -58,7 +59,8 @@ $(document).ready(function() {
         $(msg['rule']['template']).insertBefore('#last_card');
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
-
+                move_rule($(this), msg['rule']['days']);
+                
                 schedule_select = $(this).find('#schedule_select');
                 $(schedule_select).val($(schedule_select).data('value'));
 
@@ -467,4 +469,39 @@ function set_events() {
         $(card).find('#end_date').val(rule['start_values']['end_date'])
         form_text($(card).find('#end_date'))
     });
+}
+
+function move_rule(rule, possition) {
+    var today = $('.today');
+    var tomorrow = $('.tomorrow');
+    var others = $('.others');
+
+    rule.detach();
+
+    if (possition == 0) {
+        var children = $(today).children();
+        if (children.length() == 0) {
+            $(today).prepend(rule);
+        } else {
+            children.last().prepend(rule);
+        }
+    }
+
+    if (possition == 1) {
+        var children = $(tomorrow).children();
+        if (children.length() == 0) {
+            $(tomorrow).prepend(rule);
+        } else {
+            children.last().prepend(rule);
+        }
+    }
+
+    if (possition == -1) {
+        var children = $(others).children();
+        if (children.length() == 0) {
+            $(others).prepend(rule);
+        } else {
+            children.last().prepend(rule);
+        }
+    }
 }
