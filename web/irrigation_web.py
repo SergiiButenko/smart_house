@@ -364,36 +364,6 @@ def cancel_rule():
     return {'status': 'OK'}
 
 
-# def ongoing_rules_table():
-#     """Return only table for ongoing rules page."""
-#     list_arr = database.select(database.QUERY[mn()], 'fetchall')
-#     if (list_arr is None):
-#         list_arr = []
-
-#     rows = []
-#     for row in list_arr:
-#         id = row[0]
-#         day_number = row[1]
-#         branch_name = row[2]
-#         rule_name = row[3]
-#         time = row[4]
-#         minutes = row[5]
-#         active = row[6]
-#         rule_state = row[7]
-#         rows.append({
-#             'id': id,
-#             'branch_name': branch_name,
-#             'dow': day_number,
-#             'rule_name': rule_name,
-#             'time': time,
-#             'minutest': minutes,
-#             'active': active,
-#             'rule_state': rule_state})
-
-#     template = render_template('ongoing_rules_table_only.html', my_list=rows)
-#     return template
-
-
 @app.route("/ongoing_rules")
 def ongoing_rules():
     """Return ongoing_rules.html."""
