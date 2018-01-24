@@ -480,7 +480,8 @@ function move_rule(rule, possition) {
 
     if (possition == 0) {
         var children = today.children();
-        if (children.length() == 0) {
+        if (children.length == 0) {
+            console.log('here')
             $(today).prepend(rule);
         } else {
             children.last().prepend(rule);
@@ -489,7 +490,7 @@ function move_rule(rule, possition) {
 
     if (possition == 1) {
         var children = tomorrow.children();
-        if (children.length() == 0) {
+        if (children.length == 0) {
             $(tomorrow).prepend(rule);
         } else {
             children.last().prepend(rule);
@@ -498,7 +499,7 @@ function move_rule(rule, possition) {
 
     if (possition == -1) {
         var children = others.children();
-        if (children.length() == 0) {
+        if (children.length == 0) {
             $(others).prepend(rule);
         } else {
             children.last().prepend(rule);
