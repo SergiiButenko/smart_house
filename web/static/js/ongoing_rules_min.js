@@ -60,7 +60,7 @@ $(document).ready(function() {
         $('.top').each(function() {
             if ($(this).data('id') == msg['rule']['rule_id']) {
                 move_rule($(this), msg['rule']['days']);
-                
+
                 schedule_select = $(this).find('#schedule_select');
                 $(schedule_select).val($(schedule_select).data('value'));
 
@@ -479,7 +479,7 @@ function move_rule(rule, possition) {
     rule.detach();
 
     if (possition == 0) {
-        var children = $(today).children();
+        var children = today.children();
         if (children.length() == 0) {
             $(today).prepend(rule);
         } else {
@@ -488,7 +488,7 @@ function move_rule(rule, possition) {
     }
 
     if (possition == 1) {
-        var children = $(tomorrow).children();
+        var children = tomorrow.children();
         if (children.length() == 0) {
             $(tomorrow).prepend(rule);
         } else {
@@ -497,7 +497,7 @@ function move_rule(rule, possition) {
     }
 
     if (possition == -1) {
-        var children = $(others).children();
+        var children = others.children();
         if (children.length() == 0) {
             $(others).prepend(rule);
         } else {
