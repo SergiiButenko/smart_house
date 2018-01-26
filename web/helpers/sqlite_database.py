@@ -23,11 +23,10 @@ QUERY['get_table_body_only'] = (
     "ORDER BY l.id, l.timer desc, l.interval_id")
 
 QUERY['history'] = (
-    "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "
-    "FROM life as l, type_of_rule as rule_type, lines as li, state_of_rule as rule_state "
-    "WHERE l.rule_id = rule_type.id AND l.line_id = li.number AND l.timer >= datetime('now', 'localtime', '-{0} day') AND l.state = rule_state.id "
-    "ORDER BY l.timer DESC "
-    "LIMIT 1000")
+    "SELECT l.interval_id, li.name, l.date, l.timer as \"[timestamp]\", l.active, l.time "
+    "FROM life as l, lines as li"
+    "WHERE l.rule_id = 1 AND l.timer <= datetime('now', 'localtime', '+{7} day') AND l.line_id = li.number"
+    "ORDER BY l.timer DESC")
 
 QUERY['get_timetable_list_1'] = (
     "SELECT l.id, li.name, rule_type.name, l.state, l.date, l.timer as \"[timestamp]\", l.active, rule_state.full_name, l.time "

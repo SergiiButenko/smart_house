@@ -15,6 +15,8 @@ import logging
 import uuid
 import pytemperature
 import time
+from itertools import groupby
+from operator import itemgetter
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
@@ -247,11 +249,16 @@ def history():
     if 'days' in request.args:
         days = int(request.args.get('days'))
     else:
-        days = 30
+        days = 7
 
+    # SELECT l.interval_id, li.name, l.date, l.timer as \"[timestamp]\", l.active, l.time 
     list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
-    rows = []
     if list_arr is not None:
+        list_arr.sort(key=itemgetter(0))
+        groups = groupby(list_arr, itemgetter(1))
+        logging.info(str(groups))
+        
+        rows = []
         for row in list_arr:
             id = row[0]
             branch_name = row[1]
