@@ -256,10 +256,10 @@ def history():
     if list_arr is not None:
         list_arr.sort(key=itemgetter(0))
         groups = groupby(list_arr, itemgetter(1))
-        [[item[0] for item in data] for (key, data) in groups]
-
-        logging.info(str(groups))
-
+        for key, group in groups:
+            for thing in group:
+                print("A %s is a %s." % (thing[1], key))
+            print(" ")
         rows = []
         for row in list_arr:
             id = row[0]
