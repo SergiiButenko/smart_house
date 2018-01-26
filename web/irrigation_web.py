@@ -258,9 +258,9 @@ def history():
         groups = groupby(list_arr, itemgetter(0))
         for key, group in groups:
             for interval in group:
-                print("Interval {0}, settings {1}".format(key, interval))
-            logging.info("")
-            
+                print("Interval {0}, settings {1}".format(key, interval.__dict__))
+            logging.info("---")
+
         rows = []
         for row in list_arr:
             id = row[0]
