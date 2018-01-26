@@ -256,6 +256,8 @@ def history():
     if list_arr is not None:
         list_arr.sort(key=itemgetter(0))
         groups = groupby(list_arr, itemgetter(1))
+        [[item[0] for item in data] for (key, data) in groups]
+
         logging.info(str(groups))
 
         rows = []
