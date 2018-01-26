@@ -257,7 +257,7 @@ def history():
         list_arr.sort(key=itemgetter(0))
         groups = groupby(list_arr, itemgetter(1))
         logging.info(str(groups))
-        
+
         rows = []
         for row in list_arr:
             id = row[0]

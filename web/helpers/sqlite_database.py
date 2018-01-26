@@ -24,8 +24,8 @@ QUERY['get_table_body_only'] = (
 
 QUERY['history'] = (
     "SELECT l.interval_id, li.name, l.date, l.timer as \"[timestamp]\", l.active, l.time "
-    "FROM life as l, lines as li"
-    "WHERE l.rule_id = 1 AND l.timer <= datetime('now', 'localtime', '+{0} day') AND l.line_id = li.number"
+    "FROM life as l, lines as li "
+    "WHERE l.rule_id = 1 AND l.timer <= datetime('now', 'localtime', '+{0} day') AND l.line_id = li.number "
     "ORDER BY l.timer DESC")
 
 QUERY['get_timetable_list_1'] = (
