@@ -288,8 +288,7 @@ def history():
         for key, value in grouped_rules.items():
             value.sort(key=itemgetter('timer'))
 
-    return jsonify(rules=grouped_rules)
-    return render_template('history.html', my_list=rules)
+    return render_template('history.html', my_list=grouped_rules)
 
 
 # @app.route("/add_rule", methods=['POST'])
