@@ -17,7 +17,7 @@ import pytemperature
 import time
 from itertools import groupby
 from operator import itemgetter
-import collections
+from collections import OrderedDict
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
@@ -288,7 +288,7 @@ def history():
         for key, value in grouped_rules.items():
             value.sort(key=itemgetter('timer'))
 
-    return render_template('history.html', my_list=grouped_rules)
+    return render_template('history.html', my_list=OrderedDict(grouped_rules))
 
 
 # @app.route("/add_rule", methods=['POST'])
