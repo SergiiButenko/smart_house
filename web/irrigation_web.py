@@ -258,40 +258,49 @@ def history():
         grouped = []
         groups = groupby(list_arr, itemgetter(0))
 
-        for key, group in groups:
+        for group in groups:
             grouped.append(list([list(thing) for thing in group]))
 
-        for interval in grouped:
-            logging.info(interval)
-
-
-        rows = []
-        for row in list_arr:
+        rules = []
+        for intervals in grouped:
+            interval = len(intervals)
+            
+            row = interval[0]
             id = row[0]
-            branch_name = row[1]
-            rule_name = row[2]
-            state = row[3]
-            timer = row[5]
-            active = row[6]
-            rule_state = row[7]
-            time = row[8]
-            outdated = 0
-            if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
-                outdated = 1
+            
+            rules.append(dict(
+            branch_name=row[1],
+            date=row[2],
+            timer=row[3],
+            ative=row[4],
+            time=row[5])
+        # rows = []
+        # for row in list_arr:
+        #     id = row[0]
+        #     branch_name = row[1]
+        #     rule_name = row[2]
+        #     state = row[3]
+        #     timer = row[5]
+        #     active = row[6]
+        #     rule_state = row[7]
+        #     time = row[8]
+        #     outdated = 0
+        #     if (state == 1 and timer < datetime.datetime.now() - datetime.timedelta(minutes=1)):
+        #         outdated = 1
 
-            rows.append({
-                'id': id,
-                'branch_name': branch_name,
-                'rule_name': rule_name,
-                'state': state,
-                'time': time,
-                'timer': "{:%A, %d-%m-%y %R}".format(timer),
-                'outdated': outdated,
-                'active': active,
-                'rule_state': rule_state})
+        #     rows.append({
+        #         'id': id,
+        #         'branch_name': branch_name,
+        #         'rule_name': rule_name,
+        #         'state': state,
+        #         'time': time,
+        #         'timer': "{:%A, %d-%m-%y %R}".format(timer),
+        #         'outdated': outdated,
+        #         'active': active,
+        #         'rule_state': rule_state})
 
     template = render_template('history.html', my_list=rows)
-    return template
+    return jsonify(rules=rules)
 
 
 # @app.route("/add_rule", methods=['POST'])
