@@ -13,7 +13,7 @@ function form_text(el_in) {
 
     var time = $(card).data('timer')
     var minutes = $(card).data('time')
-    var interval = $(card).data('interval')
+    var interval = $(card).data('intervals')
     var time_wait = $(card).data('time_wait')
 
     $(card).find("#summary").html(
