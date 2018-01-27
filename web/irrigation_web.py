@@ -17,6 +17,7 @@ import pytemperature
 import time
 from itertools import groupby
 from operator import itemgetter
+import collections
 from controllers import relay_controller as garden_controller
 from helpers import sqlite_database as database
 from helpers.redis import *
@@ -31,11 +32,12 @@ logging.getLogger('engineio').setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', engineio_logger=False)
-cache = Cache(app,config={'CACHE_TYPE': 'simple'})
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 DEBUG = False
 
 CACHE_TIMEOUT = 600
+
 
 def update_all_rules():
     """Set next active rules for all branches."""
@@ -255,10 +257,9 @@ def history():
     list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
     if list_arr is not None:
         list_arr.sort(key=itemgetter(0))
+        
         grouped = []
-        groups = groupby(list_arr, itemgetter(0))
-
-        for key, group in groups:
+        for key, group in groupby(list_arr, itemgetter(0)):
             grouped.append(list([list(thing) for thing in group]))
 
         rules = []
@@ -269,16 +270,23 @@ def history():
             row = intervals[0]
             id = row[0]
 
-            rules.append([('line_name', row[1]),
-                                ('date', row[2].strftime('%m/%d/%Y')),
-                                ('timer', date_handler(row[3])),
-                                ('ative', row[4]),
-                                ('time', row[5]),
-                                ('intervals', interval),
-                                ('interval_id', row[0]),
-                                ('time_wait', 15) 
-                                ])
-    return jsonify(rules=rules)
+            rules.append(dict(
+                line_name=row[1],
+                date=row[2].strftime('%m/%d/%Y'),
+                date_to_sort=row[2],
+                timer=date_handler(row[3]),
+                ative=row[4],
+                time=row[5],
+                intervals=interval,
+                interval_id=row[0],
+                time_wait=15))
+
+        rules.sort(key=itemgetter('date_to_sort'))
+        grouped_rules = {}
+        for key, group in groupby(rules, itemgetter(0)):
+            grouped_rules.setdefault(key, []).append(list([thing for thing in group]))
+
+    return jsonify(rules=grouped_rules)
     return render_template('history.html', my_list=rules)
 
 
