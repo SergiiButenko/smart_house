@@ -265,7 +265,7 @@ def history():
         for intervals in grouped:
             interval = len(intervals)
             
-            row = interval[0]
+            row = intervals[0]
             id = row[0]
             
             rules.append(dict(branch_name=row[1],
