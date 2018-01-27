@@ -263,15 +263,14 @@ def history():
 
         rules = []
         for intervals in grouped:
-            logging.info(intervals)
             interval = len(intervals)
-            
+
             row = intervals[0]
             id = row[0]
-            
+
             rules.append(dict(branch_name=row[1],
-                                date=row[2],
-                                timer=row[3],
+                                date=date_handler(row[2]),
+                                timer=date_handler(row[3]),
                                 ative=row[4],
                                 time=row[5],
                                 intervals=interval))
