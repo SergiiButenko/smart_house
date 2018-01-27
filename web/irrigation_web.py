@@ -275,8 +275,8 @@ def history():
                                 ative=row[4],
                                 time=row[5],
                                 intervals=interval,
-                                interval_id=row[0]),
-                                time_wait=15)
+                                interval_id=row[0],
+                                time_wait=15))
 
     return render_template('history.html', my_list=rules)
 
