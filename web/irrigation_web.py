@@ -286,6 +286,7 @@ def history():
             grouped_rules[key] = [thing for thing in group]
 
         for rule in grouped_rules:
+            logging.info(rule)
             rule.sort(key=itemgetter('timer'))
 
     return jsonify(rules=grouped_rules)
