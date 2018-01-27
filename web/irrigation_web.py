@@ -273,7 +273,6 @@ def history():
             rules.append(dict(
                 line_name=row[1],
                 date=row[2].strftime('%m/%d/%Y'),
-                date_to_sort=row[2],
                 timer=date_handler(row[3]),
                 ative=row[4],
                 time=row[5],
@@ -281,9 +280,9 @@ def history():
                 interval_id=row[0],
                 time_wait=15))
 
-        rules.sort(key=itemgetter('date_to_sort'))
+        rules.sort(key=itemgetter('date'))
         grouped_rules = {}
-        for key, group in groupby(rules, itemgetter('date_to_sort')):
+        for key, group in groupby(rules, itemgetter('date')):
             grouped_rules.setdefault(key, []).append(list([thing for thing in group]))
 
     return jsonify(rules=grouped_rules)
