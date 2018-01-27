@@ -23,9 +23,6 @@ function form_text(el_in) {
 }
 
 
-
-}
-
 function set_events() {
     $('.active_true_false').off().change(function(e) {
         var switcher = $(e.target);
