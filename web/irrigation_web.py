@@ -283,7 +283,7 @@ def history():
         rules.sort(key=itemgetter('date'))
         grouped_rules = {}
         for key, group in groupby(rules, itemgetter('date')):
-            grouped_rules.setdefault(key, []).append(list([thing for thing in group]))
+            grouped_rules.setdefault(key, []).append([thing for thing in group])
 
         # for key, rule in grouped_rules:
         #     rule.sort(key=itemgetter('timer'))
