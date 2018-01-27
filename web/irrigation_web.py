@@ -276,7 +276,6 @@ def history():
                                 time=row[5],
                                 intervals=interval))
 
-        intervals.sort(key=itemgetter(2))
     return jsonify(rules=rules)
 
 
