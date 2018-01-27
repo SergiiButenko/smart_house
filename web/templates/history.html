@@ -1,9 +1,11 @@
 {% extends 'base.html' %} {% block nav_item_title %}Історія полива{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %} {% block container %}
 <div id="card-holder">
+    {% for key, value in my_list.items() %}
+    <h5>key</h5>
     <div class="row">
-        {% for n in my_list %}
-            {% include "rule_single.html" with context %}
-        {% endfor %}
+        {% for n in value %} {% include "rule_single.html" with context %} {% endfor %}
     </div>
-</div>{% endblock %} {% block custom_scripts %}
+    <hr style="margin-top: 2rem; margin-bottom: 1rem" />
+</div>
+{% endblock %} {% block custom_scripts %}
 <script src="static/js/history_min.js"></script>{% endblock %}
