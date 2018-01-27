@@ -285,7 +285,7 @@ def history():
         for key, group in groupby(rules, itemgetter('date')):
             grouped_rules[key] = [thing for thing in group]
 
-        for key, rule in grouped_rules:
+        for rule in grouped_rules:
             rule.sort(key=itemgetter('timer'))
 
     return jsonify(rules=grouped_rules)
