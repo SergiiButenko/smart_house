@@ -263,6 +263,7 @@ def history():
 
         rules = []
         for intervals in grouped:
+            intervals.sort(key=itemgetter(3))
             interval = len(intervals)
 
             row = intervals[0]
