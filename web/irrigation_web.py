@@ -287,6 +287,7 @@ def history():
 
         for key, value in grouped_rules.items():
             value.sort(key=itemgetter('timer'))
+        grouped_rules.sort(key=itemgetter([0]))
 
     return render_template('history.html', my_list=OrderedDict(grouped_rules))
 
