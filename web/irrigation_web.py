@@ -269,7 +269,7 @@ def history():
             id = row[0]
 
             rules.append(dict(branch_name=row[1],
-                                date=date_handler(row[2]),
+                                date=row[2].strftime('%m:%d:%Y'),
                                 timer=date_handler(row[3]),
                                 ative=row[4],
                                 time=row[5],
