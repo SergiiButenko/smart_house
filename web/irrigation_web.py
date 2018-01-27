@@ -259,7 +259,7 @@ def history():
         groups = groupby(list_arr, itemgetter(0))
 
         for key, group in groups:
-            grouped.append(list(group))
+            grouped.append(list([list(thing) for thing in group]))
 
         for interval in grouped:
             logging.info(interval)
