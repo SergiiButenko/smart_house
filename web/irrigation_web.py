@@ -263,6 +263,7 @@ def history():
 
         rules = []
         for intervals in grouped:
+            logging.info(intervals)
             interval = len(intervals)
             
             row = intervals[0]
@@ -272,7 +273,8 @@ def history():
                                 date=row[2],
                                 timer=row[3],
                                 ative=row[4],
-                                time=row[5]))
+                                time=row[5],
+                                intervals=interval))
         # rows = []
         # for row in list_arr:
         #     id = row[0]
