@@ -281,15 +281,14 @@ def history():
                 time_wait=15))
 
         rules.sort(key=itemgetter('date'))
-        grouped_rules = {}
+        grouped_rules = OrderedDict()
         for key, group in groupby(rules, itemgetter('date')):
             grouped_rules[key] = [thing for thing in group]
 
         for key, value in grouped_rules.items():
             value.sort(key=itemgetter('timer'))
-        grouped_rules.sort(key=itemgetter([0]))
 
-    return render_template('history.html', my_list=OrderedDict(grouped_rules))
+    return render_template('history.html', my_list=grouped_rules)
 
 
 # @app.route("/add_rule", methods=['POST'])
