@@ -258,7 +258,7 @@ def history():
         grouped = []
         groups = groupby(list_arr, itemgetter(0))
 
-        for group in groups:
+        for key, group in groups:
             grouped.append(list([list(thing) for thing in group]))
 
         rules = []
