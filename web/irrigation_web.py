@@ -268,12 +268,11 @@ def history():
             row = interval[0]
             id = row[0]
             
-            rules.append(dict(
-            branch_name=row[1],
-            date=row[2],
-            timer=row[3],
-            ative=row[4],
-            time=row[5])
+            rules.append(dict(branch_name=row[1],
+                                date=row[2],
+                                timer=row[3],
+                                ative=row[4],
+                                time=row[5]))
         # rows = []
         # for row in list_arr:
         #     id = row[0]
@@ -299,7 +298,7 @@ def history():
         #         'active': active,
         #         'rule_state': rule_state})
 
-    template = render_template('history.html', my_list=rows)
+    #template = render_template('history.html', my_list=rows)
     return jsonify(rules=rules)
 
 
