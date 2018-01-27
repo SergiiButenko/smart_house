@@ -1,19 +1,20 @@
 {% extends 'base.html' %} {% block nav_item_title %}Історія полива{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %} {% block container %}
 <div id="card-holder">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 top" data-id="{{n['rule_id']}}">
+        {% for n in my_list %}
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 top" data-interval_id={{n[ 'interval_id']}}">
             <div class='card card-rule'>
                 <div class='card-block'>
                     <div class='card-title'>
-                        <h4 style='display: inline-block; float: left;' id='line_id' data-id={{n[ 'line_id']}}>{{n['line_name']}}</h4>
+                        <h4 style='display: inline-block; float: left;' id='line_id' data-interval_id={{n[ 'interval_id']}}>{{n['line_name']}}</h4>
                         <div class='material-switch pull-right' style='display: inline-block; float: right;'>
-                            <input id='input_{{n[ ' rule_id ']}}' class='active_true_false' type='checkbox' data-value={{n[ 'active']}} data-id='{{n[ ' rule_id ']}}' />
-                            <label for='input_{{n[ ' rule_id ']}}' class='label-primary'></label>
+                            <input id='input_{{n[ ' interval_id ']}}' class='active_true_false' type='checkbox' data-value={{n[ 'active']}} data-id='{{n[ ' interval_id ']}}' />
+                            <label for='input_{{n[ ' interval_id ']}}' class='label-primary'></label>
                         </div>
                     </div>
                     <p class='card-text' style='display: inline-block;'>
                         <table>
-                            <tbody class='collapse tbody' id='{{n[' rule_id ']}}'>
+                            <tbody class='collapse tbody' id='{{n[' interval_id ']}}'>
                                 <tr>
                                     <th>Тривалість:</th>
                                     <td>
@@ -68,25 +69,26 @@
                     </p>
                 </div>
                 <div class='card-footer'>
-                    <button type='button' class='btn btn-danger ongoing-rule-remove edit-flow' data-id='{{n[' rule_id ']}}'>
+                    <button type='button' class='btn btn-danger ongoing-rule-remove edit-flow' data-id='{{n[' interval_id ']}}'>
                         Видалити
                     </button>
-                    <button type='button' class='btn btn-secondary ongoing-rule-cancel edit-flow' data-id='{{n[' rule_id ']}}'>
+                    <button type='button' class='btn btn-secondary ongoing-rule-cancel edit-flow' data-id='{{n[' interval_id ']}}'>
                         Скасувати зміни
                     </button>
-                    <button type='button' class='btn btn-primary ongoing-rule-save edit-flow' data-id='{{n[' rule_id ']}}'>
+                    <button type='button' class='btn btn-primary ongoing-rule-save edit-flow' data-id='{{n[' interval_id ']}}'>
                         Зберегти правило
                     </button>
-                    <button type='button' class='btn btn-secondary ongoing-rule-edit show-flow' data-id='{{n[' rule_id ']}}'>
+                    <button type='button' class='btn btn-secondary ongoing-rule-edit show-flow' data-id='{{n[' interval_id ']}}'>
                         Редагувати
                     </button>
-                    <button type='button' class='btn btn-primary show-flow' data-toggle='collapse' data-target='#{{n[' rule_id ']}}' aria-expanded='false' aria-controls='{{n[' rule_id ']}}'>
+                    <button type='button' class='btn btn-primary show-flow' data-toggle='collapse' data-target='#{{n[' interval_id ']}}' aria-expanded='false' aria-controls='{{n[' interval_id ']}}'>
                         <span class='if-collapsed'>Деталі</span>
                         <span class='if-not-collapsed'>Приховати деталі</span>
                     </button>
                 </div>
             </div>
         </div>
+        {% endfor %}
         <!-- <div class="switcher-wrapper">
     <ul class="list-group">
         <li class="list-group-item"><span>Показати всі правила</span>

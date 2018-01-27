@@ -269,14 +269,16 @@ def history():
             row = intervals[0]
             id = row[0]
 
-            rules.append(dict(branch_name=row[1],
+            rules.append(dict(line_name=row[1],
                                 date=row[2].strftime('%m/%d/%Y'),
                                 timer=date_handler(row[3]),
                                 ative=row[4],
                                 time=row[5],
-                                intervals=interval))
+                                intervals=interval,
+                                interval_id=row[0]),
+                                time_wait=15)
 
-    return jsonify(rules=rules)
+    return render_template('history.html', my_list=rules)
 
 
 # @app.route("/add_rule", methods=['POST'])
