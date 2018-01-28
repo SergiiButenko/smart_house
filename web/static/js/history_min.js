@@ -22,7 +22,7 @@ function form_text(el_in) {
     };
 
     $(card).find("#summary").html(
-        'O ' + time.toLocaleTimeString("uk-UA", options_time); + '.</br>' +
+        'O ' + time.toLocaleTimeString("uk-UA", options_time) + '.</br>' +
         interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
     );
 }
