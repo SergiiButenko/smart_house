@@ -11,13 +11,18 @@ $(document).ready(function() {
 function form_text(el_in) {
     var card = $(el_in).closest('.top')
 
-    var time = $(card).data('timer')
+    var time = convertDateToUTC(new Date($(card).data('timer')));
     var minutes = $(card).data('time')
     var interval = $(card).data('intervals')
     var time_wait = $(card).data('time_wait')
 
+    var options_time = {
+        hour: "2-digit",
+        minute: "2-digit"
+    };
+
     $(card).find("#summary").html(
-        'O ' + time + '.</br>' +
+        'O ' + time.toLocaleTimeString("uk-UA", options_time); + '.</br>' +
         interval + ' рази, по ' + minutes + ' хвилин, з інтервалом в ' + time_wait + ' хвилин'
     );
 }
