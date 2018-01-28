@@ -9,12 +9,12 @@ $(document).ready(function() {
 
 
 function form_text(el_in) {
-    var card = $(el_in).closest('.top')
+    var card = $(el_in).closest('.top');
 
     var time = convertDateToUTC(new Date($(card).data('timer')));
-    var minutes = $(card).data('time')
-    var interval = $(card).data('intervals')
-    var time_wait = $(card).data('time_wait')
+    var minutes = $(card).data('time');
+    var interval = $(card).data('intervals');
+    var time_wait = $(card).data('time_wait');
 
     var options_time = {
         hour: "2-digit",
