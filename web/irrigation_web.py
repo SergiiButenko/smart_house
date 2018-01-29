@@ -340,10 +340,10 @@ def cancel_rule():
         logging.error("No id param in request")
         abort(500)
 
-    id = request.args.get('id')
+    rule_id = request.args.get('id')
 
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
-    res = database.select(database.QUERY[mn() + "_1"].format(id), 'fetchone')
+    res = database.select(database.QUERY[mn() + "_1"].format(rule_id), 'fetchone')
     if (res is None):
         logging.error("No {0} rule/interval id in database".format(id))
         abort(500)
@@ -371,8 +371,8 @@ def cancel_rule():
         logging.error("Can't get Raspberri Pi pin status. Exception occured")
         abort(500)
 
-    logging.info("Rule {0} canceled".format(id))
-    return {'status': 'OK'}
+    logging.info("Rule {0} canceled".format(rule_id))
+    return json.dumps({'status': 'OK'})
 
 
 @app.route("/ongoing_rules")
