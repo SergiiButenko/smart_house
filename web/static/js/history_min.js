@@ -29,7 +29,7 @@ function form_text(el_in) {
 
 
 function set_events() {
-    $('.close').off().change(function(e) {
+    $('.close').off().click(function(e) {
         var switcher = $(e.target);
         var returnVal = confirm("Видалити правило?");
         if (returnVal == false) {
