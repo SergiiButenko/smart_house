@@ -29,54 +29,28 @@ function form_text(el_in) {
 
 
 function set_events() {
-    $('.active_true_false').off().change(function(e) {
+    $('.close').off().change(function(e) {
         var switcher = $(e.target);
-
-        var old_value = !($(switcher).prop("checked"));
-        console.log(old_value);
-        var returnVal = confirm("Ви впевненні?");
-        console.log(returnVal);
+        var returnVal = confirm("Видалити правило?");
         if (returnVal == false) {
-            $(switcher).prop("checked", old_value);
-            // $(switcher).val($(switcher).old_value);
             return;
         }
-
-        var id = $(switcher).data('id')
-        if (old_value == false) {
-            $.ajax({
-                url: '/activate_ongoing_rule',
-                type: "get",
-                data: {
-                    'id': id
-                },
-                beforeSend: function(xhr, opts) {
-                    set_status_spinner();
-                },
-                error: function(data) {
-                    alert("Сталася помилка. Cпробуйте ще раз");
-                },
-                complete: function(data) {
-                    set_status_ok();
-                }
-            });
-        } else {
-            $.ajax({
-                url: '/deactivate_ongoing_rule',
-                type: "get",
-                data: {
-                    'id': id
-                },
-                beforeSend: function(xhr, opts) {
-                    set_status_spinner();
-                },
-                error: function(data) {
-                    alert("Сталася помилка. Cпробуйте ще раз");
-                },
-                complete: function(data) {
-                    set_status_ok();
-                }
-            });
-        }
+        console.log('remove')
+        // $.ajax({
+        //     url: '/cancel_rule',
+        //     type: "get",
+        //     data: {
+        //         'id': id
+        //     },
+        //     beforeSend: function(xhr, opts) {
+        //         set_status_spinner();
+        //     },
+        //     error: function(data) {
+        //         alert("Сталася помилка. Cпробуйте ще раз");
+        //     },
+        //     complete: function(data) {
+        //         set_status_ok();
+        //     }
+        // });
     });
 }
