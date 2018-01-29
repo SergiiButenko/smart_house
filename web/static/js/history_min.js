@@ -30,17 +30,21 @@ function form_text(el_in) {
 
 function set_events() {
     $('.close').off().click(function(e) {
-        var switcher = $(e.target);
         var returnVal = confirm("Видалити правило?");
         if (returnVal == false) {
             return;
         }
-        console.log('remove')
+        
+        var rule_card = $(e.target).closest('.top');
+        interval_id = $(rule_card).data('interval_id');
+        console.log('remove ' + interval_id);
+
+
         $.ajax({
             url: '/cancel_rule',
             type: "get",
             data: {
-                'id': id
+                'id': interval_id
             },
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
