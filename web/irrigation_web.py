@@ -340,7 +340,7 @@ def cancel_rule():
         logging.error("No id param in request")
         abort(500)
 
-    id = int(request.args.get('id'))
+    id = request.args.get('id')
 
     # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
     res = database.select(database.QUERY[mn() + "_1"].format(id), 'fetchone')
