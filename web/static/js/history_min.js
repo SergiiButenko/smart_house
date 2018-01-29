@@ -36,21 +36,21 @@ function set_events() {
             return;
         }
         console.log('remove')
-        // $.ajax({
-        //     url: '/cancel_rule',
-        //     type: "get",
-        //     data: {
-        //         'id': id
-        //     },
-        //     beforeSend: function(xhr, opts) {
-        //         set_status_spinner();
-        //     },
-        //     error: function(data) {
-        //         alert("Сталася помилка. Cпробуйте ще раз");
-        //     },
-        //     complete: function(data) {
-        //         set_status_ok();
-        //     }
-        // });
+        $.ajax({
+            url: '/cancel_rule',
+            type: "get",
+            data: {
+                'id': id
+            },
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
+            },
+            error: function(data) {
+                alert("Сталася помилка. Cпробуйте ще раз");
+            },
+            complete: function(data) {
+                set_status_ok();
+            }
+        });
     });
 }
