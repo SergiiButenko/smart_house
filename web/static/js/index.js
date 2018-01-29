@@ -302,7 +302,7 @@ function toogle_card(element_id, branch) {
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
-        $('#btn-cancel-' + element_id).data('id', branch['next_rule']['id'])
+        $('#btn-cancel-' + element_id).data('id', branch['next_rule']['interval_id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
         next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
