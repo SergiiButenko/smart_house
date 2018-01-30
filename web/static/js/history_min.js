@@ -71,6 +71,3 @@ function set_events() {
         console.log(list);
     });
 }
-
-
-}
