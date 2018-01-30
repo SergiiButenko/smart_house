@@ -245,20 +245,6 @@ def add_rule_page():
     return render_template('add_rule.html', my_list=branch_list)
 
 
-def form_date_description(date):
-    date = convert_to_datetime(date)
-    now = datetime.date.today()
-    delta = date - now
-
-    if delta.days == 0:
-        return 'Сегодня'
-
-    if delta.days == 1:
-        return 'Завтра'
-
-    return date.strftime('%m/%d/%Y')
-
-
 @app.route("/history")
 def history():
     """Return history page if no parameters passed and only table body if opposite."""

@@ -51,7 +51,7 @@ function set_events() {
                 alert("Сталася помилка. Cпробуйте ще раз");
             },
             complete: function(data) {
-                set_status_ok();
+                location.reload();
             }
         });
     });
@@ -81,7 +81,7 @@ function set_events() {
                 alert("Сталася помилка. Cпробуйте ще раз");
             },
             complete: function(data) {
-                set_status_ok();
+                location.reload();
             }
         });
     });
