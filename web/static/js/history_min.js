@@ -68,6 +68,21 @@ function set_events() {
             list.list.push($(this).data('interval_id'))
         });
 
-        console.log(list);
+        $.ajax({
+            url: '/cancel_rule',
+            type: "post",
+            data: JSON.stringify(list),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function(xhr, opts) {
+                set_status_spinner();
+            },
+            error: function(data) {
+                alert("Сталася помилка. Cпробуйте ще раз");
+            },
+            complete: function(data) {
+                set_status_ok();
+            }
+        });
     });
 }
