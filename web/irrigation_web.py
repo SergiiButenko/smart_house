@@ -254,6 +254,7 @@ def history():
         days = 7
 
     # SELECT l.interval_id, li.name, l.date, l.timer as \"[timestamp]\", l.active, l.time 
+    grouped_rules = OrderedDict()
     list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
     if list_arr is not None:
         list_arr.sort(key=itemgetter(0))
@@ -282,7 +283,6 @@ def history():
                 time_wait=15))
 
         rules.sort(key=itemgetter('date'))
-        grouped_rules = OrderedDict()
         for key, group in groupby(rules, itemgetter('date')):
             grouped_rules[key] = [thing for thing in group]
 
