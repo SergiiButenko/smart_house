@@ -247,7 +247,7 @@ def add_rule_page():
 
 def form_date_description(date):
     date = convert_to_datetime(date)
-    now = datetime.datetime.now()
+    now = datetime.date.now()
     delta = date - now
 
     if delta.days == 0:
