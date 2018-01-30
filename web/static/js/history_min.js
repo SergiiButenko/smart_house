@@ -65,7 +65,7 @@ function set_events() {
         var schedule_cards = $(e.target).closest('.rule-container').find('.top');
         var list = { 'list': [] }
         $(schedule_cards).each(function() {
-            list.list.append($(this).data('interval_id'))
+            list.list.push($(this).data('interval_id'))
         });
 
         console.log(list);
