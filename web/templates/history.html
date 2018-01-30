@@ -2,9 +2,9 @@
 <div id="card-holder">
     {% for key, value in my_list.items() %}
     <div class="rule-container">
-    <div><h5 style='display: inline-block; float: left;'>{{key}}</h5>
-    <button type="button" class="btn btn-secondary" style='display: inline-block; float: right;'>Скасувати усi</button>
-    </div>
+    <h5>{{key}}</h5>
+    <button type="button" class="btn btn-secondary" style='display: inline-block; float: right;'>Скасувати усi</button>    
+    
     <div class="row">
         {% for n in value %} {% include "rule_single.html" with context %} {% endfor %}
     </div>
