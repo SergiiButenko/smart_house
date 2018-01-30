@@ -245,6 +245,20 @@ def add_rule_page():
     return render_template('add_rule.html', my_list=branch_list)
 
 
+def form_date_description(date):
+    date = convert_to_datetime(date)
+    now = datetime.datetime.now()
+    delta = date - now
+
+    if delta.days == 0:
+        return 'Сегодня'
+
+    if delta.days == 1:
+        return 'Завтра'
+
+    return date.strftime('%m/%d/%Y')
+
+
 @app.route("/history")
 def history():
     """Return history page if no parameters passed and only table body if opposite."""
@@ -269,12 +283,10 @@ def history():
             interval = len(intervals)
 
             row = intervals[0]
-            id = row[0]
-
             rules.append(dict(
                 line_name=row[1],
                 date=row[2].strftime('%m/%d/%Y'),
-                date_description=row[2].strftime('%m/%d/%Y'), 
+                date_description=form_date_description(row[2]),
                 timer=date_handler(row[3]),
                 ative=row[4],
                 time=row[5],
