@@ -2,14 +2,15 @@
 <div id="card-holder">
     {% for key, value in my_list.items() %}
     <div class="rule-container">
-    <button type="button" class="btn btn-secondary disable-all" style='display: inline-block; float: right;'>Скасувати усi</button>    
-    <h5 style='display: inline-block;'>{{key}}</h5>    
-    <div class="row">
-        {% for n in value %} {% include "rule_single.html" with context %} {% endfor %}
+        <div class="button-header" style="text-align: center;">
+            <h5 style='display: inline-block;'>{{key}}</h5>
+            <button type="button" class="btn btn-secondary disable-all" style='float: right;'>Скасувати усi</button>
+        </div>
+        <div class="row">
+            {% for n in value %} {% include "rule_single.html" with context %} {% endfor %}
+        </div>
     </div>
-    </div>
-    <hr style="margin-top: 2rem; margin-bottom: 1rem" />
-    {% endfor %}
+    <hr style="margin-top: 2rem; margin-bottom: 1rem" /> {% endfor %}
 </div>
 {% endblock %} {% block custom_scripts %}
 <script src="static/js/history_min.js"></script>{% endblock %}
