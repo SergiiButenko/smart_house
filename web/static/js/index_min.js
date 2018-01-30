@@ -142,15 +142,15 @@ $(document).ready(function() {
 
     //Function to stop irrigation
     $(".cancel-irrigation").click(function() {
-        index = $(this).data('id');
+        var interval_id = $(this).data('id');
         console.log(index + " irrigation schedule will be canceled");
 
         $.ajax({
             url: server + '/cancel_rule',
-            type: "get",
-            data: {
-                'id': index
-            },
+            type: "post",
+            data: JSON.stringify( { 'list': [interval_id] } ),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
             },

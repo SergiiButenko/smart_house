@@ -37,15 +37,13 @@ function set_events() {
         
         var rule_card = $(e.target).closest('.top');
         interval_id = $(rule_card).data('interval_id');
-        console.log('remove ' + interval_id);
-
 
         $.ajax({
             url: '/cancel_rule',
-            type: "get",
-            data: {
-                'id': interval_id
-            },
+            type: "post",
+            data: JSON.stringify( { 'list': [interval_id] } ),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
             },

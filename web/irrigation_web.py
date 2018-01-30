@@ -333,31 +333,30 @@ def history():
 #     return json.dumps({'status': 'OK'})
 
 
-@app.route("/cancel_rule")
+@app.route("/cancel_rule", methods=['POST'])
 def cancel_rule():
     """User can remove rule from ongoing rules table."""
-    if ('id' not in request.args):
-        logging.error("No id param in request")
-        abort(500)
+    content = request.json['list']
 
-    rule_id = request.args.get('id')
+    for rule_id in content:
+        # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
+        res = database.select(database.QUERY[mn() + "_1"].format(rule_id), 'fetchone')
+        if (res is None):
+            logging.error("No {0} rule/interval id in database".format(rule_id))
+            abort(500)
 
-    # select l.interval_id, li.name from life as l, lines as li where id = {0} and l.line_id = li.number
-    res = database.select(database.QUERY[mn() + "_1"].format(rule_id), 'fetchone')
-    if (res is None):
-        logging.error("No {0} rule/interval id in database".format(rule_id))
-        abort(500)
+        interval_id = res[0]
+        ongoing_rule_id = res[2]
+        # branch_name = res[1]
+        # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
+        database.update(database.QUERY[mn() + '_2'].format(interval_id))
 
-    interval_id = res[0]
-    ongoing_rule_id = res[2]
-    # branch_name = res[1]
-    # "UPDATE life SET state=4 WHERE interval_id = '{0}' and state = 1 and rule_id = 1"
-    database.update(database.QUERY[mn() + '_2'].format(interval_id))
-
-    res = database.select(database.QUERY[mn() + "_select_ongoing_rule"].format(ongoing_rule_id), 'fetchone')
-    if res is None:
-        logging.info('No intervals for {0} ongoing rule. Remove it'.format(ongoing_rule_id))
-        database.update(database.QUERY[mn() + "_delete_ongoing_rule"].format(ongoing_rule_id))
+        res = database.select(database.QUERY[mn() + "_select_ongoing_rule"].format(ongoing_rule_id), 'fetchone')
+        if res is None:
+            logging.info('No intervals for {0} ongoing rule. Remove it'.format(ongoing_rule_id))
+            database.update(database.QUERY[mn() + "_delete_ongoing_rule"].format(ongoing_rule_id))
+        
+        logging.info("Rule '{0}' canceled".format(rule_id))
 
     update_all_rules()
 
@@ -371,7 +370,6 @@ def cancel_rule():
         logging.error("Can't get Raspberri Pi pin status. Exception occured")
         abort(500)
 
-    logging.info("Rule {0} canceled".format(rule_id))
     return json.dumps({'status': 'OK'})
 
 
