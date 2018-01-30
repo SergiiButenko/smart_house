@@ -143,7 +143,7 @@ $(document).ready(function() {
     //Function to stop irrigation
     $(".cancel-irrigation").click(function() {
         var interval_id = $(this).data('id');
-        console.log(index + " irrigation schedule will be canceled");
+        console.log(interval_id + " irrigation schedule will be canceled");
 
         $.ajax({
             url: server + '/cancel_rule',
