@@ -34,14 +34,14 @@ function set_events() {
         if (returnVal == false) {
             return;
         }
-        
-        var rule_card = $(e.target).closest('.top');
-        interval_id = $(rule_card).data('interval_id');
+
+        var schedule_card = $(e.target).closest('.top');
+        interval_id = $(schedule_card).data('interval_id');
 
         $.ajax({
             url: '/cancel_rule',
             type: "post",
-            data: JSON.stringify( { 'list': [interval_id] } ),
+            data: JSON.stringify({ 'list': [interval_id] }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function(xhr, opts) {
@@ -55,4 +55,22 @@ function set_events() {
             }
         });
     });
+
+    $('.disable-all').off().click(function(e) {
+        var returnVal = confirm("Вiдмiнити усi правила на цей день?");
+        if (returnVal == false) {
+            return;
+        }
+
+        var schedule_cards = $(e.target).closest('.rule-container').find('.top');
+        var list = { 'list': [] }
+        $(schedule_cards).each(function() {
+            list.list.append($(this).data('interval_id'))
+        });
+
+        console.log(list);
+    });
+}
+
+
 }
