@@ -273,6 +273,7 @@ def history():
             rules.append(dict(
                 line_name=row[1],
                 date=row[2].strftime('%m/%d/%Y'),
+                date_description=row[2].strftime('%m/%d/%Y'), 
                 timer=date_handler(row[3]),
                 ative=row[4],
                 time=row[5],
