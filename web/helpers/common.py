@@ -103,6 +103,19 @@ def date_hook(json_dict):
     return json_dict
 
 
+def get_weekday(date):
+    """Conver date into day of week in UA."""
+    week = ['Понеділок',
+            'Вівторок',
+            'Середа',
+            'Четверг',
+            'П\'ятниця',
+            'Субота',
+            'Неділя']
+
+    return week[date.weekday()]
+
+
 def form_date_description(date):
     """Used in hostory request."""
     date = convert_to_datetime(date)
@@ -110,9 +123,9 @@ def form_date_description(date):
     delta = date - now
 
     if delta.days == 0:
-        return 'Сьогодні'
+        return 'Сьогодні, ' + get_weekday(date)
 
     if delta.days == 1:
-        return 'Завтра'
+        return 'Завтра, ' + get_weekday(date)
 
-    return date.strftime('%m/%d/%Y')
+    return date.strftime('%m/%d/%Y') + ", " + get_weekday(date)
