@@ -5,8 +5,8 @@ h5 {
 }
 
 #no_card {
-position: relative;
-left: 22rem;
+    position: relative;
+    left: 22rem;
 }
 
 .dropdown-label {
@@ -207,4 +207,8 @@ a:hover {
 li>span {
     position: relative;
     left: 20px;
+}
+
+.bmd-drawer-f-l>.bmd-layout-drawer {
+    width: 250px;
 }
