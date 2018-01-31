@@ -104,12 +104,13 @@ def date_hook(json_dict):
 
 
 def form_date_description(date):
+    """Used in hostory request."""
     date = convert_to_datetime(date)
     now = datetime.date.today()
     delta = date - now
 
     if delta.days == 0:
-        return 'Сегодня'
+        return 'Сьогодні'
 
     if delta.days == 1:
         return 'Завтра'
