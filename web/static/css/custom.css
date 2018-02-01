@@ -212,3 +212,7 @@ li>span {
 .bmd-drawer-f-l>.bmd-layout-drawer {
     width: 250px;
 }
+
+.navbar-nav .nav-item {
+    padding-left: 1rem;
+}
