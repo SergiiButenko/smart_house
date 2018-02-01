@@ -88,7 +88,7 @@
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
-    <h5>Сьгодні</h5>
+    <h5>Тільки сьгодні</h5>
     <div class="row today">
         {% for n in my_list %}
             {% if n['days'] == 0 %}
@@ -97,7 +97,7 @@
         {% endfor %}
     </div>
     <hr style="margin-top: 2rem; margin-bottom: 1rem" />
-    <h5>Завтра</h5>
+    <h5>Тільки завтра</h5>
     <div class="row tomorrow">
         {% for n in my_list %}
             {% if n['days'] == 1 %}
@@ -116,7 +116,6 @@
     </div>
         <div id='last_card'></div>
         <h5 id='no_card' style="display: none">Всi правила виконанi або Ви нiчого не додали.</h6>
-    
 </div></br>
 
 <button type="button" class="btn btn-raised btn-block btn-primary btn-open-modal">
