@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block nav_item_title %}Запланувати полив{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %}
+{% extends 'base.html' %} {% block nav_item_title %}Полити один раз{% endblock %} {% block custom_css %} {% endblock %} {% block modals %}{% endblock %}
 <!-- Custom styles for this template -->
 {% block container %}
 <div id="card-holder">
@@ -57,7 +57,7 @@
 <button type="button" class="btn btn-raised btn-block btn-primary" id="go_plan">
     Запланувати
 </button>
-<button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/#'">
+<button type="button" class="btn btn-raised btn-block btn-secondary" onclick="window.location.href='/history'">
     Скасувати
 </button>
 
