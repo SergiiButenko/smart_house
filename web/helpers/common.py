@@ -145,4 +145,4 @@ def form_date_description(date):
     if delta.days == 1:
         return 'Завтра, ' + get_weekday(date)
 
-    return "{0}, {1} {2}".format(get_weekday(date), date.strftime('%m'), get_month(date))
+    return "{0}, {1} {2}".format(get_weekday(date), date.strftime('%d'), get_month(date))
