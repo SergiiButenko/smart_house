@@ -51,6 +51,7 @@ def rissing(channel):
     if GPIO.input(RAIN_PIN) == 1:
         logging.info("Event:{0}".format(iteraion))
         iteraion += 1
+        time.sleep(1)
 
         # database.update(database.QUERY[mn()].format(10))
 
