@@ -167,40 +167,18 @@ function set_status_error() {
     $(".card-irrigation").addClass(class_err.class);
     $(".card-lighting").addClass(class_err.class);
 
-    // $(".btn-open-modal").addClass('disabled');
-    // $(".btn-start").addClass('disabled');
+
     $(".btn").addClass('disabled');
     $(".status-span").css('display', 'inline-block');
 }
 
 function set_status_ok() {
     $(".btn").removeClass('disabled');
-    // $(".card-irrigation").removeClass(class_err.class);
-    // $(".card-lighting").removeClass(class_err.class);
-
-    // $(".btn-open-modal").removeClass('disabled');
-    // $(".btn-start").removeClass('disabled');
-    // $(".stop-lighting").removeClass('disabled');
-    // $(".stop-power_outlet").removeClass('disabled');
-    // $(".stop-irrigation").removeClass('disabled');
-    // $(".cancel-irrigation").removeClass('disabled');
-
     $(".status-span").hide();
-    // $(".btn-open-modal").show();
-    // $(".btn-modal").removeClass('disabled');
 }
 
 function set_status_spinner() {
     $(".btn").addClass('disabled');
-    // $(".btn-open-modal").addClass('disabled');
-    // $(".btn-start").addClass('disabled');
-    // $(".cancel-irrigation").addClass('disabled');
-    
-
-    // $(".stop-lighting").addClass('disabled');
-    // $(".stop-power_outlet").addClass('disabled');
-    // $(".stop-irrigation").addClass('disabled');
-    // $(".btn-modal").addClass('disabled');
 }
 
 // Comming from template
@@ -334,12 +312,4 @@ function set_branch_defaults(index, modal) {
     }
 
     toogle_time_wait(interval, modal);
-}
-
-function reload_history() {
-    console.log(window.location.href.includes('history'));
-
-    if (window.location.href.includes('history')) {
-        location.reload();
-    }
 }

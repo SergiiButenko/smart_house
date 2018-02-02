@@ -60,9 +60,6 @@ function set_events() {
             },
             error: function(data) {
                 alert("Сталася помилка. Cпробуйте ще раз");
-            },
-            complete: function(data) {
-                location.reload();
             }
         });
     });
@@ -90,9 +87,6 @@ function set_events() {
             },
             error: function(data) {
                 alert("Сталася помилка. Cпробуйте ще раз");
-            },
-            complete: function(data) {
-                location.reload();
             }
         });
     });
