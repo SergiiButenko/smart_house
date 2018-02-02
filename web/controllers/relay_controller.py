@@ -9,8 +9,8 @@ from helpers.common import *
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
-PUMP_PIN = 14
-RAIN_PIN = 12
+PUMP_PIN = 12
+RAIN_PIN = 14
 EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 
 BRANCHES = [
