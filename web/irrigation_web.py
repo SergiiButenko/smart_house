@@ -120,6 +120,11 @@ def send_ongoing_rule_message(channel, data):
     send_message(channel, {'data': json.dumps({'rule': data}, default=date_handler)})
 
 
+def send_history_change_message():
+    """Convert data in order to send data object."""
+    send_message('refresh_history', {'data': {'refresh': 1}})
+
+
 @app.route("/update_all_rules")
 def update_rules():
     """Synchronize rules with database."""
@@ -258,7 +263,7 @@ def history():
     list_arr = database.select(database.QUERY[mn()].format(days), 'fetchall')
     if list_arr is not None:
         list_arr.sort(key=itemgetter(0))
-        
+
         grouped = []
         for key, group in groupby(list_arr, itemgetter(0)):
             grouped.append(list([list(thing) for thing in group]))
@@ -354,7 +359,7 @@ def cancel_rule():
         if res is None:
             logging.info('No intervals for {0} ongoing rule. Remove it'.format(ongoing_rule_id))
             database.update(database.QUERY[mn() + "_delete_ongoing_rule"].format(ongoing_rule_id))
-        
+
         logging.info("Rule '{0}' canceled".format(rule_id))
 
     update_all_rules()
@@ -368,7 +373,8 @@ def cancel_rule():
         logging.error(e)
         logging.error("Can't get Raspberri Pi pin status. Exception occured")
         abort(500)
-
+    
+    send_history_change_message()
     return json.dumps({'status': 'OK'})
 
 
@@ -397,7 +403,7 @@ def ongoing_rules():
 
         start_dt = convert_to_datetime(date_time_start)
         end_dt = convert_to_datetime(end_date)
-        
+
         if start_dt.date() == end_dt.date():
             date_delta = end_dt.date() - now.date()
             if date_delta.days == 0:
@@ -528,6 +534,7 @@ def add_ongoing_rule():
         logging.error(e)
         logging.error("Can't send updated rules. Exception occured")
 
+    send_history_change_message()
     return json.dumps({'status': 'OK'})
 
 
@@ -540,6 +547,7 @@ def remove_ongoing_rule():
     update_all_rules()
 
     send_ongoing_rule_message('remove_ongoing_rule', {'rule_id': rule_id})
+    send_history_change_message()
 
     return json.dumps({'status': 'OK'})
 
@@ -586,6 +594,7 @@ def edit_ongoing_rule():
 
         send_ongoing_rule_message('edit_ongoing_rule', rule)
 
+    send_history_change_message()
     return json.dumps({'status': 'OK'})
 
 
@@ -598,6 +607,8 @@ def activate_ongoing_rule():
     update_all_rules()
 
     send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 1})
+
+    send_history_change_message()
     return json.dumps({'status': 'OK'})
 
 
@@ -610,6 +621,8 @@ def deactivate_ongoing_rule():
     update_all_rules()
 
     send_ongoing_rule_message('ongoing_rule_state', {'rule_id': rule_id, 'status': 0})
+
+    send_history_change_message()
     return json.dumps({'status': 'OK'})
 
 
@@ -781,6 +794,7 @@ def activate_branch():
 
     arr = form_responce_for_branches(response_arr)
     send_branch_status_message('branch_status', arr)
+    send_history_change_message()
 
     return jsonify(branches=arr)
 
@@ -862,7 +876,8 @@ def deactivate_branch():
 
     arr = form_responce_for_branches(response_off)
     send_branch_status_message('branch_status', arr)
-
+    send_history_change_message()
+    
     return jsonify(branches=arr)
 
 
