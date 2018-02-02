@@ -47,7 +47,6 @@ for branch in BRANCHES:
 def rissing(channel):
     """Fillup rain table"""
     global iteraion
-    logging.info("Event:{0}. {1}".format(iteraion, GPIO.input(RAIN_PIN)))
     time.sleep(0.005)
     if GPIO.input(RAIN_PIN) == 1:
         logging.info("Event:{0}".format(iteraion))
@@ -57,7 +56,7 @@ def rissing(channel):
 
 
 GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing)#, bouncetime=200)
+GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing, bouncetime=200)
 
 
 def on(pin):
