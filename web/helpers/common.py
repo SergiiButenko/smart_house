@@ -116,6 +116,23 @@ def get_weekday(date):
     return week[date.weekday()]
 
 
+def get_month(date):
+    """Used in hostory request."""
+    month = ['Січня',
+             'Лютого',
+             'Березня',
+             'Квітня',
+             'Травня',
+             'Червня',
+             'Липня',
+             'Серпня',
+             'Вересня',
+             'Жовтня',
+             'Листопада',
+             'Грудня']
+    return month[date.month()]
+
+
 def form_date_description(date):
     """Used in hostory request."""
     date = convert_to_datetime(date)
@@ -128,4 +145,4 @@ def form_date_description(date):
     if delta.days == 1:
         return 'Завтра, ' + get_weekday(date)
 
-    return date.strftime('%m/%d/%Y') + ", " + get_weekday(date)
+    return "{0}, {1} {2}".format(get_weekday(date), date.strftime('%m'), get_month(date))
