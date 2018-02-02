@@ -118,19 +118,19 @@ def get_weekday(date):
 
 def get_month(date):
     """Used in hostory request."""
-    month = ['Січня',
-             'Лютого',
-             'Березня',
-             'Квітня',
-             'Травня',
-             'Червня',
-             'Липня',
-             'Серпня',
-             'Вересня',
-             'Жовтня',
-             'Листопада',
-             'Грудня']
-    return month[date.month()]
+    monthes = ['Січня',
+               'Лютого',
+               'Березня',
+               'Квітня',
+               'Травня',
+               'Червня',
+               'Липня',
+               'Серпня',
+               'Вересня',
+               'Жовтня',
+               'Листопада',
+               'Грудня']
+    return monthes[date.month()]
 
 
 def form_date_description(date):
