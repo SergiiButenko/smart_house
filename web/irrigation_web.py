@@ -274,6 +274,8 @@ def history():
             interval = len(intervals)
 
             row = intervals[0]
+            time_wait = (intervals[0][3] - intervals[1][3]).total_seconds() / 60
+            logging.info("Interval {0}".format(time_wait))
             rules.append(dict(
                 line_name=row[1],
                 date=row[2].strftime('%m/%d/%Y'),
