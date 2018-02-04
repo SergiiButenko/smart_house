@@ -134,8 +134,7 @@ QUERY['enable_rule_cancel_interval'] = "UPDATE life SET state={1} WHERE state=1 
 
 QUERY['rissing'] = "INSERT INTO rain (volume) VALUES ({0})"
 
-QUERY['weather'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-{0} hours');"
-QUERY['inspect_conditions_rain'] = QUERY['weather']
+QUERY['get_rain_volume'] = "SELECT sum(volume) from rain where datetime >= datetime('now', 'localtime', '-{0} hours');"
 
 
 # executes query and returns fetch* result
@@ -214,3 +213,12 @@ def get_last_start_rule(line_id):
 
     logging.debug("Last completed rule retrieved for line id {0}".format(line_id))
     return {'id': res[0], 'line_id': res[1], 'rule_id': res[2], 'timer': res[3], 'interval_id': res[4]}
+
+
+def get_rain_volume():
+    """Return volume of rain mm/m^2"""
+    rain = select(QUERY[mn()].format(RAIN_HOURS))[0][0]
+    if rain is None:
+        rain = 0
+
+    return round(rain, 2)
