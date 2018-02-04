@@ -886,6 +886,10 @@ def deactivate_branch():
 def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])[0][0]
+
+    logging.info(database.select(database.QUERY[mn()])[0][0])
+    logging.info(database.select(database.QUERY[mn()])[0])
+
     if rain is None:
         rain = 0
 
