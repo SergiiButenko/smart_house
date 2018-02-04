@@ -887,8 +887,8 @@ def weather():
     """Blablbal."""
     rain = database.select(database.QUERY[mn()])[0][0]
 
-    logging.info(database.select(database.QUERY[mn()])[0][0])
-    logging.info(database.select(database.QUERY[mn()])[0])
+    for item in database.select(database.QUERY[mn()])[0]:
+        logging.info(item)
 
     if rain is None:
         rain = 0
