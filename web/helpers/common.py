@@ -2,7 +2,7 @@ import inspect
 import datetime
 import json
 from pytz import timezone
-# from helpers import sqlite_database as database
+from helpers import sqlite_database as database
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be database.QUERY[mn()].format(....)
