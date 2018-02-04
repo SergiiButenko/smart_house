@@ -23,7 +23,8 @@ USERS = [
 ]
 
 HOURS = 24
-RAIN_MAX = 20
+RAIN_MAX = 20  # mm per m^2
+RAIN_CONSTANT_VOLUME = 8.2  # ml per 120cm^2
 
 START_RULE = 1
 STOP_RULE = 2

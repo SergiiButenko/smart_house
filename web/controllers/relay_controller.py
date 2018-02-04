@@ -12,6 +12,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 PUMP_PIN = 12
 RAIN_PIN = 14
 EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
+RAIN_BUCKET_ITERATION = 1
 
 BRANCHES = [
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
@@ -34,7 +35,17 @@ BRANCHES = [
     {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT},
 ]
 
-iteraion = 1
+
+def rissing(channel):
+    """Fillup rain table"""
+    global RAIN_BUCKET_ITERATION
+    time.sleep(0.005)
+    if GPIO.input(RAIN_PIN) == 1:
+        logging.info("Rain bucket movment {0} detected.".format(RAIN_BUCKET_ITERATION))
+        RAIN_BUCKET_ITERATION += 1
+        time.sleep(1)
+
+        database.update(database.QUERY[mn()].format(RAIN_CONSTANT_VOLUME))
 
 
 GPIO.setmode(GPIO.BCM)
@@ -42,19 +53,6 @@ GPIO.cleanup()
 
 for branch in BRANCHES:
     GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
-
-
-def rissing(channel):
-    """Fillup rain table"""
-    global iteraion
-    time.sleep(0.005)
-    if GPIO.input(RAIN_PIN) == 1:
-        logging.info("Event:{0}".format(iteraion))
-        iteraion += 1
-        time.sleep(1)
-
-        database.update(database.QUERY[mn()].format(8))
-
 
 GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing, bouncetime=200)
