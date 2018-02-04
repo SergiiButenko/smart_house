@@ -275,7 +275,7 @@ def history():
 
             time_wait = 0
             if intervals_quantity == 2:
-                time_wait = (intervals[1][3] - intervals[0][3]).total_seconds() / 60 - intervals[0][5]
+                time_wait = int((intervals[1][3] - intervals[0][3]).total_seconds() / 60 - intervals[0][5])
 
             row = intervals[0]
             rules.append(dict(
