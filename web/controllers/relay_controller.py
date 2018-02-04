@@ -53,7 +53,7 @@ def rissing(channel):
         iteraion += 1
         time.sleep(1)
 
-        database.update(database.QUERY[mn()].format(10))
+        database.update(database.QUERY[mn()].format(8))
 
 
 GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
