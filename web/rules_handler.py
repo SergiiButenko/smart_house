@@ -5,7 +5,7 @@ import json
 import requests
 import time
 import logging
-# from helpers import sqlite_database as database
+from helpers import sqlite_database as database
 from helpers.redis import *
 from helpers.common import *
 
@@ -103,7 +103,9 @@ def sync_rules_from_redis():
 def inspect_conditions(rule):
     """Check if rule can be executed or not."""
     try:
-        rain = get_rain_volume()
+        rain = database.select(database.QUERY[mn() + '_rain'].format(RAIN_HOURS))[0][0]
+        if rain is None:
+            rain = 0
 
         if rule['rule_id'] == 2:
             logging.debug("Stop rule executes always.")

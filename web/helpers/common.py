@@ -2,7 +2,7 @@ import inspect
 import datetime
 import json
 from pytz import timezone
-from helpers import sqlite_database as database
+# from helpers import sqlite_database as database
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be database.QUERY[mn()].format(....)
@@ -148,11 +148,3 @@ def form_date_description(date):
         return 'Завтра, ' + get_weekday(date)
 
     return "{0}, {1} {2}".format(get_weekday(date), date.strftime('%d'), get_month(date))
-
-
-def get_rain_volume():
-    rain = database.select(database.QUERY[mn() + '_rain'].format(RAIN_HOURS))[0][0]
-    if rain is None:
-        rain = 0
-
-    return rain
