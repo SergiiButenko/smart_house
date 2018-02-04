@@ -103,19 +103,19 @@ def sync_rules_from_redis():
 def inspect_conditions(rule):
     """Check if rule can be executed or not."""
     try:
-        rain = database.select(database.QUERY[mn() + '_rain'].format(HOURS))[0][0]
+        rain = database.select(database.QUERY[mn() + '_rain'].format(RAIN_HOURS))[0][0]
         if rain is None:
             rain = 0
 
         if rule['rule_id'] == 2:
             logging.debug("Stop rule executes always.")
-            logging.debug("Rain volume for last {0} hours is {1}mm".format(HOURS, rain))
+            logging.debug("Rain volume for last {0} hours is {1}mm".format(RAIN_HOURS, rain))
             return True
 
         if rain < RAIN_MAX:
             return True
         else:
-            logging.info("Rain volume for last {0} hours is {1}mm".format(HOURS, rain))
+            logging.info("Rain volume for last {0} hours is {1}mm".format(RAIN_HOURS, rain))
             return False
     except Exception as e:
         logging.error("Exeption occured while getting rain volume. {0}".format(e))

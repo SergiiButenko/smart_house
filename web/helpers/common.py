@@ -22,7 +22,7 @@ USERS = [
     {'name': 'Irina', 'id': 'mSR74mGibK+ETvTTx2VvcQ=='}
 ]
 
-HOURS = 24
+RAIN_HOURS = 24
 RAIN_MAX = 20  # mm per m^2
 RAIN_CONSTANT_VOLUME = 8.2  # ml per 120cm^2
 

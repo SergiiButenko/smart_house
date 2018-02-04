@@ -885,11 +885,7 @@ def deactivate_branch():
 @cache.cached(timeout=CACHE_TIMEOUT)
 def weather():
     """Blablbal."""
-    rain = database.select(database.QUERY[mn()])[0][0]
-
-    for item in database.select(database.QUERY[mn()])[0]:
-        logging.info(item)
-
+    rain = database.select(database.QUERY[mn()].format(RAIN_HOURS))[0][0]
     if rain is None:
         rain = 0
 
