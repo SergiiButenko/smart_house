@@ -132,7 +132,7 @@ def get_month(date):
                'Жовтня',
                'Листопада',
                'Грудня']
-    return monthes[date.month]
+    return monthes[date.month - 1]
 
 
 def form_date_description(date):
