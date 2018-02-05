@@ -40,11 +40,17 @@ def arduino():
             board.analog[x].enable_reporting()
             time.sleep(1)
 
-        for x in range(1, 6):
-            logging.info('Reading from {0} analog pin: {1}'.format(x, board.analog[x].read()))
+        for x in range(0, 6):
+            logging.info('Reading from {0} analog pin'.format(x))
+
+            avr = 0
+            for i in range(0, 11):
+                avr = board.analog[x].read()
+                time.sleep(1)
+            logging.info('Avr value'.format(avr / 10))
+
             time.sleep(1)
 
-        board.exit()
     except Exception as e:
         logging.error(e)
 
