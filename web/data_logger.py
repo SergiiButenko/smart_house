@@ -12,10 +12,13 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 
 def find_arduino(serial_number):
-    for pinfo in serial.tools.list_ports.comports():
-        if pinfo.serial_number == serial_number:
-            return serial.Serial(pinfo.device)
-    raise IOError("Could not find an arduino - is it plugged in?")
+    ports = list(serial.tools.list_ports.comports())
+    return ports[0]
+
+    # for pinfo in serial.tools.list_ports.comports():
+    #     if pinfo.serial_number == serial_number:
+    #         return serial.Serial(pinfo.device)
+    # raise IOError("Could not find an arduino - is it plugged in?")
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
