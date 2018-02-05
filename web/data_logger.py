@@ -28,6 +28,12 @@ def arduino():
         board = Arduino(serial_port)
         it = util.Iterator(board)
         it.start()
+        time.sleep(5)
+
+        # for x in range(0, 6):
+        #     logging.info('Enable reporting for {0} analog pin'.format(x))
+        #     board.analog[x].mode = pyfirmata.INPUT
+        #     time.sleep(1)
 
         for x in range(0, 6):
             logging.info('Enable reporting for {0} analog pin'.format(x))
