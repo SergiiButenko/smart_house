@@ -29,12 +29,12 @@ def arduino():
         it = util.Iterator(board)
         it.start()
 
-        for x in range(0, 5):
+        for x in range(0, 6):
             logging.info('Enable reporting for {0} analog pin'.format(x))
             board.analog[x].enable_reporting()
             time.sleep(1)
 
-        for x in xrange(1, 5):
+        for x in range(1, 6):
             logging.info('Reading from {0} analog pin: {1}'.format(x, board.analog[x].read()))
             time.sleep(1)
 
