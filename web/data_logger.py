@@ -29,7 +29,7 @@ def arduino():
         it = util.Iterator(board)
         it.start()
 
-        for x in xrange(0, 5):
+        for x in range(0, 5):
             logging.info('Enable reporting for {0} analog pin'.format(x))
             board.analog[x].enable_reporting()
             time.sleep(1)
