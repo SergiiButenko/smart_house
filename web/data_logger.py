@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 def find_arduino(serial_number):
     ports = list(serial.tools.list_ports.comports())
-    return ports[0]
+    return ports[0][0]
 
     # for pinfo in serial.tools.list_ports.comports():
     #     if pinfo.serial_number == serial_number:
