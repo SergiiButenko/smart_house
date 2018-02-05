@@ -45,9 +45,11 @@ def arduino():
 
             avr = 0
             for i in range(0, 11):
-                avr = board.analog[x].read()
+                val = board.analog[x].read()
+                avr = avr + val
+                logging.info('value {0}'.format(val))
                 time.sleep(1)
-            logging.info('Avr value'.format(avr / 10))
+            logging.info('Avr value {0}'.format(avr / 10))
 
             time.sleep(1)
 
