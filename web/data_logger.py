@@ -65,9 +65,15 @@ def moisture_sensors():
 
             time.sleep(1)
 
-        logging.info('Stopping serial')
-        board.exit()
-        logging.info('done')
+        try:
+            logging.info('Stopping serial')
+            board.exit()
+            logging.info('done')
+        except TypeError as e:
+            logging.warn('Expected TypeError occured. Trying one more time. {0}'.format(e))
+            board.exit()
+            logging.info('done')
+
     except Exception as e:
         logging.error(e)
 
