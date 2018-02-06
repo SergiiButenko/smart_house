@@ -24,11 +24,19 @@ def find_arduino(serial_number):
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 def moisture_sensors():
     try:
+        logging.info('Find arduino.')
         serial_port = find_arduino(serial_number='556393131333516090E0')
+        logging.info('Serial port {0}'.format(serial_port))
+
+        logging.info('Connecting to arduino')
         board = Arduino(serial_port)
+        logging.info('Connected')
+
+        logging.info('Starting thread')
         it = util.Iterator(board)
         it.start()
         time.sleep(5)
+        logging.info('Started')
 
         # for x in range(0, 6):
         #     logging.info('Enable reporting for {0} analog pin'.format(x))
@@ -57,9 +65,12 @@ def moisture_sensors():
 
             time.sleep(1)
 
+        logging.info('Stopping serial')
         board.exit()
+        logging.info('done')
     except Exception as e:
         logging.error(e)
 
 if __name__ == "__main__":
     moisture_sensors()
+
