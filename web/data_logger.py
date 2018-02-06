@@ -49,7 +49,7 @@ def moisture_sensors():
                 avr = avr + val
                 logging.info('value {0}'.format(val))
                 time.sleep(1)
-            
+
             avr = round(avr / 10, 4)
             logging.info('Avr value {0}'.format(avr))
 
@@ -57,6 +57,7 @@ def moisture_sensors():
 
             time.sleep(1)
 
+        board.exit()
     except Exception as e:
         logging.error(e)
 
