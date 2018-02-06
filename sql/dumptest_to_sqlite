@@ -37,6 +37,7 @@ CREATE TABLE week_schedule (
 
 CREATE TABLE moisture (
     id INTEGER PRIMARY KEY,
+    datetime time without time zone NOT NULL DEFAULT (datetime('now','localtime')),
     line_id integer NOT NULL,
     value REAL NOT NULL DEFAULT 0
 );
