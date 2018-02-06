@@ -22,7 +22,7 @@ def find_arduino(serial_number):
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
-def arduino():
+def moisture_sensors():
     try:
         serial_port = find_arduino(serial_number='556393131333516090E0')
         board = Arduino(serial_port)
@@ -49,7 +49,11 @@ def arduino():
                 avr = avr + val
                 logging.info('value {0}'.format(val))
                 time.sleep(1)
-            logging.info('Avr value {0}'.format(avr / 10))
+            
+            avr = round(avr / 10, 4)
+            logging.info('Avr value {0}'.format(avr))
+
+            database.update(database.QUERY[mn()].format(x, avr))
 
             time.sleep(1)
 
@@ -57,4 +61,4 @@ def arduino():
         logging.error(e)
 
 if __name__ == "__main__":
-    arduino()
+    moisture_sensors()

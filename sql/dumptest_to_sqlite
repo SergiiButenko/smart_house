@@ -35,6 +35,12 @@ CREATE TABLE week_schedule (
     FOREIGN KEY(line_id) REFERENCES lines(number)
 );
 
+CREATE TABLE moisture (
+    id INTEGER PRIMARY KEY,
+    line_id integer NOT NULL,
+    value REAL NOT NULL DEFAULT 0
+);
+
 CREATE TABLE life (
     id INTEGER PRIMARY KEY,
     line_id integer NOT NULL,
