@@ -38,11 +38,6 @@ def moisture_sensors():
         time.sleep(5)
         logging.info('Started')
 
-        # for x in range(0, 6):
-        #     logging.info('Enable reporting for {0} analog pin'.format(x))
-        #     board.analog[x].mode = pyfirmata.INPUT
-        #     time.sleep(1)
-
         for x in range(0, 6):
             logging.info('Enable reporting for {0} analog pin...'.format(x))
             board.analog[x].enable_reporting()
@@ -80,4 +75,3 @@ def moisture_sensors():
 
 if __name__ == "__main__":
     moisture_sensors()
-
