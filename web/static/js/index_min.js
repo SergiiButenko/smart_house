@@ -33,6 +33,7 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']),
                     'start_time': new Date(item['start_time'])
                 }
+                draw_d3js(item['id']);
             }
         }
     });
@@ -162,9 +163,6 @@ $(document).ready(function() {
             }
         });
     });
-
-    draw_d3js();
-
 });
 
 function branch_on(index, time_minutes, interval_quantity, time_wait) {
@@ -329,8 +327,8 @@ function toogle_card(element_id, branch) {
 }
 
 
-function draw_d3js(){
-var parent_el = $('#card-12 > .card-block');
+function draw_d3js(id){
+var parent_el = $(`#card-${id} > .card-block`);
 
     // 2. Use the margin convention practice 
 var margin = {top: 5, right: 5, bottom: 15, left: 15}
