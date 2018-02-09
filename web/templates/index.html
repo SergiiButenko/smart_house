@@ -47,19 +47,18 @@
                             <span id="next-{{n['id']}}"></span>
                             <span id="last-{{n['id']}}"></span>
                         </p>
+                        <div class="collapse" id="collapse-{{n['id']}}">
+                            <chart>
+                            </chart>
+                        </div>
                     </div>
-                    <div class="collapse" id="collapse-{{n['id']}}">
-                        <chart>
-                        </chart>
-                    </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="btn btn-primary btn-open-modal disabled" data-id={{n[ 'id']}} id="btn-start-{{n['id']}}">Почати полив</a>
-                        <a href="#" class="btn btn-primary stop-irrigation disabled" data-id={{n[ 'id']}} id="btn-stop-{{n['id']}}">Зупинити полив</a>
-                        <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n[ 'id']}} id="btn-cancel-{{n['id']}}">Скасувати наступний полив</a>
-                        <span class="status-span">В системі помилка</span>
-                    </div>
-
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary btn-open-modal disabled" data-id={{n[ 'id']}} id="btn-start-{{n['id']}}">Почати полив</a>
+                    <a href="#" class="btn btn-primary stop-irrigation disabled" data-id={{n[ 'id']}} id="btn-stop-{{n['id']}}">Зупинити полив</a>
+                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n[ 'id']}} id="btn-cancel-{{n['id']}}">Скасувати наступний полив</a>
+                    <span class="status-span">В системі помилка</span>
+                </div>
             </div>
         </div>
         {% endfor %}
