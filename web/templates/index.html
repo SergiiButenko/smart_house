@@ -41,19 +41,24 @@
         <div class="col-xs-12 col-sm-12 col-md-10 col-lg-4">
             <div class="card card-irrigation" id="card-{{n['id']}}">
                 <div class="card-block">
-                    <h4 class="card-title" id="title-{{n['id']}}">{{n['name']}}</h4>
-                    <p class="card-text text-muted">
-                        <span id="last-{{n['id']}}"></span>
-                        <span id="next-{{n['id']}}"></span>
-                    </p>
-
-                    <chart>
-                    </chart>
+                    <div data-toggle="collapse" href="#collapse-{{n['id']}}" aria-expanded="false" aria-controls="collapse-{{n['id']}}">>
+                        <h4 class="card-title" id="title-{{n['id']}}">{{n['name']}}</h4>
+                        <p class="card-text text-muted">
+                            <span id="next-{{n['id']}}"></span>
+                        </p>
+                    </div>
+                    <div class="collapse" id="collapse-{{n['id']}}">
+                        <p class="card-text text-muted">
+                            <span id="last-{{n['id']}}"></span>
+                        </p>
+                        <chart>
+                        </chart>
+                    </div>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary btn-open-modal disabled" data-id={{n['id']}} id="btn-start-{{n['id']}}">Почати полив</a>
-                    <a href="#" class="btn btn-primary stop-irrigation disabled" data-id={{n['id']}} id="btn-stop-{{n['id']}}">Зупинити полив</a>
-                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n['id']}} id="btn-cancel-{{n['id']}}">Скасувати наступний полив</a>
+                    <a href="#" class="btn btn-primary btn-open-modal disabled" data-id={{n[ 'id']}} id="btn-start-{{n['id']}}">Почати полив</a>
+                    <a href="#" class="btn btn-primary stop-irrigation disabled" data-id={{n[ 'id']}} id="btn-stop-{{n['id']}}">Зупинити полив</a>
+                    <a href="#" class="btn btn-secondary cancel-irrigation" data-id={{n[ 'id']}} id="btn-cancel-{{n['id']}}">Скасувати наступний полив</a>
                     <span class="status-span">В системі помилка</span>
                 </div>
             </div>
