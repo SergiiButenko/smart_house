@@ -330,10 +330,12 @@ function toogle_card(element_id, branch) {
 
 
 function draw_d3js(){
+var parent_el = $('#card-12 > .card-block');
+
     // 2. Use the margin convention practice 
-var margin = {top: 50, right: 50, bottom: 50, left: 50}
-  , width = window.innerWidth - margin.left - margin.right // Use the window's width 
-  , height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
+var margin = {top: 5, right: 5, bottom: 5, left: 5}
+  , width = parent_el.width()|0 - margin.left - margin.right // Use the window's width 
+  , height = parent_el.height()|0 - margin.top - margin.bottom; // Use the window's height
 
 // The number of datapoints
 var n = 21;
