@@ -11,6 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
 
 PUMP_PIN = 12
 RAIN_PIN = 21
+# 1,2,3 goes to light activities
 EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 RAIN_BUCKET_ITERATION = 1
 
