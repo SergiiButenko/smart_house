@@ -334,7 +334,7 @@ var parent_el = $('#card-12 > .card-block');
 
     // 2. Use the margin convention practice 
 var margin = {top: 5, right: 5, bottom: 5, left: 5}
-  , width = parent_el.width()|0 - margin.left - margin.right // Use the window's width 
+  , width = parent_el.width() - margin.left - margin.right // Use the window's width 
   , height = 500 - margin.top - margin.bottom; // Use the window's height
 
 // The number of datapoints
