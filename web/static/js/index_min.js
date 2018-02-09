@@ -332,7 +332,7 @@ function draw_d3js(id){
 var parent_el = $(`#card-${id} > .card-block`);
 
     // 2. Use the margin convention practice 
-var margin = {top: 5, right: 5, bottom: 15, left: 15}
+var margin = {top: 5, right: 5, bottom: 20, left: 15}
   , width = parent_el.width() - margin.left - margin.right // Use the window's width 
   , height = 250 - margin.top - margin.bottom; // Use the window's height
 
