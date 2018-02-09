@@ -359,7 +359,7 @@ var line = d3.line()
 var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
 // 1. Add the SVG to the page and employ #2
-var svg = d3.select(`#card-${id} > chart`).append("svg")
+var svg = d3.select(`#card-${id} chart`).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
