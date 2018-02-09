@@ -33,6 +33,7 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']),
                     'start_time': new Date(item['start_time'])
                 }
+                console.log(item['id'])
                 draw_d3js(item['id']);
             }
         }
