@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 PUMP_PIN = 12
-RAIN_PIN = 14
+RAIN_PIN = 16
 EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 RAIN_BUCKET_ITERATION = 1
 
@@ -24,14 +24,14 @@ BRANCHES = [
     {'id': 6, 'pin': 22, 'state': -1, 'mode': GPIO.OUT},
     {'id': 7, 'pin': 10, 'state': -1, 'mode': GPIO.OUT},
     {'id': 8, 'pin': 9, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 9, 'pin': 21, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 10, 'pin': 20, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 11, 'pin': 16, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 12, 'pin': 26, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 13, 'pin': 19, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 14, 'pin': 13, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 15, 'pin': 6, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 16, 'pin': 5, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 9, 'pin': 11, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 10, 'pin': 14, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 11, 'pin': 15, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 12, 'pin': 18, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 13, 'pin': 23, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 14, 'pin': 24, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 15, 'pin': 25, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 16, 'pin': 8, 'state': -1, 'mode': GPIO.OUT},
     {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT},
 ]
 
