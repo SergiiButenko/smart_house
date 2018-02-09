@@ -286,7 +286,7 @@ function toogle_card(element_id, branch) {
     } else {
         last_rule = "немає запису"
     }
-    $('#last-' + element_id).html("Останній полив: " + last_rule)
+    $('#last-' + element_id).html("</br>Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
@@ -321,7 +321,7 @@ function toogle_card(element_id, branch) {
         $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
         $('#btn-cancel-' + element_id).hide().addClass("hidden");
     } else {
-        $('#next-' + element_id).html("Наступний полив: немає запису");
+        $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide().addClass("hidden");
         $('#btn-cancel-' + element_id).hide().addClass("hidden");
     }
