@@ -286,7 +286,7 @@ function toogle_card(element_id, branch) {
     } else {
         last_rule = "немає запису"
     }
-    $('#last-' + element_id).html("</br>Останній полив: " + last_rule)
+    $('#last-' + element_id).html("Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
