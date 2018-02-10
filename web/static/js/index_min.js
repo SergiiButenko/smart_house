@@ -301,7 +301,6 @@ function toogle_card(element_id, branch) {
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#now-' + element_id).hide().addClass("hidden");
         $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['interval_id'])
@@ -318,9 +317,9 @@ function toogle_card(element_id, branch) {
             next_rule = next_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
 
-        $('#now-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#now-' + element_id).html("</br>Полив зупиниться: " + next_rule);
-        $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
+        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
+        $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
+        $('#btn-cancel-' + element_id).hide().addClass("hidden");
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide().addClass("hidden");
