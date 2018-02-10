@@ -313,3 +313,9 @@ function set_branch_defaults(index, modal) {
 
     toogle_time_wait(interval, modal);
 }
+
+reload_history(){
+    if(window.location.href.indexOf("history") > -1) {
+       window.location.reload();
+    }
+}
