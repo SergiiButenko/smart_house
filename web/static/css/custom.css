@@ -31,9 +31,9 @@ h5 {
 
 .card-irrigate-active {
     border-top: 10px solid green;
-    border-left: : 1px solid green;
-    border-right: : : 1px solid green;
-    border-bottom: : : 1px solid green;
+    border-left: 1px solid green;
+    border-right: 1px solid green;
+    border-bottom: 1px solid green;
 }
 
 .status-error {
