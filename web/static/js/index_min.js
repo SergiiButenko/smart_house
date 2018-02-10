@@ -301,7 +301,7 @@ function toogle_card(element_id, branch) {
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
+        $('#next-' + element_id).html("Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['interval_id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
@@ -318,7 +318,7 @@ function toogle_card(element_id, branch) {
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
+        $('#next-' + element_id).html("Полив зупиниться: " + next_rule);
         $('#btn-cancel-' + element_id).hide().addClass("hidden");
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
