@@ -286,7 +286,7 @@ function toogle_card(element_id, branch) {
     } else {
         last_rule = "немає запису"
     }
-    $('#last-' + element_id).html("</br>Останній полив: " + last_rule)
+    $('#last-' + element_id).html("Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
         next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
@@ -301,7 +301,8 @@ function toogle_card(element_id, branch) {
         }
 
         $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#next-' + element_id).html("Наступний полив: " + next_rule);
+        $('#now-' + element_id).hide().addClass("hidden");
+        $('#next-' + element_id).html("</br>Наступний полив: " + next_rule);
 
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['interval_id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
@@ -317,9 +318,9 @@ function toogle_card(element_id, branch) {
             next_rule = next_rule.toLocaleTimeString("uk-UA", options_datetime);
         }
 
-        $('#next-' + element_id).css('display', 'inline-block').removeClass("hidden");
-        $('#next-' + element_id).html("</br>Полив зупиниться: " + next_rule);
-        $('#btn-cancel-' + element_id).hide().addClass("hidden");
+        $('#now-' + element_id).css('display', 'inline-block').removeClass("hidden");
+        $('#now-' + element_id).html("</br>Полив зупиниться: " + next_rule);
+        $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else {
         $('#next-' + element_id).html("</br>Наступний полив: немає запису");
         $('#next-' + element_id).hide().addClass("hidden");
