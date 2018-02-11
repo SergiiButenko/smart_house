@@ -680,7 +680,7 @@ def get_moisture():
                         _sum += thing[0]
                         _len += 1
                     new_list.append(
-                        dict(hours=_key, val=_sum / _len)
+                        dict(hours=_key, val=round(_sum / _len, 2))
                         )
                 grouped[key] = new_list
 
