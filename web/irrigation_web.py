@@ -660,7 +660,7 @@ def get_moisture():
 
             grouped = []
             for key, group in groupby(list_arr, itemgetter(0)):
-                grouped.append(list([list(thing) for thing in group]))
+                grouped[key]([list(thing) for thing in group])
 
             # rules = []
             # for intervals in grouped:
