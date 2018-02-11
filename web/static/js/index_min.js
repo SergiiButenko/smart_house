@@ -42,8 +42,8 @@ $(document).ready(function() {
         success: function(data) {
             list = data['data']
             for (j in list) {
-                console.log(j)
-                draw_d3js(j);
+                console.log(list[j])
+                draw_d3js(list[j]);
             }
         }
     });
