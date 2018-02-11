@@ -356,7 +356,10 @@ var line = d3.line()
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+var dataset =  [{'y': 1}, {'y': 2}]
+//d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+
+//var svg = d3.select(`#card-${id} chart`).append("svg")
 
 // 1. Add the SVG to the page and employ #2
 var svg = d3.select(`#card-${id} chart`).append("svg")
