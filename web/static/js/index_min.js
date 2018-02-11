@@ -150,13 +150,13 @@ $(document).ready(function() {
         $.ajax({
             url: server + '/cancel_rule',
             type: "post",
-            data: JSON.stringify( { 'list': [interval_id] } ),
+            data: JSON.stringify({ 'list': [interval_id] }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function(xhr, opts) {
                 set_status_spinner();
             },
-            success: function(data) {                                
+            success: function(data) {
                 set_status_ok();
             },
             error: function() {
@@ -289,7 +289,7 @@ function toogle_card(element_id, branch) {
     $('#last-' + element_id).html("Останній полив: " + last_rule)
 
     if (branch['next_rule'] && branch['next_rule']['rule_id'] == 1) {
-        next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
+        next_rule = convertDateToUTC(new Date(branch['next_rule']['timer']))
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
@@ -306,7 +306,7 @@ function toogle_card(element_id, branch) {
         $('#btn-cancel-' + element_id).data('id', branch['next_rule']['interval_id'])
         $('#btn-cancel-' + element_id).css('display', 'inline-block').removeClass("hidden");
     } else if (branch['next_rule'] && branch['next_rule']['rule_id'] == 2) {
-        next_rule =  convertDateToUTC(new Date(branch['next_rule']['timer']))
+        next_rule = convertDateToUTC(new Date(branch['next_rule']['timer']))
         if (daydiff(now, next_rule) == 0) {
             next_rule = "сьогодні, о " + next_rule.toLocaleTimeString("uk-UA", options_time);
         } else if (daydiff(now, next_rule) == 1) {
@@ -328,74 +328,75 @@ function toogle_card(element_id, branch) {
 }
 
 
-function draw_d3js(id){
-var parent_el = $(`#card-${id} > .card-block`);
+function draw_d3js(id) {
+    var parent_el = $(`#card-${id} > .card-block`);
 
     // 2. Use the margin convention practice 
-var margin = {top: 20, right: 5, bottom: 20, left: 25}
-  , width = parent_el.width() - margin.left - margin.right // Use the window's width 
-  , height = 250 - margin.top - margin.bottom; // Use the window's height
+    var margin = { top: 20, right: 5, bottom: 20, left: 25 },
+        width = parent_el.width() - margin.left - margin.right // Use the window's width 
+        ,
+        height = 250 - margin.top - margin.bottom; // Use the window's height
 
-// The number of datapoints
-var n = 24;
+    // The number of datapoints
+    var n = 24;
 
-// 5. X scale will use the index of our data
-var xScale = d3.scaleLinear()
-    .domain([0, 24]) // input
-    .range([0, width]); // output
+    // 5. X scale will use the index of our data
+    var xScale = d3.scaleLinear()
+        .domain([0, 24]) // input
+        .range([0, width]); // output
 
-// 6. Y scale will use the randomly generate number 
-var yScale = d3.scaleLinear()
-    .domain([0, 100]) // input 
-    .range([height, 0]); // output 
+    // 6. Y scale will use the randomly generate number 
+    var yScale = d3.scaleLinear()
+        .domain([0, 100]) // input 
+        .range([height, 0]); // output 
 
-// 7. d3's line generator
-var line = d3.line()
-    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
-    .curve(d3.curveMonotoneX) // apply smoothing to the line
+    // 7. d3's line generator
+    var line = d3.line()
+        .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+        .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+        .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-// 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-var dataset =  [{'y': 10}, {'y': 20}, {'y': 30}, {'y': 40}, {'y': 50}, {'y': 60}, {'y': 70}, {'y': 80}, {'y': 90}, {'y': 100}]
-var dataset2 =  [{'y': 20}, {'y': 30}, {'y': 40}, {'y': 50}, {'y': 60}, {'y': 70}, {'y': 80}, {'y': 80}, {'y': 90}, {'y': 100}]
-//d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+    // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+    var dataset = [{ 'y': 10 }, { 'y': 20 }, { 'y': 30 }, { 'y': 40 }, { 'y': 50 }, { 'y': 60 }, { 'y': 70 }, { 'y': 80 }, { 'y': 90 }, { 'y': 100 }]
+    var dataset2 = [{ 'y': 20 }, { 'y': 30 }, { 'y': 40 }, { 'y': 50 }, { 'y': 60 }, { 'y': 70 }, { 'y': 80 }, { 'y': 80 }, { 'y': 90 }, { 'y': 100 }]
+    //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
-// 1. Add the SVG to the page and employ #2
-var svg = d3.select(`#card-${id} chart`).append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // 1. Add the SVG to the page and employ #2
+    var svg = d3.select(`#card-${id} chart`).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// 3. Call the x axis in a group tag
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+    // 3. Call the x axis in a group tag
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
 
-// 4. Call the y axis in a group tag
-svg.append("g")
-    .attr("class", "y axis")
-    .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+    // 4. Call the y axis in a group tag
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
-// 9. Append the path, bind the data, and call the line generator 
-svg.append("path")
-    .datum(dataset) // 10. Binds data to the line 
-    .attr("class", "line") // Assign a class for styling 
-    .attr("d", line); // 11. Calls the line generator 
+    // 9. Append the path, bind the data, and call the line generator 
+    svg.append("path")
+        .datum(dataset) // 10. Binds data to the line 
+        .attr("class", "line") // Assign a class for styling 
+        .attr("d", line); // 11. Calls the line generator 
 
-// 9. Append the path, bind the data, and call the line generator 
-svg.append("path")
-    .datum(dataset2) // 10. Binds data to the line 
-    .attr("class", "line_base") // Assign a class for styling 
-    .attr("d", line); // 11. Calls the line generator 
+    // 12. Appends a circle for each datapoint 
+    svg.selectAll(".dot")
+        .data(dataset)
+        .enter().append("circle") // Uses the enter().append() method
+        .attr("class", "dot") // Assign a class for styling
+        .attr("cx", function(d, i) { return xScale(i) })
+        .attr("cy", function(d) { return yScale(d.y) })
+        .attr("r", 5);
 
-// 12. Appends a circle for each datapoint 
-svg.selectAll(".dot")
-    .data(dataset)
-  .enter().append("circle") // Uses the enter().append() method
-    .attr("class", "dot_base") // Assign a class for styling
-    .attr("cx", function(d, i) { return xScale(i) })
-    .attr("cy", function(d) { return yScale(d.y) })
-    .attr("r", 5);
+    // 9. Append the path, bind the data, and call the line generator 
+    svg.append("path")
+        .datum(dataset2) // 10. Binds data to the line 
+        .attr("class", "line_base") // Assign a class for styling 
+        .attr("d", line); // 11. Calls the line generator 
 }
