@@ -658,9 +658,9 @@ def get_moisture():
         if list_arr is not None:
             list_arr.sort(key=itemgetter(0))
 
-            grouped = [] * 9
+            grouped = []
             for key, group in groupby(list_arr, itemgetter(0)):
-                grouped[key] = [list(thing) for thing in group]
+                grouped.append([list(thing) for thing in group])
 
             # rules = []
             # for intervals in grouped:
