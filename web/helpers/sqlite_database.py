@@ -139,7 +139,8 @@ QUERY['moisture_sensors'] = (
     "INSERT INTO moisture(line_id, value) "
     "VALUES ({0}, {1})")
 
-
+QUERY['get_moisture'] = (
+    "SELECT line_id, value, datetime FROM moisture WHERE datetime >= datetime('now', 'localtime', '-24 hours');")
 
 # executes query and returns fetch* result
 def select(query, method='fetchall'):

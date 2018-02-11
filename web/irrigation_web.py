@@ -649,6 +649,50 @@ def form_responce_for_branches(payload):
         logging.error("Can't form responce. Exception occured")
         raise e
 
+@app.route('/moisture')
+@cache.cached(timeout=CACHE_TIMEOUT)
+def get_moisture():
+    try:
+        grouped_rules = {}
+        list_arr = database.select(database.QUERY[mn()], 'fetchall')
+        if list_arr is not None:
+            list_arr.sort(key=itemgetter(0))
+
+            grouped = []
+            for key, group in groupby(list_arr, itemgetter(0)):
+                grouped.append(list([list(thing) for thing in group]))
+
+            # rules = []
+            # for intervals in grouped:
+            #     intervals.sort(key=itemgetter(2))
+            #     intervals_quantity = len(intervals)
+
+            #     time_wait = 0
+            #     if intervals_quantity == 2:
+            #         time_wait = int((intervals[1][3] - intervals[0][3]).total_seconds() / 60 - intervals[0][5])
+
+            #     row = intervals[0]
+            #     rules.append(dict(
+            #         line_name=row[1],
+            #         date=row[2].strftime('%m/%d/%Y'),
+            #         date_description=form_date_description(row[2]),
+            #         timer=date_handler(row[3]),
+            #         ative=row[4],
+            #         time=row[5],
+            #         intervals=intervals_quantity,
+            #         interval_id=row[0],
+            #         time_wait=time_wait))
+
+            # rules.sort(key=itemgetter('date'))
+            # for key, group in groupby(rules, itemgetter('date')):
+            #     grouped_rules[key] = [thing for thing in group]
+
+            # for key, value in grouped_rules.items():
+            #     value.sort(key=itemgetter('timer'))
+    except Exception as e:
+        raise e
+    return 'OK'
+
 
 @app.route('/irrigation_lighting_status', methods=['GET'])
 def irrigation_status():
