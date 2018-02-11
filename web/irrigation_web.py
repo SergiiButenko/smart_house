@@ -675,7 +675,7 @@ def get_moisture():
                 new_list = list()
                 for _key, _group in groupby(value, itemgetter('hours')):
                     new_list.append(
-                        dict(hours=_key, val=[(sum(_thing) / len(_thing)) for _thing in _group])
+                        dict(hours=_key, val=[thing for thing in _group])
                         )
                 grouped[key] = new_list
 
