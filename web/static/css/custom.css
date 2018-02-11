@@ -244,7 +244,8 @@ li>span {
 .line_base {
     fill: none;
     stroke: black;
-    stroke-width: 2;
+    stroke-width: 1;
+    opacity: 70%;
 }
 
 /* Style the dots by assigning a fill and stroke */
