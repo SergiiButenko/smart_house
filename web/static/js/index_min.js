@@ -23,6 +23,18 @@ $(document).ready(function() {
     $.ajax({
         url: '/branch_settings',
         success: function(data) {
+            list = data['data']
+            for (j in list) {
+                console.log(j)
+                draw_d3js(j);
+            }
+        }
+    });
+
+
+    $.ajax({
+        url: '/moisture',
+        success: function(data) {
             list = data['list']
             for (j in list) {
                 item = list[j]
@@ -363,7 +375,7 @@ function draw_d3js(id, data) {
 
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     var dataset = data
-    var dataset2 = Array(n).fill({'base_val': 24})
+    var dataset2 = Array(n).fill({ 'base_val': 24 })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
     // 1. Add the SVG to the page and employ #2
