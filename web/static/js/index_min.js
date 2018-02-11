@@ -381,22 +381,22 @@ function draw_d3js(id, data) {
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
+        .datum(dataset2) // 10. Binds data to the line 
+        .attr("class", "line_base") // Assign a class for styling 
+        .attr("d", line); // 11. Calls the line generator 
+
+    // 9. Append the path, bind the data, and call the line generator 
+    svg.append("path")
         .datum(dataset) // 10. Binds data to the line 
         .attr("class", "line") // Assign a class for styling 
         .attr("d", line); // 11. Calls the line generator 
 
     // 12. Appends a circle for each datapoint 
-    svg.selectAll(".dot")
+    svg.selectAll(".line > .dot")
         .data(dataset)
         .enter().append("circle") // Uses the enter().append() method
         .attr("class", "dot") // Assign a class for styling
         .attr("cx", function(d, i) { return xScale(i) })
         .attr("cy", function(d) { return yScale(d.y) })
         .attr("r", 5);
-
-    // 9. Append the path, bind the data, and call the line generator 
-    svg.append("path")
-        .datum(dataset2) // 10. Binds data to the line 
-        .attr("class", "line_base") // Assign a class for styling 
-        .attr("d", line); // 11. Calls the line generator 
 }
