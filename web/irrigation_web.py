@@ -667,44 +667,18 @@ def get_moisture():
                         hours=int(convert_to_datetime(thing[2]).strftime('%H'))
                         ))
                 grouped[key] = _list
-                # list(
-                #     dict(
-                #         val=round(thing[1] * 100, 2),
-                #         hours=int(convert_to_datetime(thing[2]).strftime('%H'))
-                #         )
-                #     ) for thing in group
-                # ]
 
-            # for key, value in grouped.items():
-            #     value.sort(key=itemgetter('hours'))
-                # for item in value:
-                #     item[1] = round(item[1] * 100, 2)
-                #     item[2] = int(convert_to_datetime(item[2]).strftime('%H'))
-                #     del item[0]
+            for key, value in grouped.items():
+                value.sort(key=itemgetter('hours'))
 
-            #
-            # rules = []
-            # for intervals in grouped:
-            #     intervals.sort(key=itemgetter(2))
-            #     intervals_quantity = len(intervals)
+            for key, value in grouped.items():
+                new_list = list()
+                for _key, _group in groupby(value, itemgetter('hours')):
+                    new_list.append(
+                        dict(hours=_key, val=[thing for thing in group])
+                        )
+                grouped[key] = new_list
 
-            #     time_wait = 0
-            #     if intervals_quantity == 2:
-            #         time_wait = int((intervals[1][3] - intervals[0][3]).total_seconds() / 60 - intervals[0][5])
-
-            #     row = intervals[0]
-            #     rules.append(dict(
-            #         line_name=row[1],
-            #         date=row[2].strftime('%m/%d/%Y'),
-            #         date_description=form_date_description(row[2]),
-            #         timer=date_handler(row[3]),
-            #         ative=row[4],
-            #         time=row[5],
-            #         intervals=intervals_quantity,
-            #         interval_id=row[0],
-            #         time_wait=time_wait))
-
-            # rules.sort(key=itemgetter('date'))
             # for key, group in groupby(rules, itemgetter('date')):
             #     grouped_rules[key] = [thing for thing in group]
 
