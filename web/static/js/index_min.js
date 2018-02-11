@@ -42,7 +42,7 @@ $(document).ready(function() {
         success: function(data) {
             list = data['data']
             for (j in list) {
-                console.log(list[j])
+                console.log(j);
                 draw_d3js(j, list[j]);
             }
         }
@@ -374,6 +374,9 @@ function draw_d3js(id, data) {
     var dataset = data
     var dataset2 = Array(n).fill({ 'base_val': 24 })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+    
+    console.log(dataset2);
+    console.log(dataset);
 
     // 1. Add the SVG to the page and employ #2
     var svg = d3.select(`#card-${id} chart`).append("svg")
