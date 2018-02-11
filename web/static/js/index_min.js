@@ -328,7 +328,7 @@ function toogle_card(element_id, branch) {
 }
 
 
-function draw_d3js(id) {
+function draw_d3js(id, data) {
     var parent_el = $(`#card-${id} > .card-block`);
 
     // 2. Use the margin convention practice 
