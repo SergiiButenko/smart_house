@@ -365,11 +365,6 @@ function draw_d3js(id, data) {
         .y(function(d) { return yScale(d.val); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-    var line_base = d3.line()
-        .x(function(d, i) { return xScale(i.hours); }) // set the x values for the line generator
-        .y(function(d) { return yScale(d.base_val); }) // set the y values for the line generator 
-        .curve(d3.curveMonotoneX) // apply smoothing to the line
-
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     var dataset = data
     var dataset2 = Array(n).fill({ 'base_val': 24, 'hours': 0 })
@@ -395,13 +390,13 @@ function draw_d3js(id, data) {
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
-        .datum(dataset2) // 10. Binds data to the line 
+        .datum([dataset2]) // 10. Binds data to the line 
         .attr("class", "line_base") // Assign a class for styling 
         .attr("d", line_base); // 11. Calls the line generator 
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
-        .datum(dataset) // 10. Binds data to the line 
+        .datum([dataset]) // 10. Binds data to the line 
         .attr("class", "line") // Assign a class for styling 
         .attr("d", line); // 11. Calls the line generator 
 
@@ -410,7 +405,7 @@ function draw_d3js(id, data) {
         .data(dataset)
         .enter().append("circle") // Uses the enter().append() method
         .attr("class", "dot") // Assign a class for styling
-        .attr("cx", function(d, i) { return xScale(i) })
-        .attr("cy", function(d) { return yScale(d.y) })
+        .attr("cx", function(d, i) { return xScale(d) })
+        .attr("cy", function(d) { return yScale(d) })
         .attr("r", 5);
 }
