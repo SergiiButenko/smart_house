@@ -33,7 +33,6 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']),
                     'start_time': new Date(item['start_time'])
                 }
-                draw_d3js(item['id']);
             }
         }
     });
@@ -43,8 +42,8 @@ $(document).ready(function() {
         success: function(data) {
             list = data['data']
             for (j in list) {
-                console.log(j);
-                draw_d3js(j, list[j]);
+                console.log(j+11);
+                draw_d3js(j+11, list[j]);
             }
         }
     });
