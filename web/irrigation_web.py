@@ -663,7 +663,7 @@ def get_moisture():
                 grouped[key] = [list(thing) for thing in group]
 
             for key, value in grouped.items():
-                value[2] = convert_to_datetime(value).strftime('%H')
+                value[2] = convert_to_datetime(value[2]).strftime('%H')
                 value.sort(key=itemgetter(2))
             # rules = []
             # for intervals in grouped:
