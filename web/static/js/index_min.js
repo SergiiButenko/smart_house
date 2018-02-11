@@ -404,7 +404,7 @@ function draw_d3js(id, data) {
         .data(dataset)
         .enter().append("circle") // Uses the enter().append() method
         .attr("class", "dot") // Assign a class for styling
-        .attr("cx", function(d, i) { return xScale(i) })
-        .attr("cy", function(d) { return yScale(d.y) })
+        .attr("cx", function(d, i) { return xScale(d.hours) })
+        .attr("cy", function(d) { return yScale(d.val) })
         .attr("r", 5);
 }
