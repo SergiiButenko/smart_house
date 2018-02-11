@@ -660,12 +660,12 @@ def get_moisture():
 
             grouped = {}
             for key, group in groupby(list_arr, itemgetter(0)):
-                grouped[key] = [list(thing) for thing in group]
+                grouped[key] = list(thing) for thing in group
 
             for key, value in grouped.items():
                 value.sort(key=itemgetter(2))
                 for item in value:
-                    item[1] = item[1] * 100
+                    item[1] = round(item[1] * 100, 2)
                     item[2] = int(convert_to_datetime(item[2]).strftime('%H'))
                     del item[0]
 
