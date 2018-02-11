@@ -23,18 +23,6 @@ $(document).ready(function() {
     $.ajax({
         url: '/branch_settings',
         success: function(data) {
-            list = data['data']
-            for (j in list) {
-                console.log(j)
-                draw_d3js(j);
-            }
-        }
-    });
-
-
-    $.ajax({
-        url: '/moisture',
-        success: function(data) {
             list = data['list']
             for (j in list) {
                 item = list[j]
@@ -45,8 +33,17 @@ $(document).ready(function() {
                     'default_time_wait': parseInt(item['default_time_wait']),
                     'start_time': new Date(item['start_time'])
                 }
-                console.log(item['id'])
-                draw_d3js(item['id']);
+            }
+        }
+    });
+
+    $.ajax({
+        url: '/moisture',
+        success: function(data) {
+            list = data['data']
+            for (j in list) {
+                console.log(j)
+                draw_d3js(j);
             }
         }
     });
