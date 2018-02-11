@@ -669,11 +669,11 @@ def get_moisture():
                 grouped[key] = _list
 
             for key, value in grouped.items():
-                value.sort(key=itemgetter('1'))
+                value.sort(key=itemgetter(1))
 
             for key, value in grouped.items():
                 new_list = list()
-                for _key, _group in groupby(value, itemgetter('1')):
+                for _key, _group in groupby(value, itemgetter(1)):
                     new_list.append(
                         dict(hours=_key, val=[thing for thing in _group])
                         )
