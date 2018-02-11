@@ -691,7 +691,7 @@ def get_moisture():
             #     value.sort(key=itemgetter('timer'))
     except Exception as e:
         raise e
-    return 'OK'
+    return jsonify(data=grouped)
 
 
 @app.route('/irrigation_lighting_status', methods=['GET'])
