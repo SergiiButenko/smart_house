@@ -352,13 +352,18 @@ function draw_d3js(id, data) {
 
     // 7. d3's line generator
     var line = d3.line()
-        .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-        .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+        .x(function(d, i) { return xScale(d.hours); }) // set the x values for the line generator
+        .y(function(d) { return yScale(d.val); }) // set the y values for the line generator 
+        .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+    var line_base = d3.line()
+        //.x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+        .y(function(d) { return yScale(d.base_val); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-    var dataset = [{ 'y': 10 }, { 'y': 20 }, { 'y': 30 }, { 'y': 40 }, { 'y': 50 }, { 'y': 60 }, { 'y': 70 }, { 'y': 80 }, { 'y': 90 }, { 'y': 100 }]
-    var dataset2 = [{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 }]
+    var dataset = data
+    var dataset2 = Array(n).fill({'base_val': 24})
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
     // 1. Add the SVG to the page and employ #2

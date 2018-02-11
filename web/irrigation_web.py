@@ -653,7 +653,6 @@ def form_responce_for_branches(payload):
 @cache.cached(timeout=CACHE_TIMEOUT)
 def get_moisture():
     try:
-        grouped_rules = {}
         list_arr = database.select(database.QUERY[mn()], 'fetchall')
         if list_arr is not None:
             list_arr.sort(key=itemgetter(0))
@@ -683,12 +682,6 @@ def get_moisture():
                         dict(hours=_key, val=round(_sum / _len, 2))
                         )
                 grouped[key] = new_list
-
-            # for key, group in groupby(rules, itemgetter('date')):
-            #     grouped_rules[key] = [thing for thing in group]
-
-            # for key, value in grouped_rules.items():
-            #     value.sort(key=itemgetter('timer'))
     except Exception as e:
         raise e
     return jsonify(data=grouped)
