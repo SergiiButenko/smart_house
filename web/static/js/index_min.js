@@ -357,6 +357,7 @@ var line = d3.line()
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
 var dataset =  [{'y': 10}, {'y': 20}, {'y': 30}, {'y': 40}, {'y': 50}, {'y': 60}, {'y': 70}, {'y': 80}, {'y': 90}, {'y': 100}]
+var dataset2 =  [{'y': 20}, {'y': 30}, {'y': 40}, {'y': 50}, {'y': 60}, {'y': 70}, {'y': 80}, {'y': 80}, {'y': 90}, {'y': 100}]
 //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
 // 1. Add the SVG to the page and employ #2
@@ -380,6 +381,12 @@ svg.append("g")
 // 9. Append the path, bind the data, and call the line generator 
 svg.append("path")
     .datum(dataset) // 10. Binds data to the line 
+    .attr("class", "line") // Assign a class for styling 
+    .attr("d", line); // 11. Calls the line generator 
+
+// 9. Append the path, bind the data, and call the line generator 
+svg.append("path")
+    .datum(dataset2) // 10. Binds data to the line 
     .attr("class", "line") // Assign a class for styling 
     .attr("d", line); // 11. Calls the line generator 
 
