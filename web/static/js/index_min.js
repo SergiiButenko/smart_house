@@ -351,7 +351,7 @@ function draw_d3js(id, data) {
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
-        .domain([0, n - 1]) // input
+        //.domain([0, n - 1]) // input
         .range([0, width]); // output
 
     // 6. Y scale will use the randomly generate number 
@@ -369,6 +369,7 @@ function draw_d3js(id, data) {
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     
+    xScale.domain([d3.min(data, function(d) { return d.hours; }), d3.max(data, function(d) { return d.hours; })]);
 
     var dataset = data
     var dataset2 = Array(n).fill({ 'base_val': 24, 'hours': 0 })
