@@ -678,7 +678,7 @@ def get_moisture():
                     _len = 0
                     for thing in _group:
                         _sum += thing[1]
-                        _len++
+                        _len += 1
                     new_list.append(
                         dict(hours=_key, val=_sum / _len)
                         )
