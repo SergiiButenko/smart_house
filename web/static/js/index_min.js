@@ -43,7 +43,7 @@ $(document).ready(function() {
             list = data['data']
             for (j in list) {
                 console.log(list[j])
-                draw_d3js(list[j]);
+                draw_d3js(j, list[j]);
             }
         }
     });
