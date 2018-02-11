@@ -662,12 +662,10 @@ def get_moisture():
             for key, group in groupby(list_arr, itemgetter(0)):
                 grouped[key] = [list(thing) for thing in group]
 
-            for key, value in grouped.items():            
-                for item in value:
-                    item[2] = convert_to_datetime(item[2]).strftime('%H')
-
             for key, value in grouped.items():
                 value.sort(key=itemgetter(2))
+                for item in value:
+                    item[2] = int(convert_to_datetime(item[2]).strftime('%H'))              
 
             #
             # rules = []
