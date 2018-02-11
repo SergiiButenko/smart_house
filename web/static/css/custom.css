@@ -1,3 +1,4 @@
+
 .card-text {
     margin-bottom: 0;
     /*margin-top: 1.2rem;*/
@@ -236,5 +237,18 @@ li>span {
 /* Style the dots by assigning a fill and stroke */
 .dot {
     fill: #ffab00;
+    stroke: #fff;
+}
+
+/* Style the lines by removing the fill and applying a stroke */
+.line_base {
+    fill: none;
+    stroke: black;
+    stroke-width: 2;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot_base {
+    fill: black;
     stroke: #fff;
 }
