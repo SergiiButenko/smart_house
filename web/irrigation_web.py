@@ -663,7 +663,7 @@ def get_moisture():
                 grouped[key] = [list(thing) for thing in group]
 
             for key, value in grouped.items():
-                value.sort(key=itemgetter([0][2]))
+                value.sort(key=itemgetter(2))
             # rules = []
             # for intervals in grouped:
             #     intervals.sort(key=itemgetter(2))
