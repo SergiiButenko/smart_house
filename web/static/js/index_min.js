@@ -356,13 +356,13 @@ function draw_d3js(id, data) {
 
     // 6. Y scale will use the randomly generate number 
     var yScale = d3.scaleLinear()
-        .domain([0, 1]) // input 
+        .domain([0, 100]) // input 
         .range([height, 0]); // output 
 
     // 7. d3's line generator
     var line = d3.line()
-        .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-        .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+        .x(function(d) { return xScale(d.hours); }) // set the x values for the line generator
+        .y(function(d) { return yScale(d.val); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 
