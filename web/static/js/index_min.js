@@ -362,7 +362,7 @@ function draw_d3js(id, data) {
     // 7. d3's line generator
     var line = d3.line()
         .x(function(d) { return xScale(d['hours']); }) // set the x values for the line generator
-        .y(function(d) { return yScale(d['val'];); }) // set the y values for the line generator 
+        .y(function(d) { return yScale(d['val']); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
