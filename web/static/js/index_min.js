@@ -392,7 +392,7 @@ function draw_d3js(id, data) {
     svg.append("path")
         .datum([dataset2]) // 10. Binds data to the line 
         .attr("class", "line_base") // Assign a class for styling 
-        .attr("d", line_base); // 11. Calls the line generator 
+        .attr("d", line); // 11. Calls the line generator 
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
