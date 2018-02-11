@@ -358,7 +358,7 @@ function draw_d3js(id, data) {
 
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     var dataset = [{ 'y': 10 }, { 'y': 20 }, { 'y': 30 }, { 'y': 40 }, { 'y': 50 }, { 'y': 60 }, { 'y': 70 }, { 'y': 80 }, { 'y': 90 }, { 'y': 100 }]
-    var dataset2 = [{ 'y': 20 }, { 'y': 30 }, { 'y': 40 }, { 'y': 50 }, { 'y': 60 }, { 'y': 70 }, { 'y': 80 }, { 'y': 80 }, { 'y': 90 }, { 'y': 100 }]
+    var dataset2 = [{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 },{ 'y': 20 }]
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 
     // 1. Add the SVG to the page and employ #2
