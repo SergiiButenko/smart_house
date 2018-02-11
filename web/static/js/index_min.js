@@ -351,12 +351,12 @@ function draw_d3js(id, data) {
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
-        .domain([0, 24]) // input
+        //.domain([0, n]) // input
         .range([0, width]); // output
 
     // 6. Y scale will use the randomly generate number 
     var yScale = d3.scaleLinear()
-        .domain([0, 100]) // input 
+        //.domain([0, 100]) // input 
         .range([height, 0]); // output 
 
     // 7. d3's line generator
@@ -375,9 +375,6 @@ function draw_d3js(id, data) {
     var dataset2 = Array(n).fill({ 'base_val': 24 })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
     
-    console.log(dataset2);
-    console.log(dataset);
-
     // 1. Add the SVG to the page and employ #2
     var svg = d3.select(`#card-${id} chart`).append("svg")
         .attr("width", width + margin.left + margin.right)
