@@ -361,7 +361,7 @@ function draw_d3js(id, data) {
 
     // 7. d3's line generator
     var line = d3.line()
-        .x(function(d, i) { return xScale(d.hours); }) // set the x values for the line generator
+        .x(function(d, i) { return xScale(i.hours); }) // set the x values for the line generator
         .y(function(d) { return yScale(d.val); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
@@ -397,7 +397,7 @@ function draw_d3js(id, data) {
     svg.append("path")
         .datum(dataset2) // 10. Binds data to the line 
         .attr("class", "line_base") // Assign a class for styling 
-        .attr("d", line); // 11. Calls the line generator 
+        .attr("d", line_base); // 11. Calls the line generator 
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
