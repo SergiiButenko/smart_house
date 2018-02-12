@@ -366,7 +366,7 @@ function draw_d3js(id, data) {
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
     var line_base = d3.line()
-        .x(function(d) { return xScale(Math.random() * 23); }) // set the x values for the line generator
+        //.x(function(d) { return xScale(Math.random() * 23); }) // set the x values for the line generator
         .y(function(d) { return yScale(d.base_val); }) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
