@@ -350,7 +350,7 @@ function draw_d3js(id, data) {
     var n = 25;
 
     // 5. X scale will use the index of our data
-    var xScale = d3.scaleLinear()
+    var xScale = d3.scaleBand()
         //.domain([0, n - 1]) // input
         .range([0, width]); // output
 
