@@ -375,7 +375,8 @@ function draw_d3js(id, data) {
 
     var dataset2 = [] //Array(n).fill({ 'base_val': data['base']})
     for (var i = 0; i <= dataset.length; i++) {    
-        dataset2[i] = {'base_val': data['base'], 'hours': data['new'][i].hours}
+        console.log(data['new'][i])
+        dataset2[i] = {'base_val': data['base'], 'hours': data['new'][i]}
     }
     console.log(dataset2);
     xScale.domain([d3.min(dataset, function(d) { return d.hours; }), d3.max(dataset, function(d) { return d.hours; })]);
