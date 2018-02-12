@@ -377,7 +377,7 @@ function draw_d3js(id, data) {
     for (var i = 0; i < dataset.length; i++) {
         dataset2[i] = { 'base_val': data['base'], 'hours': data['new'][i]['hours'] }
     }
-    console.log(dataset.map(function(d) { return d.hours+""; }))
+
     xScale.domain(dataset.map(function(d) { return d.hours+""; }));
 
     

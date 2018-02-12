@@ -140,7 +140,7 @@ QUERY['moisture_sensors'] = (
     "VALUES ({0}, {1})")
 
 QUERY['get_moisture'] = (
-    "SELECT line_id, value, datetime FROM moisture WHERE datetime >= datetime('now', 'localtime', '-24 hours');")
+    "SELECT line_id, value, datetime FROM moisture WHERE datetime >= datetime('now', 'localtime', '-23 hours');")
 
 # executes query and returns fetch* result
 def select(query, method='fetchall'):
