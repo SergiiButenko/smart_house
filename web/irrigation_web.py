@@ -657,9 +657,7 @@ def get_moisture():
         if list_arr is not None:
             list_arr.sort(key=itemgetter(0))
 
-            grouped = {
-                        'new' = {},
-                        'base'  = {}}
+            grouped = {'new': {}, 'base': {}}
             for key, group in groupby(list_arr, itemgetter(0)):
                 _list = list()
                 for thing in group:
