@@ -375,7 +375,7 @@ function draw_d3js(id, data) {
 
     var dataset2 = [] //Array(n).fill({ 'base_val': data['base']})
     for (var i = 0; i <= dataset.length; i++) {    
-        console.log(data['new'][i])
+        console.log(data['new'][i].hours)
         dataset2[i] = {'base_val': data['base'], 'hours': data['new'][i]}
     }
     console.log(dataset2);
