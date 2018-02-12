@@ -670,9 +670,9 @@ def get_moisture():
                 grouped[key]['new'] = _list
 
 
-            for key, value in grouped.items():
-                value['new'].sort(key=itemgetter(1))
-                logging.info(str(value['new']))
+            # for key, value in grouped.items():
+            #     value['new'].sort(key=itemgetter(1))
+            #     logging.info(str(value['new']))
 
             for key, value in grouped.items():
                 new_list = list()
