@@ -689,7 +689,7 @@ def get_moisture():
                 grouped[key]['base'] = 60
 
             for key, value in grouped.items():
-                del value[::2]
+                del value['new'][::2]
 
     except Exception as e:
         raise e
