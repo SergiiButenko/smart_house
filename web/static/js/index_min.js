@@ -371,8 +371,8 @@ function draw_d3js(id, data) {
     
     xScale.domain([d3.min(data, function(d) { return d.hours; }), d3.max(data, function(d) { return d.hours; })]);
 
-    var dataset = data
-    var dataset2 = Array(n).fill({ 'base_val': 24, 'hours': 0 })
+    var dataset = data['new']
+    var dataset2 = Array(n).fill({ 'base_val': data['base'], 'hours': 0 })
     //var dataset = d3.range(n).map(function(d) { return { "y": d3.randomUniform(1)() } })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
 

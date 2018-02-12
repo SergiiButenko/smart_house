@@ -657,7 +657,9 @@ def get_moisture():
         if list_arr is not None:
             list_arr.sort(key=itemgetter(0))
 
-            grouped = {}
+            grouped = {
+                        'new' = {},
+                        'base'  = {}}
             for key, group in groupby(list_arr, itemgetter(0)):
                 _list = list()
                 for thing in group:
@@ -665,12 +667,12 @@ def get_moisture():
                         round(thing[1] * 100, 2),
                         int(convert_to_datetime(thing[2]).strftime('%H'))
                         ])
-                grouped[key] = _list
+                grouped['new'][key] = _list
 
-            for key, value in grouped.items():
+            for key, value in grouped['new'].items():
                 value.sort(key=itemgetter(1))
 
-            for key, value in grouped.items():
+            for key, value in grouped['new'].items():
                 new_list = list()
                 for _key, _group in groupby(value, itemgetter(1)):
                     _sum = 0
@@ -681,7 +683,9 @@ def get_moisture():
                     new_list.append(
                         dict(hours=_key, val=round(_sum / _len, 2))
                         )
-                grouped[key] = new_list
+                grouped['new'][key] = new_list
+                grouped['base'][key] = 25
+
     except Exception as e:
         raise e
     return jsonify(data=grouped)
