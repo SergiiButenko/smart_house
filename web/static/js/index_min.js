@@ -378,7 +378,7 @@ function draw_d3js(id, data) {
         dataset2[i] = { 'base_val': data['base'], 'hours': data['new'][i]['hours'] }
     }
 
-    xScale.domain(d3.extent(dataset, function(d) { return d.hours }));
+    xScale.domain(dataset.map(function(d) { return d.hours+""; }));
 
     
     //var dataset = d3.range(n).map(function(d) { return { "y": d3.randomUniform(1)() } })
