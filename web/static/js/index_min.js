@@ -371,7 +371,7 @@ function draw_d3js(id, data) {
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     var dataset = data['new']
-    var dataset2 = Array(n).fill({ 'base_val': data['base']})
+    var dataset2 = data['base']//Array(n).fill({ 'base_val': data['base']})
     xScale.domain([d3.min(dataset, function(d) { return d.hours; }), d3.max(dataset, function(d) { return d.hours; })]);
     //var dataset = d3.range(n).map(function(d) { return { "y": d3.randomUniform(1)() } })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
@@ -403,7 +403,7 @@ function draw_d3js(id, data) {
     svg.append("path")
         .datum(dataset2) // 10. Binds data to the line 
         .attr("class", "line_base") // Assign a class for styling 
-        .attr("d", line); // 11. Calls the line generator 
+        .attr("d", line_base); // 11. Calls the line generator 
 
     // 12. Appends a circle for each datapoint 
     // svg.selectAll(".dot")
