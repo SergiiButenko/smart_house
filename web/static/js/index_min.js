@@ -372,7 +372,12 @@ function draw_d3js(id, data) {
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
     var dataset = data['new']
-    var dataset2 = data['base'] //Array(n).fill({ 'base_val': data['base']})
+
+    var dataset2 = [] //Array(n).fill({ 'base_val': data['base']})
+    for (var i = 0; i < = dataset.length; i++) {    
+        dataset2[i] = {'base_val' = data['base'], 'hours' = data['new'][i]['hours']}
+    }
+    console.log(dataset2);
     xScale.domain([d3.min(dataset, function(d) { return d.hours; }), d3.max(dataset, function(d) { return d.hours; })]);
     //var dataset = d3.range(n).map(function(d) { return { "y": d3.randomUniform(1)() } })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
