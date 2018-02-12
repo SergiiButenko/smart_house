@@ -666,6 +666,7 @@ def get_moisture():
                         round(thing[1] * 100, 2),
                         int(convert_to_datetime(thing[2]).strftime('%H'))
                         ])
+                grouped[key] = {}
                 grouped[key]['new'] = _list
 
             for key, value in grouped.items():
