@@ -374,10 +374,10 @@ function draw_d3js(id, data) {
     var dataset = data['new']
 
     var dataset2 = [] //Array(n).fill({ 'base_val': data['base']})
-    for (var i = 0; i < dataset.length; i++) {    
-        dataset2[i] = {'base_val': data['base'], 'hours': data['new'][i]['hours']}
+    for (var i = 0; i < dataset.length; i++) {
+        dataset2[i] = { 'base_val': data['base'], 'hours': data['new'][i]['hours'] }
     }
-    console.log(dataset2);
+
     xScale.domain([d3.min(dataset, function(d) { return d.hours; }), d3.max(dataset, function(d) { return d.hours; })]);
     //var dataset = d3.range(n).map(function(d) { return { "y": d3.randomUniform(1)() } })
     //d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
@@ -400,16 +400,16 @@ function draw_d3js(id, data) {
         .attr("class", "y axis")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
+    svg.append("path")
+        .datum(dataset2) // 10. Binds data to the line 
+        .attr("class", "line_base") // Assign a class for styling 
+        .attr("d", line_base); // 11. Calls the line generator 
+
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
         .datum(dataset) // 10. Binds data to the line 
         .attr("class", "line") // Assign a class for styling 
         .attr("d", line); // 11. Calls the line generator 
-
-    svg.append("path")
-        .datum(dataset2) // 10. Binds data to the line 
-        .attr("class", "line_base") // Assign a class for styling 
-        .attr("d", line_base); // 11. Calls the line generator 
 
     // 12. Appends a circle for each datapoint 
     // svg.selectAll(".dot")
