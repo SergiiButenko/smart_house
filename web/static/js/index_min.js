@@ -347,7 +347,7 @@ function draw_d3js(id, data) {
         height = 250 - margin.top - margin.bottom; // Use the window's height
 
     // The number of datapoints
-    var n = 24;
+    var n = 25;
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
