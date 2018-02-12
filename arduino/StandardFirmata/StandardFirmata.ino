@@ -600,22 +600,22 @@ void setup()
   Firmata.begin(57600);
   systemResetCallback();  // reset to default config
 
-  for (int thisPin = 22; thisPin <= 50; thisPin=thisPin + 2)  {
-    pinMode(thisPin, OUTPUT);
-    digitalWrite(thisPin, HIGH);
-    pinMode(thisPin+1, INPUT);
+  for (int thisPin = 22; thisPin <= 52; thisPin=thisPin + 2)  {
+    pinMode(thisPin+1, OUTPUT);
+    digitalWrite(thisPin+1, HIGH);
+    pinMode(thisPin, INPUT);
   }
 
 }
 
 void inverse_levels(){
-  for (int thisPin = 22; thisPin <= 50; thisPin = thisPin + 2)  {
-    int pin = thisPin+1;
+  for (int thisPin = 22; thisPin <= 52; thisPin = thisPin + 2)  {
+    int pin = thisPin;
     int in = digitalRead(pin);
     if (in == HIGH){
-      digitalWrite(thisPin, LOW);
+      digitalWrite(thisPin+1, LOW);
     } else {
-      digitalWrite(thisPin, HIGH);
+      digitalWrite(thisPin+1, HIGH);
     }
     delay(1);
   }

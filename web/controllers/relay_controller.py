@@ -17,8 +17,8 @@ RAIN_BUCKET_ITERATION = 1
 
 BRANCHES = [
     {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 1, 'pin': 2, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 2, 'pin': 3, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 1, 'pin': 8, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 2, 'pin': 7, 'state': -1, 'mode': GPIO.OUT},
     {'id': 3, 'pin': 4, 'state': -1, 'mode': GPIO.OUT},
     {'id': 4, 'pin': 17, 'state': -1, 'mode': GPIO.OUT},
     {'id': 5, 'pin': 27, 'state': -1, 'mode': GPIO.OUT},
