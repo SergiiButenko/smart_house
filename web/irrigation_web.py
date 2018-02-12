@@ -649,6 +649,7 @@ def form_responce_for_branches(payload):
         logging.error("Can't form responce. Exception occured")
         raise e
 
+
 @app.route('/moisture')
 @cache.cached(timeout=CACHE_TIMEOUT)
 def get_moisture():
@@ -657,7 +658,7 @@ def get_moisture():
         if list_arr is not None:
             list_arr.sort(key=itemgetter(0))
 
-            grouped = {'new': {}, 'base': {}}
+            grouped = {}
             for key, group in groupby(list_arr, itemgetter(0)):
                 _list = list()
                 for thing in group:
@@ -665,14 +666,14 @@ def get_moisture():
                         round(thing[1] * 100, 2),
                         int(convert_to_datetime(thing[2]).strftime('%H'))
                         ])
-                grouped['new'][key] = _list
+                grouped[key]['new'] = _list
 
-            for key, value in grouped['new'].items():
-                value.sort(key=itemgetter(1))
+            for key, value in grouped.items():
+                value['new'].sort(key=itemgetter(1))
 
-            for key, value in grouped['new'].items():
+            for key, value in grouped.items():
                 new_list = list()
-                for _key, _group in groupby(value, itemgetter(1)):
+                for _key, _group in groupby(value['new'], itemgetter(1)):
                     _sum = 0
                     _len = 0
                     for thing in _group:
@@ -681,8 +682,8 @@ def get_moisture():
                     new_list.append(
                         dict(hours=_key, val=round(_sum / _len, 2))
                         )
-                grouped['new'][key] = new_list
-                grouped['base'][key] = 25
+                grouped[key]['new'] = new_list
+                grouped[key]['base'] = 25
 
     except Exception as e:
         raise e
