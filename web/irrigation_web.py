@@ -686,7 +686,10 @@ def get_moisture():
                         dict(hours=_key, val=round(_sum / _len, 2))
                         )
                 grouped[key]['new'] = new_list
-                grouped[key]['base'] = 25
+                grouped[key]['base'] = 60
+
+            for key, value in grouped.items():
+                del value[::2]
 
     except Exception as e:
         raise e
