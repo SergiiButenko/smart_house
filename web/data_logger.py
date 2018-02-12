@@ -60,6 +60,11 @@ def moisture_sensors():
 
             time.sleep(1)
 
+        for x in range(0, 6):
+            logging.info('Disable reporting for {0} analog pin...'.format(x))
+            board.analog[x].disable_reporting()
+            time.sleep(1)
+
         time.sleep(10)
         try:
             logging.info('Stopping serial')
