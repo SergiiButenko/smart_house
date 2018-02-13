@@ -30,7 +30,7 @@ def moisture_sensors():
         logging.info('Serial port {0}'.format(serial_port))
 
         logging.info('Connecting to arduino...')
-        board = Arduino(serial_port)
+        board = ArduinoMega(serial_port)
         logging.info('Connected')
 
         logging.info('Starting thread...')
