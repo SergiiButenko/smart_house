@@ -6,7 +6,7 @@ import logging
 import time
 from helpers import sqlite_database as database
 from helpers.common import *
-ANALOG_PIN = 7
+ANALOG_PIN = 6
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
