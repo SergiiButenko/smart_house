@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from pyfirmata import Arduino, util
+from pyfirmata import ArduinoMega, util
 import serial.tools.list_ports
 import logging
 import time
