@@ -8,7 +8,7 @@ from helpers import sqlite_database as database
 from helpers.common import *
 ANALOG_PIN = 16
 
-PINS = =list(range(12, 28))
+PINS = list(range(12, 28))
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
