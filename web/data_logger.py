@@ -6,7 +6,9 @@ import logging
 import time
 from helpers import sqlite_database as database
 from helpers.common import *
-ANALOG_PIN = 6
+ANALOG_PIN = 16
+
+PINS = =list(range(12, 28))
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
@@ -23,7 +25,7 @@ def find_arduino(serial_number):
 
 
 def inverse(val):
-    return (1 - val) * -1
+    return 1 - val
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
@@ -61,7 +63,7 @@ def moisture_sensors():
             avr = round(avr / 10, 4)
             logging.info('Avr value {0}'.format(avr))
 
-            database.update(database.QUERY[mn()].format(x + 12, avr))
+            database.update(database.QUERY[mn()].format(PINS[x], avr))
 
             time.sleep(1)
             logging.info('Disable reporting for {0} analog pin...'.format(x))
