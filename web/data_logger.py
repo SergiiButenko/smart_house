@@ -6,6 +6,7 @@ import logging
 import time
 from helpers import sqlite_database as database
 from helpers.common import *
+ANALOG_PIN = 8
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
@@ -38,12 +39,12 @@ def moisture_sensors():
         time.sleep(5)
         logging.info('Started')
 
-        for x in range(0, 6):
+        for x in range(0, ANALOG_PIN):
             logging.info('Enable reporting for {0} analog pin...'.format(x))
             board.analog[x].enable_reporting()
             time.sleep(1)
 
-        for x in range(0, 6):
+        for x in range(0, ANALOG_PIN):
             logging.info('Reading from {0} analog pin...'.format(x))
 
             avr = 0
@@ -56,11 +57,11 @@ def moisture_sensors():
             avr = round(avr / 10, 4)
             logging.info('Avr value {0}'.format(avr))
 
-            database.update(database.QUERY[mn()].format(x, avr))
+            database.update(database.QUERY[mn()].format(x + 12, avr))
 
             time.sleep(1)
 
-        for x in range(0, 6):
+        for x in range(0, ANALOG_PIN):
             logging.info('Disable reporting for {0} analog pin...'.format(x))
             board.analog[x].disable_reporting()
             time.sleep(1)
