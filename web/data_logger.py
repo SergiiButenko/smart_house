@@ -26,7 +26,7 @@ def find_arduino(serial_number):
 
 def inverse(val):
     logging.info('   not inversed value {0}'.format(val))
-    return 1 - val
+    return round(1 - val, 2)
 
 
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
