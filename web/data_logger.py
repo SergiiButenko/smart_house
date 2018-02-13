@@ -22,6 +22,10 @@ def find_arduino(serial_number):
     # raise IOError("Could not find an arduino - is it plugged in?")
 
 
+def inverse(val):
+    return (1 - val) * -1
+
+
 # For get function name intro function. Usage mn(). Return string with current function name. Instead 'query' will be QUERY[mn()].format(....)
 def moisture_sensors():
     try:
@@ -47,7 +51,9 @@ def moisture_sensors():
 
             avr = 0
             for i in range(0, 11):
-                val = board.analog[x].read()
+                # 0 - 100%
+                # 1 - 0%
+                val = inverse(board.analog[x].read())
                 avr = avr + val
                 logging.info('   value {0}'.format(val))
                 time.sleep(1)
