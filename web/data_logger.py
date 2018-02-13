@@ -43,8 +43,6 @@ def moisture_sensors():
             logging.info('Enable reporting for {0} analog pin...'.format(x))
             board.analog[x].enable_reporting()
             time.sleep(1)
-
-        for x in range(0, ANALOG_PIN):
             logging.info('Reading from {0} analog pin...'.format(x))
 
             avr = 0
@@ -60,11 +58,9 @@ def moisture_sensors():
             database.update(database.QUERY[mn()].format(x + 12, avr))
 
             time.sleep(1)
-
-        for x in range(0, ANALOG_PIN):
             logging.info('Disable reporting for {0} analog pin...'.format(x))
             board.analog[x].disable_reporting()
-            time.sleep(1)
+            time.sleep(5)
 
         time.sleep(10)
         try:
