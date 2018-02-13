@@ -25,6 +25,7 @@ def find_arduino(serial_number):
 
 
 def inverse(val):
+    logging.info('   not inversed value {0}'.format(val))
     return 1 - val
 
 
