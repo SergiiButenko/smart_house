@@ -55,6 +55,7 @@ logging.info('Connected')
 def on(pin):
     """Set pin to hight state."""
     try:
+        global board
         board.digital[pin].write(1)
         time.sleep(1)
         return board.digital[pin].read()
@@ -66,6 +67,7 @@ def on(pin):
 def off(pin):
     """Set pin to low state."""
     try:
+        global board
         board.digital[pin].write(0)
         time.sleep(1)
         return board.digital[pin].read()
@@ -77,6 +79,7 @@ def off(pin):
 def check_if_no_active():
     """Check if any of branches is active now."""
     try:
+        global board
         for branch in BRANCHES:
             # pump won't turn off, cause it stays on after branch off
             if branch['pin'] in EXCEPT_PINS:
@@ -97,6 +100,7 @@ def check_if_no_active():
 def form_pins_state():
     """Form returns arr of dicts."""
     try:
+        global board
         for branch in BRANCHES:
             branch['state'] = board.digital[branch['pin']].read()
             time.sleep(0.5)
@@ -106,7 +110,6 @@ def form_pins_state():
         return BRANCHES
     except Exception as e:
         logging.error("Exception occured during forming of branches status. {0}".format(e))
-        GPIO.cleanup()
         return None
 
 
