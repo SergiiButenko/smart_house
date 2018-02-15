@@ -17,24 +17,24 @@ EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 RAIN_BUCKET_ITERATION = 1
 
 BRANCHES = [
-    # {'id': 1, 'pin': 3, 'state': -1},
-    # {'id': 1, 'pin': 3, 'state': -1},
-    # {'id': 2, 'pin': 3, 'state': -1},
-    # {'id': 3, 'pin': 3, 'state': -1},
-    # {'id': 4, 'pin': 3, 'state': -1},
-    # {'id': 5, 'pin': 3, 'state': -1},
-    # {'id': 6, 'pin': 3, 'state': -1},
-    # {'id': 7, 'pin': 3, 'state': -1},
-    # {'id': 8, 'pin': 3, 'state': -1},
-    # {'id': 9, 'pin': 3, 'state': -1},
-    # {'id': 10, 'pin': 3, 'state': -1},
-    # {'id': 11, 'pin': 3, 'state': -1},
+    {'id': 1, 'pin': 3, 'state': -1},
+    {'id': 1, 'pin': 3, 'state': -1},
+    {'id': 2, 'pin': 3, 'state': -1},
+    {'id': 3, 'pin': 3, 'state': -1},
+    {'id': 4, 'pin': 3, 'state': -1},
+    {'id': 5, 'pin': 3, 'state': -1},
+    {'id': 6, 'pin': 3, 'state': -1},
+    {'id': 7, 'pin': 3, 'state': -1},
+    {'id': 8, 'pin': 3, 'state': -1},
+    {'id': 9, 'pin': 3, 'state': -1},
+    {'id': 10, 'pin': 3, 'state': -1},
+    {'id': 11, 'pin': 3, 'state': -1},
     {'id': 12, 'pin': 3, 'state': -1},
     {'id': 13, 'pin': 4, 'state': -1},
     {'id': 14, 'pin': 5, 'state': -1},
     {'id': 15, 'pin': 6, 'state': -1},
-    {'id': 16, 'pin': 7, 'state': -1}
-    # {'id': 17, 'pin': PUMP_PIN, 'state': -1},
+    {'id': 16, 'pin': 7, 'state': -1},
+    {'id': 17, 'pin': PUMP_PIN, 'state': -1},
 ]
 
 
