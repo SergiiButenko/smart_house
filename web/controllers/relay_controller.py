@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+from pyfirmata import ArduinoMega, util
+import serial.tools.list_ports
 import logging
 import time
-import RPi.GPIO as GPIO
 from helpers import sqlite_database as database
 from helpers.common import *
 
@@ -16,69 +17,60 @@ EXCEPT_PINS = [1, 2, 3, PUMP_PIN, RAIN_PIN]
 RAIN_BUCKET_ITERATION = 1
 
 BRANCHES = [
-    {'id': 1, 'pin': 1, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 1, 'pin': 6, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 2, 'pin': 13, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 3, 'pin': 4, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 4, 'pin': 17, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 5, 'pin': 27, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 6, 'pin': 22, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 7, 'pin': 10, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 8, 'pin': 9, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 9, 'pin': 18, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 10, 'pin': 23, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 11, 'pin': 24, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 12, 'pin': 25, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 13, 'pin': 19, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 14, 'pin': 26, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 15, 'pin': 16, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 16, 'pin': 20, 'state': -1, 'mode': GPIO.OUT},
-    {'id': 17, 'pin': PUMP_PIN, 'state': -1, 'mode': GPIO.OUT},
+    {'id': 1, 'pin': 1, 'state': -1},
+    {'id': 1, 'pin': 6, 'state': -1},
+    {'id': 2, 'pin': 13, 'state': -1},
+    {'id': 3, 'pin': 4, 'state': -1},
+    {'id': 4, 'pin': 17, 'state': -1},
+    {'id': 5, 'pin': 27, 'state': -1},
+    {'id': 6, 'pin': 22, 'state': -1},
+    {'id': 7, 'pin': 10, 'state': -1},
+    {'id': 8, 'pin': 9, 'state': -1},
+    {'id': 9, 'pin': 18, 'state': -1},
+    {'id': 10, 'pin': 23, 'state': -1},
+    {'id': 11, 'pin': 24, 'state': -1},
+    {'id': 12, 'pin': 25, 'state': -1},
+    {'id': 13, 'pin': 19, 'state': -1},
+    {'id': 14, 'pin': 26, 'state': -1},
+    {'id': 15, 'pin': 16, 'state': -1},
+    {'id': 16, 'pin': 20, 'state': -1},
+    {'id': 17, 'pin': PUMP_PIN, 'state': -1},
 ]
 
 
-def rissing(channel):
-    """Fillup rain table"""
-    global RAIN_BUCKET_ITERATION
-    time.sleep(0.005)
-    if GPIO.input(RAIN_PIN) == 1:
-        logging.info("Rain bucket movment {0} detected.".format(RAIN_BUCKET_ITERATION))
-        RAIN_BUCKET_ITERATION += 1
-        time.sleep(1)
-
-        database.update(database.QUERY[mn()].format(RAIN_CONSTANT_VOLUME))
+def find_arduino(serial_number):
+    ports = list(serial.tools.list_ports.comports())
+    return ports[0][0]
 
 
-GPIO.setmode(GPIO.BCM)
-GPIO.cleanup()
+logging.info('Finding arduino...')
+serial_port = find_arduino(serial_number='556393131333516090E0')
+logging.info('Serial port {0}'.format(serial_port))
 
-for branch in BRANCHES:
-    GPIO.setup(branch['pin'], branch['mode'], initial=GPIO.LOW)
-
-GPIO.setup(RAIN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(RAIN_PIN, GPIO.RISING, callback=rissing, bouncetime=200)
+logging.info('Connecting to arduino...')
+board = ArduinoMega(serial_port)
+logging.info('Connected')
 
 
 def on(pin):
     """Set pin to hight state."""
     try:
-        GPIO.output(pin, GPIO.HIGH)
+        board.digital[pin].write(1)
         time.sleep(1)
-        return GPIO.input(pin)
+        return board.digital[pin].read()
     except Exception as e:
         logging.error("Exception occured when turning on {0} pin. {1}".format(pin, e))
-        GPIO.cleanup()
         return -1
 
 
 def off(pin):
     """Set pin to low state."""
     try:
-        GPIO.output(pin, GPIO.LOW)
-        return GPIO.input(pin)
+        board.digital[pin].write(0)
+        time.sleep(1)
+        return board.digital[pin].read()
     except Exception as e:
-        logging.error("Exception occured when turning off {0} pin. {1}".format(pin, e))
-        GPIO.cleanup()
+        logging.error("Exception occured when turning on {0} pin. {1}".format(pin, e))
         return -1
 
 
@@ -90,7 +82,7 @@ def check_if_no_active():
             if branch['pin'] in EXCEPT_PINS:
                 continue
 
-            state = GPIO.input(branch['pin'])
+            state = board.digital[branch['pin']].read()
             if state == GPIO.HIGH:
                 logging.info("branch {0} is active".format(branch['id']))
                 return False
@@ -99,7 +91,6 @@ def check_if_no_active():
         return True
     except Exception as e:
         logging.error("Exception occured when checking active {0}".format(e))
-        GPIO.cleanup()
         raise e
 
 
@@ -107,7 +98,8 @@ def form_pins_state():
     """Form returns arr of dicts."""
     try:
         for branch in BRANCHES:
-            branch['state'] = GPIO.input(branch['pin'])
+            branch['state'] = board.digital[branch['pin']].read()
+            time.sleep(0.5)
 
         logging.debug("Pins state are {0}".format(str(BRANCHES)))
 
