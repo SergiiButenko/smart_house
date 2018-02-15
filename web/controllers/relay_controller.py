@@ -86,7 +86,7 @@ def check_if_no_active():
                 continue
 
             state = board.digital[branch['pin']].read()
-            if state == GPIO.HIGH:
+            if state == 1:
                 logging.info("branch {0} is active".format(branch['id']))
                 return False
 
