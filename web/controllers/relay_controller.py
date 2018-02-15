@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from pyfirmata import ArduinoMega, util
+from pyfirmata import Arduino, util
 import serial.tools.list_ports
 import logging
 import time
@@ -48,7 +48,7 @@ serial_port = find_arduino(serial_number='556393131333516090E0')
 logging.info('Serial port {0}'.format(serial_port))
 
 logging.info('Connecting to arduino...')
-board = ArduinoMega(serial_port)
+board = Arduino(serial_port)
 logging.info('Connected')
 
 
